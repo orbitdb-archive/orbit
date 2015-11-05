@@ -1,0 +1,10 @@
+*sublime*
+.DS_Store
+**/.DS_Store
+tmp/
+dist/
+.electron-prebuilt/
+.vagrant/
+cache.db
+debug.log
+user.json
