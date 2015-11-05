@@ -5,6 +5,7 @@ tmp/
 dist/
 .electron-prebuilt/
 .vagrant/
+node_modules/
 cache.db
 debug.log
 user.json
