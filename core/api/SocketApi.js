@@ -24,6 +24,12 @@ var SocketApi = async ((socketServer, httpServer, events) => {
   var ipfs         = null;
   var userInfo     = {};
 
+  var onIpfsStarted = (res) => {
+    logger.debug("SocketApi ready");
+    userInfo = res.user;
+    ipfs     = res.ipfs;
+  };
+
   var onNewMessages = (data) => {
     if(socket) socket.emit("messages", data);
   };
@@ -56,6 +62,8 @@ var SocketApi = async ((socketServer, httpServer, events) => {
 
     networkAPI.events.on("messages", onNewMessages);
     // networkAPI.events.on("message", onMessage);
+    events.removeListener("onIpfsStarted", onIpfsStarted);
+    events.on('onIpfsStarted', onIpfsStarted);
 
     socket.on(ApiMessages.error, function(err) {
       logger.error("Caught flash policy server socket error: ")
@@ -236,11 +244,6 @@ var SocketApi = async ((socketServer, httpServer, events) => {
       });
     }));
 
-    events.on('onIpfsStarted', (res) => {
-      logger.debug("SocketApi ready");
-      userInfo = res.user;
-      ipfs     = res.ipfs;
-    });
   }));
 })
 

@@ -164,14 +164,12 @@ var HttpApi = async ((events) => {
 
   /* HTTP SERVER */
   var startServer = Promise.promisify((cb) => {
-    var s = app.listen(3001, () => {
-      cb(null, s);
-    });
+    var s = app.listen(3001, () => cb(null, s));
   });
-  var server = await(startServer());
-  var host   = server.address().address;
-  var port   = server.address().port;
-  logger.info('UI started at http://%s:%s', host, port);
+
+  var server;
+  server = await(startServer());
+  logger.info('UI started at http://%s:%s', server.address().address, server.address().port);
 
   return { server: server, socketServer: http.Server(app) };
 });
