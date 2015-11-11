@@ -1,6 +1,6 @@
 {
   "name": "anonymous-networks",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "AnonymousNetworks - prototype of a chat on ipfs",
   "private": true,
   "main": "index-native.js",

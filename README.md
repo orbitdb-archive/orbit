@@ -2,15 +2,31 @@
 
 ## Introduction
 
-Anonymous Networks is a proof-of-concept chat application built on top of ipfs. 
+Anonymous Networks is a proof-of-concept ***distributed chat application built on top of ipfs***.
 
-All content (messages, files, metadata) are saved in ipfs. There's currently a server that tracks the head (ipfs hash) of a linked list that enables traversing the history of a message chain. In future this will be replaced by ipns.
+*"Anonymous"* as in no real-names, no emails. *"Anonymous"* **NOT** as in *"hide your ass"*.
+
+All content (messages, files, metadata) are saved in ipfs as files or objects.
+
+There's currently a server that tracks the head (ipfs hash) of a linked list that enables traversing the history of a message chain. In future this will be replaced by ipns.
+
+The messages are encrypted by default. Currently there's only one key pair that is used for the crypto. This will change in the future once ipfs has keystore implemented.
 
 ### Features
-- Channel-based chats and usernames
+- Channel-based chats, usernames
 - Drag & drop files to a channel to share them
 - Channel modes: password protection to read (Secret), password protection to write (Moderated, only channel "ops" can write)
 - Native application on OSX and Linux (Electron)
+
+## Requirements
+- Node.js v4.2.1
+- Chrome
+
+For development
+
+- Following npm modules installed globally: grunt-cli, mocha, electron-prebuilt
+- g++, gcc, make (for building native modules)
+- python 2 (for building, some native modules need it, node-fibers perhaps?)
 
 ## Run
 ```
@@ -20,18 +36,18 @@ All content (messages, files, metadata) are saved in ipfs. There's currently a s
 
 Open http//:localhost:3001 in your browser
 
-### Run options
-Run as electron app:
+### Run as Electron App
 ```
   electron . 
 ```
 
-Run with bots:
+### Run Options
+#### Enable Bots
 ```
   node index.js --bots
 ```
 
-Autologin:
+#### Autologin
 Create a file called `user.json` and add your wanted credentials:
 ```
 {
@@ -61,21 +77,21 @@ Build for individual platforms:
 
 The builds are in `dist/`
 
-## Requirements (for development)
-- Node.js v4.2.1
-- Following npm modules installed globally: grunt-cli, mocha, electron-prebuilt
-- g++, gcc, make (for building native modules)
-- python 2 (for building, some native modules need it, node-fibers perhaps?)
-- Chrome
-
 ## TODO
+
+## Backlog
+- Tab to finish the username when writing
+- "also if there is an ipfs daemon already running it fails pretty badly" (dignifiedquire) 
+  - Can't reproduce! (haadcode)
+- Missing: notifications, user mentions (dignifiedquire)
+- If it's truly a linked list, you could take advantage of https://ipfs.io/ipfs/QmTtqKeVpgQ73KbeoaaomvLoYMP7XKemhTgPNjasWjfh9b/ for efficient seeking to any point in the history. (from Ion)
+- Private messages (one-to-one messages)
+- Add Katex/Mathjax support along with markdown
+- Empty channels when no swarm peers. Notify the user that there are no peers atm., re-try logic in backend for connecting to peers if connection failed and there are 0 peers
 - bug: UI <-> daemon connection state gets fckd
-- highlight mentions on channels
 - feature: markdown as content type in messages (like files/lists)
-- feature: autolinks for ipfs hashes
 - add caching of packages to go-ipfs / node install.js
 - loading animation to channel.join
-- empty channels when no swarm peers. notify the user that there are no peers atm., re-try logic in backend for connecting to peers if connection failed and there are 0 peers
 - feature: notifications
 - password for username is unclear (and buggy: can't enter no password)
 - feature: download manager
@@ -95,7 +111,6 @@ The builds are in `dist/`
 - easier network setup than network.json
 - timestamp weirdness, slow updates
 - hook log4js to ws so that backend logs get to browser
-- bug: emojify breaks links to host:3001 (0:3 == angel smiley)
 - back to top button (overlay)
 - aliases for peer addresses, "known as"
 - bug: loading time at join if there are new messages in network
@@ -113,7 +128,17 @@ The builds are in `dist/`
 - UI feedback for: connections status, adding file, loading messages, etc.
 - use POST instead of GET where it makes sense
 
-## DONE
+## Changelog
+
+**v1.0.1**
+- Feature: autolinks for ipfs hashes
+- Feature: Highlight mentions of username
+- Fix: Limit username length (from victorbjelkholm)
+- Fix: Swarm connect errors: https://gist.github.com/Dignifiedquire/478dd4b157134ff41c0f (from dignifiedquire)
+- Fixed: Confusing with the latest messages being in the top though, should probably be the other way around (from dignifiedquire, victorbjelkholm)
+- Fixed: bug: emojify breaks links to host:3001 (0:3 == angel smiley)
+
+**v1.0.0**
 - ~~channel status message component that displays the various states of the channel ("this is a new channel", "you're not allowed to post")~~
 - ~~bug: can post to channel without read password (only need to know write password)~~
 - ~~flip messages from newest-on-top to newest-at-bottom, make it a setting~~
@@ -194,4 +219,3 @@ Demo app ideas:
 - Git
 - Wiki
 - Forums
-
