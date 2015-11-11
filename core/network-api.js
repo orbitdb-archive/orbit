@@ -232,9 +232,7 @@ var register = function(network, username, password) {
   logger.info("Registering to network '" + network + "' as '" + username + "'");
   return Promise.promisify(function(cb) {
     var url = 'http://' + network + '/register';// + username + '/' + encodeURIComponent(password);
-    logger.debug("making post to", url);
     request.post({ url: url, form: { "username": username, "password": password } }, (err, res, body) => {
-      logger.debug("request done");
       if(!res) {
         logger.error(err);
         cb("Connection refused", null);
@@ -310,7 +308,7 @@ var connectToSwarm = async((ipfs, user, peers) => {
         return true;
       })
       .catch(function(err) {
-        logger.warn("Couldn't connect to peer:", err);
+        logger.warn("Couldn't connect to peer:", JSON.parse(err.message.replace("Server responded with 500: ", "")).Message);
         return false;
       });
   });
