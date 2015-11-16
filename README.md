@@ -80,6 +80,10 @@ The builds are in `dist/`
 ## TODO
 
 ## Backlog
+- "New messages" notification broken on channels that have less than div.height messages
+- Add screenshots to the README and repo
+- Possibility to have multiple channels open at one time
+- Integrate with a running ipfs daemon (https://github.com/haadcode/anonymous-networks/issues/1)
 - Tab to finish the username when writing
 - "also if there is an ipfs daemon already running it fails pretty badly" (dignifiedquire) 
   - Can't reproduce! (haadcode)
@@ -210,7 +214,7 @@ The builds are in `dist/`
 - ~~UI~~
 
 ## Notes
-Demo app ideas:
+### Demo app ideas
 - Email
 - Twitter
 - Spotify
@@ -219,3 +223,46 @@ Demo app ideas:
 - Git
 - Wiki
 - Forums
+
+### Messages data structure
+From the log on sending a message:
+```
+[DEBUG] - Sending message...
+[DEBUG] - --- Message -------------------------------------------
+[DEBUG] - To:      #GXmxYYp1AT5joyj1Zdb7f8WNEyQvnYwLJ9zKMdQzmqxN
+[DEBUG] - Message: 'hello'
+[DEBUG] - Hash:    QmZ3f9EcN7tHeD6EyzqrySj6KsbRPeDBFuBkBqT1Nx1PKV
+[DEBUG] - Meta:    QmSWHUxa4ByDgW4AnrKdsVvqr151Vd9SYgZH1czpe4EAKc
+[DEBUG] - -------------------------------------------------------
+[DEBUG] - Message sent!
+```
+
+The message content is encrypted and saved as a separate ipfs object.
+
+```ipfs object get QmZ3f9EcN7tHeD6EyzqrySj6KsbRPeDBFuBkBqT1Nx1PKV```
+
+Returns:
+```
+{
+  "Links": [],
+  "Data": "{\"content\":\"Um/+VbM2ay0jxIZpjLzLung7nLbjOOmqonPZnbXd6zOz4QTvMYiUgtpe7X/0oTfy0w8m3981rfZSgX86onBX6724M6vxiHNI9nMD0gbwleAQV7BTx+5X3NqG0LFDeEW2iduwvanc0YJIpFLL5yYCRQUybc531n8/5hNk7obWvkd5kI8FST+j9S4SX0G5lz8rWiHrqR1QAo3c1g40V3fk2C9huOuMovn7YkhN+AWTKxjmkvd6dIbBVw0YnoSTzgpdkhHb2RWBi7z1kYfYSiPiqmPNQvBoMCe1Dm0o7y70ond/A+XqBAyX2JFHyt1XrB1SP6SCZs5OZk0P1/S31nxxdA==\",\"link\":null,\"ts\":1447339736170}"
+}
+```
+
+A linked list "meta" object is created, link to the next message is added and the payload, as json, gets encrypted. The message gets signed with (sha512(payload, salt) + salt + sequence number, privkey). **Payload contains the hash to the actual content.** The hash of the created ipfs object is the head of the linked list. The head gets sent to server.
+
+```ipfs object get QmSWHUxa4ByDgW4AnrKdsVvqr151Vd9SYgZH1czpe4EAKc```
+
+Returns:
+```
+{
+  "Links": [
+    {
+      "Name": "next",
+      "Hash": "QmVyt1t93ptUoFG6QetWRAcwPdeAVqYEs2bK38yztJAHmG",
+      "Size": 103986
+    }
+  ],
+  "Data": "{\"seq\":51,\"pubkey\":\"-----BEGIN CERTIFICATE-----\\nMIIDBjCCAe4CCQDai2CYe+oyADANBgkqhkiG9w0BAQUFADBFMQswCQYDVQQGEwJB\\nVTETMBEGA1UECBMKU29tZS1TdGF0ZTEhMB8GA1UEChMYSW50ZXJuZXQgV2lkZ2l0\\ncyBQdHkgTHRkMB4XDTE1MTAyNDE4MzQwNloXDTE1MTEyMzE4MzQwNlowRTELMAkG\\nA1UEBhMCQVUxEzARBgNVBAgTClNvbWUtU3RhdGUxITAfBgNVBAoTGEludGVybmV0\\nIFdpZGdpdHMgUHR5IEx0ZDCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEB\\nAJ1aO1Vjk0l1fSa4pdJQQdBtG9kpqI+U6M2yt32fOq5ICUnYhLCGw/3aZeqEEq2h\\n11/AqbvQHar8w3dzH//ErCnx5qGzUVClD2ZIB1mytXjHyKvpIdIIBOMF2EygAO5B\\niMwlFhpEhtraqO0eRQx3W6ULXr4fqqoNSPHGHHEtVlVxTcvRJr3Sz1x+2vGbFszP\\nV61uy1+QaaNc9vi2FR3DWBtOM1QPFJa792xtuAEwkSkHcc1aUJjcfK/VuOxEqPZK\\ny6DW8K2OAO61EUIwTgUubVKudlItmCJgNwRuezvI2P3wU9LvTuQ/AbJowTPuP9Le\\nyNq9TnAHPRETcvPYgbI0i2sCAwEAATANBgkqhkiG9w0BAQUFAAOCAQEAjYne/qu7\\n7KylXi39x72cY/sEpTErKMhCJNm4DL3Mb4YfkDiOZFbNGO+1NKNKHB1DTbu5ECtT\\nvYrBLGwLICklVpVP65podAHweDGGEMW6cp4ypWOpJM4NqyNtL8HKpi2PB/n3SkYi\\nz7aCuagHbU+5YZhm4kj8KDjmbCyn7hU1vQVKf+fw+dLXNUAElI1GLv2tENEEevtl\\nTj7DurHCrxPcdrbgxQMIbDcpPMXVX4OlS51EsT5mVgGIoUFKZN8u9+AwzU+INKZp\\n6SjbrK3y/HqI4jgeDQPY9GQcGooL1ro9OHfSz61m6WiYh9V6vjq2e8bmc00U/yTA\\nlSErmB6aqZ2+0w==\\n-----END CERTIFICATE-----\\n\",\"payload\":\"j2sACz4bNjU9MqlJuWRrzHiaQlq+T8U29thB77WRbXe8KzuOZgtL90hUAVha+ZMIa+oYSvdPnGa5OlCQM452nwZUHLoW4NI6dHeKlCiGtcoqC3LpZBC7GZb+21l6F4MQwSmfRPRaqUdmDGzHql/zwvR2ZpTh8PlkW9SPF0QiJRe7lFmkhny52zVlaHz1/xAquk8d6VeqLQAf4Tj9ZP+f/dVMA7CXJzmiHeYIyZQ2vJKdEoWNnrmjxQPyDFSlNcI2D30ue7UmoEPKnjFws2NN0mIbRMZ6o+InSMgTrc9jD8mL4tlN7FgcU1H7+zdLuwUHiOWEUdk55M4mp4vWvH4Vww==\",\"sig\":\"90b3698901b20b640950537f151ac3a705c1275dbb55877b50203618d151368aa2b15692529e44b09f2a7d11d2df84ee237f661209c824e3994b65c815b8239c173ed16f43e2ba2dbfed3f5005e6b2870cce2a2fff06817e62807988b47cf92b01a5cb82339906f8f693ede88b0b4edd5b9253dd58cebaf3573793efcb4d91b50d58267f480c09276d9e66ec8540f4a0649cfee4d8c539316d1257ec3aab60458d090666d2b64fb49c26c643e0b2f89ed092f58cb374e2dfeb58714a0302b8f77833a7ee2c304699487f06ad303a88217deca7c8a59c69f8b889466aaf3eeef5dcf79c4a009bfa4a2e1e57432a71ec2163e6bd1a6144d1424056667c78e6bea3\"}"
+}
+```
