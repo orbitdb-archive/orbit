@@ -16,6 +16,7 @@ var LocalCache    = require('./LocalCache');
 var MetaInfo      = require('./MetaInfo');
 var Message       = require('./Message');
 var SignedMessage = require('./SignedMessage');
+var Channel       = require('./Channel');
 
 // TESTING SIGNING
 var privkey = fs.readFileSync(path.resolve(process.type ? process.resourcesPath + "/app/" : process.cwd(), 'keys/private.pem')).toString('ascii');
@@ -27,39 +28,41 @@ var events  = new EventEmitter();
 var _cacheTimers  = {};
 var _pollInterval = 1000;
 var _caching      = false;
+var _channels = {};
 
-var joinChannel = async ((ipfs, channel, uid, password) => {
-  logger.debug("Join channel #" + channel);
-
+var joinChannel = async ((ipfs, channelName, uid, password) => {
+  var channel = new Channel(channelName, password);
   var channelInfo;
+    logger.debug("Join channel #" + channel.name);
 
   try {
-    channelInfo = await (networkServer.joinChannel(channel, uid, encryption.encrypt(password, privkey)));
+    channelInfo = await (networkServer.joinChannel(channel.hash, uid, encryption.encrypt(password, privkey)));
     if(channelInfo.writePassword) channelInfo.writePassword = encryption.decrypt(channelInfo.writePassword, privkey);
   } catch(e) {
     throw e
   }
 
-  if(!_cacheTimers[channel]) {
-    logger.debug("Start caching #" + channel);
-    _cacheTimers[channel] = setInterval(async (() => {
-      if(!_caching) {
-        _caching = true;
-        var gg      = await (LocalCache.getLatestMessage(channel));
-        var head    = await (getChannelHead(ipfs, channel, uid, password))
+  if(!_cacheTimers[channel.hash] && !_channels[channel.hash]) {
+    logger.debug("Start caching #" + channel.name);
+    _cacheTimers[channel.hash] = setInterval(async (() => {
+      if(!_channels[channel.hash]) {
+        _channels[channel.hash] = true;
+        // logger.debug("Poll #" + channel.name);
+        var gg      = await (LocalCache.getLatestMessage(channel.hash));
+        var head    = await (getChannelHead(ipfs, channel.hash, uid, password))
         var headMsg = await (LocalCache.get(head));
         if(head != null && headMsg.length == 0) {
           var latest = gg ? gg : { key: null };
-          logger.debug("There are new messages in #" + channel)
+          logger.debug("There are new messages in #" + channel.name)
           logger.debug("New head is", head)
           if(ipfs == null || ipfs == undefined) {
             logger.error("No IPFS! How did we get here?");
           } else {
-            await (getMessagesRecursive2(ipfs, channel, uid, password, head, latest.key, 100));
-            events.emit("messages", { head: head });
+            await (getMessagesRecursive2(ipfs, channel.hash, uid, password, head, latest.key, 100));
+            events.emit("messages", channel.name, { channel: channel.name, head: head });
           }
         }
-        _caching = false;
+        _channels[channel.hash] = false;
       }
     }), _pollInterval);
   }
@@ -172,9 +175,10 @@ var publishFile = async (function(ipfs, filePath) {
 
 
 var sendToChannel = async (function(ipfs, message, uid, readPassword, writePassword, channel, type, size) {
+  var channel = new Channel(channel, readPassword);
   logger.debug("Sending message...");
 
-  var head    = await (getChannelHead(ipfs, channel, uid, readPassword));
+  var head    = await (getChannelHead(ipfs, channel.hash, uid, readPassword));
   var headMsg = await (getObject(ipfs, head));
 
   var seq = 1;
@@ -190,7 +194,7 @@ var sendToChannel = async (function(ipfs, message, uid, readPassword, writePassw
 
   var meta = await (ipfsAPI.putObject(ipfs, metaData));
   logger.debug("--- Message -------------------------------------------");
-  logger.debug("To:      #" + channel);
+  logger.debug("To:      #" + channel.name);
   logger.debug("Message: '" + encryption.decrypt(message.content, privkey) + "'");
   logger.debug("Hash:    " + hash);
   logger.debug("Meta:    " + meta.Hash);
@@ -201,8 +205,8 @@ var sendToChannel = async (function(ipfs, message, uid, readPassword, writePassw
     if(head)
       newHead = await (ipfsAPI.patchObject(ipfs, meta.Hash, head))
     // TODO: pass oldHead too, so the cache can return success/fail
-    await (networkServer.updateChannel(channel, newHead.Hash, metaData, uid, writePassword));
-    events.emit("messages", { head: newHead });
+    await (networkServer.updateChannel(channel.hash, newHead.Hash, metaData, uid, writePassword));
+    events.emit("messages", channel.name, { head: newHead });
     logger.debug("Message sent!");
   } catch(e) {
     logger.error(e);
@@ -282,12 +286,13 @@ var getMessagesRecursive2 = async ((ipfs, channel, uid, password, hash, lastHash
   if(message) {
     var data = message.Data ? JSON.parse(message.Data) : null;
     data.payload = JSON.parse(encryption.decrypt(data.payload, privkey));
+    var seq = data.seq;
     var ts   = data ? data.payload.ts : 0;
 
     if(!cached[0])
       await (LocalCache.cacheMessage(ipfs, channel, hash, message, ts));
 
-    res.push({ hash: hash, data: data.payload, ts: ts });
+    res.push({ hash: hash, data: data.payload, ts: ts, seq: seq });
 
     if(message.Links.length > 0) {
       var children = await (getMessagesRecursive2(ipfs, channel, uid, password, message.Links[0].Hash, lastHash, amount, curDepth));

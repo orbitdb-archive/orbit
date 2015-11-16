@@ -30,8 +30,12 @@ var SocketApi = async ((socketServer, httpServer, events) => {
     ipfs     = res.ipfs;
   };
 
-  var onNewMessages = (data) => {
-    if(socket) socket.emit("messages", data);
+  var onLogin = (user) => {
+    if(socket) socket.emit("login", user);
+  };
+
+  var onNewMessages = (channel, data) => {
+    if(socket) socket.emit("messages", channel, data);
   };
 
   var onMessage = (channelName, message) => {
@@ -48,12 +52,16 @@ var SocketApi = async ((socketServer, httpServer, events) => {
   var cleanupSocket = async (function() {
     await (networkAPI.leaveAllChannels());
     networkAPI.events.removeAllListeners("messages");
-    // networkAPI.events.removeAllListeners("message");
     if(socket) {
       Object.keys(ApiMessages).forEach((v) => unsubscribe(socket, ApiMessages[v]));
       socket = null;
     }
   });
+
+  events.removeListener("login", onLogin);
+  events.removeListener("onIpfsStarted", onIpfsStarted);
+  events.on('onIpfsStarted', onIpfsStarted);
+  events.on("login", onLogin);
 
   io.on('connection', async (function (s) {
     logger.info("UI connected");
@@ -62,8 +70,6 @@ var SocketApi = async ((socketServer, httpServer, events) => {
 
     networkAPI.events.on("messages", onNewMessages);
     // networkAPI.events.on("message", onMessage);
-    events.removeListener("onIpfsStarted", onIpfsStarted);
-    events.on('onIpfsStarted', onIpfsStarted);
 
     socket.on(ApiMessages.error, function(err) {
       logger.error("Caught flash policy server socket error: ")
@@ -81,12 +87,12 @@ var SocketApi = async ((socketServer, httpServer, events) => {
     socket.on(ApiMessages.channel.join, async ((channelName, password, callback) => {
       if(ipfs) {
         logger.debug("Join channel:", channelName);
-        var channel = new Channel(channelName, password);
-        networkAPI.joinChannel(ipfs, channel.hash, userInfo.id, password)
+        networkAPI.joinChannel(ipfs, channelName, userInfo.id, password)
           .then((channelInfo) => {
             logger.debug("Joined channel #" + channelName);
             channelPasswordMap[channelName] = password;
             channelWritePasswordMap[channelName] = channelInfo.writePassword;
+            channelInfo.name = channelName;
             callback(null, channelInfo);
           })
           .catch((err) => {
@@ -108,7 +114,9 @@ var SocketApi = async ((socketServer, httpServer, events) => {
       if(channelPasswordMap[channelName] !== undefined) {
         var password = channelPasswordMap[channelName];
         networkAPI.getMessages(ipfs, channelHash(channelName), userInfo.id, password, startHash, lastHash, amount)
-          .then(cb)
+          .then((messages) => {
+            cb(channelName, messages);
+          })
           .catch(function(err) {
             logger.error("Error in channel.get", err);
             cb(null);
@@ -123,10 +131,9 @@ var SocketApi = async ((socketServer, httpServer, events) => {
     }));
 
     socket.on(ApiMessages.message.send, async((channelName, message, cb) => {
-      var channel = channelHash(channelName);
       var rpwd    = channelPasswordMap[channelName];
       var wpwd    = channelWritePasswordMap[channelName];
-      networkAPI.sendMessage(ipfs, message, channel, userInfo.id, rpwd, wpwd)
+      networkAPI.sendMessage(ipfs, message, channelName, userInfo.id, rpwd, wpwd)
         .then((result) => cb(null))
         .catch((err) => {
           logger.error("Couldn't send message:", err)
@@ -211,7 +218,7 @@ var SocketApi = async ((socketServer, httpServer, events) => {
     }));
 
     socket.on(ApiMessages.whoami, async (function (cb) {
-      cb({ username: userInfo.username });
+      if(cb) cb({ username: userInfo.username });
     }));
 
     socket.on(ApiMessages.swarm.peers, async((cb) => {
@@ -225,6 +232,7 @@ var SocketApi = async ((socketServer, httpServer, events) => {
 
     socket.on(ApiMessages.deregister, async (function () {
       logger.warn("SHUTDOWN!");
+      await (networkAPI.leaveAllChannels());
       ipfs = null;
       userInfo = {};
       events.emit('disconnect');
@@ -233,9 +241,7 @@ var SocketApi = async ((socketServer, httpServer, events) => {
     socket.on(ApiMessages.register, async (function (network, username, password) {
       events.emit('onRegister', network, username, password, (err, res) => {
         if(!err) {
-          // userInfo = res.user;
-          // ipfs     = res.ipfs;
-          socket.emit('registered', { username: userInfo.username });
+          socket.emit('registered', { host: network, username: userInfo.username });
           events.emit('connect');
         } else {
           socket.emit('log', "register error: " + err);

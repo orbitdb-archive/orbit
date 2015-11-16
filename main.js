@@ -79,6 +79,7 @@ var startApplication = (network, username, password, callback) => {
 
     var network = Network.fromConfig(path.resolve(__dirname, "network.json"));
     var res     = await(connect(config, network, username, password));
+    events.emit('login', res.user);
     startBots(res.ipfs, res.user);
     events.emit('onIpfsStarted', res);
     if(callback) callback(null, res);
