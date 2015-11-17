@@ -4,8 +4,9 @@ var request = require('request');
 var Promise = require('bluebird');
 var async   = require('asyncawait/async');
 var await   = require('asyncawait/await');
+var utils   = require('./utils');
 
-var networkConfig = JSON.parse(fs.readFileSync(path.resolve(process.type ? process.resourcesPath + "/app/" : process.cwd(), "network.json")));
+var networkConfig = JSON.parse(fs.readFileSync(path.resolve(utils.getAppPath(), "network.json")));
 var host          = "http://" + networkConfig.Network.split(":")[0] + ":3006";
 
 // decodes <body> to Json

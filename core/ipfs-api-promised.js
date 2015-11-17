@@ -3,6 +3,7 @@ var async   = require('asyncawait/async');
 var await   = require('asyncawait/await');
 var Promise = require('bluebird');
 var childProcess = require('child_process');
+var logger        = require('./logger');
 
 var requests = 0;
 
@@ -57,8 +58,12 @@ var ipfsAPI = {
     return getPeers();
   }),
   swarmConnect: async ((ipfs, hash) => {
-    var connect = Promise.promisify(ipfs.swarm.connect);
-    return connect(hash);
+    try {
+      var connect = Promise.promisify(ipfs.swarm.connect);
+      await (connect(hash));
+    } catch(e) {
+    }
+    return;
   }),
   dhtPut: async ((ipfs, key, value) => {
     var put = Promise.promisify(ipfs.dht.put);

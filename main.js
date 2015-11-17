@@ -47,7 +47,7 @@ var connect = async((config, network, username, password) => {
   var daemon = await (ipfsd.start(ipfsNode));
 
   // Connect to server-returned peers
-  await (networkAPI.connectToSwarm(daemon.instance, user, peers));
+  networkAPI.connectToSwarm(daemon.instance, user, peers);
 
   return { ipfs: daemon.instance, user: user };
 });
@@ -77,7 +77,7 @@ var startApplication = (network, username, password, callback) => {
     timer.start(startupTime);
     logger.debug("Start program");
 
-    var network = Network.fromConfig(path.resolve(__dirname, "network.json"));
+    var network = Network.fromConfig(path.resolve(utils.getAppPath(), "network.json"));
     var res     = await(connect(config, network, username, password));
     events.emit('login', res.user);
     startBots(res.ipfs, res.user);

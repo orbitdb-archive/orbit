@@ -142,10 +142,9 @@ var SocketApi = async ((socketServer, httpServer, events) => {
     }));
 
     socket.on(ApiMessages.file.add, async((channelName, filePath, cb) => {
-      var channel = channelHash(channelName);
       var rpwd    = channelPasswordMap[channelName];
       var wpwd    = channelWritePasswordMap[channelName];
-      networkAPI.addFile(ipfs, filePath, channel, userInfo.id, rpwd, wpwd)
+      networkAPI.addFile(ipfs, filePath, channelName, userInfo.id, rpwd, wpwd)
         .then((result) => cb(null))
         .catch((err) => cb(err));
     }));

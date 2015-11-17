@@ -1,10 +1,12 @@
+'use strict';
+
 var fs      = require('fs');
 var async   = require('asyncawait/async');
 var await   = require('asyncawait/await');
 var Promise = require('bluebird');
 var du      = require('du');
 
-exports.getFileSize = async (function(filePath) {
+exports.getFileSize = async ((filePath) => {
   var size    = 0;
   var stat    = Promise.promisify(fs.stat);
   var dirSize = Promise.promisify(du);
@@ -18,7 +20,7 @@ exports.getFileSize = async (function(filePath) {
   return size;
 });
 
-exports.isDirectory = async (function(filePath) {
+exports.isDirectory = async ((filePath) => {
   if(!fs.existsSync(filePath))
     return false;
 
@@ -27,6 +29,10 @@ exports.isDirectory = async (function(filePath) {
   return file.isDirectory();
 });
 
-exports.getUserHome = function() {
+exports.getUserHome = () => {
   return process.env[(process.platform == 'win32') ? 'USERPROFILE' : 'HOME'];
+}
+
+exports.getAppPath = () => {
+  return process.type && process.env.ENV !== "dev" ? process.resourcesPath + "/app/" : process.cwd();
 }

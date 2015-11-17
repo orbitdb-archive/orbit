@@ -6,8 +6,9 @@ var await   = require('asyncawait/await');
 var Promise = require('bluebird');
 var sqlite3 = require('sqlite3').verbose();
 var ipfsAPI = require('./ipfs-api-promised');
+var utils   = require('./utils');
 
-var databaseFile = path.resolve(process.type ? process.resourcesPath + "/app/" : process.cwd(), 'cache.db');
+var databaseFile = path.resolve(utils.getAppPath(), 'cache.db');
 var db           = new sqlite3.Database(databaseFile);
 
 db.serialize(() => {

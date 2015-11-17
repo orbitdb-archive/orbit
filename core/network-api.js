@@ -19,8 +19,8 @@ var SignedMessage = require('./SignedMessage');
 var Channel       = require('./Channel');
 
 // TESTING SIGNING
-var privkey = fs.readFileSync(path.resolve(process.type ? process.resourcesPath + "/app/" : process.cwd(), 'keys/private.pem')).toString('ascii');
-var pubkey  = fs.readFileSync(path.resolve(process.type ? process.resourcesPath + "/app/" : process.cwd(), 'keys/public.pem')).toString('ascii');
+var privkey = fs.readFileSync(path.resolve(utils.getAppPath(), 'keys/private.pem')).toString('ascii');
+var pubkey  = fs.readFileSync(path.resolve(utils.getAppPath(), 'keys/public.pem')).toString('ascii');
 var events  = new EventEmitter();
 
 /* CHANNEL CACHING */
@@ -174,8 +174,8 @@ var publishFile = async (function(ipfs, filePath) {
 });
 
 
-var sendToChannel = async (function(ipfs, message, uid, readPassword, writePassword, channel, type, size) {
-  var channel = new Channel(channel, readPassword);
+var sendToChannel = async (function(ipfs, message, uid, readPassword, writePassword, channelName, type, size) {
+  var channel = new Channel(channelName, readPassword);
   logger.debug("Sending message...");
 
   var head    = await (getChannelHead(ipfs, channel.hash, uid, readPassword));
@@ -217,7 +217,7 @@ var sendToChannel = async (function(ipfs, message, uid, readPassword, writePassw
 
 var sendMessage = async (function(ipfs, text, channel, uid, readPassword, writePassword) {
   var message = new Message(text, null);
-  var result  = sendToChannel(ipfs, message, uid, readPassword, writePassword, channel, "msg", new Buffer(text).length);
+  var result  = await (sendToChannel(ipfs, message, uid, readPassword, writePassword, channel, "msg", new Buffer(text).length));
   return result;
 });
 
@@ -227,7 +227,7 @@ var addFile = async (function(ipfs, filePath, channel, uid, readPassword, writeP
   var fileHash    = await (publishFile(ipfs, filePath));
   var size        = await (utils.getFileSize(filePath));
   var message     = new Message(filePath.split("/").pop(), fileHash);
-  var result      = sendToChannel(ipfs, message, uid, readPassword, writePassword, channel, isDirectory ? "list" : "file", size);
+  var result      = await (sendToChannel(ipfs, message, uid, readPassword, writePassword, channel, isDirectory ? "list" : "file", size));
   logger.info("Added local file '" + filePath + "' as " + fileHash);
   return result;
 });
@@ -304,20 +304,15 @@ var getMessagesRecursive2 = async ((ipfs, channel, uid, password, hash, lastHash
 });
 
 var connectToSwarm = async((ipfs, user, peers) => {
+  logger.debug("Connecting to " + peers.length + " peers");
+  var connectedPeers = 0;
   var res = peers.map((peer) => {
-    logger.debug("Connecting to", peer);
-    ipfsAPI.swarmConnect(ipfs, peer)
-      .then(function(result) {
-        logger.debug("Peer", result.Strings[0]);
-        //TODO: fire onPeerConnected
-        return true;
-      })
-      .catch(function(err) {
-        logger.warn("Couldn't connect to peer:", JSON.parse(err.message.replace("Server responded with 500: ", "")).Message);
-        return false;
-      });
-  });
-  ipfsAPI.dhtPut(ipfs, user.id, user.username);
+    await (ipfsAPI.swarmConnect(ipfs, peer));
+    connectedPeers += 1;
+  })
+
+  logger.debug("Connected to " + connectedPeers + " / " + peers.length + " peers");
+
   return;
 });
 
