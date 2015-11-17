@@ -37,7 +37,7 @@ For development
 Open http//:localhost:3001 in your browser
 
 ### Run as Electron App
-Install `npm electron-prebuilt install -g`. Run:
+Install `npm install electron-prebuilt  -g`. Run:
 ```
   electron . 
 ```
@@ -145,6 +145,7 @@ grunt serve
 ## Changelog
 
 **master**
+- Release UI source code
 - Possibility to have multiple channels open at one time
 - loading animation to channel.join
 - feature: notifications
