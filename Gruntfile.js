@@ -23,7 +23,7 @@ module.exports = function (grunt) {
           name: 'AnonymousNetworks',
           dir: './tmp',
           out: 'dist/',
-          version: '0.34.2',
+          version: '0.35.0',
           platform: 'darwin',
           arch: 'x64',
           overwrite: true,
