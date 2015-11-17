@@ -37,6 +37,7 @@ For development
 Open http//:localhost:3001 in your browser
 
 ### Run as Electron App
+Install `npm electron-prebuilt install -g` and run:
 ```
   electron . 
 ```
@@ -82,15 +83,13 @@ The builds are in `dist/`
 ## Backlog
 - "New messages" notification broken on channels that have less than div.height messages
 - Add screenshots to the README and repo
-- Possibility to have multiple channels open at one time
+- ~~Possibility to have multiple channels open at one time~~
 - Integrate with a running ipfs daemon (https://github.com/haadcode/anonymous-networks/issues/1)
 - Tab to finish the username when writing
-- "also if there is an ipfs daemon already running it fails pretty badly" (dignifiedquire) 
-  - Can't reproduce! (haadcode)
 - Missing: notifications, user mentions (dignifiedquire)
 - If it's truly a linked list, you could take advantage of https://ipfs.io/ipfs/QmTtqKeVpgQ73KbeoaaomvLoYMP7XKemhTgPNjasWjfh9b/ for efficient seeking to any point in the history. (from Ion)
 - Private messages (one-to-one messages)
-- Add Katex/Mathjax support along with markdown
+- Add Katex/Mathjax support along with markdown (from davidar)
 - Empty channels when no swarm peers. Notify the user that there are no peers atm., re-try logic in backend for connecting to peers if connection failed and there are 0 peers
 - bug: UI <-> daemon connection state gets fckd
 - feature: markdown as content type in messages (like files/lists)
