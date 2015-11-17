@@ -41,14 +41,14 @@ var getMenu = function(app) {
     {
       label: 'View',
       submenu: [
-        // {
-        //   label: 'Reload',
-        //   accelerator: 'CmdOrCtrl+R',
-        //   click: function(item, focusedWindow) {
-        //     if (focusedWindow)
-        //       focusedWindow.reload();
-        //   }
-        // },
+        {
+          label: 'Reload',
+          accelerator: 'CmdOrCtrl+R',
+          click: function(item, focusedWindow) {
+            if (focusedWindow)
+              focusedWindow.reload();
+          }
+        },
         {
           label: 'Toggle Full Screen',
           accelerator: (function() {
