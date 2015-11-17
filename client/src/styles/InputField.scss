@@ -1,0 +1,27 @@
+@import 'App';
+
+$border:         1px solid $input-border-color;
+$border-focused: 1px solid $main-color;
+
+input[type=text], input[type=password], input[type=checkbox] {
+  color: $input-text-color;
+  background-color: rgba(0, 0, 0, 0.0);
+
+  border: 0;
+  border-bottom: $border;
+
+  padding: 0.5em;
+  padding-left: 0.25em;
+  padding-right: 0.25em;
+
+  margin-left: 0.25em;
+  margin-right: 0.25em;
+}
+
+input[type=text]:focus, input[type=password]:focus {
+  border-bottom: $border-focused;
+}
+
+input[type=checkbox] {
+  -webkit-filter: hue-rotate(50deg) saturate(80%) brightness(80%) !important;
+}

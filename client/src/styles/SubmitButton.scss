@@ -1,0 +1,71 @@
+@import 'App';
+
+input[type=submit], input[type=button], .submitButton {
+  display: flex;
+  justify-content: center;
+  align-self: center;
+  box-sizing: border-box;
+
+  // TODO: move to Fonts.scss
+  font-family: "Lato";
+  font-weight: 300;
+  font-size: 0.8em;
+
+  color: rgba(220, 220, 220, 0.2);
+  background-color: rgba(0, 0, 0, 0);
+  border: 0;
+
+  min-width: 5em;
+
+  padding: 0.56em;
+  padding-left:  1.5em;
+  padding-right: 1.5em;
+
+  cursor: pointer;
+}
+
+input[type=submit]:hover, input[type=button]:hover, .submitButton:hover {
+  animation: fadeInButton;
+  animation-duration: .4s;
+  animation-fill-mode: both;
+  animation-timing-function: ease-out;
+}
+
+input[type=submit]:focus, input[type=button]:focus , .submitButton:focus {
+  color: $main-text-color;
+  border: 0;
+  animation: clickButtonPrimary;
+  animation-duration: 0s;
+  animation-fill-mode: both;
+  animation-timing-function: ease-out;
+}
+
+@keyframes fadeInButton {
+  0% {
+    color: rgba(220, 220, 220, 0.2);
+    background-color: rgba(0, 0, 0, 0.0);
+  }
+  100% {
+    color: $main-text-color;
+    background-color: rgba(48, 48, 48, 1);
+  }
+}
+
+@keyframes clickButtonSecondary {
+  0% {
+    background-color: $second-color;
+  }
+  100% {
+    background-color: $second-color;
+  }
+}
+
+@keyframes clickButtonPrimary {
+  0% {
+    background-color: $main-color;
+  }
+  100% {
+    color: $main-text-color;
+    background-color: $main-color;
+  }
+}

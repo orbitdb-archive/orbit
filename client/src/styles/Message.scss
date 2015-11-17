@@ -1,0 +1,56 @@
+@import 'Animations';
+
+$background-color: rgb(40, 40, 40);
+$border-color: 		 rgb(36, 36, 36);
+$timestamp-color:  rgba(240, 240, 240, 0.6);
+
+// .flipped {
+//   // transform: rotateX(180deg);
+//   // transform: scaleX(-1);
+// }
+
+.Message {
+  display: flex;
+  flex: 1 1 100%;
+  flex-direction: row;
+  justify-content: flex-start;
+  align-items: baseline;
+  background-color: $background-color;
+	font-weight: 100;
+  color: rgba(240, 244, 240, 0.1);
+	border-bottom: 1px solid $border-color;
+  padding: 0.2em;
+
+  .messagesAnimation-appear {
+  	$duration: 0.2s;
+
+    -webkit-animation-name: fadeIn;
+    animation-name: fadeIn;
+    -webkit-animation-duration: $duration;
+    animation-duration: $duration;
+    -webkit-animation-fill-mode: both;
+    animation-fill-mode: both;
+    -webkit-animation-timing-function: ease-in;
+    animation-timing-function: ease-in;
+  }
+
+  .Timestamp {
+    display: flex;
+    color: $timestamp-color;
+    font-weight: 300;
+    font-size: 0.8em;
+    padding-left: 0.2em;
+    padding-right: 0.5em;
+    border-right: 1px solid rgba(255, 255, 255, 0.2);
+  }
+
+  .Content {
+    margin-left: 0.2em;
+    margin-right: 0.5em;
+    width: 100%;
+    display: flex;
+    flex: 1;
+  }
+
+}
+

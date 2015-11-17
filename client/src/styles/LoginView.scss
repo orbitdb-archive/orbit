@@ -1,0 +1,137 @@
+$text-color: rgba(228, 228, 228, 0.9);
+
+.LoginView {
+  font-family: "Source Sans Pro";
+  font-weight: 100;
+  font-size: 0.9em;
+  padding: 0.1em;
+  color: rgb(128, 128, 128);
+  display: flex;
+  // flex: 1 1 50%;
+  justify-content: center;
+  width: 100%;
+  height: 100%;
+  // margin-top: 0.25em;
+  margin-top: 0;
+  border-top: 1px solid rgba(30, 30, 30, 1);
+  box-sizing: border-box;
+
+  .inputs {
+    margin: 1.5em;
+    margin-top: 0;
+  }
+
+  h1 {
+    font-family: "Lato";
+    font-size: 2.5em;
+    font-weight: 100;
+    padding: 1.0em;
+    text-transform: uppercase;
+    color: rgba(240, 240, 240, 0.7);
+  }
+
+  form {
+    // margin-top: 120px;
+    display: flex;
+    // flex: 1 1 50%;
+    align-self: flex-start;
+    width: 100%;
+    flex-direction: column;
+    justify-content: center;
+
+    // margin-top: 2em;
+    margin-left: 2em;
+    margin-right: 2em;
+
+    max-width: 30em;
+
+    .hidden {
+      visibility: hidden;
+      display: none;
+    }
+
+    .centerrow {
+      display: flex;
+      flex-direction: row;
+      margin-bottom: 0.5em;
+      justify-content: center;
+      width: 100%;
+    }
+
+    .row {
+      display: flex;
+      flex-direction: row;
+      margin-bottom: 0.5em;
+      justify-content: flex-end;
+      width: 100%;
+    }
+
+    .label {
+      display: flex;
+      flex: 1 1 8%;
+      min-width: 5em;
+      align-self: center;
+      justify-content: flex-start;
+    }
+
+    .nicknameLength {
+      margin-top: 0.5em;
+      padding: 0em 0.5em;
+      font-size: 0.8em;
+      display: flex;
+      align-self: center;
+    }
+
+    .error {
+      color: rgba(240, 96, 96, 0.8);
+      margin-top: 1em;
+      flex: 1 1 auto;
+      text-align: center;
+    }
+
+    input[type=submit] {
+      margin-top: 1em;
+    }
+
+    input[type=text], input[type=password] {
+      margin-bottom: 0;
+      width: 90%;
+    }
+
+    input[type=text]:disabled {
+      color: rgba(228, 228, 228, 0.25);
+      font-style: italic;
+      cursor: not-allowed;
+      width: 90%;
+    }
+  }
+
+}
+
+.loginHeaderAnimation-appear {
+  $duration: .5s;
+  $animation-name: bounceInDown;
+
+  -webkit-animation: $animation-name;
+  animation: $animation-name;
+  -webkit-animation-duration: $duration;
+  animation-duration: $duration;
+  -webkit-animation-fill-mode: both;
+  animation-fill-mode: both;
+  -webkit-animation-timing-function: ease-out;
+  animation-timing-function: ease-out;
+}
+
+.loginScreenAnimation-appear {
+  $duration: .5s;
+  $animation-name: fadeIn;
+
+  -webkit-animation: $animation-name;
+  animation: $animation-name;
+  -webkit-animation-duration: $duration;
+  animation-duration: $duration;
+  -webkit-animation-fill-mode: both;
+  animation-fill-mode: both;
+  -webkit-animation-timing-function: ease-out;
+  animation-timing-function: ease-out;
+}

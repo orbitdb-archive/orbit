@@ -1,0 +1,471 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Flaticon WebFont</title>
+    <link rel="stylesheet" type="text/css" href="flaticon.css">
+    <meta charset="UTF-8">
+    <style>
+    body {
+        font-family: sans-serif;
+        line-height: 1.5;
+        font-size: 16px;
+        padding: 20px;
+        color:#333;
+    }
+    * {
+        -moz-box-sizing: border-box;
+        -webkit-box-sizing: border-box;
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+    }
+    [class^="flaticon-"]:before, [class*=" flaticon-"]:before, [class^="flaticon-"]:after, [class*=" flaticon-"]:after {
+        font-family: Flaticon;
+        font-size: 30px;
+        font-style: normal;
+        margin-left: 20px;
+        color: #333;
+    }
+    .image p {
+		font-size: 12px;
+		margin: 0px;
+		clear: none;
+		width: 300px;
+		line-height: 40px;
+	}
+    .text {
+        float: left;
+        font-size:14px;
+        margin-top: 15px;
+    }
+    .text ul {
+        margin-left:0px;
+        color:#111;
+        margin-bottom:20px;
+    }
+    .text .ex {
+        font-size:12px;
+        color:#666;
+        margin-left:35px;
+        display:block;
+    }
+    .text ul li {
+        margin-top:10px;
+        list-style:none;
+    }
+    .num {
+        background:#66A523;
+        color:#fff;
+        border-radius:20px;
+        padding:1px;
+        display:inline-block;
+        width:22px;
+        height:22px;
+        text-align:center;
+        margin-right: 5px;
+    }
+    .text ul strong {
+        font-weight:normal;
+        color:#000;
+    }
+    .image {
+        width: 280px;
+        float: left;
+        margin-bottom: 15px;
+        margin-right: 30px;
+    }
+    #glyphs {
+        clear: both;
+    }
+    .image p:nth-child(even) i {
+        clear: none;
+    }
+    .glyph {
+        display: inline-block;
+        width: 120px;
+        margin: 10px;
+        text-align: center;
+        vertical-align: top;
+        background: #FFF;
+    }
+    .glyph .glyph-icon {
+        padding: 10px;
+        display: block;
+        font-family:"Flaticon";
+        font-size: 64px;
+        line-height: 1;
+    }
+    .glyph .glyph-icon:before {
+        font-size: 64px;
+        color: #666;
+        margin-left: 0;
+    }
+    .class-name {
+        font-size: 12px;
+    }
+    .author-name {
+		font-size: 10px;
+	}
+	a{
+		color: #66A523;
+	}
+    .instructions {
+        font-style:italic;
+        font-size:22px;
+        margin-bottom:10px;
+    }
+    .iconsuse {
+        font-size:22px;
+        font-style:italic;
+        padding-top:20px;
+        margin-top:20px;
+        border-top:1px solid #bbb;
+    }
+    .usetitle {
+        margin-bottom: 10px;
+        font-size: 20px;
+        font-style: italic;
+    }
+    .class-name:last-child {
+        font-size: 10px;
+        color:#888;
+    }
+    .class-name:last-child a {
+        font-size: 10px;
+        color:#555;
+    }
+    .class-name:last-child a:hover {
+        color:#66A523;
+    }
+    .glyph > input {
+        display: block;
+        width: 100px;
+        margin: 5px auto;
+        text-align: center;
+        font-size: 12px;
+        cursor: text;
+    }
+    .glyph > input.icon-input {
+        font-family:"Flaticon";
+        font-size: 16px;
+        margin-bottom: 10px;
+    }
+    h1.logo {
+        font-size: 40px;
+        letter-spacing: -1px;
+        margin-top: -16px;
+        text-transform: lowercase;
+        border-bottom:1px solid #bbb;
+    }
+    h1.logo strong {
+        font-size: 16px;
+        font-family:sans-serif;
+        font-weight:normal;
+        color:#333;
+    }
+    h1.logo a {
+        color:#34302d;
+        text-decoration: none;
+    }
+    h1.logo a span {
+        color:#66A523;
+    }
+    #footer {
+        padding-top:40px;
+        clear:both;
+        text-align:center;
+    }
+    #footer a {
+        color:#66A523;
+    }
+    textarea {
+		margin: 0px;
+		width: 800px;
+		height: 150px;
+		border: 1px solid #CCC;
+		resize: none;
+		background: #EEE;
+    }
+    .author-link, .attrDiv a{
+    	font-size: 12px;
+    	color: #333;
+    	text-decoration: none;
+    }
+    .external {
+    	display: block;
+    }
+    .attrDiv {
+		font-size: 12px;
+	}
+    .attribution {
+        border-top: 1px solid #AAA;
+        margin: 10px 0;
+        padding-top: 15px;
+    }
+    </style>
+</head>
+
+<body>
+    <header>
+        <h1 class="logo">
+            <a href="http://www.flaticon.com">
+                <span>FLAT</span>ICON</a>
+            <strong>Font Demo</strong>
+        </h1>
+    </header>
+
+    <section class="demo">
+        <div class="text">
+
+            <div class="instructions">Instructions:</div>
+
+            <ul>
+                <li>
+                    <p>
+                        <span class="num">1</span>Copy the "Fonts" files and CSS files to your website CSS folder.
+                </li>
+                <li>
+                    <p>
+                        <span class="num">2</span>Add the CSS link to your website source code on header.
+                        <br />
+                        <span class="ex">&lt;head&gt;
+                            <br/>...
+                            <br/>&lt;link rel="stylesheet" type="text/css" href="your_website_domain/css_root/flaticon.css"&gt;
+                            <br/>...
+                            <br/>&lt;/head&gt;</span>
+                </li>
+
+                <li>
+                    <p>
+                        <span class="num">3</span>Use the icon class on "display:inline" elements:
+                        <br />
+                        <span class="ex">Use example: &lt;i class=&quot;flaticon-airplane49&quot;&gt;&lt;/i&gt; or &lt;span class=&quot;flaticon-airplane49&quot;&gt;&lt;/span&gt;</span>
+                </li>
+            </ul>
+        </div>
+
+    </section>
+
+    <section id="glyphs"><div class="glyph">
+		<div class="glyph-icon flaticon-access38"></div>
+		<div class="class-name">.flaticon-access38</div><div class="author-name">Author: <a href="http://www.flaticon.com/free-icon/key_97474">Sherzod Mirzaakhmedov</a></div></div><div class="glyph">
+		<div class="glyph-icon flaticon-accessory79"></div>
+		<div class="class-name">.flaticon-accessory79</div><div class="author-name">Author: <a href="http://www.flaticon.com/free-icon/wallet_97434">Sherzod Mirzaakhmedov</a></div></div><div class="glyph">
+		<div class="glyph-icon flaticon-agenda34"></div>
+		<div class="class-name">.flaticon-agenda34</div><div class="author-name">Author: <a href="http://www.flaticon.com/free-icon/calendar_97470">Sherzod Mirzaakhmedov</a></div></div><div class="glyph">
+		<div class="glyph-icon flaticon-alarm12"></div>
+		<div class="class-name">.flaticon-alarm12</div><div class="author-name">Author: <a href="http://www.flaticon.com/free-icon/bell_97422">Sherzod Mirzaakhmedov</a></div></div><div class="glyph">
+		<div class="glyph-icon flaticon-alcohol85"></div>
+		<div class="class-name">.flaticon-alcohol85</div><div class="author-name">Author: <a href="http://www.flaticon.com/free-icon/glass-of-wine_97519">Sherzod Mirzaakhmedov</a></div></div><div class="glyph">
+		<div class="glyph-icon flaticon-audio99"></div>
+		<div class="class-name">.flaticon-audio99</div><div class="author-name">Author: <a href="http://www.flaticon.com/free-icon/speaker_97458">Sherzod Mirzaakhmedov</a></div></div><div class="glyph">
+		<div class="glyph-icon flaticon-avatar93"></div>
+		<div class="class-name">.flaticon-avatar93</div><div class="author-name">Author: <a href="http://www.flaticon.com/free-icon/user_97503">Sherzod Mirzaakhmedov</a></div></div><div class="glyph">
+		<div class="glyph-icon flaticon-battery-status61"></div>
+		<div class="class-name">.flaticon-battery-status61</div><div class="author-name">Author: <a href="http://www.flaticon.com/free-icon/battery_97468">Sherzod Mirzaakhmedov</a></div></div><div class="glyph">
+		<div class="glyph-icon flaticon-bookmarks10"></div>
+		<div class="class-name">.flaticon-bookmarks10</div><div class="author-name">Author: <a href="http://www.flaticon.com/free-icon/bookmark_97442">Sherzod Mirzaakhmedov</a></div></div><div class="glyph">
+		<div class="glyph-icon flaticon-check-mark16"></div>
+		<div class="class-name">.flaticon-check-mark16</div><div class="author-name">Author: <a href="http://www.flaticon.com/free-icon/check_97456">Sherzod Mirzaakhmedov</a></div></div><div class="glyph">
+		<div class="glyph-icon flaticon-chemistry44"></div>
+		<div class="class-name">.flaticon-chemistry44</div><div class="author-name">Author: <a href="http://www.flaticon.com/free-icon/flask_97485">Sherzod Mirzaakhmedov</a></div></div><div class="glyph">
+		<div class="glyph-icon flaticon-christmas14"></div>
+		<div class="class-name">.flaticon-christmas14</div><div class="author-name">Author: <a href="http://www.flaticon.com/free-icon/present_97518">Sherzod Mirzaakhmedov</a></div></div><div class="glyph">
+		<div class="glyph-icon flaticon-cinema13"></div>
+		<div class="class-name">.flaticon-cinema13</div><div class="author-name">Author: <a href="http://www.flaticon.com/free-icon/video-camera_97446">Sherzod Mirzaakhmedov</a></div></div><div class="glyph">
+		<div class="glyph-icon flaticon-clocks27"></div>
+		<div class="class-name">.flaticon-clocks27</div><div class="author-name">Author: <a href="http://www.flaticon.com/free-icon/clock_97455">Sherzod Mirzaakhmedov</a></div></div><div class="glyph">
+		<div class="glyph-icon flaticon-clothing293"></div>
+		<div class="class-name">.flaticon-clothing293</div><div class="author-name">Author: <a href="http://www.flaticon.com/free-icon/shirt_97483">Sherzod Mirzaakhmedov</a></div></div><div class="glyph">
+		<div class="glyph-icon flaticon-clothing294"></div>
+		<div class="class-name">.flaticon-clothing294</div><div class="author-name">Author: <a href="http://www.flaticon.com/free-icon/trousers_97487">Sherzod Mirzaakhmedov</a></div></div><div class="glyph">
+		<div class="glyph-icon flaticon-computer331"></div>
+		<div class="class-name">.flaticon-computer331</div><div class="author-name">Author: <a href="http://www.flaticon.com/free-icon/laptop_97499">Sherzod Mirzaakhmedov</a></div></div><div class="glyph">
+		<div class="glyph-icon flaticon-computer71"></div>
+		<div class="class-name">.flaticon-computer71</div><div class="author-name">Author: <a href="http://www.flaticon.com/free-icon/mouse_97432">Sherzod Mirzaakhmedov</a></div></div><div class="glyph">
+		<div class="glyph-icon flaticon-direction246"></div>
+		<div class="class-name">.flaticon-direction246</div><div class="author-name">Author: <a href="http://www.flaticon.com/free-icon/arrow_97451">Sherzod Mirzaakhmedov</a></div></div><div class="glyph">
+		<div class="glyph-icon flaticon-directional35"></div>
+		<div class="class-name">.flaticon-directional35</div><div class="author-name">Author: <a href="http://www.flaticon.com/free-icon/four-arrows_97471">Sherzod Mirzaakhmedov</a></div></div><div class="glyph">
+		<div class="glyph-icon flaticon-down-arrow83"></div>
+		<div class="class-name">.flaticon-down-arrow83</div><div class="author-name">Author: <a href="http://www.flaticon.com/free-icon/download-from-cloud_97478">Sherzod Mirzaakhmedov</a></div></div><div class="glyph">
+		<div class="glyph-icon flaticon-eyeglasses36"></div>
+		<div class="class-name">.flaticon-eyeglasses36</div><div class="author-name">Author: <a href="http://www.flaticon.com/free-icon/glasses_97510">Sherzod Mirzaakhmedov</a></div></div><div class="glyph">
+		<div class="glyph-icon flaticon-file268"></div>
+		<div class="class-name">.flaticon-file268</div><div class="author-name">Author: <a href="http://www.flaticon.com/free-icon/file_97506">Sherzod Mirzaakhmedov</a></div></div><div class="glyph">
+		<div class="glyph-icon flaticon-filming19"></div>
+		<div class="class-name">.flaticon-filming19</div><div class="author-name">Author: <a href="http://www.flaticon.com/free-icon/film_97509">Sherzod Mirzaakhmedov</a></div></div><div class="glyph">
+		<div class="glyph-icon flaticon-gear94"></div>
+		<div class="class-name">.flaticon-gear94</div><div class="author-name">Author: <a href="http://www.flaticon.com/free-icon/settings_97419">Sherzod Mirzaakhmedov</a></div></div><div class="glyph">
+		<div class="glyph-icon flaticon-graphics-editor79"></div>
+		<div class="class-name">.flaticon-graphics-editor79</div><div class="author-name">Author: <a href="http://www.flaticon.com/free-icon/layers_97437">Sherzod Mirzaakhmedov</a></div></div><div class="glyph">
+		<div class="glyph-icon flaticon-hanging4"></div>
+		<div class="class-name">.flaticon-hanging4</div><div class="author-name">Author: <a href="http://www.flaticon.com/free-icon/hanger_97504">Sherzod Mirzaakhmedov</a></div></div><div class="glyph">
+		<div class="glyph-icon flaticon-hot-drink46"></div>
+		<div class="class-name">.flaticon-hot-drink46</div><div class="author-name">Author: <a href="http://www.flaticon.com/free-icon/coffee_97514">Sherzod Mirzaakhmedov</a></div></div><div class="glyph">
+		<div class="glyph-icon flaticon-house287"></div>
+		<div class="class-name">.flaticon-house287</div><div class="author-name">Author: <a href="http://www.flaticon.com/free-icon/home_97430">Sherzod Mirzaakhmedov</a></div></div><div class="glyph">
+		<div class="glyph-icon flaticon-info45"></div>
+		<div class="class-name">.flaticon-info45</div><div class="author-name">Author: <a href="http://www.flaticon.com/free-icon/information_97439">Sherzod Mirzaakhmedov</a></div></div><div class="glyph">
+		<div class="glyph-icon flaticon-jewel29"></div>
+		<div class="class-name">.flaticon-jewel29</div><div class="author-name">Author: <a href="http://www.flaticon.com/free-icon/diamond_97473">Sherzod Mirzaakhmedov</a></div></div><div class="glyph">
+		<div class="glyph-icon flaticon-label51"></div>
+		<div class="class-name">.flaticon-label51</div><div class="author-name">Author: <a href="http://www.flaticon.com/free-icon/tag_97447">Sherzod Mirzaakhmedov</a></div></div><div class="glyph">
+		<div class="glyph-icon flaticon-light201"></div>
+		<div class="class-name">.flaticon-light201</div><div class="author-name">Author: <a href="http://www.flaticon.com/free-icon/lamp_97493">Sherzod Mirzaakhmedov</a></div></div><div class="glyph">
+		<div class="glyph-icon flaticon-lines18"></div>
+		<div class="class-name">.flaticon-lines18</div><div class="author-name">Author: <a href="http://www.flaticon.com/free-icon/options_97453">Sherzod Mirzaakhmedov</a></div></div><div class="glyph">
+		<div class="glyph-icon flaticon-linked1"></div>
+		<div class="class-name">.flaticon-linked1</div><div class="author-name">Author: <a href="http://www.flaticon.com/free-icon/link_97444">Sherzod Mirzaakhmedov</a></div></div><div class="glyph">
+		<div class="glyph-icon flaticon-loving40"></div>
+		<div class="class-name">.flaticon-loving40</div><div class="author-name">Author: <a href="http://www.flaticon.com/free-icon/heart_97516">Sherzod Mirzaakhmedov</a></div></div><div class="glyph">
+		<div class="glyph-icon flaticon-mail22"></div>
+		<div class="class-name">.flaticon-mail22</div><div class="author-name">Author: <a href="http://www.flaticon.com/free-icon/mailbox_97429">Sherzod Mirzaakhmedov</a></div></div><div class="glyph">
+		<div class="glyph-icon flaticon-medals12"></div>
+		<div class="class-name">.flaticon-medals12</div><div class="author-name">Author: <a href="http://www.flaticon.com/free-icon/medal_97501">Sherzod Mirzaakhmedov</a></div></div><div class="glyph">
+		<div class="glyph-icon flaticon-message57"></div>
+		<div class="class-name">.flaticon-message57</div><div class="author-name">Author: <a href="http://www.flaticon.com/free-icon/envelope_97445">Sherzod Mirzaakhmedov</a></div></div><div class="glyph">
+		<div class="glyph-icon flaticon-microphone140"></div>
+		<div class="class-name">.flaticon-microphone140</div><div class="author-name">Author: <a href="http://www.flaticon.com/free-icon/mic_97441">Sherzod Mirzaakhmedov</a></div></div><div class="glyph">
+		<div class="glyph-icon flaticon-monarchy53"></div>
+		<div class="class-name">.flaticon-monarchy53</div><div class="author-name">Author: <a href="http://www.flaticon.com/free-icon/king_97513">Sherzod Mirzaakhmedov</a></div></div><div class="glyph">
+		<div class="glyph-icon flaticon-mouse16"></div>
+		<div class="class-name">.flaticon-mouse16</div><div class="author-name">Author: <a href="http://www.flaticon.com/free-icon/cursor_97427">Sherzod Mirzaakhmedov</a></div></div><div class="glyph">
+		<div class="glyph-icon flaticon-multimedia-option174"></div>
+		<div class="class-name">.flaticon-multimedia-option174</div><div class="author-name">Author: <a href="http://www.flaticon.com/free-icon/crop_97450">Sherzod Mirzaakhmedov</a></div></div><div class="glyph">
+		<div class="glyph-icon flaticon-music-player86"></div>
+		<div class="class-name">.flaticon-music-player86</div><div class="author-name">Author: <a href="http://www.flaticon.com/free-icon/levels_97435">Sherzod Mirzaakhmedov</a></div></div><div class="glyph">
+		<div class="glyph-icon flaticon-music-player87"></div>
+		<div class="class-name">.flaticon-music-player87</div><div class="author-name">Author: <a href="http://www.flaticon.com/free-icon/compact-disc_97488">Sherzod Mirzaakhmedov</a></div></div><div class="glyph">
+		<div class="glyph-icon flaticon-music-player88"></div>
+		<div class="class-name">.flaticon-music-player88</div><div class="author-name">Author: <a href="http://www.flaticon.com/free-icon/headphones_97502">Sherzod Mirzaakhmedov</a></div></div><div class="glyph">
+		<div class="glyph-icon flaticon-music-player89"></div>
+		<div class="class-name">.flaticon-music-player89</div><div class="author-name">Author: <a href="http://www.flaticon.com/free-icon/play-button_97512">Sherzod Mirzaakhmedov</a></div></div><div class="glyph">
+		<div class="glyph-icon flaticon-nation8"></div>
+		<div class="class-name">.flaticon-nation8</div><div class="author-name">Author: <a href="http://www.flaticon.com/free-icon/flag_97443">Sherzod Mirzaakhmedov</a></div></div><div class="glyph">
+		<div class="glyph-icon flaticon-office-material37"></div>
+		<div class="class-name">.flaticon-office-material37</div><div class="author-name">Author: <a href="http://www.flaticon.com/free-icon/folder_97417">Sherzod Mirzaakhmedov</a></div></div><div class="glyph">
+		<div class="glyph-icon flaticon-optical4"></div>
+		<div class="class-name">.flaticon-optical4</div><div class="author-name">Author: <a href="http://www.flaticon.com/free-icon/eye_97480">Sherzod Mirzaakhmedov</a></div></div><div class="glyph">
+		<div class="glyph-icon flaticon-orientation65"></div>
+		<div class="class-name">.flaticon-orientation65</div><div class="author-name">Author: <a href="http://www.flaticon.com/free-icon/map_97431">Sherzod Mirzaakhmedov</a></div></div><div class="glyph">
+		<div class="glyph-icon flaticon-phone-call37"></div>
+		<div class="class-name">.flaticon-phone-call37</div><div class="author-name">Author: <a href="http://www.flaticon.com/free-icon/telephone_97481">Sherzod Mirzaakhmedov</a></div></div><div class="glyph">
+		<div class="glyph-icon flaticon-photograph16"></div>
+		<div class="class-name">.flaticon-photograph16</div><div class="author-name">Author: <a href="http://www.flaticon.com/free-icon/photo-camera_97420">Sherzod Mirzaakhmedov</a></div></div><div class="glyph">
+		<div class="glyph-icon flaticon-photography113"></div>
+		<div class="class-name">.flaticon-photography113</div><div class="author-name">Author: <a href="http://www.flaticon.com/free-icon/image_97436">Sherzod Mirzaakhmedov</a></div></div><div class="glyph">
+		<div class="glyph-icon flaticon-pin133"></div>
+		<div class="class-name">.flaticon-pin133</div><div class="author-name">Author: <a href="http://www.flaticon.com/free-icon/placeholder_97433">Sherzod Mirzaakhmedov</a></div></div><div class="glyph">
+		<div class="glyph-icon flaticon-printer100"></div>
+		<div class="class-name">.flaticon-printer100</div><div class="author-name">Author: <a href="http://www.flaticon.com/free-icon/print_97449">Sherzod Mirzaakhmedov</a></div></div><div class="glyph">
+		<div class="glyph-icon flaticon-prohibition35"></div>
+		<div class="class-name">.flaticon-prohibition35</div><div class="author-name">Author: <a href="http://www.flaticon.com/free-icon/cancel_97508">Sherzod Mirzaakhmedov</a></div></div><div class="glyph">
+		<div class="glyph-icon flaticon-quaver50"></div>
+		<div class="class-name">.flaticon-quaver50</div><div class="author-name">Author: <a href="http://www.flaticon.com/free-icon/musical-note_97505">Sherzod Mirzaakhmedov</a></div></div><div class="glyph">
+		<div class="glyph-icon flaticon-rectangle32"></div>
+		<div class="class-name">.flaticon-rectangle32</div><div class="author-name">Author: <a href="http://www.flaticon.com/free-icon/rectangle_97507">Sherzod Mirzaakhmedov</a></div></div><div class="glyph">
+		<div class="glyph-icon flaticon-reload22"></div>
+		<div class="class-name">.flaticon-reload22</div><div class="author-name">Author: <a href="http://www.flaticon.com/free-icon/refreshing_97421">Sherzod Mirzaakhmedov</a></div></div><div class="glyph">
+		<div class="glyph-icon flaticon-road-sign24"></div>
+		<div class="class-name">.flaticon-road-sign24</div><div class="author-name">Author: <a href="http://www.flaticon.com/free-icon/cone_97491">Sherzod Mirzaakhmedov</a></div></div><div class="glyph">
+		<div class="glyph-icon flaticon-road-sign25"></div>
+		<div class="class-name">.flaticon-road-sign25</div><div class="author-name">Author: <a href="http://www.flaticon.com/free-icon/warning_97497">Sherzod Mirzaakhmedov</a></div></div><div class="glyph">
+		<div class="glyph-icon flaticon-saving10"></div>
+		<div class="class-name">.flaticon-saving10</div><div class="author-name">Author: <a href="http://www.flaticon.com/free-icon/save_97463">Sherzod Mirzaakhmedov</a></div></div><div class="glyph">
+		<div class="glyph-icon flaticon-school-material20"></div>
+		<div class="class-name">.flaticon-school-material20</div><div class="author-name">Author: <a href="http://www.flaticon.com/free-icon/book_97459">Sherzod Mirzaakhmedov</a></div></div><div class="glyph">
+		<div class="glyph-icon flaticon-screen11"></div>
+		<div class="class-name">.flaticon-screen11</div><div class="author-name">Author: <a href="http://www.flaticon.com/free-icon/monitor_97472">Sherzod Mirzaakhmedov</a></div></div><div class="glyph">
+		<div class="glyph-icon flaticon-setup9"></div>
+		<div class="class-name">.flaticon-setup9</div><div class="author-name">Author: <a href="http://www.flaticon.com/free-icon/options_97517">Sherzod Mirzaakhmedov</a></div></div><div class="glyph">
+		<div class="glyph-icon flaticon-sharing7"></div>
+		<div class="class-name">.flaticon-sharing7</div><div class="author-name">Author: <a href="http://www.flaticon.com/free-icon/share_97475">Sherzod Mirzaakhmedov</a></div></div><div class="glyph">
+		<div class="glyph-icon flaticon-shelter2"></div>
+		<div class="class-name">.flaticon-shelter2</div><div class="author-name">Author: <a href="http://www.flaticon.com/free-icon/dog-house_97515">Sherzod Mirzaakhmedov</a></div></div><div class="glyph">
+		<div class="glyph-icon flaticon-speech-bubble109"></div>
+		<div class="class-name">.flaticon-speech-bubble109</div><div class="author-name">Author: <a href="http://www.flaticon.com/free-icon/message_97448">Sherzod Mirzaakhmedov</a></div></div><div class="glyph">
+		<div class="glyph-icon flaticon-speed3"></div>
+		<div class="class-name">.flaticon-speed3</div><div class="author-name">Author: <a href="http://www.flaticon.com/free-icon/speedometer_97494">Sherzod Mirzaakhmedov</a></div></div><div class="glyph">
+		<div class="glyph-icon flaticon-sports-ball43"></div>
+		<div class="class-name">.flaticon-sports-ball43</div><div class="author-name">Author: <a href="http://www.flaticon.com/free-icon/basketball_97477">Sherzod Mirzaakhmedov</a></div></div><div class="glyph">
+		<div class="glyph-icon flaticon-square51"></div>
+		<div class="class-name">.flaticon-square51</div><div class="author-name">Author: <a href="http://www.flaticon.com/free-icon/edit_97460">Sherzod Mirzaakhmedov</a></div></div><div class="glyph">
+		<div class="glyph-icon flaticon-squares119"></div>
+		<div class="class-name">.flaticon-squares119</div><div class="author-name">Author: <a href="http://www.flaticon.com/free-icon/square_97476">Sherzod Mirzaakhmedov</a></div></div><div class="glyph">
+		<div class="glyph-icon flaticon-stars83"></div>
+		<div class="class-name">.flaticon-stars83</div><div class="author-name">Author: <a href="http://www.flaticon.com/free-icon/star_97457">Sherzod Mirzaakhmedov</a></div></div><div class="glyph">
+		<div class="glyph-icon flaticon-stats123"></div>
+		<div class="class-name">.flaticon-stats123</div><div class="author-name">Author: <a href="http://www.flaticon.com/free-icon/pie-chart_97520">Sherzod Mirzaakhmedov</a></div></div><div class="glyph">
+		<div class="glyph-icon flaticon-storage13"></div>
+		<div class="class-name">.flaticon-storage13</div><div class="author-name">Author: <a href="http://www.flaticon.com/free-icon/open-box_97489">Sherzod Mirzaakhmedov</a></div></div><div class="glyph">
+		<div class="glyph-icon flaticon-storage75"></div>
+		<div class="class-name">.flaticon-storage75</div><div class="author-name">Author: <a href="http://www.flaticon.com/free-icon/box_97490">Sherzod Mirzaakhmedov</a></div></div><div class="glyph">
+		<div class="glyph-icon flaticon-suitcase90"></div>
+		<div class="class-name">.flaticon-suitcase90</div><div class="author-name">Author: <a href="http://www.flaticon.com/free-icon/briefcase_97461">Sherzod Mirzaakhmedov</a></div></div><div class="glyph">
+		<div class="glyph-icon flaticon-sunny78"></div>
+		<div class="class-name">.flaticon-sunny78</div><div class="author-name">Author: <a href="http://www.flaticon.com/free-icon/sun_97482">Sherzod Mirzaakhmedov</a></div></div><div class="glyph">
+		<div class="glyph-icon flaticon-supermarket72"></div>
+		<div class="class-name">.flaticon-supermarket72</div><div class="author-name">Author: <a href="http://www.flaticon.com/free-icon/shopping-cart_97418">Sherzod Mirzaakhmedov</a></div></div><div class="glyph">
+		<div class="glyph-icon flaticon-telephone287"></div>
+		<div class="class-name">.flaticon-telephone287</div><div class="author-name">Author: <a href="http://www.flaticon.com/free-icon/smartphone_97440">Sherzod Mirzaakhmedov</a></div></div><div class="glyph">
+		<div class="glyph-icon flaticon-time103"></div>
+		<div class="class-name">.flaticon-time103</div><div class="author-name">Author: <a href="http://www.flaticon.com/free-icon/hourglass_97484">Sherzod Mirzaakhmedov</a></div></div><div class="glyph">
+		<div class="glyph-icon flaticon-time104"></div>
+		<div class="class-name">.flaticon-time104</div><div class="author-name">Author: <a href="http://www.flaticon.com/free-icon/clock_97492">Sherzod Mirzaakhmedov</a></div></div><div class="glyph">
+		<div class="glyph-icon flaticon-tool490"></div>
+		<div class="class-name">.flaticon-tool490</div><div class="author-name">Author: <a href="http://www.flaticon.com/free-icon/clip_97424">Sherzod Mirzaakhmedov</a></div></div><div class="glyph">
+		<div class="glyph-icon flaticon-tool491"></div>
+		<div class="class-name">.flaticon-tool491</div><div class="author-name">Author: <a href="http://www.flaticon.com/free-icon/inbox_97428">Sherzod Mirzaakhmedov</a></div></div><div class="glyph">
+		<div class="glyph-icon flaticon-tool492"></div>
+		<div class="class-name">.flaticon-tool492</div><div class="author-name">Author: <a href="http://www.flaticon.com/free-icon/garbage_97438">Sherzod Mirzaakhmedov</a></div></div><div class="glyph">
+		<div class="glyph-icon flaticon-tool493"></div>
+		<div class="class-name">.flaticon-tool493</div><div class="author-name">Author: <a href="http://www.flaticon.com/free-icon/umbrella_97452">Sherzod Mirzaakhmedov</a></div></div><div class="glyph">
+		<div class="glyph-icon flaticon-tool494"></div>
+		<div class="class-name">.flaticon-tool494</div><div class="author-name">Author: <a href="http://www.flaticon.com/free-icon/anchor_97454">Sherzod Mirzaakhmedov</a></div></div><div class="glyph">
+		<div class="glyph-icon flaticon-tool495"></div>
+		<div class="class-name">.flaticon-tool495</div><div class="author-name">Author: <a href="http://www.flaticon.com/free-icon/compass_97469">Sherzod Mirzaakhmedov</a></div></div><div class="glyph">
+		<div class="glyph-icon flaticon-tool496"></div>
+		<div class="class-name">.flaticon-tool496</div><div class="author-name">Author: <a href="http://www.flaticon.com/free-icon/search_97479">Sherzod Mirzaakhmedov</a></div></div><div class="glyph">
+		<div class="glyph-icon flaticon-tool497"></div>
+		<div class="class-name">.flaticon-tool497</div><div class="author-name">Author: <a href="http://www.flaticon.com/free-icon/lock_97486">Sherzod Mirzaakhmedov</a></div></div><div class="glyph">
+		<div class="glyph-icon flaticon-tool498"></div>
+		<div class="class-name">.flaticon-tool498</div><div class="author-name">Author: <a href="http://www.flaticon.com/free-icon/plug_97495">Sherzod Mirzaakhmedov</a></div></div><div class="glyph">
+		<div class="glyph-icon flaticon-tool499"></div>
+		<div class="class-name">.flaticon-tool499</div><div class="author-name">Author: <a href="http://www.flaticon.com/free-icon/ruler_97498">Sherzod Mirzaakhmedov</a></div></div><div class="glyph">
+		<div class="glyph-icon flaticon-tool500"></div>
+		<div class="class-name">.flaticon-tool500</div><div class="author-name">Author: <a href="http://www.flaticon.com/free-icon/funnel_97511">Sherzod Mirzaakhmedov</a></div></div><div class="glyph">
+		<div class="glyph-icon flaticon-tv10"></div>
+		<div class="class-name">.flaticon-tv10</div><div class="author-name">Author: <a href="http://www.flaticon.com/free-icon/television_97500">Sherzod Mirzaakhmedov</a></div></div><div class="glyph">
+		<div class="glyph-icon flaticon-uploading37"></div>
+		<div class="class-name">.flaticon-uploading37</div><div class="author-name">Author: <a href="http://www.flaticon.com/free-icon/upload_97423">Sherzod Mirzaakhmedov</a></div></div><div class="glyph">
+		<div class="glyph-icon flaticon-winner61"></div>
+		<div class="class-name">.flaticon-winner61</div><div class="author-name">Author: <a href="http://www.flaticon.com/free-icon/cup_97496">Sherzod Mirzaakhmedov</a></div></div><div class="glyph">
+		<div class="glyph-icon flaticon-wireless-connectivity44"></div>
+		<div class="class-name">.flaticon-wireless-connectivity44</div><div class="author-name">Author: <a href="http://www.flaticon.com/free-icon/bluetooth_97425">Sherzod Mirzaakhmedov</a></div></div><div class="glyph">
+		<div class="glyph-icon flaticon-wireless-connectivity45"></div>
+		<div class="class-name">.flaticon-wireless-connectivity45</div><div class="author-name">Author: <a href="http://www.flaticon.com/free-icon/wifi_97462">Sherzod Mirzaakhmedov</a></div></div><div class="glyph">
+		<div class="glyph-icon flaticon-writing144"></div>
+		<div class="class-name">.flaticon-writing144</div><div class="author-name">Author: <a href="http://www.flaticon.com/free-icon/pencil_97426">Sherzod Mirzaakhmedov</a></div></div></section>
+
+<section class="attribution">
+
+	<div class="usetitle">License and attribution:</div><div class="attrDiv">Font generated by <a href="http://www.flaticon.com">flaticon.com</a>
+ under <a href="http://creativecommons.org/licenses/by/3.0/">CC BY</a>. The authors are: <a href="http://">Sherzod Mirzaakhmedov</a>.</div><div class="usetitle">Copy the Attribution License:</div>
+
+<textarea onclick="this.focus();this.select();">Font generated by &lt;a href=&quot;http://www.flaticon.com&quot;&gt;flaticon.com&lt;/a&gt;
+ under &lt;a href=&quot;http://creativecommons.org/licenses/by/3.0/&quot;&gt;CC BY&lt;/a&gt;. The authors are: &lt;a href=&quot;http://&quot;&gt;Sherzod Mirzaakhmedov&lt;/a&gt;.</textarea>
+
+</section>
+
+<section class="iconsuse">
+    	<div class="usetitle">Examples:</div>
+		<div class="image"><p>&lt;i class=&quot;flaticon-access38&quot;&gt;&lt;/i&gt; <i class="flaticon-access38"></i></p><p>&lt;i class=&quot;flaticon-accessory79&quot;&gt;&lt;/i&gt; <i class="flaticon-accessory79"></i></p><p>&lt;i class=&quot;flaticon-agenda34&quot;&gt;&lt;/i&gt; <i class="flaticon-agenda34"></i></p><p>&lt;i class=&quot;flaticon-alarm12&quot;&gt;&lt;/i&gt; <i class="flaticon-alarm12"></i></p><p>&lt;i class=&quot;flaticon-alcohol85&quot;&gt;&lt;/i&gt; <i class="flaticon-alcohol85"></i></p></div><div class="image"><p>&lt;span class=&quot;flaticon-audio99&quot;&gt;&lt;/span&gt; <span class="flaticon-audio99"></span></p><p>&lt;span class=&quot;flaticon-avatar93&quot;&gt;&lt;/span&gt; <span class="flaticon-avatar93"></span></p><p>&lt;span class=&quot;flaticon-battery-status61&quot;&gt;&lt;/span&gt; <span class="flaticon-battery-status61"></span></p><p>&lt;span class=&quot;flaticon-bookmarks10&quot;&gt;&lt;/span&gt; <span class="flaticon-bookmarks10"></span></p><p>&lt;span class=&quot;flaticon-check-mark16&quot;&gt;&lt;/span&gt; <span class="flaticon-check-mark16"></span></p></div><div class="image"><p>&lt;span class=&quot;flaticon-chemistry44&quot;&gt;&lt;/span&gt; <span class="flaticon-chemistry44"></span></p><p>&lt;i class=&quot;flaticon-christmas14&quot;&gt;&lt;/i&gt; <i class="flaticon-christmas14"></i></p><p>&lt;i class=&quot;flaticon-cinema13&quot;&gt;&lt;/i&gt; <i class="flaticon-cinema13"></i></p><p>&lt;i class=&quot;flaticon-clocks27&quot;&gt;&lt;/i&gt; <i class="flaticon-clocks27"></i></p><p>&lt;i class=&quot;flaticon-clothing293&quot;&gt;&lt;/i&gt; <i class="flaticon-clothing293"></i></p></div><div class="image"><p>&lt;span class=&quot;flaticon-clothing294&quot;&gt;&lt;/span&gt; <span class="flaticon-clothing294"></span></p><p>&lt;span class=&quot;flaticon-computer331&quot;&gt;&lt;/span&gt; <span class="flaticon-computer331"></span></p><p>&lt;span class=&quot;flaticon-computer71&quot;&gt;&lt;/span&gt; <span class="flaticon-computer71"></span></p><p>&lt;span class=&quot;flaticon-direction246&quot;&gt;&lt;/span&gt; <span class="flaticon-direction246"></span></p><p>&lt;span class=&quot;flaticon-directional35&quot;&gt;&lt;/span&gt; <span class="flaticon-directional35"></span></p></div><div class="image"></div>
+</section>
+<div id="footer">
+    <div>Generated by <a href="http://www.flaticon.com">flaticon.com</a>
+    </div>
+</div>
+	</body>
+</html>

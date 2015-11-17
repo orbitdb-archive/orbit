@@ -1,0 +1,50 @@
+@import 'Colors';
+
+.SettingsView {
+  color: #fff;
+  background: #282828;
+
+  width: 100%;
+  height: 100%;
+  margin: 0;
+
+  font-family: "Source Sans Pro";
+  font-weight: 300;
+  font-size: 1.0em;
+  color: rgba(240, 240, 240, 0.9);
+
+  .row {
+    display: flex;
+    align-items: center;
+    padding: 0.2em;
+    padding-left: 1.2em;
+    text-transform: capitalize;
+    background-color: rgba(38, 38, 38, 1.0);
+    border-bottom: 1px solid rgb(34, 34, 34);
+  }
+
+  .key {
+    display: inline-block;
+    vertical-align: top;
+    min-width: 12em;
+  }
+
+  .description {
+    font-style: italic;
+    color: $dark-text-color;
+  }
+
+  .rowAnimation-appear {
+    $duration: 0.3s;
+
+    -webkit-animation-name: fadeIn;
+    animation-name: fadeIn;
+    -webkit-animation-duration: $duration;
+    animation-duration: $duration;
+    -webkit-animation-fill-mode: both;
+    animation-fill-mode: both;
+    -webkit-animation-timing-function: ease-in;
+    animation-timing-function: ease-in;
+  }
+
+}

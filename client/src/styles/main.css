@@ -1,0 +1,16 @@
+@import url(https://fonts.googleapis.com/css?family=Lato:400,300,100|Source+Sans+Pro:400,200,200italic,400italic);
+
+html, body {
+  background: #222222;
+  font-family: "Lato";
+  font-weight: 400;
+}
+
+h1 {
+  color: rgb(228, 228, 228);
+  font-weight: 100;
+  margin: auto;
+  font-size: 3em;
+  text-align: center;
+  padding: 0.5em;
+}

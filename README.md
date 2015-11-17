@@ -19,7 +19,7 @@ The messages are encrypted by default. Currently there's only one key pair that 
 - Native application on OSX and Linux (Electron)
 
 ## Requirements
-- Node.js v4.2.1
+- Node.js v4.2.x
 - Chrome
 
 For development
@@ -37,13 +37,16 @@ For development
 Open http//:localhost:3001 in your browser
 
 ### Run as Electron App
-Install `npm electron-prebuilt install -g` and run:
+Install `npm electron-prebuilt install -g`. Run:
 ```
   electron . 
 ```
 
+Make sure you don't have the node.js version running and no client open the browser. For UI development (webpack-dev-server in the Electron app), `export ENV=dev`.
+
 ### Run Options
 #### Enable Bots
+(broken atm!)
 ```
   node index.js --bots
 ```
@@ -78,12 +81,28 @@ Build for individual platforms:
 
 The builds are in `dist/`
 
+## UI
+Build:
+```
+cd client/
+npm install
+grunt build
+```
+
+Dev:
+```
+cd client/
+(npm install)
+grunt serve
+```
+
 ## TODO
 
 ## Backlog
-- "New messages" notification broken on channels that have less than div.height messages
+- Components for rendering ipfs links, mentions and localhost links (TextMessage.js)
+- move message type from MetaInfo to Message.content
+- SwarmStore
 - Add screenshots to the README and repo
-- ~~Possibility to have multiple channels open at one time~~
 - Integrate with a running ipfs daemon (https://github.com/haadcode/anonymous-networks/issues/1)
 - Tab to finish the username when writing
 - Missing: notifications, user mentions (dignifiedquire)
@@ -94,12 +113,8 @@ The builds are in `dist/`
 - bug: UI <-> daemon connection state gets fckd
 - feature: markdown as content type in messages (like files/lists)
 - add caching of packages to go-ipfs / node install.js
-- loading animation to channel.join
-- feature: notifications
 - password for username is unclear (and buggy: can't enter no password)
 - feature: download manager
-- recent channels (and settings?) read from locaStorage should be per user
-- recent channels list should say it's "recent channels"
 - setting channel passwords is unclear
 - cache UI fonts locally (package with the app)
   + http://stackoverflow.com/questions/8966740/how-to-host-google-web-fonts-on-my-own-server
@@ -109,18 +124,14 @@ The builds are in `dist/`
 - "Incorrect password" should be red
 - subcomandante needs to be platform-agnostic (remove #!/usr/bin/env node)
 - bug: when node who posted head is offline and nobody else has the head hash, whole channel gets fckd
-- bug: unfetched messages can end in another channel --> cancel fetching messages on leave#
 - convert MessageStore (UI) to ES6
 - easier network setup than network.json
 - timestamp weirdness, slow updates
 - hook log4js to ws so that backend logs get to browser
-- back to top button (overlay)
 - aliases for peer addresses, "known as"
 - bug: loading time at join if there are new messages in network
-- bug: adding files takes ages!
 - LAN connections not initiated (ipfs bug?)
 - favorites view, add(/remove) to favorites, uses DirectoryView only, localStorage for storing Maps {hash,links}, check possibility to save to network
-- setup electron dev workflow
 - fix autolinks for http://localhost:port (fix in react-autolink)
 - add file progress notification (loading text)
 - emoji auto-completion
@@ -132,6 +143,16 @@ The builds are in `dist/`
 - use POST instead of GET where it makes sense
 
 ## Changelog
+
+**master**
+- Possibility to have multiple channels open at one time
+- loading animation to channel.join
+- feature: notifications
+- recent channels (and settings?) read from locaStorage should be per user
+- bug: unfetched messages can end in another channel --> cancel fetching messages on leave#
+- setup electron dev workflow
+- "New messages" notification broken on channels that have less than div.height messages
+- back to top button (overlay)
 
 **v1.0.1**
 - Feature: autolinks for ipfs hashes

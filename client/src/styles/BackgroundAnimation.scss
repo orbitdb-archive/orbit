@@ -1,0 +1,65 @@
+@import 'Animations';
+
+.BackgroundAnimation {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  z-index: -1;
+  opacity: 0.3;
+
+    -webkit-transform-style: preserve-3d;
+    transform-style: preserve-3d;
+    -webkit-backface-visibility: hidden;
+    backface-visibility: hidden;
+
+  .circles {
+    position: absolute;
+    -webkit-transform: translate3D(0, 0, 0);
+    transform: translate3D(0, 0, 0);
+    -webkit-backface-visibility: hidden;
+    backface-visibility: hidden;
+    -webkit-transform-style: preserve-3d;
+    transform-style: preserve-3d;
+  }
+
+  // .circle {
+  //   position: absolute;
+  //   -webkit-backface-visibility: hidden;
+  //   backface-visibility: hidden;
+  //   -webkit-transform-style: preserve-3d;
+  //   transform-style: preserve-3d;
+  //   -webkit-transform: translate3D(0, 0, 0);
+  //   transform: translate3D(0, 0, 0);
+  // }
+
+  circle {
+    -webkit-transform-style: preserve-3d;
+    transform-style: preserve-3d;
+    -webkit-transform: translate3D(0, 0, 0);
+    transform: translate3D(0, 0, 0);
+    -webkit-backface-visibility: hidden;
+    backface-visibility: hidden;
+
+    $duration: .2s;
+    $animation-name: fadeIn;
+
+    -webkit-animation: $animation-name;
+    animation: $animation-name;
+    -webkit-animation-duration: $duration;
+    animation-duration: $duration;
+    -webkit-animation-fill-mode: both;
+    animation-fill-mode: both;
+    -webkit-animation-timing-function: linear;
+    animation-timing-function: linear;
+
+    // -webkit-animation-iteration-count: infinite;
+    // animation-iteration-count: infinite;
+
+    // -webkit-animation-direction: alternate;
+    // animation-direction: alternate;
+  }
+
+}

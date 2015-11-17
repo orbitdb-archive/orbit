@@ -1,0 +1,63 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+  <title>Anonymous Networks</title>
+  <meta name="description" content="">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+
+  <script src="lib/socket.io.min.js"></script>
+  <!-- <script src="/socket.io/socket.io.js"></script> -->
+  <!-- <script src="http://localhost:3001/socket.io/socket.io.js"></script> -->
+  <!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/1.3.7/socket.io.min.js"></script> -->
+
+  <style>
+    html, body{
+      background: #000000;
+      background: #222222;
+    }
+
+    ::-webkit-scrollbar {
+        width: 6px;
+    }
+
+    /* Track */
+    ::-webkit-scrollbar-track {
+        -webkit-box-shadow: none;//inset 0 0 6px rgba(0, 0, 0, 0.5);
+        -webkit-border-radius: 0;
+        border-radius: 0;
+        background: rgba(24, 24, 24, 1);
+    }
+
+    /* Handle */
+    ::-webkit-scrollbar-thumb {
+        -webkit-border-radius: 0px;
+        border-radius: 0px;
+        background: rgba(64, 64, 64, 0.8);
+        -webkit-box-shadow: none;//inset 0 0 6px rgba(0, 0, 0, 0.5);
+    }
+
+    ::-webkit-scrollbar-thumb:window-inactive {
+      background: rgba(128, 128, 128, 0.4);
+    }
+
+  </style>
+
+  <link rel="stylesheet" type="text/css" href="icons/flaticon.css">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+
+</head>
+<body>
+  <!--[if lt IE 8]>
+    <p class="browsehappy">You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade your browser</a> to improve your experience.</p>
+  <![endif]-->
+  <div id="content">
+  </div>
+
+  <script>
+    __REACT_DEVTOOLS_GLOBAL_HOOK__ = parent.__REACT_DEVTOOLS_GLOBAL_HOOK__
+  </script>
+  <script type="text/javascript" src="assets/main.js"></script>
+</body>
+</html>

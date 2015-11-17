@@ -1,0 +1,85 @@
+@import 'Colors';
+
+$channel-name-max-height: 5vmin;
+$channel-name-min-height: 1.6em;
+
+.Header {
+  cursor: pointer;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  border-bottom: 1px solid $bar-border-color;
+  background-color: $bar-background-color;
+
+  .notificationsIcon {
+    position: absolute;
+    font-size: 0.8em;
+    top: 1.1em;
+    right: 1.1em;
+    padding-top: -0.2em;
+  }
+
+}
+
+.Header:hover {
+  background-color: $bar-background-hover-color;
+}
+
+.ChannelName {
+  display: flex;
+  box-sizing: border-box;
+  flex: 1 1 100%;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+
+  max-height: $channel-name-max-height;
+  min-height: $channel-name-min-height;
+
+  font-family: "Lato";
+  font-weight: 100;
+  font-size: 2em;
+  color: rgb(240, 240, 240);
+
+  .text {
+    // border-left: 6px solid $main-color;
+    display: flex;
+    flex: 1 1 100%;
+    padding-left: 0.2em;
+    justify-content: flex-start;
+
+    font-family: "Lato";
+    font-weight: 100;
+    font-size: 1em;
+    color: rgb(240, 240, 240);
+  }
+
+}
+
+.panelHeaderAnimation-appear {
+  $duration: 0.6s;
+  $animation-name: bounceInLeft;
+
+  -webkit-animation: $animation-name;
+  animation: $animation-name;
+  -webkit-animation-duration: $duration;
+  animation-duration: $duration;
+  -webkit-animation-fill-mode: both;
+  animation-fill-mode: both;
+  -webkit-animation-timing-function: ease-out;
+  animation-timing-function: ease-out;
+}
+
+.channelHeaderAnimation-appear {
+  $duration: 0.6s;
+  $animation-name: bounceInLeft;
+
+  -webkit-animation: $animation-name;
+  animation: $animation-name;
+  -webkit-animation-duration: $duration;
+  animation-duration: $duration;
+  -webkit-animation-fill-mode: both;
+  animation-fill-mode: both;
+  -webkit-animation-timing-function: ease-out;
+  animation-timing-function: ease-out;
+}
+

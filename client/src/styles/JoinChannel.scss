@@ -1,0 +1,92 @@
+@import 'App';
+@import 'InputField';
+@import 'SubmitButton';
+
+$background-color: rgb(48, 48, 48);
+$background-hover-color: rgb(60, 60, 60);
+$border-color: rgb(64, 64, 64);
+$border-focused-color: rgb(64, 64, 64);
+$border: 1px solid $border-color;
+$border-focused: 1px solid $main-color;
+
+.JoinChannel {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  flex: 1;
+
+  font-family: "Source Sans Pro";
+  font-weight: 100;
+  box-sizing: border-box;
+  margin: 0em 1em;
+
+  .text {
+    color: rgba(240, 240, 240, 0.2);
+    font-size: 0.8em;
+    display: flex;
+    justify-content: center;
+    margin-top: 1em;
+  }
+
+  span {
+    align-self: center;
+  }
+
+  form {
+    display: flex;
+    flex-direction: column;
+    width: 80%;
+    justify-content: center;
+    margin-top: 0em;
+  }
+
+  .row {
+    display: flex;
+    flex-direction: row;
+  }
+
+  .label {
+    flex: 0 1 5%;
+    font-size: 1.25em;
+    color: rgba(228, 228, 228, 0.2);
+  }
+
+  .field {
+    flex: 1 0 70%;
+  }
+
+  .action {
+    display: flex;
+    flex: 1 0 20%;
+    justify-content: center;
+  }
+
+  input[type=text], input[type=password] {
+    margin-top: 0em;
+    margin-bottom: 0em;
+    width: 90%;
+  }
+
+
+  .submitButton, input[type=submit] {
+    display: flex;
+    align-self: center;
+    padding-top: 0.5em;
+    padding-bottom: 0.5em;
+  }
+
+}
+
+.passwordFieldAnimation-appear {
+  $duration: 0.2s;
+  $animation-name: appearFromTop;
+
+  -webkit-animation: $animation-name;
+  animation: $animation-name;
+  -webkit-animation-duration: $duration;
+  animation-duration: $duration;
+  -webkit-animation-fill-mode: both;
+  animation-fill-mode: both;
+  -webkit-animation-timing-function: ease-out;
+  animation-timing-function: ease-out;
+}

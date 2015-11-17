@@ -1,0 +1,96 @@
+$directory-hover-color:       rgb(64, 64, 64);
+$directory-link-color:        rgba(128, 196, 255, 0.8);
+$directory-link-color2:       rgba(196, 196, 196, 0.6);
+$directory-link-hover-color:  rgba(128, 196, 255, 1);
+$directory-link-hover-color2: rgba(240, 240, 240, 0.9);
+
+.File {
+  padding-left: 0.3em;
+  padding-right: 0.3em;
+  display: inline-block;
+  white-space: nowrap;
+  font-weight: 300;
+
+  .download {
+    visibility: hidden;
+    font-weight: 100;
+    margin-left: 0.5em;
+    margin-right: 0.5em;
+  }
+
+  .pin {
+    visibility: hidden;
+    font-weight: 100;
+    // margin-left: 0.5em;
+    // margin-right: 0.5em;
+  }
+
+  .size {
+    visibility: hidden;
+  }
+
+  a {
+    color: $directory-link-color;
+    text-decoration: none;
+  }
+
+}
+
+.File:hover {
+  background-color: $directory-hover-color;
+  border: 0px solid transparent;
+  border-radius: 4px;
+
+  .download {
+    visibility: visible;
+    color: $directory-link-color2;
+  }
+
+  .download:hover {
+    background-color: rgba(128, 128, 128, 0.4);
+    color: $directory-link-hover-color2;
+  }
+
+  .pin {
+    visibility: visible;
+    color: $directory-link-color2;
+    margin-right: 0.5em;
+    cursor: pointer;
+  }
+
+  .pin:hover {
+    background-color: rgba(128, 128, 128, 0.4);
+    color: $directory-link-hover-color2;
+  }
+
+  .size {
+    visibility: visible;
+    font-size: 0.8em;
+    font-weight: 100;
+    color: rgba(128, 196, 128, 0.8);
+    cursor: default;
+  }
+
+  a {
+    color: $directory-link-hover-color;
+  }
+}
+
+.loading {
+  a {
+    color: rgba(240, 244, 240, 0.1);
+  }
+}
+
+.fileAnimation-appear {
+  $duration: 0.2s;
+
+  -webkit-animation-name: fadeIn;
+  animation-name: fadeIn;
+  -webkit-animation-duration: $duration;
+  animation-duration: $duration;
+  -webkit-animation-fill-mode: both;
+  animation-fill-mode: both;
+  -webkit-animation-timing-function: ease-in;
+  animation-timing-function: ease-in;
+}

@@ -1,0 +1,9 @@
+{
+  "plugins": [
+    "transform-regenerator",
+    "syntax-async-functions",
+    "syntax-async-generators",
+    "transform-async-to-generator"
+  ],
+  "presets": ["es2015", "stage-0", "stage-3", "react"]
+}

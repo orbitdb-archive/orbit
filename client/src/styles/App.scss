@@ -1,0 +1,74 @@
+@import 'Animations';
+@import 'Colors';
+
+textarea, input { outline: none; }
+
+::-webkit-input-placeholder {
+  color: $placeholder-color;
+  font-style: italic;
+}
+
+:-moz-placeholder { /* Firefox 18- */
+  color: $placeholder-color;
+  font-style: italic;
+}
+
+::-moz-placeholder {  /* Firefox 19+ */
+  color: $placeholder-color;
+  font-style: italic;
+}
+
+.App {
+  width: 100%;
+  height: 100%;
+  position: absolute;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  transform-style: preserve-3d;
+}
+
+$channel-name-max-height: 5.5vmin;
+$channel-name-min-height: 1.5em;
+
+.no-close {
+  cursor: default;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+}
+
+.view {
+  background: #222222;
+  width: 100%;
+  padding: 0;
+  margin: 0;
+}
+
+.headerAnimation-appear {
+    $duration: .2s;
+    $animation-name: fadeInDown;
+
+    -webkit-animation: $animation-name;
+    animation: $animation-name;
+    -webkit-animation-duration: $duration;
+    animation-duration: $duration;
+    -webkit-animation-fill-mode: both;
+    animation-fill-mode: both;
+    -webkit-animation-timing-function: ease-out;
+    animation-timing-function: ease-out;
+}
+
+.joinChannelAnimation-appear {
+    $duration: .5s;
+    $animation-name: fadeIn;
+    $easing: ease-in;
+
+    -webkit-animation: $animation-name;
+    animation: $animation-name;
+    -webkit-animation-duration: $duration;
+    animation-duration: $duration;
+    -webkit-animation-fill-mode: both;
+    animation-fill-mode: both;
+    -webkit-animation-timing-function: $easing;
+    animation-timing-function: $easing;
+}

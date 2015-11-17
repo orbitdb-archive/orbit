@@ -9,3 +9,5 @@ node_modules/
 cache.db
 debug.log
 user.json
+
+client/node_modules/
