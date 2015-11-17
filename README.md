@@ -1,5 +1,8 @@
 # anonymous-networks
 
+![Screenshot 1](https://raw.githubusercontent.com/haadcode/anonymous-networks/master/screenshots/screenshot1%202015-11-17.png)
+![Screenshot 2](https://raw.githubusercontent.com/haadcode/anonymous-networks/master/screenshots/screenshot2%202015-11-17.png)
+
 ## Introduction
 
 Anonymous Networks is a proof-of-concept ***distributed chat application built on top of ipfs***.
@@ -30,8 +33,8 @@ For development
 
 ## Run
 ```
-  npm install
-  node index.js
+npm install
+node index.js
 ```
 
 Open http//:localhost:3001 in your browser
@@ -39,7 +42,7 @@ Open http//:localhost:3001 in your browser
 ### Run as Electron App
 Install `npm install electron-prebuilt  -g`. Run:
 ```
-  electron . 
+electron . 
 ```
 
 Make sure you don't have the node.js version running and no client open the browser. For UI development (webpack-dev-server in the Electron app), `export ENV=dev`.
@@ -48,7 +51,7 @@ Make sure you don't have the node.js version running and no client open the brow
 #### Enable Bots
 (broken atm!)
 ```
-  node index.js --bots
+node index.js --bots
 ```
 
 #### Autologin
@@ -62,21 +65,21 @@ Create a file called `user.json` and add your wanted credentials:
 
 Start the program:
 ```
-  node index.js [--bots]
+node index.js [--bots]
 ```
 
 ## Build
 Build all:
 ```
-    grunt
+grunt
 ```
 
 Build for individual platforms:
 ```
-    grunt build_nodejs_osx
-    grunt build_nodejs_linux
-    grunt build_native_osx
-    grunt build_native_linux
+grunt build_nodejs_osx
+grunt build_nodejs_linux
+grunt build_native_osx
+grunt build_native_linux
 ```
 
 The builds are in `dist/`
