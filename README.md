@@ -1,8 +1,5 @@
 # anonymous-networks
 
-![Screenshot 1](https://raw.githubusercontent.com/haadcode/anonymous-networks/master/screenshots/screenshot1%202015-11-17.png)
-![Screenshot 2](https://raw.githubusercontent.com/haadcode/anonymous-networks/master/screenshots/screenshot2%202015-11-17.png)
-
 ## Introduction
 
 Anonymous Networks is a proof-of-concept ***distributed chat application built on top of ipfs***.
@@ -14,6 +11,9 @@ All content (messages, files, metadata) are saved in ipfs as files or objects.
 There's currently a server that tracks the head (ipfs hash) of a linked list that enables traversing the history of a message chain. In future this will be replaced by ipns.
 
 The messages are encrypted by default. Currently there's only one key pair that is used for the crypto. This will change in the future once ipfs has keystore implemented.
+
+![Screenshot 1](https://raw.githubusercontent.com/haadcode/anonymous-networks/master/screenshots/screenshot1%202015-11-17.png)
+![Screenshot 2](https://raw.githubusercontent.com/haadcode/anonymous-networks/master/screenshots/screenshot2%202015-11-17.png)
 
 ### Features
 - Channel-based chats, usernames
@@ -38,14 +38,6 @@ node index.js
 ```
 
 Open http//:localhost:3001 in your browser
-
-### Run as Electron App
-Install `npm install electron-prebuilt  -g`. Run:
-```
-electron . 
-```
-
-Make sure you don't have the node.js version running and no client open the browser. For UI development (webpack-dev-server in the Electron app), `export ENV=dev`.
 
 ### Run Options
 #### Enable Bots
@@ -99,13 +91,33 @@ cd client/
 grunt serve
 ```
 
+### Development in Electron
+For UI development (webpack-dev-server in the Electron app).
+
+Start the webpack dev server:
+```
+cd client/
+grunt serve
+```
+
+Start Electron:
+```
+cd client/
+(npm install electron-prebuilt  -g)
+export ENV=dev
+electron . 
+```
+
+Make sure you don't have the node.js version running and no client open the browser.
+
 ## TODO
 
 ## Backlog
+- Add notification bubbles to native app
+- Display notifications when app is unfocused
 - Components for rendering ipfs links, mentions and localhost links (TextMessage.js)
 - move message type from MetaInfo to Message.content
 - SwarmStore
-- Add screenshots to the README and repo
 - Integrate with a running ipfs daemon (https://github.com/haadcode/anonymous-networks/issues/1)
 - Tab to finish the username when writing
 - Missing: notifications, user mentions (dignifiedquire)
@@ -148,6 +160,7 @@ grunt serve
 ## Changelog
 
 **master**
+- Add screenshots to the README and repo
 - Release UI source code
 - Possibility to have multiple channels open at one time
 - loading animation to channel.join
@@ -290,3 +303,6 @@ Returns:
   "Data": "{\"seq\":51,\"pubkey\":\"-----BEGIN CERTIFICATE-----\\nMIIDBjCCAe4CCQDai2CYe+oyADANBgkqhkiG9w0BAQUFADBFMQswCQYDVQQGEwJB\\nVTETMBEGA1UECBMKU29tZS1TdGF0ZTEhMB8GA1UEChMYSW50ZXJuZXQgV2lkZ2l0\\ncyBQdHkgTHRkMB4XDTE1MTAyNDE4MzQwNloXDTE1MTEyMzE4MzQwNlowRTELMAkG\\nA1UEBhMCQVUxEzARBgNVBAgTClNvbWUtU3RhdGUxITAfBgNVBAoTGEludGVybmV0\\nIFdpZGdpdHMgUHR5IEx0ZDCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEB\\nAJ1aO1Vjk0l1fSa4pdJQQdBtG9kpqI+U6M2yt32fOq5ICUnYhLCGw/3aZeqEEq2h\\n11/AqbvQHar8w3dzH//ErCnx5qGzUVClD2ZIB1mytXjHyKvpIdIIBOMF2EygAO5B\\niMwlFhpEhtraqO0eRQx3W6ULXr4fqqoNSPHGHHEtVlVxTcvRJr3Sz1x+2vGbFszP\\nV61uy1+QaaNc9vi2FR3DWBtOM1QPFJa792xtuAEwkSkHcc1aUJjcfK/VuOxEqPZK\\ny6DW8K2OAO61EUIwTgUubVKudlItmCJgNwRuezvI2P3wU9LvTuQ/AbJowTPuP9Le\\nyNq9TnAHPRETcvPYgbI0i2sCAwEAATANBgkqhkiG9w0BAQUFAAOCAQEAjYne/qu7\\n7KylXi39x72cY/sEpTErKMhCJNm4DL3Mb4YfkDiOZFbNGO+1NKNKHB1DTbu5ECtT\\nvYrBLGwLICklVpVP65podAHweDGGEMW6cp4ypWOpJM4NqyNtL8HKpi2PB/n3SkYi\\nz7aCuagHbU+5YZhm4kj8KDjmbCyn7hU1vQVKf+fw+dLXNUAElI1GLv2tENEEevtl\\nTj7DurHCrxPcdrbgxQMIbDcpPMXVX4OlS51EsT5mVgGIoUFKZN8u9+AwzU+INKZp\\n6SjbrK3y/HqI4jgeDQPY9GQcGooL1ro9OHfSz61m6WiYh9V6vjq2e8bmc00U/yTA\\nlSErmB6aqZ2+0w==\\n-----END CERTIFICATE-----\\n\",\"payload\":\"j2sACz4bNjU9MqlJuWRrzHiaQlq+T8U29thB77WRbXe8KzuOZgtL90hUAVha+ZMIa+oYSvdPnGa5OlCQM452nwZUHLoW4NI6dHeKlCiGtcoqC3LpZBC7GZb+21l6F4MQwSmfRPRaqUdmDGzHql/zwvR2ZpTh8PlkW9SPF0QiJRe7lFmkhny52zVlaHz1/xAquk8d6VeqLQAf4Tj9ZP+f/dVMA7CXJzmiHeYIyZQ2vJKdEoWNnrmjxQPyDFSlNcI2D30ue7UmoEPKnjFws2NN0mIbRMZ6o+InSMgTrc9jD8mL4tlN7FgcU1H7+zdLuwUHiOWEUdk55M4mp4vWvH4Vww==\",\"sig\":\"90b3698901b20b640950537f151ac3a705c1275dbb55877b50203618d151368aa2b15692529e44b09f2a7d11d2df84ee237f661209c824e3994b65c815b8239c173ed16f43e2ba2dbfed3f5005e6b2870cce2a2fff06817e62807988b47cf92b01a5cb82339906f8f693ede88b0b4edd5b9253dd58cebaf3573793efcb4d91b50d58267f480c09276d9e66ec8540f4a0649cfee4d8c539316d1257ec3aab60458d090666d2b64fb49c26c643e0b2f89ed092f58cb374e2dfeb58714a0302b8f77833a7ee2c304699487f06ad303a88217deca7c8a59c69f8b889466aaf3eeef5dcf79c4a009bfa4a2e1e57432a71ec2163e6bd1a6144d1424056667c78e6bea3\"}"
 }
 ```
+
+### Random
+works on api 2.2.1 and ctl 0.6.1
