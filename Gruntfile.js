@@ -9,7 +9,7 @@ module.exports = function (grunt) {
 
   grunt.initConfig({
     clean: {
-      cache: ["tmp"],
+      cache: [".tmp"],
       dist: ["dist"],
       dist_nodejs_linux: ["dist/nodejs-linux"],
       dist_nodejs_osx: ["dist/nodejs-osx"],
@@ -21,25 +21,25 @@ module.exports = function (grunt) {
       osxBuild: {
         options: {
           name: 'AnonymousNetworks',
-          dir: './tmp',
+          dir: '.tmp',
           out: 'dist/',
           version: '0.34.1',
           platform: 'darwin',
           arch: 'x64',
           overwrite: true,
-          cache: './.electron-prebuilt'
+          cache: '.electron-prebuilt'
         }
       },
       linuxBuild: {
         options: {
           name: 'AnonymousNetworks',
-          dir: './tmp',
+          dir: '.tmp',
           out: 'dist/',
-          version: '0.34.2',
+          version: '0.34.1',
           platform: 'linux',
           arch: 'x64',
           overwrite: true,
-          cache: './.electron-prebuilt'
+          cache: '.electron-prebuilt'
         }
       }
     },
@@ -59,7 +59,7 @@ module.exports = function (grunt) {
               "network.json",
               "!./Gruntfile.js",
             ],
-            dest: 'tmp/'
+            dest: '.tmp/'
           }
         ],
       },
@@ -67,7 +67,7 @@ module.exports = function (grunt) {
         files: [
           {
             expand: true,
-            cwd: 'tmp/',
+            cwd: '.tmp/',
             src: ["**/*", "**/.*/*"],
             dest: 'dist/nodejs-linux'
           }
@@ -77,7 +77,7 @@ module.exports = function (grunt) {
         files: [
           {
             expand: true,
-            cwd: 'tmp/',
+            cwd: '.tmp/',
             src: ["**/*", "**/.*/*"],
             dest: 'dist/nodejs-osx'
           }
@@ -91,7 +91,7 @@ module.exports = function (grunt) {
           mode: '755'
         },
         src: [
-          'tmp/node_modules/**',
+          '.tmp/node_modules/**',
           'dist/nodejs-osx/node_modules/ipfsd-ctl/node_modules/subcomandante/subcom',
           'dist/nodejs-linux/node_modules/ipfsd-ctl/node_modules/subcomandante/subcom',
           'dist/nodejs-osx/node_modules/ipfsd-ctl/node_modules/.bin/ipfs',
@@ -107,7 +107,7 @@ module.exports = function (grunt) {
     run: {
       npm_install: {
         options: {
-          cwd: "./tmp"
+          cwd: ".tmp"
         },
         cmd: 'npm',
         args: [
