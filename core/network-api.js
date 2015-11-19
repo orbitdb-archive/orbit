@@ -307,11 +307,15 @@ var connectToSwarm = async((ipfs, user, peers) => {
   logger.debug("Connecting to " + peers.length + " peers");
   var connectedPeers = 0;
   var res = peers.map((peer) => {
-    await (ipfsAPI.swarmConnect(ipfs, peer));
-    connectedPeers += 1;
+    try {
+      await (ipfsAPI.swarmConnect(ipfs, peer));
+      connectedPeers += 1;
+    } catch(e) {
+      /* Ignore, catches 'couldn't connect to peer' errors */
+    }
   })
-
   logger.debug("Connected to " + connectedPeers + " / " + peers.length + " peers");
+
 
   return;
 });

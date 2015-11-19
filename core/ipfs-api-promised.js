@@ -56,12 +56,8 @@ var ipfsAPI = {
     return getPeers();
   }),
   swarmConnect: async ((ipfs, hash) => {
-    try {
-      var connect = Promise.promisify(ipfs.swarm.connect);
-      await (connect(hash));
-    } catch(e) {
-    }
-    return;
+    var connect = Promise.promisify(ipfs.swarm.connect);
+    return await (connect(hash));
   }),
   dhtPut: async ((ipfs, key, value) => {
     var put = Promise.promisify(ipfs.dht.put);
