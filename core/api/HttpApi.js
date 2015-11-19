@@ -40,7 +40,6 @@ var HttpApi = async ((events) => {
   app.use(bodyParser.json())
   app.use(methodOverride());
   app.use(errorHandler);
-  // app.use('/assets', express.static('assets/'));
   app.use('/', express.static('client/dist'));
 
   mime.define({
@@ -72,55 +71,21 @@ var HttpApi = async ((events) => {
 
   app.get("/api/get/:hash", async( function(req, res, next) {
     var hash = req.params.hash;
-    ipfsAPI.cat(ipfs, hash, (err, result) => {
-      if(err) next(err);
+    try {
+      ipfsAPI.cat(ipfs, hash, (err, result) => {
+        if(err) next(err);
 
-      var filename = req.query.name || "";
-      var type     = mime.lookup(filename);
-      if(req.query.action && req.query.action == "download")
-        res.setHeader('Content-disposition', 'attachment; filename=' + filename.replace(",", ""));
+        var filename = req.query.name || "";
+        var type     = mime.lookup(filename);
+        if(req.query.action && req.query.action == "download")
+          res.setHeader('Content-disposition', 'attachment; filename=' + filename.replace(",", ""));
 
-      res.setHeader('Content-type', type);
-      result.pipe(res);
-    });
-    // ipfsAPI.cat(ipfs, hash)
-    //   .then(async (function(result) {
-    //     console.log("getting results...");
-    //     var filename = req.query.name || "";
-    //     var type     = mime.lookup(filename);
-
-    //     if(req.query.action && req.query.action == "download")
-    //       res.setHeader('Content-disposition', 'attachment; filename=' + filename.replace(",", ""));
-
-    //     // TODO: set Content-lenght when the statted size is actually correct
-    //     // var stat = await (ipfsAPI.statObject(ipfs, hash));
-    //     // res.setHeader('Content-length', stat.CumulativeSize);
-    //     // res.setHeader('Content-type', type);
-    //     if (result.readable) {
-    //       console.log("piping...");
-    //       result.pipe(process.stdout);
-    //       result.pipe(res);
-    //       // res.pipe(process.stdout)
-    //     } else {
-    //       console.log(result)
-    //     }
-    //   }))
-    //   .catch(function(err) {
-    //     logger.warn("Got to ipfsAPI.ls!", err);
-    //     ipfsAPI.ls(ipfs, hash)
-    //       .then(function(result) {
-    //         if(result.Objects) {
-    //           ipfsAPI.pinObject(ipfs, result.Objects[0].Hash).catch(function(err) { /* ignore */ });
-    //           ipfsAPI.pinObject(ipfs, hash).catch(function(err) { /* ignore */ });
-    //           res.send(result.Objects[0].Links);
-    //         }
-    //         else
-    //           next("Can't retrieve the file");
-    //       })
-    //       .catch(function(err) {
-    //         next(err);
-    //       });
-    //   });
+        res.setHeader('Content-Type', type);
+        result.pipe(res);
+      });
+    } catch(e) {
+      logger.error(e);
+    }
   }));
 
   app.get("/api/pin/:hash", function(req, res, next) {
