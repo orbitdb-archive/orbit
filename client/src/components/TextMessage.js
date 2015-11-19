@@ -1,13 +1,12 @@
 'use strict';
 
-import React         from "react/addons";
-import ChannelActions       from "actions/ChannelActions";
+import React         from "react";
+import TransitionGroup from "react-addons-css-transition-group";
 import ReactEmoji    from "react-emoji";
 import ReactAutolink from "react-autolink";
-
+import ReactIpfsLink from "components/plugins/react-ipfs-link";
+import ChannelActions from "actions/ChannelActions"; // TODO: move to MessageActions?
 import "styles/TextMessage.scss";
-
-const TransitionGroup = React.addons.CSSTransitionGroup;
 
 class TextMessage extends React.Component {
   constructor(props) {
@@ -47,9 +46,13 @@ class TextMessage extends React.Component {
     };
 
     var withLinks = ReactAutolink.autolink(this.state.text, { target: "_blank", rel: "nofollow" });
-    var finalText = withLinks.map(item => {
+    var emojified = _.flatten(withLinks.map(item => {
       return (typeof item === 'string' && this.state.useEmojis) ? ReactEmoji.emojify(item, emojiOpts) : item;
-    });
+    }));
+    console.log(emojified);
+    var finalText = _.flatten(emojified.map(item => {
+      return (typeof item === 'string') ? ReactIpfsLink.linkify(item, { ipfsUrl: 'http://localhost:5001/api/v0/cat/', target: "_blank", rel: "nofollow" }) : item;
+    }));
 
     var style   = this.state.loading ? "TextMessage loading" : "TextMessage";
     var content = this.state.loading ? this.state.text

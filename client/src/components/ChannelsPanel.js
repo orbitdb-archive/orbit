@@ -11,8 +11,6 @@ import Halogen        from 'halogen';
 import 'styles/ChannelsPanel.scss';
 import 'styles/RecentChannels.scss';
 
-// var TransitionGroup = React.addons.CSSTransitionGroup;
-
 class ChannelsPanel extends React.Component {
   constructor(props) {
     super(props);

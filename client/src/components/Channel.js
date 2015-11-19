@@ -1,7 +1,8 @@
 'use strict';
 
 import _            from 'lodash';
-import React        from 'react/addons';
+import React        from 'react';
+import TransitionGroup from "react-addons-css-transition-group";
 import Message      from 'components/Message';
 import SendMessage  from 'components/SendMessage';
 import Dropzone     from 'react-dropzone';
@@ -12,8 +13,6 @@ import NetworkActions from 'actions/NetworkActions';
 import NotificationActions from 'actions/NotificationActions';
 import Halogen      from 'halogen';
 import 'styles/Channel.scss';
-
-var TransitionGroup = React.addons.CSSTransitionGroup;
 
 class Channel extends React.Component {
   constructor(props) {

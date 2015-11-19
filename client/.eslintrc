@@ -26,6 +26,7 @@
     "quotes": false,
     "no-unused-vars": false,
     "no-irregular-whitespace": false,
-    "camelcase": false
+    "camelcase": false,
+    "new-cap": false
   }
 }
