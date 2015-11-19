@@ -1,11 +1,9 @@
-var _       = require('lodash');
-var async   = require('asyncawait/async');
-var await   = require('asyncawait/await');
-var Promise = require('bluebird');
+var _            = require('lodash');
+var async        = require('asyncawait/async');
+var await        = require('asyncawait/await');
+var Promise      = require('bluebird');
 var childProcess = require('child_process');
-var logger        = require('./logger');
-
-var requests = 0;
+var logger       = require('./logger');
 
 var ipfsAPI = {
   cat: (ipfs, hash, cb) => {

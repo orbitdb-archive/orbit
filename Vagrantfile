@@ -1,7 +1,6 @@
 Vagrant.configure(2) do |config|
   config.vm.box = "digital_ocean"
   config.vm.synced_folder ".", "/vagrant", disabled: true
-  # config.vm.synced_folder "./dist/nodejs-linux", "/anonymous-networks", rsync__auto: false
 
   config.vm.define "node1" do |node|
     node.vm.provision "shell", inline: <<-SHELL
