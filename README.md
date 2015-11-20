@@ -2,13 +2,13 @@
 
 ## Introduction
 
-Anonymous Networks is a proof-of-concept ***distributed, p2p chat application built on top of IPFS***.
+Anonymous Networks is a proof-of-concept ***distributed, peer-to-peer chat application built on top of [IPFS](http://ipfs.io)***.
 
-*"Anonymous"* as in no real-names, no emails. *"Anonymous"* **NOT** as in *"hide your ass"*.
+*"Anonymous"* as in no real-names, no emails. *"Anonymous"* **not** as in *"hide your traffic"*.
 
-All content (messages, files, metadata) are saved in ipfs as files or objects.
+All content (messages, files, metadata) are saved in IPFS as files or objects.
 
-There's currently a server that tracks the head (ipfs hash) of a linked list that enables traversing the history of a message chain. In future this will be replaced by IPNS.
+There's currently a server that tracks the head (IPFS hash) of a linked list that enables traversing the history of a channel's messages. In future this will be replaced by IPNS.
 
 The messages are encrypted by default. Currently there's only one key pair that is used for the crypto. This will change in the future once IPFS has keystore implemented.
 
@@ -113,6 +113,7 @@ Make sure you don't have the node.js version running and no client open the brow
 ## TODO
 
 ## Backlog
+- Fix browser file upload
 - Skip lists for LL items in order to prevent channel history traversal to get stuck completely
 - Fix "Unauthorized" bug after setting channel passwords
 - Fix Electron non-dev flow
