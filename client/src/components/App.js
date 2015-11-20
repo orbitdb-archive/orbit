@@ -5,8 +5,8 @@ import ReactDOM      from 'react-dom';
 import Router        from 'react-router';
 import { Route, History } from 'react-router/lib';
 import UIActions     from "actions/SendMessageAction";
-import UserActions   from 'actions/UserActions';
 import UserStore     from 'stores/UserStore';
+import UserActions   from 'actions/UserActions';
 import NetworkStore  from 'stores/NetworkStore';
 import NetworkActions  from 'actions/NetworkActions';
 import ConnectionStore from 'stores/ConnectionStore';
@@ -78,18 +78,21 @@ var App = React.createClass({
   },
   onUserUpdated: function(user) {
     console.log("User updated", user);
+    if(user === this.state.user)
+      return;
+
     if(!user.username) {
       if(this.state.panelOpen) {
         UIActions.onPanelClosed();
         this.setState({ panelOpen: !this.state.panelOpen });
       }
 
-      this.setState({ location: "Connect" });
+      this.setState({ location: "Connect", user: user });
       this.history.pushState(null, '/connect');
     } else {
       this.setState({ user: user });
       if(!this.state.panelOpen) this.togglePanel();
-      this.setState({ location: null });
+      this.setState({ location: null, user: user });
       this.history.pushState(null, '/');
     }
   },
@@ -103,7 +106,7 @@ var App = React.createClass({
     this.togglePanel();
     if("#" + channelInfo.name !== this.state.location) {
       this.setState({ location: "#" + channelInfo.name, requirePassword: false, currentChannel: channelInfo.name });
-      this.history.pushState(null, '/channel/' + channelInfo.name);
+      this.history.pushState(null, '/channel/' + channelInfo.name, { user: this.state.user });
     }
   },
   onLeftChannel: function (channel) {

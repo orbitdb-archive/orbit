@@ -16,10 +16,10 @@ let ReactIpfsLink = () => {
           return React.createElement(
             'a',
             assign({href: url}, options),
-            word
+            word + " "
           );
         } else {
-          return word;
+          return word + " ";
         }
       });
     }

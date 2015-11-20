@@ -41,8 +41,8 @@ var SettingsStore = Reflux.createStore({
 
       this.trigger(this.settings, settingsDescriptions);
     },
-    onGet: function() {
-      this.trigger(this.settings, settingsDescriptions);
+    onGet: function(callback) {
+      callback(this.settings, settingsDescriptions);
     },
     onSet: function(key, value) {
       this.settings[key] = value;

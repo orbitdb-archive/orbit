@@ -1,9 +1,9 @@
 'use strict';
 
-import React   from 'react';
+import React from 'react';
 import Channel from 'components/Channel';
+import UserActions from 'actions/UserActions';
 import SettingsActions from "actions/SettingsActions";
-import SettingsStore from 'stores/SettingsStore';
 import Themes from 'app/Themes';
 import 'styles/ChannelView.scss';
 
@@ -12,17 +12,14 @@ class ChannelView extends React.Component {
     super(props);
     this.state = {
       channel: props.params.channel,
-      appSettings: {}
+      appSettings: {},
+      user: null
     };
   }
 
   componentDidMount() {
-    this.unsubscribeFromSettingsStore = SettingsStore.listen((settings) => this.setState({ appSettings: settings }));
-    SettingsActions.get();
-  }
-
-  componentWillUnmount() {
-    this.unsubscribeFromSettingsStore();
+    UserActions.getUser((user) => this.setState({ user: user}));
+    SettingsActions.get((settings, descriptions) => this.setState({ appSettings: settings }));
   }
 
   componentWillReceiveProps(nextProps) {
@@ -33,7 +30,13 @@ class ChannelView extends React.Component {
     var theme = this.state.appSettings ? Themes[this.state.appSettings.theme] : null;
     return (
       <div className="ChannelView">
-        <Channel className="Channel" channel={this.state.channel} appSettings={this.state.appSettings} theme={theme}/>
+        <Channel
+          className="Channel"
+          channel={this.state.channel}
+          appSettings={this.state.appSettings}
+          theme={theme}
+          user={this.state.user}
+        />
       </div>
     );
   }

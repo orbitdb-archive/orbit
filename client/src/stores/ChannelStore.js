@@ -14,7 +14,6 @@ var ChannelStore = Reflux.createStore({
     NotificationActions.unreadMessages.listen((c) => {
       this.channels[c].unreadMessagesCount += 1;
       this.trigger(this.channels);
-      console.log(this.channels);
     });
   },
   channels: function() {
@@ -44,6 +43,7 @@ var ChannelStore = Reflux.createStore({
         this.channels[channel].name = channel;
         this.channels[channel].readPassword = password;
         this.channels[channel].unreadMessagesCount = 0;
+        this.channels[channel].mentions = 0;
         this.trigger(this.channels);
         NetworkActions.joinedChannel(res);
       } else {

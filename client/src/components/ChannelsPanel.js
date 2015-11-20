@@ -95,11 +95,23 @@ class ChannelsPanel extends React.Component {
 
     return (
       <div>
-        <TransitionGroup transitionName="openPanelAnimation" transitionAppear={true} component="div">
+        <TransitionGroup
+          transitionName="openPanelAnimation"
+          transitionAppear={true}
+          transitionAppearTimeout={5000}
+          transitionEnterTimeout={5000}
+          transitionLeaveTimeout={5000}
+          component="div">
           <div className="ChannelsPanel">
             <BackgroundAnimation size="320" startY="58" theme={this.state.theme}/>
 
-            <TransitionGroup transitionName="panelHeaderAnimation" transitionAppear={true} component="div">
+            <TransitionGroup
+              transitionName="panelHeaderAnimation"
+              transitionAppear={true}
+              transitionAppearTimeout={5000}
+              transitionEnterTimeout={5000}
+              transitionLeaveTimeout={5000}
+              component="div">
               <div className={headerStyle} onClick={this.togglePanel.bind(this)}>
                 <div className="text">ANONYMOUS NETWORKS</div>
               </div>
@@ -109,7 +121,14 @@ class ChannelsPanel extends React.Component {
 
             {loadingIcon}
 
-            <TransitionGroup component="div" transitionName="joinChannelAnimation" transitionAppear={true} className={channelJoinInputStyle}>
+            <TransitionGroup
+              component="div"
+              transitionName="joinChannelAnimation"
+              transitionAppear={true}
+              transitionAppearTimeout={5000}
+              transitionEnterTimeout={5000}
+              transitionLeaveTimeout={5000}
+              className={channelJoinInputStyle}>
               <JoinChannel
                 onJoinChannel={this.handleJoinChannel.bind(this)}
                 requirePassword={this.state.requirePassword}
@@ -121,7 +140,14 @@ class ChannelsPanel extends React.Component {
 
             <div className={channelsHeaderStyle}>Channels</div>
 
-            <TransitionGroup component="div" transitionName="joinChannelAnimation" transitionAppear={true} className="openChannels">
+            <TransitionGroup
+              component="div"
+              transitionName="joinChannelAnimation"
+              transitionAppear={true}
+              transitionAppearTimeout={5000}
+              transitionEnterTimeout={5000}
+              transitionLeaveTimeout={5000}
+              className="openChannels">
               <div className="RecentChannelsView">
                 <div className="RecentChannels">{openChannels}</div>
               </div>
@@ -135,7 +161,7 @@ class ChannelsPanel extends React.Component {
           </div>
 
         </TransitionGroup>
-        <TransitionGroup component="div" transitionName="darkenerAnimation" transitionAppear={true} className={"darkener"} onClick={this.togglePanel.bind(this)}>
+        <TransitionGroup component="div" transitionName="darkenerAnimation" transitionAppear={true} className={"darkener"} onClick={this.togglePanel.bind(this)} transitionAppearTimeout={5000} transitionEnterTimeout={5000} transitionLeaveTimeout={5000}>
         </TransitionGroup>
       </div>
     );

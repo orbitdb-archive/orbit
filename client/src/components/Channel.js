@@ -28,13 +28,16 @@ class Channel extends React.Component {
       statusMessage: null,
       showChannelOptions: false,
       dragEnter: false,
-      username: props.username,
+      user: props.user,
+      username: props.user ? props.user.username : '',
       channelInfo: {},
       flipMessageOrder: props.appSettings.flipMessageOrder,
       displayNewMessagesIcon: false,
       unreadMessages: 0,
       appSettings: props.appSettings,
-      theme: props.theme
+      theme: props.theme,
+      lastCheckedTime: new Date().getTime(),
+      messagesSeen: []
     };
   }
 
@@ -45,6 +48,8 @@ class Channel extends React.Component {
     this.setState({
       loading: false,
       channelName: nextProps.channel,
+      user: nextProps.user,
+      username: nextProps.user.username,
       appSettings: nextProps.appSettings,
       theme: nextProps.theme,
       flipMessageOrder: nextProps.appSettings.flipMessageOrder
@@ -257,6 +262,14 @@ class Channel extends React.Component {
     node.scrollTop = this.state.flipMessageOrder ? node.scrollHeight + node.clientHeight : 0;
   }
 
+  onHighlight(message) {
+    if(message.ts > this.state.lastCheckedTime) {
+      console.log("Mention! Do something with it");
+      this.setState({ lastCheckedTime: new Date().getTime() });
+      NotificationActions.newHighlight(this.state.channelName);
+    }
+  }
+
   render() {
     document.title = "#" + this.state.channelName + (this.state.unreadMessages > 0 ?  " (" + this.state.unreadMessages + ")" : "");
     var theme = this.state.theme;
@@ -290,6 +303,7 @@ class Channel extends React.Component {
                 username={this.state.username}
                 colorifyUsername={this.state.appSettings.colorifyUsernames}
                 useEmojis={this.state.appSettings.useEmojis}
+                onHighlight={this.onHighlight.bind(this)}
               />;
     });
 
@@ -350,12 +364,10 @@ class Channel extends React.Component {
           {messages}
         </div>
 
+        {channelOptions}
+
         {showNewMessageIcon}
         {controlsBar}
-
-        <TransitionGroup component="div" transitionName="channelAccessAnimation" transitionEnter={true} transitionLeave={true}>
-          {channelOptions}
-        </TransitionGroup>
 
         {dropzone}
         {loadingIcon}

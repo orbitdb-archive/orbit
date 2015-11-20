@@ -16,12 +16,13 @@ class User extends React.Component {
     this.state = {
       uid: this.props.userId,
       username: unknownUsername,
-      colorify: props.colorify
+      colorify: props.colorify,
+      highlight: props.highlight
     };
   }
 
   componentWillReceiveProps(nextProps) {
-    this.setState({ colorify: nextProps.colorify });
+    this.setState({ colorify: nextProps.colorify, highlight: nextProps.highlight });
   }
 
   componentDidMount() {
@@ -36,8 +37,10 @@ class User extends React.Component {
       golden: false
     }) : "";
 
+    var className = this.state.highlight ? "User command" : "User";
+
     return (
-      <div className="User" style={{color: color}}>{this.state.username}</div>
+      <div className={className} style={{color: color}}>{this.state.username}</div>
     );
   }
 }

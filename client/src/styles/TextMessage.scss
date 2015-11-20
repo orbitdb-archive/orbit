@@ -1,5 +1,4 @@
 .TextMessage {
-  color: rgba(255, 255, 255, 0.6);
   padding-left: 0.3em;
   padding-right: 0.3em;
   display: flex;
@@ -32,6 +31,10 @@
     width: 100%;
   }
 
+  .highlight {
+    color: rgba(240, 100, 100, 0.8);
+    font-weight: 400;
+  }
 }
 
 .TextMessage:hover {

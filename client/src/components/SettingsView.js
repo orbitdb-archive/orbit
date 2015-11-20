@@ -21,22 +21,24 @@ class SettingsView extends React.Component {
   }
 
   componentDidMount() {
-    this.unsubscribeFromSettingsStore = SettingsStore.listen((settings, descriptions) => {
-      this.setState({
-        settings: settings,
-        descriptions: descriptions,
-        theme: Themes[settings.theme]
-      });
-    });
-    SettingsActions.get();
+    this.unsubscribeFromSettingsStore = SettingsStore.listen(this.onSettingsUpdated.bind(this));
+    SettingsActions.get(this.onSettingsUpdated.bind(this));
+  }
+
+  componentWillUnmount() {
+    this.unsubscribeFromSettingsStore();
   }
 
   componentWillReceiveProps(nextProps) {
     this.setState({ theme: nextProps.theme });
   }
 
-  componentWillUnmount() {
-    this.unsubscribeFromSettingsStore();
+  onSettingsUpdated(settings, descriptions) {
+    this.setState({
+      settings: settings,
+      descriptions: descriptions,
+      theme: Themes[settings.theme]
+    });
   }
 
   changeBooleanSetting(key, event) {

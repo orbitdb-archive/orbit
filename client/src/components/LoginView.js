@@ -26,7 +26,7 @@ class LoginView extends React.Component{
   }
 
   componentDidMount() {
-    window.addEventListener('resize', this.onResize);
+    window.addEventListener('resize', this.onResize.bind(this));
 
     if(this.refs.username) this.refs.username.focus();
 

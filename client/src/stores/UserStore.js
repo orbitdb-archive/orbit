@@ -27,15 +27,16 @@ var UserStore = Reflux.createStore({
       });
       this.getWhoami();
     },
-    getWhoami: async function() {
+    onGetUser: function(callback) {
+      callback(this.user);
+    },
+    getWhoami: function() {
       if(!this.socket) {
         console.error("Socket not connected");
         return;
       }
 
       console.log("--> whoami");
-      var v = await this.socket.emit('whoami');
-
       this.socket.emit('whoami', (user) => {
         this.user = user;
         if(this.user.username) {

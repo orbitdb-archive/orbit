@@ -1,13 +1,19 @@
 @import 'Animations';
+@import 'Colors';
 
 $background-color: rgb(40, 40, 40);
 $border-color: 		 rgb(36, 36, 36);
 $timestamp-color:  rgba(240, 240, 240, 0.6);
 
-// .flipped {
-//   // transform: rotateX(180deg);
-//   // transform: scaleX(-1);
-// }
+.highlighted {
+  background-color: rgb(37, 37, 37) !important;
+}
+
+.command {
+  font-style: italic;
+  color: rgba(240, 240, 240, 1) !important;
+  margin-left: 0em !important;
+}
 
 .Message {
   display: flex;
@@ -15,24 +21,12 @@ $timestamp-color:  rgba(240, 240, 240, 0.6);
   flex-direction: row;
   justify-content: flex-start;
   align-items: baseline;
-  background-color: $background-color;
+  background-color: rgb(35, 35, 35);
 	font-weight: 100;
-  color: rgba(240, 244, 240, 0.1);
-	border-bottom: 1px solid $border-color;
+  border-bottom: 1px solid rgba(34, 34, 34, 0);
   padding: 0.2em;
 
-  .messagesAnimation-appear {
-  	$duration: 0.2s;
-
-    -webkit-animation-name: fadeIn;
-    animation-name: fadeIn;
-    -webkit-animation-duration: $duration;
-    animation-duration: $duration;
-    -webkit-animation-fill-mode: both;
-    animation-fill-mode: both;
-    -webkit-animation-timing-function: ease-in;
-    animation-timing-function: ease-in;
-  }
+  color: rgba(255, 255, 255, 0.6);
 
   .Timestamp {
     display: flex;
@@ -52,5 +46,17 @@ $timestamp-color:  rgba(240, 240, 240, 0.6);
     flex: 1;
   }
 
+  .messagesAnimation-appear {
+    $duration: 0.2s;
+
+    -webkit-animation-name: fadeIn;
+    animation-name: fadeIn;
+    -webkit-animation-duration: $duration;
+    animation-duration: $duration;
+    -webkit-animation-fill-mode: both;
+    animation-fill-mode: both;
+    -webkit-animation-timing-function: ease-in;
+    animation-timing-function: ease-in;
+  }
 }
 

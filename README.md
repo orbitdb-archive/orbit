@@ -2,15 +2,15 @@
 
 ## Introduction
 
-Anonymous Networks is a proof-of-concept ***distributed chat application built on top of ipfs***.
+Anonymous Networks is a proof-of-concept ***distributed, p2p chat application built on top of IPFS***.
 
 *"Anonymous"* as in no real-names, no emails. *"Anonymous"* **NOT** as in *"hide your ass"*.
 
 All content (messages, files, metadata) are saved in ipfs as files or objects.
 
-There's currently a server that tracks the head (ipfs hash) of a linked list that enables traversing the history of a message chain. In future this will be replaced by ipns.
+There's currently a server that tracks the head (ipfs hash) of a linked list that enables traversing the history of a message chain. In future this will be replaced by IPNS.
 
-The messages are encrypted by default. Currently there's only one key pair that is used for the crypto. This will change in the future once ipfs has keystore implemented.
+The messages are encrypted by default. Currently there's only one key pair that is used for the crypto. This will change in the future once IPFS has keystore implemented.
 
 ![Screenshot 1](https://raw.githubusercontent.com/haadcode/anonymous-networks/master/screenshots/screenshot1%202015-11-17.png)
 ![Screenshot 2](https://raw.githubusercontent.com/haadcode/anonymous-networks/master/screenshots/screenshot2%202015-11-17.png)
@@ -113,14 +113,15 @@ Make sure you don't have the node.js version running and no client open the brow
 ## TODO
 
 ## Backlog
+- Skip lists for LL items in order to prevent channel history traversal to get stuck completely
+- Fix "Unauthorized" bug after setting channel passwords
+- Fix Electron non-dev flow
 - Add notification bubbles to native app
 - Display notifications when app is unfocused
-- Components for rendering ipfs links, mentions and localhost links (TextMessage.js)
 - move message type from MetaInfo to Message.content
 - SwarmStore
 - Integrate with a running ipfs daemon (https://github.com/haadcode/anonymous-networks/issues/1)
 - Tab to finish the username when writing
-- Missing: notifications, user mentions (dignifiedquire)
 - If it's truly a linked list, you could take advantage of https://ipfs.io/ipfs/QmTtqKeVpgQ73KbeoaaomvLoYMP7XKemhTgPNjasWjfh9b/ for efficient seeking to any point in the history. (from Ion)
 - Private messages (one-to-one messages)
 - Add Katex/Mathjax support along with markdown (from davidar)
@@ -135,8 +136,6 @@ Make sure you don't have the node.js version running and no client open the brow
   + http://stackoverflow.com/questions/8966740/how-to-host-google-web-fonts-on-my-own-server
 - flashing "Anonymous" user name for a known user
 - bug: slow internet makes the app respond slower (how ui elements appear, sending messages feedback delay, etc.)
-- bug: saw ENOENT / file not found error message after login once in electron app (see bug notes for the stacktrace)
-- "Incorrect password" should be red
 - subcomandante needs to be platform-agnostic (remove #!/usr/bin/env node)
 - bug: when node who posted head is offline and nobody else has the head hash, whole channel gets fckd
 - convert MessageStore (UI) to ES6
@@ -160,13 +159,14 @@ Make sure you don't have the node.js version running and no client open the brow
 ## Changelog
 
 **master**
+- Components for rendering ipfs links, mentions and localhost links (TextMessage.js)
 - Add screenshots to the README and repo
 - Release UI source code
 - Possibility to have multiple channels open at one time
 - loading animation to channel.join
-- feature: notifications
+- Feature: notifications
 - recent channels (and settings?) read from locaStorage should be per user
-- bug: unfetched messages can end in another channel --> cancel fetching messages on leave#
+- Bug: unfetched messages can end in another channel --> cancel fetching messages on leave#
 - setup electron dev workflow
 - "New messages" notification broken on channels that have less than div.height messages
 - back to top button (overlay)
