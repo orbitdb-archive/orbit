@@ -31,14 +31,19 @@ var connect = async((config, network, username, password) => {
   var user = { id: null, username: null };
 
   // Connect to the network server
-  var network   = await (networkAPI.register(network.address, username, password));
-  var peers     = network.addrs.Bootstrap;
-  user.id       = network.uid;
-  user.username = username;
+  var network;//
+  try {
+    network = await (networkAPI.register(network.address, username, password));
+  } catch(e) {
+    throw e;
+  }
+
+  var peers     = network.config.Bootstrap;
+  user.id       = network.user.id;
+  user.username = network.user.username;
 
   // Start ipfs daemon
-  var ipfsNode    = await (ipfsd.init(config.ipfsPath, { SupernodeRouting: network.addrs.SupernodeRouting }));
-
+  var ipfsNode = await (ipfsd.init(config.ipfsPath, { SupernodeRouting: network.config.SupernodeRouting }));
   if(!ipfsNode) {
     throw "IPFS daemon already running! Please make sure ipfs daemon is not running.";
     return null;

@@ -20,6 +20,7 @@ class Channel extends React.Component {
 
     this.state = {
       channelName: props.channel,
+      channelInfo: props.channelInfo,
       password: props.password,
       messages: [],
       loading: false,
@@ -30,7 +31,7 @@ class Channel extends React.Component {
       dragEnter: false,
       user: props.user,
       username: props.user ? props.user.username : '',
-      channelInfo: {},
+      // channelInfo: {},
       flipMessageOrder: props.appSettings.flipMessageOrder,
       displayNewMessagesIcon: false,
       unreadMessages: 0,
@@ -45,24 +46,26 @@ class Channel extends React.Component {
     if(nextProps.channel !== this.state.channelName)
       this.setState({ messages: [] });
 
+    if(nextProps.channelInfo !== {})
+      this.setChannelStatus(nextProps.channelInfo);
+
     this.setState({
       loading: false,
       channelName: nextProps.channel,
+      channelInfo: nextProps.channelInfo,
       user: nextProps.user,
-      username: nextProps.user.username,
+      username: nextProps.user ? nextProps.user.username : '',
       appSettings: nextProps.appSettings,
       theme: nextProps.theme,
       flipMessageOrder: nextProps.appSettings.flipMessageOrder
     });
-    NetworkActions.getChannelInfo(nextProps.channel);
   }
 
   componentDidMount() {
     this.unsubscribeFromMessageStore = MessageStore.listen(this.onNewMessages.bind(this));
     this.unsubscribeFromErrors       = UIActions.raiseError.listen((errorMessage) => this.setState({ statusMessage: errorMessage }));
-    this.unsubscribeFromChannelInfo  = ChannelActions.channelInfoReceived.listen(this.setChannelStatus.bind(this));
     this.unsubscribeFromStartLoading = UIActions.startLoading.listen((channel) => {
-      if(!this.state.channelInfo.new && channel === this.state.channelName)
+      if(this.state.channelInfo.head && channel === this.state.channelName)
         this.setState({ loadingIcon: true });
     });
     this.unsubscribeFromStopLoading = UIActions.stopLoading.listen((channel) => {
@@ -81,14 +84,11 @@ class Channel extends React.Component {
         this.loadOlderMessages();
       }
     }, 100);
-
-    NetworkActions.getChannelInfo(this.state.channelName);
   }
 
   componentWillUnmount() {
     this.unsubscribeFromMessageStore();
     this.unsubscribeFromErrors();
-    this.unsubscribeFromChannelInfo();
     this.unsubscribeFromStartLoading();
     this.unsubscribeFromStopLoading();
     this.setState({ messages: [], loading: false });
@@ -102,23 +102,24 @@ class Channel extends React.Component {
   // Moderated    // only ops can talk
   setChannelStatus(channelInfo) {
     this.setState({ channelInfo: channelInfo });
-    var info = channelInfo;
 
-    if(info.write && !info.owner) this.setState({ writeMode: false });
-    else this.setState({ writeMode: true });
+    var modes  = channelInfo.modes;
+    var status = "Public";
 
-    var status = "";
-    // if(info.new)   status += "This channel is empty. ";
-    if(info.read)  status = "Secret";
-    if(info.write) status = "Moderated";
-    if(info.read && info.write)  status = "Private";
-    // if(info.write && info.owner)  status += "You're a moderator of this channel. ";
-    // if(info.write && !info.owner) status += "Only the moderators of this channel can send messages. ";
-    if(status === "") status = "Public";
-    this.setStatusMessage(status);
+    if(modes) {
+      if(modes.w && this.state.user && !_.contains(modes.w.ops, this.state.user.id))
+        this.setState({ writeMode: false });
+      else
+        this.setState({ writeMode: true });
+
+      if(modes.r) status = "Secret";
+      if(modes.w) status = "Moderated";
+      if(modes.r && modes.w) status = "Private";
+    }
+    this.setState({ statusMessage: status });
   }
 
-  onNewMessages(channel, messages) {
+  onNewMessages(channel: string, messages: array) {
     if(channel !== this.state.channelName)
       return;
 
@@ -146,22 +147,20 @@ class Channel extends React.Component {
       messages: sorted,
       loading: false
     });
-
-    if(this.state.channelInfo.new) NetworkActions.getChannelInfo(this.state.channelName);
   }
 
-  sendMessage(message) {
-    if(message !== '')
-      ChannelActions.sendMessage(this.state.channelName, message);
+  sendMessage(text: string) {
+    if(text !== '')
+      ChannelActions.sendMessage(this.state.channelName, text);
   }
 
-  sendFile(filePath) {
+  sendFile(filePath: string) {
     if(filePath !== '')
       ChannelActions.addFile(this.state.channelName, filePath);
   }
 
   loadOlderMessages() {
-    if(!this.state.loading && !this.state.channelInfo.new) {
+    if(!this.state.loading && this.state.channelInfo) {
       this.setState({ loading: true });
       ChannelActions.loadOlderMessages(this.state.channelName);
     }
@@ -169,7 +168,7 @@ class Channel extends React.Component {
 
   componentWillUpdate() {
     var node    = this.refs.MessagesView;
-    var padding = 0;
+    // var padding = 0;
 
     if(!this.state.flipMessageOrder) {
       // this.shouldScroll = node.scrollTop > 0 && this.scrollHeight < node.scrollHeight;
@@ -205,12 +204,26 @@ class Channel extends React.Component {
   changePasswords(event) {
     event.preventDefault();
     var newReadPassword  = this.refs.readPassword.value.trim();
-    var newWritePassword = this.refs.writePassword.value.trim();
-    this.refs.readPassword.value  = '';
-    this.refs.writePassword.value = '';
+    var moderated        = this.refs.writePassword.checked;
+    var newModes         = [];
+
+    if(!this.state.channelInfo.modes.r && newReadPassword !== ''
+      || this.state.channelInfo.modes.r && newReadPassword !== this.state.channelInfo.modes.r.password)
+      newModes.push({ mode: "+r", params: { password: newReadPassword } });
+    else if(this.state.channelInfo.modes.r && newReadPassword === '')
+      newModes.push({ mode: "-r" });
+    // else if()
+    //   newModes.push({ mode: "+r", params: { password: newReadPassword } });
+
+    if(!this.state.channelInfo.modes.w && moderated)
+      newModes.push({ mode: "+w", params: { ops: [this.state.user.id] } });
+    else if(this.state.channelInfo.modes.w && !moderated)
+      newModes.push({ mode: "-w" });
+
+    if(newModes.length > 0)
+      ChannelActions.setChannelMode(this.state.channelName, newModes);
+
     this.setState({ showChannelOptions: !this.state.showChannelOptions });
-    ChannelActions.setChannelOptions(this.state.channelName, newReadPassword, newWritePassword);
-    return;
   }
 
   showChannelOptions(event) {
@@ -219,13 +232,9 @@ class Channel extends React.Component {
       this.setState({ showChannelOptions: !this.state.showChannelOptions });
       if(this.state.showChannelOptions) {
         this.refs.readPassword.value = this.state.password ? this.state.password : '';
-        this.refs.writePassword.value = '';
+        // this.refs.writePassword.value = '';
       }
     }
-  }
-
-  setStatusMessage(message) {
-    this.setState({ statusMessage: message });
   }
 
   onDrop(files) {
@@ -308,9 +317,9 @@ class Channel extends React.Component {
     });
 
     var firstMessageText = "Beginning of #" + this.state.channelName;
-    if(this.state.messages[this.state.messages.length - 1] && this.state.messages[this.state.messages.length - 1].seq === 1 && !this.state.flipMessageOrder)
+    if(this.state.channelInfo.head && this.state.messages[this.state.messages.length - 1] && this.state.messages[this.state.messages.length - 1].seq === 1 && !this.state.flipMessageOrder)
       messages.push(<div className="firstMessage">{firstMessageText}</div>);
-    else if((this.state.channelInfo.new || this.state.messages[0] && this.state.messages[0].seq === 1) && this.state.flipMessageOrder)
+    else if((!this.state.channelInfo.head || this.state.messages[0] && this.state.messages[0].seq === 1) && this.state.flipMessageOrder)
       messages.unshift(<div className="firstMessage">{firstMessageText}</div>);
 
     var channelOptions = this.state.showChannelOptions ? (
@@ -323,8 +332,8 @@ class Channel extends React.Component {
           </div>
         </div>
         <form onSubmit={this.changePasswords.bind(this)}>
-          <input type="text" ref="readPassword" placeholder="read-password" defaultValue={this.state.password} style={theme}/>
-          <input type="text" ref="writePassword" placeholder="write-password" style={theme}/>
+          <input type="text" ref="readPassword" placeholder="read-password" defaultValue={this.state.channelInfo.modes.r ? this.state.channelInfo.modes.r.password : ''} style={theme}/>
+          <input type="checkbox" ref="writePassword" defaultChecked={this.state.channelInfo.modes.w} style={theme}/>
           <input type="submit" value="Set" style={theme}/>
         </form>
       </div>

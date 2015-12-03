@@ -13,7 +13,7 @@ var NetworkActions = Reflux.createActions([
   "joinChannelError",
   "leaveChannel",
   "leftChannel",
-  "getChannelInfo",
+  "getChannel",
   "getUserInfo",
   "getOpenChannels"
 ]);

@@ -12,7 +12,8 @@ let ApiMessages = {
     part: "channel.part",
     messages: "channel.get",
     passwords: "channel.password",
-    info: "channel.info"
+    info: "channel.info",
+    setMode: "channel.password"
   },
   user: {
     get: "user.get"

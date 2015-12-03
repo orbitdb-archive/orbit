@@ -2,8 +2,10 @@
 
 import React from 'react';
 import Channel from 'components/Channel';
+import ChannelActions from 'actions/ChannelActions';
 import UserActions from 'actions/UserActions';
 import SettingsActions from "actions/SettingsActions";
+import NetworkActions from 'actions/NetworkActions';
 import Themes from 'app/Themes';
 import 'styles/ChannelView.scss';
 
@@ -11,7 +13,8 @@ class ChannelView extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      channel: props.params.channel,
+      channelName: props.params.channel,
+      channel: {},
       appSettings: {},
       user: null
     };
@@ -20,10 +23,21 @@ class ChannelView extends React.Component {
   componentDidMount() {
     UserActions.getUser((user) => this.setState({ user: user}));
     SettingsActions.get((settings, descriptions) => this.setState({ appSettings: settings }));
+    NetworkActions.getChannel(this.state.channelName, (channel) => this.setState({ channel: channel }));
+    this.unsubscribeFromChannelMode = ChannelActions.channelModeUpdated.listen((channel, modes) => {
+      var c = _.cloneDeep(this.state.channel);
+      c.modes = modes;
+      this.setState({ channel: c });
+    });
+  }
+
+  componentWillUnmount() {
+    this.unsubscribeFromChannelMode();
   }
 
   componentWillReceiveProps(nextProps) {
-    this.setState({ channel: nextProps.params.channel });
+    this.setState({ channelName: nextProps.params.channel, channel: {} });
+    SettingsActions.get((settings, descriptions) => this.setState({ appSettings: settings }));
   }
 
   render() {
@@ -32,7 +46,8 @@ class ChannelView extends React.Component {
       <div className="ChannelView">
         <Channel
           className="Channel"
-          channel={this.state.channel}
+          channel={this.state.channelName}
+          channelInfo={this.state.channel}
           appSettings={this.state.appSettings}
           theme={theme}
           user={this.state.user}

@@ -9,7 +9,8 @@ var ChannelActions = Reflux.createActions([
   "sendMessage",
   "addFile",
   "loadDirectoryInfo",
-  "setChannelOptions"
+  "setChannelMode",
+  "channelModeUpdated"
 ]);
 
 export default ChannelActions;

@@ -1,5 +1,6 @@
 'use strict';
 
+var _           = require('lodash');
 var Base58      = require('bs58');
 var crypto      = require('crypto');
 var async       = require('asyncawait/async');
@@ -84,19 +85,18 @@ var SocketApi = async ((socketServer, httpServer, events) => {
     var channelPasswordMap = {};
     var channelWritePasswordMap = {};
 
-    socket.on(ApiMessages.channel.join, async ((channelName, password, callback) => {
+    socket.on(ApiMessages.channel.join, async ((channel, password, callback) => {
       if(ipfs) {
-        logger.debug("Join channel:", channelName);
-        networkAPI.joinChannel(ipfs, channelName, userInfo.id, password)
+        logger.debug("Join #" + channel + (password ? " (with password)" : ""));
+        networkAPI.joinChannel(ipfs, channel, userInfo.id, password)
           .then((channelInfo) => {
-            logger.debug("Joined channel #" + channelName);
-            channelPasswordMap[channelName] = password;
-            channelWritePasswordMap[channelName] = channelInfo.writePassword;
-            channelInfo.name = channelName;
+            logger.debug("Joined #" + channel);
+            channelPasswordMap[channel] = password;
+            channelInfo.name = channel;
             callback(null, channelInfo);
           })
           .catch((err) => {
-            logger.error("Can't join channel #" + channelName + ":", err);
+            logger.error("Can't join #" + channel + ":", err);
             callback(err, null);
           });
         } else {
@@ -111,23 +111,13 @@ var SocketApi = async ((socketServer, httpServer, events) => {
     }));
 
     socket.on(ApiMessages.channel.messages, async (function(channelName, startHash, lastHash, amount, cb) {
-      if(channelPasswordMap[channelName] !== undefined) {
-        var password = channelPasswordMap[channelName];
-        networkAPI.getMessages(ipfs, channelHash(channelName), userInfo.id, password, startHash, lastHash, amount)
-          .then((messages) => {
-            cb(channelName, messages);
-          })
-          .catch(function(err) {
-            logger.error("Error in channel.get", err);
-            cb(null);
-          });
-      } else {
-        logger.debug("Leave channel #" + channelName);
-        delete channelPasswordMap[channelName];
-        await (networkAPI.leaveChannel(channelHash(channelName)));
-        logger.error("Not allowed to read #" + channelName);
-        cb("Not allowed to read #");
-      }
+      var password = channelPasswordMap[channelName];
+      networkAPI.getMessages(ipfs, channelHash(channelName), userInfo.id, password, startHash, lastHash, amount)
+        .then((messages) => cb(channelName, messages))
+        .catch(function(err) {
+          logger.error("Error in channel.get", err);
+          cb(null);
+        });
     }));
 
     socket.on(ApiMessages.message.send, async((channelName, message, cb) => {
@@ -149,31 +139,33 @@ var SocketApi = async ((socketServer, httpServer, events) => {
         .catch((err) => cb(err));
     }));
 
-    socket.on(ApiMessages.channel.passwords, async((channelName, newReadPassword, newWritePassword, cb) => {
-      var channel  = channelHash(channelName);
-      var password = channelWritePasswordMap[channelName];
-      networkAPI.changeChannelPasswords(ipfs, channel, userInfo.id, password, newReadPassword, newWritePassword)
-        .then(async ((result) => {
-          logger.debug("Changed passwords");
-          channelPasswordMap[channelName] = newReadPassword;
-          channelWritePasswordMap[channelName] = newWritePassword;
-          await (networkAPI.leaveChannel(channelHash(channelName)));
-          await (networkAPI.joinChannel(ipfs, channel, userInfo.id, newReadPassword));
-          cb(null);
+    socket.on(ApiMessages.channel.setMode, async((channel, modes, cb) => {
+      var password = channelPasswordMap[channel];
+      networkAPI.setChannelMode(ipfs, channel, userInfo.id, password, modes)
+        .then(async ((newMode) => {
+          logger.debug("Channel mode set to:", newMode);
+          channelPasswordMap[channel] = newMode.modes.r ? newMode.modes.r.password : '';
+
+          if(password !== channelPasswordMap[channel]) {
+            var message = newMode.modes.r ? "/me set channel password to '" + channelPasswordMap[channel] + "'" : "/me removed channel password";
+            await(networkAPI.sendMessage(ipfs, message, channel, userInfo.id, channelPasswordMap[channel], null));
+          }
+
+          if(_(modes).pluck('mode').find((m) => { return  m === '+w' })) {
+            var message = "/me is now moderating the channel";
+            await(networkAPI.sendMessage(ipfs, message, channel, userInfo.id, channelPasswordMap[channel], null));
+          }
+
+          if(_(modes).pluck('mode').find((m) => { return  m === '-w' })) {
+            var message = "/me disabled channel moderation mode";
+            await(networkAPI.sendMessage(ipfs, message, channel, userInfo.id, channelPasswordMap[channel], null));
+          }
+
+          cb(null, newMode);
         }))
         .catch((err) => {
-          logger.error("Couldn't change passwords:", err);
-          cb(err);
-        });
-    }));
-
-    // -- API, no credentials/password --
-
-    socket.on(ApiMessages.channel.info, async ((channelName, cb) => {
-      networkAPI.getChannelInfo(ipfs, channelHash(channelName), userInfo.id)
-        .then(cb)
-        .catch((err) => {
-          cb(null);
+          logger.error("Couldn't set channel mode:", err);
+          cb(err, null);
         });
     }));
 
@@ -217,7 +209,7 @@ var SocketApi = async ((socketServer, httpServer, events) => {
     }));
 
     socket.on(ApiMessages.whoami, async (function (cb) {
-      if(cb) cb({ username: userInfo.username });
+      if(cb) cb(userInfo);
     }));
 
     socket.on(ApiMessages.swarm.peers, async((cb) => {
@@ -240,7 +232,8 @@ var SocketApi = async ((socketServer, httpServer, events) => {
     socket.on(ApiMessages.register, async (function (network, username, password) {
       events.emit('onRegister', network, username, password, (err, res) => {
         if(!err) {
-          socket.emit('registered', { host: network, username: userInfo.username });
+          logger.debug("info", { host: network, user: userInfo });
+          socket.emit('registered', { host: network, user: userInfo });
           events.emit('connect');
         } else {
           socket.emit('log', "register error: " + err);

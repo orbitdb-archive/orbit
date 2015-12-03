@@ -17,6 +17,7 @@ var MetaInfo      = require('./MetaInfo');
 var Message       = require('./Message');
 var SignedMessage = require('./SignedMessage');
 var Channel       = require('./Channel');
+var HashCache     = require('./lib/hash-cache-client');
 
 // TESTING SIGNING
 var privkey = fs.readFileSync(path.resolve(utils.getAppPath(), 'keys/private.pem')).toString('ascii');
@@ -84,7 +85,8 @@ var leaveAllChannels = async (function() {
 });
 
 var getChannelHead = async (function(ipfs, channel, uid, password) {
-  var head = await (networkServer.getChannel(channel, uid, password))
+  // var head = await (networkServer.getChannel(channel, uid, password))
+  var head = await(client.linkedList(channel, password).head)
   return (head.length == 0) ? null : head.head;
 });
 
@@ -194,7 +196,7 @@ var sendToChannel = async (function(ipfs, message, uid, readPassword, writePassw
 
   var meta = await (ipfsAPI.putObject(ipfs, metaData));
   logger.debug("--- Message -------------------------------------------");
-  logger.debug("To:      #" + channel.name);
+  logger.debug("To:      #" + channel.hash);
   logger.debug("Message: '" + encryption.decrypt(message.content, privkey) + "'");
   logger.debug("Hash:    " + hash);
   logger.debug("Meta:    " + meta.Hash);
@@ -204,8 +206,8 @@ var sendToChannel = async (function(ipfs, message, uid, readPassword, writePassw
     var newHead = { Hash: meta.Hash };
     if(head)
       newHead = await (ipfsAPI.patchObject(ipfs, meta.Hash, head))
-    // TODO: pass oldHead too, so the cache can return success/fail
-    await (networkServer.updateChannel(channel.hash, newHead.Hash, metaData, uid, writePassword));
+    // await (networkServer.updateChannel(channel.hash, newHead.Hash, metaData, uid, writePassword));
+    await(client.linkedList(channel.hash, readPassword).add(newHead.Hash))
     events.emit("messages", channel.name, { head: newHead });
     logger.debug("Message sent!");
   } catch(e) {
@@ -231,23 +233,6 @@ var addFile = async (function(ipfs, filePath, channel, uid, readPassword, writeP
   logger.info("Added local file '" + filePath + "' as " + fileHash);
   return result;
 });
-
-var register = function(network, username, password) {
-  logger.info("Registering to network '" + network + "' as '" + username + "'");
-  return Promise.promisify(function(cb) {
-    var url = 'http://' + network + '/register';// + username + '/' + encodeURIComponent(password);
-    request.post({ url: url, form: { "username": username, "password": password } }, (err, res, body) => {
-      if(!res) {
-        logger.error(err);
-        cb("Connection refused", null);
-      }
-      else if(res.statusCode != 200)
-        cb(JSON.parse(body).message, null);
-      else
-        cb(null, body != null ? JSON.parse(body).data : null);
-    });
-  });
-}
 
 // WIP
 var getMessagesRecursive2 = async ((ipfs, channel, uid, password, hash, lastHash, amount, curDepth) => {
@@ -320,15 +305,37 @@ var connectToSwarm = async((ipfs, user, peers) => {
   return;
 });
 
+process.on('unhandledRejection', (reason, srcPromise) => {
+  // logger.debug("Possibly Unhandled Rejection: ", reason);
+});
 
 /* PUBLIC API */
+var networkInfo;
+var client;
 var networkAPI = {
   events: events,
   register: (network, username, password) => {
-    return register(network, username, password);
+    // return register(network, username, password);
+    return new Promise((resolve, reject) => {
+      logger.info("Registering to network '" + network + "' as '" + username + "'");
+      HashCache.connect(network, username, password)
+        .then((result) => {
+          client = result;
+          networkInfo = client.network;
+          resolve(networkInfo);
+        })
+        .catch(reject)
+    });
   },
   joinChannel: (ipfs, channel, uid, password) => {
-    return joinChannel(ipfs, channel, uid, password);
+    // return joinChannel(ipfs, channel, uid, password);
+    return new Promise((resolve, reject) => {
+      var c = new Channel(channel, password);
+      logger.debug("Join #" + c.name, c.hash);
+      client.linkedList(c.hash, c.password).head
+        .then(resolve)
+        .catch((err) => reject(err.toString()))
+    });
   },
   leaveChannel: (channel) => {
     return leaveChannel(channel);
@@ -351,10 +358,20 @@ var networkAPI = {
   getMessages: (ipfs, channel, uid, password, hash, lastHash, amount) => {
     return getMessagesRecursive2(ipfs, channel, uid, password, hash, lastHash, amount);
   },
-  // TODO: rename to setChannelInfo
-  changeChannelPasswords: (ipfs, channel, uid, password, newReadPassword, newWritePassword) => {
-    return networkServer.changePasswords(channel, uid, password, newReadPassword, newWritePassword);
+  setChannelMode: (ipfs, channel, uid, password, modes) => {
+    return new Promise(function(resolve, reject) {
+      var c = new Channel(channel, password);
+      logger.debug("Set mode #" + c.name, c.hash, modes);
+      client.linkedList(c.hash, c.password).setMode(modes)
+        .then((mode) => {
+          resolve(mode)
+        })
+        .catch((err) => reject(err.toString()))
+    });
   },
+  // changeChannelPasswords: (ipfs, channel, uid, password, newReadPassword, newWritePassword) => {
+  //   return networkServer.changePasswords(channel, uid, password, newReadPassword, newWritePassword);
+  // },
   getChannelInfo: (ipfs, channel, uid) => {
     return networkServer.getChannelInfo(channel, uid);
   },

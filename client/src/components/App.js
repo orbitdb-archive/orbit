@@ -44,7 +44,7 @@ var App = React.createClass({
     UIActions.onJoinChannel.listen(this.joinChannel);
 
     NetworkActions.connected.listen((network) => {
-      if(network.username) UserActions.getWhoami();
+      if(network.user) UserActions.getWhoami();
     });
     NetworkActions.joinedChannel.listen(this.onJoinedChannel);
     NetworkActions.joinChannelError.listen(this.onJoinChannelError);
