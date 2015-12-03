@@ -10,6 +10,8 @@
   "mainInput": "App",
   "mainOutput": "main",
   "dependencies": {
+    "babel-plugin-syntax-flow": "^6.1.18",
+    "babel-plugin-transform-flow-strip-types": "^6.1.18",
     "events": "^1.0.2",
     "file-loader": "^0.8.4",
     "halogen": "^0.1.10",

@@ -3,7 +3,9 @@
     "transform-regenerator",
     "syntax-async-functions",
     "syntax-async-generators",
-    "transform-async-to-generator"
+    "transform-async-to-generator",
+    "syntax-flow",
+    "transform-flow-strip-types"
   ],
   "presets": ["es2015", "stage-0", "stage-3", "react"]
 }
