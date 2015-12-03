@@ -31,17 +31,17 @@ var _pollInterval = 1000;
 var _caching      = false;
 var _channels = {};
 
-var joinChannel = async ((ipfs, channelName, uid, password) => {
-  var channel = new Channel(channelName, password);
-  var channelInfo;
-    logger.debug("Join channel #" + channel.name);
+var startCaching = async ((ipfs, channel, uid, password) => {
+  // var channel = new Channel(channelName, password);
+  // var channelInfo;
 
-  try {
-    channelInfo = await (networkServer.joinChannel(channel.hash, uid, encryption.encrypt(password, privkey)));
-    if(channelInfo.writePassword) channelInfo.writePassword = encryption.decrypt(channelInfo.writePassword, privkey);
-  } catch(e) {
-    throw e
-  }
+  // logger.debug("Join channel #" + channel.name);
+  // try {
+  //   // channelInfo = await (networkServer.joinChannel(channel.hash, uid, encryption.encrypt(password, privkey)));
+  //   // if(channelInfo.writePassword) channelInfo.writePassword = encryption.decrypt(channelInfo.writePassword, privkey);
+  // } catch(e) {
+  //   throw e
+  // }
 
   if(!_cacheTimers[channel.hash] && !_channels[channel.hash]) {
     logger.debug("Start caching #" + channel.name);
@@ -67,8 +67,6 @@ var joinChannel = async ((ipfs, channelName, uid, password) => {
       }
     }), _pollInterval);
   }
-
-  return channelInfo;
 });
 
 var leaveChannel = async (function(channel) {
@@ -333,7 +331,10 @@ var networkAPI = {
       var c = new Channel(channel, password);
       logger.debug("Join #" + c.name, c.hash);
       client.linkedList(c.hash, c.password).head
-        .then(resolve)
+        .then((res) => {
+          startCaching(ipfs, c, uid, password);
+          resolve(res);
+        })
         .catch((err) => reject(err.toString()))
     });
   },
