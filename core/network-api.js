@@ -169,7 +169,6 @@ var publishFile = async (function(ipfs, filePath) {
 
 
 var sendToChannel = async (function(ipfs, message, uid, readPassword, writePassword, channelName, type, size) {
-  var startTime = new Date().getTime();
   var channel = new Channel(channelName, readPassword);
   logger.debug("Sending message...");
 
@@ -199,16 +198,17 @@ var sendToChannel = async (function(ipfs, message, uid, readPassword, writePassw
     var newHead = { Hash: meta.Hash };
     if(head)
       newHead = await (ipfsAPI.patchObject(ipfs, meta.Hash, head))
+
+    var startTime = new Date().getTime();
     await(client.linkedList(channel.hash, readPassword).add(newHead.Hash))
+    var endTime = new Date().getTime();
+    var ms = endTime - startTime;
+    logger.debug("linkedList.add took " + ms + " ms");
     events.emit("messages", channel.name, { head: newHead });
     logger.debug("Message sent!");
   } catch(e) {
     logger.error(e);
   }
-
-  var endTime = new Date().getTime();
-  var ms = endTime - startTime;
-  logger.debug("sending message took " + ms + " ms");
 
   return meta.Hash;
 });
