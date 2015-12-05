@@ -24,6 +24,7 @@ var SocketApi = async ((socketServer, httpServer, events) => {
   var socket       = null;
   var ipfs         = null;
   var userInfo     = {};
+  var networkInfo  = {};
 
   var onIpfsStarted = (res) => {
     logger.debug("SocketApi ready");
@@ -66,8 +67,15 @@ var SocketApi = async ((socketServer, httpServer, events) => {
 
   io.on('connection', async (function (s) {
     logger.info("UI connected");
-    await (cleanupSocket());
-    socket = s;
+    // await (cleanupSocket());
+    if(socket) {
+      console.log("!!!!!", networkInfo, userInfo);
+      socket.emit('registered', { name: networkInfo.name, host: networkInfo.host, user: userInfo });
+      events.emit('connect');
+    }
+
+    if(!socket) {
+      socket = s;
 
     networkAPI.events.on("messages", onNewMessages);
     // networkAPI.events.on("message", onMessage);
@@ -209,7 +217,8 @@ var SocketApi = async ((socketServer, httpServer, events) => {
     }));
 
     socket.on(ApiMessages.whoami, async (function (cb) {
-      if(cb) cb(userInfo);
+      var res = Object.assign(userInfo, { network: networkInfo });
+      if(cb) cb(res);
     }));
 
     socket.on(ApiMessages.swarm.peers, async((cb) => {
@@ -226,14 +235,16 @@ var SocketApi = async ((socketServer, httpServer, events) => {
       await (networkAPI.leaveAllChannels());
       ipfs = null;
       userInfo = {};
+      networkInfo = {};
       events.emit('disconnect');
     }));
 
-    socket.on(ApiMessages.register, async (function (network, username, password) {
-      events.emit('onRegister', network, username, password, (err, res) => {
+    socket.on(ApiMessages.register, async (function (host, username, password) {
+      events.emit('onRegister', host, username, password, (err, res) => {
         if(!err) {
-          logger.debug("info", { host: network, user: userInfo });
-          socket.emit('registered', { host: network, user: userInfo });
+          networkInfo.host = host;
+          networkInfo.name = res.network;
+          socket.emit('registered', { name: networkInfo.name, host: networkInfo.host, user: userInfo });
           events.emit('connect');
         } else {
           socket.emit('log', "register error: " + err);
@@ -242,6 +253,7 @@ var SocketApi = async ((socketServer, httpServer, events) => {
       });
     }));
 
+    }
   }));
 })
 

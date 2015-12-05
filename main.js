@@ -54,7 +54,7 @@ var connect = async((config, network, username, password) => {
   // Connect to server-returned peers
   networkAPI.connectToSwarm(daemon.instance, user, peers);
 
-  return { ipfs: daemon.instance, user: user };
+  return { network: network.name, ipfs: daemon.instance, user: user };
 });
 
 // move to BotSystem module
