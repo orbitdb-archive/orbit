@@ -37,7 +37,7 @@ npm install
 node index.js
 ```
 
-Open http//:localhost:3001 in your browser
+Open http://localhost:3001 in your browser
 
 ### Run Options
 #### Enable Bots
