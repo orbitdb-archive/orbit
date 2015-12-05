@@ -37,7 +37,8 @@ var App = React.createClass({
       user: null,
       requirePassword: false,
       currentChannel: null,
-      theme: null
+      theme: null,
+      networkName: "Unknown Network"
     };
   },
   componentDidMount: function() {
@@ -74,10 +75,12 @@ var App = React.createClass({
     }
   },
   onNetworkUpdated: function(network) {
-    console.log("Network Info updated", network);
+    this.setState({ networkName: network.name });
   },
   onUserUpdated: function(user) {
     console.log("User updated", user);
+    if(user.network) this.setState({ networkName: user.network.name });
+
     if(user === this.state.user)
       return;
 
@@ -159,6 +162,7 @@ var App = React.createClass({
         username={this.state.user ? this.state.user.username : ""}
         requirePassword={this.state.requirePassword}
         theme={this.state.theme}
+        networkName={this.state.networkName}
       />
     ) : "";
 

@@ -65,7 +65,7 @@ class Channel extends React.Component {
     this.unsubscribeFromMessageStore = MessageStore.listen(this.onNewMessages.bind(this));
     this.unsubscribeFromErrors       = UIActions.raiseError.listen((errorMessage) => this.setState({ statusMessage: errorMessage }));
     this.unsubscribeFromStartLoading = UIActions.startLoading.listen((channel) => {
-      if(this.state.channelInfo.head && channel === this.state.channelName)
+      if(channel === this.state.channelName)
         this.setState({ loadingIcon: true });
     });
     this.unsubscribeFromStopLoading = UIActions.stopLoading.listen((channel) => {

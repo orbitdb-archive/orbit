@@ -21,7 +21,8 @@ class ChannelsPanel extends React.Component {
       username: props.username,
       requirePassword: props.requirePassword || false,
       loading: false,
-      theme: props.theme
+      theme: props.theme,
+      networkName: props.networkName
     };
   }
 
@@ -30,7 +31,8 @@ class ChannelsPanel extends React.Component {
       currentChannel: nextProps.currentChannel,
       requirePassword: nextProps.requirePassword,
       loading: false,
-      theme: nextProps.theme
+      theme: nextProps.theme,
+      networkName: nextProps.networkName
     });
   }
 
@@ -113,7 +115,18 @@ class ChannelsPanel extends React.Component {
               transitionLeaveTimeout={5000}
               component="div">
               <div className={headerStyle} onClick={this.togglePanel.bind(this)}>
-                <div className="text">ANONYMOUS NETWORKS</div>
+                <div className="logo">Orbital</div>
+              </div>
+            </TransitionGroup>
+            <TransitionGroup
+              transitionName="networkNameAnimation"
+              transitionAppear={true}
+              transitionAppearTimeout={5000}
+              transitionEnterTimeout={5000}
+              transitionLeaveTimeout={5000}
+              component="div">
+              <div className="networkName">
+                <div className="text">{this.state.networkName}</div>
               </div>
             </TransitionGroup>
 

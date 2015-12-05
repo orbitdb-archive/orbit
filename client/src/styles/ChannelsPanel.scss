@@ -123,27 +123,44 @@ $channel-name-min-height: 1.5em;
   }
 
   .header {
-    box-sizing: border-box;
-    // border-left: 6px solid $main-color;
     display: flex;
     flex: 1 1 100%;
-    padding-left: 0.2em;
-    padding-right: 0.2em;
-    margin: 0.4em 0em;
+    justify-content: center;
+    box-sizing: border-box;
 
     font-family: "Lato";
     font-weight: 100;
-    font-size: 2.2em;
+    font-size: 2.6em;
     color: rgba(228, 228, 228, 0.6);
 
+    padding: 0em 0.2em;
+
     cursor: pointer;
-    text-align: center;
     -webkit-user-select: none;
     -moz-user-select: none;
 
+    .logo {
+      margin-top: 0.75em;
+      text-transform: uppercase;
+    }
+  }
+
+  .networkName {
+    display: flex;
+    flex: 1 1 100%;
+    justify-content: center;
+    box-sizing: border-box;
+
+    padding: 0em 0.2em;
+
+    font-family: "Lato";
+    font-weight: 100;
+    color: rgba(228, 228, 228, 0.6);
+
     .text {
-      margin: 0em 0em;
-      margin-left: -6px;
+      // font-size: 0.45em;
+      font-weight: 300;
+      color: rgba(250, 250, 250, 0.3);
     }
   }
 
@@ -157,16 +174,16 @@ $channel-name-min-height: 1.5em;
   }
 
   .username {
-    box-sizing: border-box;
     display: flex;
     justify-content: center;
+    box-sizing: border-box;
 
     font-family: "Lato";
     font-weight: 100;
     font-size: 1.2em;
-    color: rgba(220, 220, 220, 0.5);
-    // color: rgba(228, 228, 228, 1.0);
-    margin-top: 0.5em;
+    color: rgba(220, 220, 220, 0.8);
+
+    margin-top: 1.5em;
   }
 
   .bottomRow {
@@ -235,4 +252,18 @@ $channel-name-min-height: 1.5em;
   animation-fill-mode: both;
   -webkit-animation-timing-function: ease-out;
   animation-timing-function: ease-out;
+}
+
+.networkNameAnimation-appear {
+  $duration: 1s;
+  $animation-name: fadeIn;
+
+  -webkit-animation: $animation-name;
+  animation: $animation-name;
+  -webkit-animation-duration: $duration;
+  animation-duration: $duration;
+  -webkit-animation-fill-mode: both;
+  animation-fill-mode: both;
+  -webkit-animation-timing-function: ease-in;
+  animation-timing-function: ease-in;
 }
