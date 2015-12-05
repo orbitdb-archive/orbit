@@ -32,17 +32,6 @@ var _caching      = false;
 var _channels = {};
 
 var startCaching = async ((ipfs, channel, uid, password) => {
-  // var channel = new Channel(channelName, password);
-  // var channelInfo;
-
-  // logger.debug("Join channel #" + channel.name);
-  // try {
-  //   // channelInfo = await (networkServer.joinChannel(channel.hash, uid, encryption.encrypt(password, privkey)));
-  //   // if(channelInfo.writePassword) channelInfo.writePassword = encryption.decrypt(channelInfo.writePassword, privkey);
-  // } catch(e) {
-  //   throw e
-  // }
-
   if(!_cacheTimers[channel.hash] && !_channels[channel.hash]) {
     logger.debug("Start caching #" + channel.name);
     _cacheTimers[channel.hash] = setInterval(async (() => {
@@ -83,7 +72,6 @@ var leaveAllChannels = async (function() {
 });
 
 var getChannelHead = async (function(ipfs, channel, uid, password) {
-  // var head = await (networkServer.getChannel(channel, uid, password))
   var head = await(client.linkedList(channel, password).head)
   return (head.length == 0) ? null : head.head;
 });
@@ -98,9 +86,13 @@ var getFromIpfs = async ((ipfs, hash) => {
     return null;
 
   logger.debug("Fetching object from ipfs", hash);
+  var startTime = new Date().getTime();
   var object = await (ipfsAPI.getObject(ipfs, hash)
     .then(function(result) {
       logger.debug("                  fetched", hash);
+      var endTime = new Date().getTime();
+      var ms = endTime - startTime;
+      logger.debug("ipfs.object.get took " + ms + " ms");
       return result;
     })
     .catch(function(err) {
@@ -113,8 +105,6 @@ var getFromIpfs = async ((ipfs, hash) => {
 });
 
 var getObject = async ((ipfs, hash) => {
-  var startTime = new Date().getTime();
-
   var res = null;
   //TODO: get rid of the double table caching
   var cached = await (LocalCache.get(hash));
@@ -140,9 +130,6 @@ var getObject = async ((ipfs, hash) => {
     await (LocalCache.cacheContent(ipfs, hash, res));
   }
 
-  var endTime = new Date().getTime();
-  var ms = endTime - startTime;
-  logger.debug("getObject took " + ms + "ms");
   return res;
 });
 
@@ -152,11 +139,18 @@ var getUser = async ((ipfs, hash) => {
 });
 
 var publishMessage = async ((ipfs, message) => {
+  var startTime = new Date().getTime();
+
   if(message.content)
     message.content = encryption.encrypt(message.content, privkey);
 
   var payload = JSON.stringify(message);
   var result  = await (ipfsAPI.putObject(ipfs, payload));
+
+  var endTime = new Date().getTime();
+  var ms = endTime - startTime;
+  logger.debug("ipfs.object.put took " + ms + " ms");
+
   return result.Hash;
 });
 
@@ -175,6 +169,7 @@ var publishFile = async (function(ipfs, filePath) {
 
 
 var sendToChannel = async (function(ipfs, message, uid, readPassword, writePassword, channelName, type, size) {
+  var startTime = new Date().getTime();
   var channel = new Channel(channelName, readPassword);
   logger.debug("Sending message...");
 
@@ -204,13 +199,16 @@ var sendToChannel = async (function(ipfs, message, uid, readPassword, writePassw
     var newHead = { Hash: meta.Hash };
     if(head)
       newHead = await (ipfsAPI.patchObject(ipfs, meta.Hash, head))
-    // await (networkServer.updateChannel(channel.hash, newHead.Hash, metaData, uid, writePassword));
     await(client.linkedList(channel.hash, readPassword).add(newHead.Hash))
     events.emit("messages", channel.name, { head: newHead });
     logger.debug("Message sent!");
   } catch(e) {
     logger.error(e);
   }
+
+  var endTime = new Date().getTime();
+  var ms = endTime - startTime;
+  logger.debug("sending message took " + ms + " ms");
 
   return meta.Hash;
 });
@@ -326,7 +324,6 @@ var networkAPI = {
     });
   },
   joinChannel: (ipfs, channel, uid, password) => {
-    // return joinChannel(ipfs, channel, uid, password);
     return new Promise((resolve, reject) => {
       var c = new Channel(channel, password);
       logger.debug("Join #" + c.name, c.hash);
@@ -335,7 +332,7 @@ var networkAPI = {
           startCaching(ipfs, c, uid, password);
           resolve(res);
         })
-        .catch((err) => reject(err.toString()))
+        .catch((err) => reject(err))
     });
   },
   leaveChannel: (channel) => {
