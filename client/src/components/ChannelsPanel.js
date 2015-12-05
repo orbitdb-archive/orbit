@@ -115,7 +115,7 @@ class ChannelsPanel extends React.Component {
               transitionLeaveTimeout={5000}
               component="div">
               <div className={headerStyle} onClick={this.togglePanel.bind(this)}>
-                <div className="logo">Orbital</div>
+                <div className="logo">Orbits</div>
               </div>
             </TransitionGroup>
             <TransitionGroup

@@ -9,7 +9,7 @@ import 'styles/LoginView.scss';
 var TransitionGroup = React.addons.CSSTransitionGroup;
 
 var maxNicknameLength = 32;
-var maxLogoSize = 256;
+var maxLogoSize = 320;
 
 class LoginView extends React.Component{
   constructor(props) {
@@ -113,7 +113,7 @@ class LoginView extends React.Component{
       <div className="LoginView">
         <form onSubmit={this.register.bind(this)} style={{ marginTop: (this.state.logoSize / 2 - 83)}}>
           <TransitionGroup className="row" transitionName="loginHeaderAnimation" transitionAppear={true} component="div" transitionAppearTimeout={5000} transitionEnterTimeout={5000} transitionLeaveTimeout={5000}>
-            <h1>Orbital</h1>
+            <h1>Orbits</h1>
           </TransitionGroup>
           {form}
         </form>
