@@ -15,8 +15,8 @@ var initIpfs = async (function(ipfsPath) {
   logger.debug("ipfs data directory:", ipfsPath);
 
   var oldConfig = path.join(ipfsPath, "/config");
-  if(fs.existsSync(oldConfig))
-    fs.writeFileSync(oldConfig+".bak", fs.readFileSync(oldConfig));
+  // if(fs.existsSync(oldConfig))
+  //   fs.writeFileSync(oldConfig+".bak", fs.readFileSync(oldConfig));
 
   var init  = Promise.promisify(function(ipfsPath, cb) { ipfsdCtl.local(ipfsPath, cb); });
   var start = Promise.promisify(function(ipfsd, cb) { ipfsd.init(cb); });
@@ -76,8 +76,8 @@ var initConfig = async (function(ipfsd, config) {
 module.exports = {
   init: async (function(ipfsPath, config) {
     var node = await (initIpfs(ipfsPath));
-    var conf = await (initConfig(node, config));
-    if(!conf) node = null;
+    // var conf = await (initConfig(node, config));
+    // if(!conf) node = null;
     return node;
   }),
   start: function(ipfs) {

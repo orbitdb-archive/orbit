@@ -115,51 +115,49 @@ Make sure you don't have the node.js version running and no client open the brow
 ## Backlog
 - Fix browser file upload
 - Skip lists for LL items in order to prevent channel history traversal to get stuck completely
-- Fix "Unauthorized" bug after setting channel passwords
 - Fix Electron non-dev flow
 - Add notification bubbles to native app
 - Display notifications when app is unfocused
 - move message type from MetaInfo to Message.content
 - SwarmStore
-- Integrate with a running ipfs daemon (https://github.com/haadcode/anonymous-networks/issues/1)
 - Tab to finish the username when writing
 - If it's truly a linked list, you could take advantage of https://ipfs.io/ipfs/QmTtqKeVpgQ73KbeoaaomvLoYMP7XKemhTgPNjasWjfh9b/ for efficient seeking to any point in the history. (from Ion)
 - Private messages (one-to-one messages)
 - Add Katex/Mathjax support along with markdown (from davidar)
 - Empty channels when no swarm peers. Notify the user that there are no peers atm., re-try logic in backend for connecting to peers if connection failed and there are 0 peers
-- bug: UI <-> daemon connection state gets fckd
 - feature: markdown as content type in messages (like files/lists)
 - add caching of packages to go-ipfs / node install.js
 - password for username is unclear (and buggy: can't enter no password)
 - feature: download manager
-- setting channel passwords is unclear
 - cache UI fonts locally (package with the app)
   + http://stackoverflow.com/questions/8966740/how-to-host-google-web-fonts-on-my-own-server
 - flashing "Anonymous" user name for a known user
 - bug: slow internet makes the app respond slower (how ui elements appear, sending messages feedback delay, etc.)
 - subcomandante needs to be platform-agnostic (remove #!/usr/bin/env node)
-- bug: when node who posted head is offline and nobody else has the head hash, whole channel gets fckd
 - convert MessageStore (UI) to ES6
 - easier network setup than network.json
-- timestamp weirdness, slow updates
 - hook log4js to ws so that backend logs get to browser
 - aliases for peer addresses, "known as"
 - bug: loading time at join if there are new messages in network
-- LAN connections not initiated (ipfs bug?)
 - favorites view, add(/remove) to favorites, uses DirectoryView only, localStorage for storing Maps {hash,links}, check possibility to save to network
 - fix autolinks for http://localhost:port (fix in react-autolink)
 - add file progress notification (loading text)
 - emoji auto-completion
 - emoji descriptions to image alt (fix in react-emoji)
 - fancy link preview
-- change TransitionGroups to react-motion
 - download a directory
-- UI feedback for: connections status, adding file, loading messages, etc.
-- use POST instead of GET where it makes sense
 
 ## Changelog
 
 **master**
+
+**v1.0.2**
+- Fix: Integrate with a running ipfs daemon (https://github.com/haadcode/anonymous-networks/issues/1, dignifiedquire)
+- bug: UI <-> daemon connection state gets fckd
+- setting channel passwords is unclear
+- bug: when node who posted head is offline and nobody else has the head hash, whole channel gets fckd
+- use POST instead of GET where it makes sense
+- Fix "Unauthorized" bug after setting channel passwords
 - Components for rendering ipfs links, mentions and localhost links (TextMessage.js)
 - Add screenshots to the README and repo
 - Release UI source code
@@ -173,12 +171,12 @@ Make sure you don't have the node.js version running and no client open the brow
 - back to top button (overlay)
 
 **v1.0.1**
-- Feature: autolinks for ipfs hashes
-- Feature: Highlight mentions of username
-- Fix: Limit username length (from victorbjelkholm)
-- Fix: Swarm connect errors: https://gist.github.com/Dignifiedquire/478dd4b157134ff41c0f (from dignifiedquire)
-- Fixed: Confusing with the latest messages being in the top though, should probably be the other way around (from dignifiedquire, victorbjelkholm)
-- Fixed: bug: emojify breaks links to host:3001 (0:3 == angel smiley)
+- ~~Feature: autolinks for ipfs hashes~~
+- ~~Feature: Highlight mentions of username~~
+- ~~Fix: Limit username length (from victorbjelkholm)~~
+- ~~Fix: Swarm connect errors: https://gist.github.com/Dignifiedquire/478dd4b157134ff41c0f (from dignifiedquire)~~
+- ~~Fixed: Confusing with the latest messages being in the top though, should probably be the other way around (from dignifiedquire, victorbjelkholm)~~
+- ~~Fixed: bug: emojify breaks links to host:3001 (0:3 == angel smiley)~~
 
 **v1.0.0**
 - ~~channel status message component that displays the various states of the channel ("this is a new channel", "you're not allowed to post")~~
