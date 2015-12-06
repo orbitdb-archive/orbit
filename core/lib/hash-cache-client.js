@@ -37,12 +37,17 @@ class HashCacheClient {
   }
 
   _add(hash, password, head) {
-    return Promise.promisify((cb) => {
+    return new Promise((resolve, reject) => {
       request
         .put(this.host + '/channel/' + hash + '/add')
         .set('Authorization', this.credentials)
         .send({ head: head, password: password })
-        .end((err, res) => cb(res.body.message, res ? res.body : {}))
+        .end((err, res) => {
+          if(err)
+            reject(res ? res.body : err.toString())
+          else
+            resolve(res ? res.body : {})
+        })
     })
   }
 

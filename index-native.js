@@ -12,7 +12,7 @@ var utils         = require('./core/utils');
 require('crash-reporter').start();
 logger.info("Run index-native.js");
 
-var connectWindowSize = { width: 300, height: 500, center: true, minWidth: 300, minHeight: 500, resizable: false };
+var connectWindowSize = { width: 300, height: 500, center: true, minWidth: 300, minHeight: 500 };
 var mainWindowSize    = { width: 1200, height: 800, center: true, minWidth: 1200, minHeight: 800 };
 var mainWindow = null;
 

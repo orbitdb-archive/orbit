@@ -26,9 +26,11 @@ var ChannelStore = Reflux.createStore({
   },
   onSocketDisconnected: function() {
     this.socket = null;
+    this.channels = {};
+    this.trigger(this.channels);
   },
   onDisconnect: function() {
-    this.channels = [];
+    this.channels = {};
   },
   onJoinChannel: function(channel, password) {
     if(!this.socket) {

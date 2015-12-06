@@ -67,12 +67,7 @@ var SocketApi = async ((socketServer, httpServer, events) => {
 
   io.on('connection', async (function (s) {
     logger.info("UI connected");
-    // await (cleanupSocket());
-    if(socket) {
-      console.log("!!!!!", networkInfo, userInfo);
-      socket.emit('registered', { name: networkInfo.name, host: networkInfo.host, user: userInfo });
-      events.emit('connect');
-    }
+    await (cleanupSocket());
 
     if(!socket) {
       socket = s;

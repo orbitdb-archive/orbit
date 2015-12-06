@@ -92,7 +92,7 @@ var getFromIpfs = async ((ipfs, hash) => {
       logger.debug("                  fetched", hash);
       var endTime = new Date().getTime();
       var ms = endTime - startTime;
-      logger.debug("ipfs.object.get took " + ms + " ms");
+      logger.debug("* ipfs.object.get took " + ms + " ms");
       return result;
     })
     .catch(function(err) {
@@ -149,7 +149,7 @@ var publishMessage = async ((ipfs, message) => {
 
   var endTime = new Date().getTime();
   var ms = endTime - startTime;
-  logger.debug("ipfs.object.put took " + ms + " ms");
+  logger.debug("* ipfs.object.put took " + ms + " ms");
 
   return result.Hash;
 });
@@ -169,6 +169,7 @@ var publishFile = async (function(ipfs, filePath) {
 
 
 var sendToChannel = async (function(ipfs, message, uid, readPassword, writePassword, channelName, type, size) {
+  var startTime1 = new Date().getTime();
   var channel = new Channel(channelName, readPassword);
   logger.debug("Sending message...");
 
@@ -203,12 +204,16 @@ var sendToChannel = async (function(ipfs, message, uid, readPassword, writePassw
     await(client.linkedList(channel.hash, readPassword).add(newHead.Hash))
     var endTime = new Date().getTime();
     var ms = endTime - startTime;
-    logger.debug("linkedList.add took " + ms + " ms");
+    logger.debug("* linkedList.add took " + ms + " ms");
     events.emit("messages", channel.name, { head: newHead });
     logger.debug("Message sent!");
   } catch(e) {
-    logger.error(e);
+    logger.error("Couldn't send the message -", e);
   }
+
+  var endTime1 = new Date().getTime();
+  var ms1 = endTime1 - startTime1;
+  logger.debug("* send message took " + ms1 + " ms");
 
   return meta.Hash;
 });
@@ -296,13 +301,11 @@ var connectToSwarm = async((ipfs, user, peers) => {
     }
   })
   logger.debug("Connected to " + connectedPeers + " / " + peers.length + " peers");
-
-
   return;
 });
 
-process.on('unhandledRejection', (reason, srcPromise) => {
-  // logger.debug("Possibly Unhandled Rejection: ", reason);
+process.on('uncaughtException', (reason, srcPromise) => {
+  logger.warn("-- Uncaught Exception: ", reason);
 });
 
 /* PUBLIC API */
@@ -311,7 +314,6 @@ var client;
 var networkAPI = {
   events: events,
   register: (network, username, password) => {
-    // return register(network, username, password);
     return new Promise((resolve, reject) => {
       logger.info("Registering to network '" + network + "' as '" + username + "'");
       HashCache.connect(network, username, password)
@@ -361,15 +363,10 @@ var networkAPI = {
       var c = new Channel(channel, password);
       logger.debug("Set mode #" + c.name, c.hash, modes);
       client.linkedList(c.hash, c.password).setMode(modes)
-        .then((mode) => {
-          resolve(mode)
-        })
+        .then(resolve)
         .catch((err) => reject(err.toString()))
     });
   },
-  // changeChannelPasswords: (ipfs, channel, uid, password, newReadPassword, newWritePassword) => {
-  //   return networkServer.changePasswords(channel, uid, password, newReadPassword, newWritePassword);
-  // },
   getChannelInfo: (ipfs, channel, uid) => {
     return networkServer.getChannelInfo(channel, uid);
   },
