@@ -57,7 +57,7 @@ module.exports = function (grunt) {
               "./client/dist/**",
               "package.json",
               "network.json",
-              "!./Gruntfile.js",
+              "!./Gruntfile.js"
             ],
             dest: '.tmp/'
           }

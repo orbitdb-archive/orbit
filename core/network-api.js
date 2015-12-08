@@ -32,7 +32,7 @@ var _caching      = false;
 var _channels = {};
 
 var startCaching = async ((ipfs, channel, uid, password) => {
-  if(!_cacheTimers[channel.hash] && !_channels[channel.hash]) {
+  if(!_cacheTimers[channel.name] && !_channels[channel.hash]) {
     logger.debug("Start caching #" + channel.name);
     _cacheTimers[channel.hash] = setInterval(async (() => {
       if(!_channels[channel.hash]) {
@@ -48,7 +48,7 @@ var startCaching = async ((ipfs, channel, uid, password) => {
           if(ipfs == null || ipfs == undefined) {
             logger.error("No IPFS! How did we get here?");
           } else {
-            await (getMessagesRecursive2(ipfs, channel.hash, uid, password, head, latest.key, 100));
+            await (getMessagesRecursive2(ipfs, channel.name, uid, password, head, latest.key, 100));
             events.emit("messages", channel.name, { channel: channel.name, head: head });
           }
         }
@@ -58,7 +58,7 @@ var startCaching = async ((ipfs, channel, uid, password) => {
   }
 });
 
-var leaveChannel = async (function(channel) {
+var leaveChannel = async ((channel) => {
   if(_cacheTimers[channel]) {
     logger.debug("Stop caching #" + channel);
     clearInterval(_cacheTimers[channel]);
@@ -66,12 +66,12 @@ var leaveChannel = async (function(channel) {
   }
 });
 
-var leaveAllChannels = async (function() {
+var leaveAllChannels = async (() => {
   if(_cacheTimers.length > 0) logger.debug("Stop caching all channels");
   _.each(Object.keys(_cacheTimers), leaveChannel);
 });
 
-var getChannelHead = async (function(ipfs, channel, uid, password) {
+var getChannelHead = async ((ipfs, channel, uid, password) => {
   var head = await(client.linkedList(channel, password).head)
   return (head.length == 0) ? null : head.head;
 });
@@ -88,14 +88,14 @@ var getFromIpfs = async ((ipfs, hash) => {
   logger.debug("Fetching object from ipfs", hash);
   var startTime = new Date().getTime();
   var object = await (ipfsAPI.getObject(ipfs, hash)
-    .then(function(result) {
+    .then((result) => {
       logger.debug("                  fetched", hash);
       var endTime = new Date().getTime();
       var ms = endTime - startTime;
       logger.debug("* ipfs.object.get took " + ms + " ms");
       return result;
     })
-    .catch(function(err) {
+    .catch((err) => {
       logger.error("Couldn't fetch object " + hash + ":", err);
       return null;
     })
@@ -154,7 +154,7 @@ var publishMessage = async ((ipfs, message) => {
   return result.Hash;
 });
 
-var publishFile = async (function(ipfs, filePath) {
+var publishFile = async ((ipfs, filePath) => {
   if(!fs.existsSync(filePath))
     throw "File not found at '" + filePath + "'";
 
@@ -168,7 +168,7 @@ var publishFile = async (function(ipfs, filePath) {
 });
 
 
-var sendToChannel = async (function(ipfs, message, uid, readPassword, writePassword, channelName, type, size) {
+var sendToChannel = async ((ipfs, message, uid, readPassword, writePassword, channelName, type, size) => {
   var startTime1 = new Date().getTime();
   var channel = new Channel(channelName, readPassword);
   logger.debug("Sending message...");
@@ -218,13 +218,13 @@ var sendToChannel = async (function(ipfs, message, uid, readPassword, writePassw
   return meta.Hash;
 });
 
-var sendMessage = async (function(ipfs, text, channel, uid, readPassword, writePassword) {
+var sendMessage = async ((ipfs, text, channel, uid, readPassword, writePassword) => {
   var message = new Message(text, null);
   var result  = await (sendToChannel(ipfs, message, uid, readPassword, writePassword, channel, "msg", new Buffer(text).length));
   return result;
 });
 
-var addFile = async (function(ipfs, filePath, channel, uid, readPassword, writePassword) {
+var addFile = async ((ipfs, filePath, channel, uid, readPassword, writePassword) => {
   logger.info("Adding file from path '" + filePath + "'");
   var isDirectory = await (utils.isDirectory(filePath));
   var fileHash    = await (publishFile(ipfs, filePath));
@@ -236,14 +236,15 @@ var addFile = async (function(ipfs, filePath, channel, uid, readPassword, writeP
 });
 
 // WIP
-var getMessagesRecursive2 = async ((ipfs, channel, uid, password, hash, lastHash, amount, curDepth) => {
+var getMessagesRecursive2 = async ((ipfs, channelName, uid, password, hash, lastHash, amount, curDepth) => {
   var res = [];
+  var channel = new Channel(channelName, password);
 
   if(!curDepth)
     curDepth = 0;
 
   if(hash == null)
-    hash = await (getChannelHead(ipfs, channel, uid, password));
+    hash = await (getChannelHead(ipfs, channel.hash, uid, password));
 
   if(hash == null)
     return res;
@@ -265,7 +266,7 @@ var getMessagesRecursive2 = async ((ipfs, channel, uid, password, hash, lastHash
       data2.payload = JSON.parse(encryption.decrypt(data2.payload, privkey));
       var m = _.cloneDeep(message);
       m.Data = data2;
-      if(m) events.emit("message", channel, m);
+      if(m) events.emit("message", channel.name, m);
     }
   }
 
@@ -281,7 +282,7 @@ var getMessagesRecursive2 = async ((ipfs, channel, uid, password, hash, lastHash
     res.push({ hash: hash, data: data.payload, ts: ts, seq: seq });
 
     if(message.Links.length > 0) {
-      var children = await (getMessagesRecursive2(ipfs, channel, uid, password, message.Links[0].Hash, lastHash, amount, curDepth));
+      var children = await (getMessagesRecursive2(ipfs, channel.hash, uid, password, message.Links[0].Hash, lastHash, amount, curDepth));
       res = res.concat(children);
     }
   }
@@ -359,7 +360,7 @@ var networkAPI = {
     return getMessagesRecursive2(ipfs, channel, uid, password, hash, lastHash, amount);
   },
   setChannelMode: (ipfs, channel, uid, password, modes) => {
-    return new Promise(function(resolve, reject) {
+    return new Promise((resolve, reject) => {
       var c = new Channel(channel, password);
       logger.debug("Set mode #" + c.name, c.hash, modes);
       client.linkedList(c.hash, c.password).setMode(modes)

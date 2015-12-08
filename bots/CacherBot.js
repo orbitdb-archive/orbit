@@ -2,15 +2,13 @@
 
 var _           = require('lodash');
 var await       = require('asyncawait/await');
-
 var Bot         = require('../core/bots/Bot');
 var Channel     = require('../core/Channel')
-var channelHash = Channel.createChannelHash
 var networkAPI  = require('../core/network-api');
 var ipfsAPI     = require('../core/ipfs-api-promised');
 var logger      = require('../core/logger');
 
-var channels = ["silence"];
+var channels = ["bots", "ipfs"];
 
 class CacherBot extends Bot {
   constructor(ipfs, events, user) {
@@ -25,7 +23,7 @@ class CacherBot extends Bot {
   // Called when the system has started (ie. we have connection to the server and ipfs is running)
   onStarted() {
     channels.forEach((channelName) => {
-      networkAPI.sendMessage(this.ipfs, "is now caching this channel", channelHash(channelName), this.user.id, null, null) // TODO: add password support (last two params)
+      networkAPI.sendMessage(this.ipfs, "/me is now caching this channel", channelName, this.user.id, null, null)
         .catch((err) => logger.error("Couldn't send message:", err));
     });
   }

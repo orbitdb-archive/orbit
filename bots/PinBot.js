@@ -6,7 +6,7 @@ var Bot         = require('../core/bots/Bot');
 var networkAPI  = require('../core/network-api');
 var logger      = require('../core/logger');
 
-var channels = ["silence"];
+var channels = ["bots", "ipfs"];
 
 class PinBot extends Bot {
   constructor(ipfs, events, user) {
@@ -40,7 +40,7 @@ class PinBot extends Bot {
           networkAPI.getUser(this.ipfs, message.Data.payload.uid)
             .then((res) => {
               username = res;
-              if(!hashToPin.startsWith("Qm")) {
+              if(!hashToPin.startsWith("Qm") || hashToPin.length !== 46) {
                 networkAPI.sendMessage(this.ipfs, username + ": Doesn't look like a correct hash: '" + hashToPin + "'", channel, this.user.id, null, null) // TODO: add password support (last two params)
                   .then((res) => {
                     return;
@@ -49,7 +49,6 @@ class PinBot extends Bot {
               } else {
                 networkAPI.sendMessage(this.ipfs, username + ": Pinned " + hashToPin, channel, this.user.id, null, null) // TODO: add password support (last two params)
                   .catch((err) => logger.error("Couldn't send message:", err));
-                // TODO: pin and send message
               }
             })
             .catch((err) => logger.error(err));

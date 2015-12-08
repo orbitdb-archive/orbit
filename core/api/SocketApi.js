@@ -6,13 +6,11 @@ var crypto      = require('crypto');
 var async       = require('asyncawait/async');
 var await       = require('asyncawait/await');
 var socketIo    = require('socket.io');
-
 var logger      = require('../logger');
 var networkAPI  = require('../network-api');
 var ipfsAPI     = require('../ipfs-api-promised');
 var ApiMessages = require('../ApiMessages');
 var Channel     = require('../Channel')
-var channelHash = Channel.createChannelHash
 
 /* SOCKET API */
 var SocketApi = async ((socketServer, httpServer, events) => {
@@ -110,12 +108,12 @@ var SocketApi = async ((socketServer, httpServer, events) => {
     socket.on(ApiMessages.channel.part, async (function (channelName) {
       logger.debug("Leave channel #" + channelName);
       delete channelPasswordMap[channelName];
-      await (networkAPI.leaveChannel(channelHash(channelName)));
+      await (networkAPI.leaveChannel(channelName));
     }));
 
     socket.on(ApiMessages.channel.messages, async (function(channelName, startHash, lastHash, amount, cb) {
       var password = channelPasswordMap[channelName];
-      networkAPI.getMessages(ipfs, channelHash(channelName), userInfo.id, password, startHash, lastHash, amount)
+      networkAPI.getMessages(ipfs, channelName, userInfo.id, password, startHash, lastHash, amount)
         .then((messages) => cb(channelName, messages))
         .catch(function(err) {
           logger.error("Error in channel.get", err);

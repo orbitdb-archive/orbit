@@ -2,7 +2,6 @@
 
 var _           = require('lodash');
 var await       = require('asyncawait/await');
-var channelHash = require('../Channel').createChannelHash;
 var networkAPI  = require('../network-api');
 var logger      = require('../logger');
 
@@ -18,7 +17,7 @@ class Bot {
   init() {
     logger.info("Initialize '" + this.constructor.name + "'");
     this.onInit();
-    this.subscriptions.forEach((channel) => await (networkAPI.joinChannel(this.ipfs, channel, this.user, null))); // TODO: add pasword support (last param)
+    this.subscriptions.forEach((channel) => await (networkAPI.joinChannel(this.ipfs, channel, this.user, null)));
   }
 
   start() {
@@ -33,7 +32,7 @@ class Bot {
   }
 
   subscribeTo(channels) {
-    channels.forEach((c) => this.subscriptions.push(channelHash(c)));
+    channels.forEach((c) => this.subscriptions.push(c));
   }
 
   onInit() {}

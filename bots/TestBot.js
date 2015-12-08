@@ -6,7 +6,7 @@ var Bot         = require('../core/bots/Bot');
 var networkAPI  = require('../core/network-api');
 var logger      = require('../core/logger');
 
-var channels = ["silence"];
+var channels = ["bots", "ipfs"];
 
 class TestBot extends Bot {
   constructor(ipfs, events, user) {
