@@ -121,7 +121,7 @@ var getObject = async ((ipfs, hash) => {
     // decrypt
     var data = JSON.parse(message.Data);
     if(data.content) {
-      data.content = encryption.decrypt(data.content, privkey);
+      data.content = encryption.decrypt(data.content, privkey, pubkey);
       res = JSON.stringify(data);
       message.Data = res;
     }
@@ -142,7 +142,7 @@ var publishMessage = async ((ipfs, message) => {
   var startTime = new Date().getTime();
 
   if(message.content)
-    message.content = encryption.encrypt(message.content, privkey);
+    message.content = encryption.encrypt(message.content, privkey, pubkey);
 
   var payload = JSON.stringify(message);
   var result  = await (ipfsAPI.putObject(ipfs, payload));
@@ -190,7 +190,7 @@ var sendToChannel = async ((ipfs, message, uid, readPassword, writePassword, cha
   var meta = await (ipfsAPI.putObject(ipfs, metaData));
   logger.debug("--- Message -------------------------------------------");
   logger.debug("To:      #" + channel.hash);
-  logger.debug("Message: '" + encryption.decrypt(message.content, privkey) + "'");
+  logger.debug("Message: '" + encryption.decrypt(message.content, privkey, pubkey) + "'");
   logger.debug("Hash:    " + hash);
   logger.debug("Meta:    " + meta.Hash);
   logger.debug("-------------------------------------------------------");
@@ -263,7 +263,7 @@ var getMessagesRecursive2 = async ((ipfs, channelName, uid, password, hash, last
     message = await (getFromIpfs(ipfs, hash));
     if(message) {
       var data2 = message.Data ? JSON.parse(message.Data) : null;
-      data2.payload = JSON.parse(encryption.decrypt(data2.payload, privkey));
+      data2.payload = JSON.parse(encryption.decrypt(data2.payload, privkey, pubkey));
       var m = _.cloneDeep(message);
       m.Data = data2;
       if(m) events.emit("message", channel.name, m);
@@ -272,7 +272,7 @@ var getMessagesRecursive2 = async ((ipfs, channelName, uid, password, hash, last
 
   if(message) {
     var data = message.Data ? JSON.parse(message.Data) : null;
-    data.payload = JSON.parse(encryption.decrypt(data.payload, privkey));
+    data.payload = JSON.parse(encryption.decrypt(data.payload, privkey, pubkey));
     var seq = data.seq;
     var ts   = data ? data.payload.ts : 0;
 

@@ -7,6 +7,37 @@ var Base58 = require('bs58');
 var algorithm     = 'aes-256-ecb';
 var useEncryption = true;
 
+/* ENCRYPTION / DECRYPTION */
+function encrypt(text, privkey, pubkey) {
+  if(!useEncryption)
+    return text;
+
+  var encrypted;
+  try {
+    var cipher = crypto.createCipher(algorithm, pubkey)
+    encrypted  = cipher.update(text, 'utf8', 'hex')
+    encrypted  += cipher.final('hex');
+  } catch(e) {
+    console.log("Error while encrypting:", e, e.stack);
+  }
+  return encrypted;
+}
+
+function decrypt(text, privkey, pubkey) {
+  if(!useEncryption)
+    return text;
+
+  var decrypted;
+  try {
+    var cipher = crypto.createDecipher(algorithm, pubkey)
+    decrypted  = cipher.update(text, 'hex', 'utf8')
+    decrypted  += cipher.final('utf8');
+  } catch(e) {
+    console.log("Error while decrypting:", e, e.stack);
+  }
+  return decrypted;
+}
+
 /* SIGNING FUNCTIONS */
 function hashWithSHA512(data, salt) {
   if(!salt) salt = "null";
@@ -34,44 +65,13 @@ function verify(data, pubkey, sig, seq, salt) {
   return verified;
 }
 
-/* ENCRYPTION */
-function encrypt(text, password) {
-  if(!useEncryption)
-    return text;
-
-  var crypted;
-  try {
-    var buffer    = new Buffer(text);
-    var encrypted = crypto.privateEncrypt(password, buffer);
-    crypted       = encrypted.toString("base64");
-  } catch(e) {
-    console.log("Error while encrypting:", e);
-  }
-  return crypted;
-}
-
-function decrypt(text, password) {
-  if(!useEncryption)
-    return text;
-
-  var crypted;
-  try {
-    var buffer    = new Buffer(text, "base64");
-    var decrypted = crypto.publicDecrypt(password, buffer);
-    crypted       = decrypted.toString("utf8");
-  } catch(e) {
-    console.log("Error while decrypting:", e);
-  }
-  return crypted;
-}
-
 /* PUBLIC */
 module.exports = {
-  encrypt: function(payload, salt) {
-    return encrypt(payload, salt);
+  encrypt: function(payload, privkey, pubkey) {
+    return encrypt(payload, privkey, pubkey);
   },
-  decrypt: function(payload, salt) {
-    return decrypt(payload, salt);
+  decrypt: function(payload, privkey, pubkey) {
+    return decrypt(payload, privkey, pubkey);
   },
   sign: (data, privateKey, sequenceNumber, salt) => {
     return sign(data, privateKey, sequenceNumber, salt);

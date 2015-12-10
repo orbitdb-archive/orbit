@@ -7,7 +7,7 @@ class SignedMessage {
   constructor(sequenceNumber, payload, publicKey, privateKey, salt) {
     this.seq     = sequenceNumber;
     this.pubkey  = publicKey;
-    this.payload = encryption.encrypt(JSON.stringify(payload), privateKey);
+    this.payload = encryption.encrypt(JSON.stringify(payload), privateKey, publicKey);
     try {
       this.sig = encryption.sign(this.payload, privateKey, this.seq, salt || "");
     } catch(e) {
