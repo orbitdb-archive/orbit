@@ -1,16 +1,16 @@
-# anonymous-networks
+# Orbit
+
+Previously known as: **Anonymous Networks**
 
 ## Introduction
 
-Anonymous Networks is a proof-of-concept ***distributed, peer-to-peer chat application built on top of [IPFS](http://ipfs.io)***.
-
-*"Anonymous"* as in no real-names, no emails. *"Anonymous"* **not** as in *"hide your traffic"*.
+Orbit is a proof-of-concept ***distributed, peer-to-peer chat application built on top of [IPFS](http://ipfs.io)***.
 
 All content (messages, files, metadata) are saved in IPFS as files or objects.
 
 There's currently a server that tracks the head (IPFS hash) of a linked list that enables traversing the history of a channel's messages. In future this will be replaced by IPNS.
 
-The messages are encrypted by default. Currently there's only one key pair that is used for the crypto. This will change in the future once IPFS has keystore implemented.
+The messages are encrypted by default. Currently there's only one key pair that is used for the crypto. This will change in the future once IPFS has keystore implemented. **Please note that atm Orbit is not secure!**
 
 ![Screenshot 1](https://raw.githubusercontent.com/haadcode/anonymous-networks/master/screenshots/screenshot1%202015-11-17.png)
 ![Screenshot 2](https://raw.githubusercontent.com/haadcode/anonymous-networks/master/screenshots/screenshot2%202015-11-17.png)
@@ -32,6 +32,7 @@ For development
 - python 2 (for building, some native modules need it, node-fibers perhaps?)
 
 ## Run
+### Browser
 ```
 npm install
 node index.js
@@ -39,9 +40,20 @@ node index.js
 
 Open http://localhost:3001 in your browser
 
+### Native
+Orbit uses Electron to wrap the application in native executable.
+
+Build the native distributables:
+```
+grunt
+```
+
+The builds are in `dist/`. Eg. on OSX, open the application from `dist/AnonymousNetworks-darwin-x64`
+
 ### Run Options
+(Not supported in native builds atm)
+
 #### Enable Bots
-(broken atm!)
 ```
 node index.js --bots
 ```
@@ -150,6 +162,8 @@ Make sure you don't have the node.js version running and no client open the brow
 ## Changelog
 
 **master**
+- Fix: messages longer than 256 bytes can't be sent
+- Fix: /me is parsed from the full content, not from the start
 
 **v1.0.2**
 - Fix: Integrate with a running ipfs daemon (https://github.com/haadcode/anonymous-networks/issues/1, dignifiedquire)

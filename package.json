@@ -30,10 +30,12 @@
     "grunt-contrib-copy": "^0.8.1",
     "grunt-electron": "^2.0.1",
     "grunt-run": "^0.5.1",
-    "load-grunt-tasks": "^3.3.0"
+    "load-grunt-tasks": "^3.3.0",
+    "mocha": "^2.3.4",
+    "should": "^8.0.0"
   },
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "mocha"
   },
   "repository": {
     "type": "git",
