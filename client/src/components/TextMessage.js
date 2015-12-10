@@ -30,17 +30,18 @@ class TextMessage extends React.Component {
     this.ready = true;
 
     var onMessageReceived = message => {
-      if(!this.ready) return;
+      if(!this.ready)
+        return;
+
       if(message) {
+        if(message.content.startsWith('/me')) {
+          this.setState({ isCommand: true });
+          this.props.onHighlight(true);
+        }
+
         message.content.split(" ").map((word) => {
           var highlight = MentionHighlighter.highlight(word, this.state.highlight);
           if(typeof highlight[0] !== 'string') this.props.onHighlight();
-
-          var command = MentionHighlighter.highlight(word, ['/me']);
-          if(typeof command[0] !== 'string') {
-            this.setState({ isCommand: true });
-            this.props.onHighlight(true);
-          }
         });
 
         this.setState({ text: message.content, loading: false });
