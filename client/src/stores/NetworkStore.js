@@ -28,8 +28,8 @@ var NetworkStore = Reflux.createStore({
   onSocketDisconnected: function() {
     this.socket.removeAllListeners("registered");
     this.socket.removeAllListeners("register.error");
-    this.socket  = null;
-    this.network = {};
+    this.socket = null;
+    this.init();
     this.trigger(this.network);
   },
   onConnect: function(host, username, password) {
@@ -43,7 +43,8 @@ var NetworkStore = Reflux.createStore({
   onDisconnect: function() {
     console.log("--> disconnect");
     this.socket.emit('deregister');
-    this.network = {};
+    this.init();
+    this.trigger(this.network);
   }
 });
 

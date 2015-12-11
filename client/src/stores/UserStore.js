@@ -34,6 +34,7 @@ var UserStore = Reflux.createStore({
   },
   onDisconnect: function() {
     this.user = {};
+    this.trigger(this.user);
   },
   onGetUser: function(callback) {
     callback(this.user);

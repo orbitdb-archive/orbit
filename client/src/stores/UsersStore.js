@@ -14,6 +14,10 @@ var UsersStore = Reflux.createStore({
       console.log("UsersStore connected");
       this.socket = socket;
     },
+    onDisconnect: function() {
+      this.users = {};
+      this.trigger(this.users);
+    },
     onGetUserInfo: function(hash, callback) {
       if(!this.users[hash]) {
         if(!this.socket) {

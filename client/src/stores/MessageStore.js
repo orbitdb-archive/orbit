@@ -1,11 +1,11 @@
 'use strict';
 
-import _         from 'lodash';
-import Reflux    from 'reflux';
-import Actions   from 'actions/SendMessageAction';
-import NetworkActions  from 'actions/NetworkActions';
-import ChannelActions  from 'actions/ChannelActions';
-import SocketActions  from 'actions/SocketActions';
+import _ from 'lodash';
+import Reflux from 'reflux';
+import Actions from 'actions/SendMessageAction';
+import NetworkActions from 'actions/NetworkActions';
+import ChannelActions from 'actions/ChannelActions';
+import SocketActions from 'actions/SocketActions';
 
 var channelPasswords = {};
 
@@ -14,12 +14,12 @@ var messagesBatchSize = 8;
 var MessageStore = Reflux.createStore({
   listenables: [Actions, NetworkActions, SocketActions, ChannelActions],
   init: function() {
+    this.openChannels = {};
     this.messages    = {};
     this.contents    = {};
     this.socket      = null;
     this.loading     = false;
     this.canLoadMore = true;
-    this.openChannels = {};
   },
   getLatestMessage: function(channel: string) {
     return this.messages[channel] && this.messages[channel].length > 0 ? this.messages[channel][0].hash : null;
@@ -45,8 +45,11 @@ var MessageStore = Reflux.createStore({
     this.contents = {};
   },
   onDisconnect: function() {
-    this.messages = {};
-    this.contents = {};
+    this.messages     = {};
+    this.contents     = {};
+    this.openChannels = {};
+    this.loading      = false;
+    this.canLoadMore  = true;
   },
   onJoinedChannel: function(channelInfo) {
     console.log("open #" + channelInfo.name);
