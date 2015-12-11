@@ -74,14 +74,17 @@ var HttpApi = async ((events) => {
     try {
       ipfsAPI.cat(ipfs, hash, (err, result) => {
         if(err) next(err);
+        if(result) {
+          var filename = req.query.name || "";
+          var type     = mime.lookup(filename);
+          if(req.query.action && req.query.action == "download")
+            res.setHeader('Content-disposition', 'attachment; filename=' + filename.replace(",", ""));
 
-        var filename = req.query.name || "";
-        var type     = mime.lookup(filename);
-        if(req.query.action && req.query.action == "download")
-          res.setHeader('Content-disposition', 'attachment; filename=' + filename.replace(",", ""));
-
-        res.setHeader('Content-Type', type);
-        result.pipe(res);
+          res.setHeader('Content-Type', type);
+          result.pipe(res);
+        } else {
+          res.send("error: " + err);
+        }
       });
     } catch(e) {
       logger.error(e);

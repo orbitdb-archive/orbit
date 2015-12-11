@@ -17,7 +17,7 @@ class ChannelsPanel extends React.Component {
     this.state = {
       currentChannel: props.currentChannel,
       openChannels: [],
-      joiningToChannel: null,
+      joiningToChannel: props.joiningToChannel,
       username: props.username,
       requirePassword: props.requirePassword || false,
       loading: false,
@@ -29,6 +29,7 @@ class ChannelsPanel extends React.Component {
   componentWillReceiveProps(nextProps) {
     this.setState({
       currentChannel: nextProps.currentChannel,
+      joiningToChannel: nextProps.joiningToChannel,
       requirePassword: nextProps.requirePassword,
       loading: false,
       theme: nextProps.theme,

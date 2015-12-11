@@ -35,6 +35,7 @@ var App = React.createClass({
       panelOpen: false,
       location: null,
       user: null,
+      joiningToChannel: null,
       requirePassword: false,
       currentChannel: null,
       theme: null,
@@ -62,6 +63,7 @@ var App = React.createClass({
     this.unsubscribeFromMessageStore    = MessageStore.listen((channel, message) => {
       console.log("New messages on #" + channel);
       if(this.state.currentChannel !== channel) {
+        document.title = "* " + this.state.location;
         NotificationActions.unreadMessages(channel);
       }
     });
@@ -99,16 +101,19 @@ var App = React.createClass({
       this.history.pushState(null, '/');
     }
   },
-  togglePanel: function() {
+  togglePanel: function(close = false) {
     if(location && this.state.user) {
       if(this.state.panelOpen) UIActions.onPanelClosed();
-      this.setState({ panelOpen: !this.state.panelOpen });
+      if(close)
+        this.setState({ panelOpen: false });
+      else
+        this.setState({ panelOpen: !this.state.panelOpen });
     }
   },
   onJoinedChannel: function(channelInfo) {
-    this.togglePanel();
+    this.togglePanel(true);
     if("#" + channelInfo.name !== this.state.location) {
-      this.setState({ location: "#" + channelInfo.name, requirePassword: false, currentChannel: channelInfo.name });
+      this.setState({ location: "#" + channelInfo.name, requirePassword: false, currentChannel: channelInfo.name, joiningToChannel: null });
       this.history.pushState(null, '/channel/' + channelInfo.name, { user: this.state.user });
     }
   },
@@ -118,8 +123,9 @@ var App = React.createClass({
       this.history.pushState(null, '/');
     }
   },
-  onJoinChannelError: function(err) {
-    this.setState({ requirePassword: true} );
+  onJoinChannelError: function(channel, err) {
+    if(!this.state.panelOpen) this.setState({ panelOpen: true });
+    this.setState({ joiningToChannel: channel, requirePassword: true} );
   },
   joinChannel: function(channelName, password) {
     if(channelName === this.state.currentChannel)
@@ -163,6 +169,7 @@ var App = React.createClass({
         requirePassword={this.state.requirePassword}
         theme={this.state.theme}
         networkName={this.state.networkName}
+        joiningToChannel={this.state.joiningToChannel}
       />
     ) : "";
 

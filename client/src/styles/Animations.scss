@@ -154,3 +154,12 @@ $bounce-amount: 2px;
         transform: translateY(0);
     }
 }
+
+@keyframes fadeOutRight {
+    0% {
+        opacity: 1;
+    }
+    100% {
+        opacity: 0;
+    }
+}

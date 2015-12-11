@@ -333,7 +333,7 @@ class Channel extends React.Component {
         </div>
         <form onSubmit={this.changePasswords.bind(this)}>
           <input type="text" ref="readPassword" placeholder="read-password" defaultValue={this.state.channelInfo.modes.r ? this.state.channelInfo.modes.r.password : ''} style={theme}/>
-          <input type="checkbox" ref="writePassword" defaultChecked={this.state.channelInfo.modes.w} style={theme}/>
+          <label>Moderated</label> <input type="checkbox" ref="writePassword" defaultChecked={this.state.channelInfo.modes.w} style={theme}/>
           <input type="submit" value="Set" style={theme}/>
         </form>
       </div>
@@ -353,7 +353,7 @@ class Channel extends React.Component {
       </Dropzone>
     ) : "";
 
-    var showNewMessageIcon = this.state.displayNewMessagesIcon ? (
+    var showNewMessageNotification = this.state.displayNewMessagesIcon ? (
       <div className="newMessagesBar" onClick={this.onScrollToBottom.bind(this)}>
         There are <span className="newMessagesNumber">{this.state.unreadMessages}</span> new messages
       </div>
@@ -375,7 +375,7 @@ class Channel extends React.Component {
 
         {channelOptions}
 
-        {showNewMessageIcon}
+        {showNewMessageNotification}
         {controlsBar}
 
         {dropzone}
