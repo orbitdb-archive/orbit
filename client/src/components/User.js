@@ -8,7 +8,7 @@ import SettingsStore from 'stores/SettingsStore';
 
 import 'styles/User.scss';
 
-var unknownUsername = "Anonymous";
+var unknownUsername = "";
 
 class User extends React.Component {
   constructor(props) {
