@@ -72,7 +72,7 @@ var leaveAllChannels = async (() => {
 });
 
 var getChannelHead = async ((ipfs, channel, uid, password) => {
-  var head = await(client.linkedList(channel, password).head)
+  var head = await(client.linkedList(channel, password).head())
   return (head.length == 0) ? null : head.head;
 });
 
@@ -306,7 +306,7 @@ var connectToSwarm = async((ipfs, user, peers) => {
 });
 
 process.on('uncaughtException', (reason, srcPromise) => {
-  logger.warn("-- Uncaught Exception: ", reason);
+  logger.error("Uncaught Exception:\n", reason);
 });
 
 /* PUBLIC API */
@@ -320,8 +320,7 @@ var networkAPI = {
       HashCache.connect(network, username, password)
         .then((result) => {
           client = result;
-          networkInfo = client.network;
-          resolve(networkInfo);
+          resolve(client.network);
         })
         .catch(reject)
     });
@@ -330,7 +329,7 @@ var networkAPI = {
     return new Promise((resolve, reject) => {
       var c = new Channel(channel, password);
       logger.debug("Join #" + c.name, c.hash);
-      client.linkedList(c.hash, c.password).head
+      client.linkedList(c.hash, c.password).head()
         .then((res) => {
           startCaching(ipfs, c, uid, password);
           resolve(res);
