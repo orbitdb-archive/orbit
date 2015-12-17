@@ -125,6 +125,11 @@ Make sure you don't have the node.js version running and no client open the brow
 ## TODO
 
 ## Backlog
+- Multiline supports in the send message input field
+- Try right-aligned channels panels
+- Add keyboard shortcuts for: open channels panel, close channels panel, next channel, previous channel, focus on send message, open settings
+  + check https://github.com/glenjamin/react-hotkey
+- Add trackbar to channel (line between new and previously seen messages)
 - Fix browser file upload
 - Skip lists for LL items in order to prevent channel history traversal to get stuck completely
 - Fix Electron non-dev flow

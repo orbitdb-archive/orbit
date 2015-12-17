@@ -45,7 +45,10 @@ class Request {
   }
 
   end(callback) {
-    unirest(this.method, "http://" + this.url)
+    if(!this.url.startsWith("http"))
+      this.url = "http://" + this.url
+
+    unirest(this.method, this.url)
       .headers(this.headers)
       .type('application/json')
       .send(this.body)
@@ -56,7 +59,6 @@ class Request {
           callback(null, res.body);
       });
   }
-
 }
 
 module.exports = new Request();
