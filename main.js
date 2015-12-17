@@ -100,12 +100,6 @@ var stopApplication = () => {
   ipfsd.stop();
 };
 
-process.on('uncaughtException', (err) => {
-  logger.error("Uncaught Exception:");
-  logger.error(JSON.stringify(err, null, 2));
-});
-
-
 /* MAIN */
 var events = new EventEmitter();
 var start = exports.start = async(() => {
