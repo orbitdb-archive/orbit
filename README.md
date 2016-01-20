@@ -8,7 +8,7 @@ Orbit is a proof-of-concept ***distributed, peer-to-peer chat application built 
 
 All content (messages, files, metadata) are saved in IPFS as files or objects.
 
-There's currently a server that tracks the head (IPFS hash) of a linked list that enables traversing the history of a channel's messages. In future this will be replaced by IPNS.
+There's currently a server (https://github.com/haadcode/orbit-server) that tracks the head (IPFS hash) of a linked list that enables traversing the history of a channel's messages. In future this will be replaced by IPNS.
 
 The messages are encrypted by default. Currently there's only one key pair that is used for the crypto. This will change in the future once IPFS has keystore implemented. **Please note that atm Orbit is not secure!**
 
@@ -20,6 +20,9 @@ The messages are encrypted by default. Currently there's only one key pair that 
 - Drag & drop files to a channel to share them
 - Channel modes: password protection to read (Secret), password protection to write (Moderated, only channel "ops" can write)
 - Native application on OSX and Linux (Electron)
+
+## Run your own network
+Get https://github.com/haadcode/orbit-server and start the server, edit `./network.json` and point to appropriate url (eg. localhost:3006)
 
 ## Requirements
 - Node.js v4.2.x
