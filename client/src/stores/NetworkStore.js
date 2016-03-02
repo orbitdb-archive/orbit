@@ -20,7 +20,7 @@ var NetworkStore = Reflux.createStore({
         NetworkActions.connected(network);
       }
     });
-    this.socket.on('register.error', (err) => {
+    this.socket.on('orbit.error', (err) => {
       console.error("Register error:", err);
       NetworkActions.registerError(err);
     });

@@ -13,7 +13,7 @@ var ApiMessages = require('../ApiMessages');
 var Channel     = require('../Channel')
 
 /* SOCKET API */
-var SocketApi = async ((socketServer, httpServer, events) => {
+var SocketApi = async ((socketServer, httpServer, events, handler) => {
   logger.debug("Starting socket server");
 
   var io = socketIo(socketServer);
@@ -21,18 +21,38 @@ var SocketApi = async ((socketServer, httpServer, events) => {
 
   var socket       = null;
   var ipfs         = null;
-  var userInfo     = {};
-  var networkInfo  = {};
+  // var userInfo     = {};
 
-  var onIpfsStarted = (res) => {
-    logger.debug("SocketApi ready");
-    userInfo = res.user;
-    ipfs     = res.ipfs;
+  let orbit;
+
+  // var onIpfsStarted = (res) => {
+  //   logger.debug("SocketApi ready");
+  //   userInfo = res.user;
+  //   ipfs     = res.ipfs;
+  // };
+
+  const onConnected = (orbitdb) => {
+    orbit = orbitdb;
+    ipfs = orbit._client._ipfs;
+    // userInfo = orbit.user;
+
+    // socket.emit('registered', {
+    socket.emit('registered', {
+      name: orbit.network.name,
+      host: orbit.network.host,
+      user: orbit.user
+    });
+
+    socket.emit('login', orbit.user);
   };
 
-  var onLogin = (user) => {
-    if(socket) socket.emit("login", user);
-  };
+  const onError = (err) => {
+    socket.emit('error', err);
+  }
+
+  // var onLogin = (user) => {
+  //   if(socket) socket.emit("login", user);
+  // };
 
   var onNewMessages = (channel, data) => {
     if(socket) socket.emit("messages", channel, data);
@@ -58,10 +78,14 @@ var SocketApi = async ((socketServer, httpServer, events) => {
     }
   });
 
-  events.removeListener("login", onLogin);
-  events.removeListener("onIpfsStarted", onIpfsStarted);
-  events.on('onIpfsStarted', onIpfsStarted);
-  events.on("login", onLogin);
+  events.removeListener('orbit.error', onError);
+  events.removeListener('connected', onConnected);
+  events.on('orbit.error', onError);
+  events.on('connected', onConnected);
+  // events.removeListener("login", onLogin);
+  // events.removeListener("onIpfsStarted", onIpfsStarted);
+  // events.on('onIpfsStarted', onIpfsStarted);
+  // events.on("login", onLogin);
 
   io.on('connection', async (function (s) {
     logger.info("UI connected");
@@ -72,6 +96,11 @@ var SocketApi = async ((socketServer, httpServer, events) => {
 
     networkAPI.events.on("messages", onNewMessages);
     // networkAPI.events.on("message", onMessage);
+
+    // socket.on('error', (e) => {
+    //   logger.error("WTF ERROR", e.message);
+    //   logger.error("Stack trace:\n", e.stack);
+    // });
 
     socket.on(ApiMessages.error, function(err) {
       logger.error("Caught flash policy server socket error: ")
@@ -209,9 +238,12 @@ var SocketApi = async ((socketServer, httpServer, events) => {
       });
     }));
 
-    socket.on(ApiMessages.whoami, async (function (cb) {
-      var res = Object.assign(userInfo, { network: networkInfo });
-      if(cb) cb(res);
+    socket.on(ApiMessages.whoami, async((callback) => {
+      if(callback) {
+        callback(orbit ? orbit.user : null);
+      }
+      // const user = orbit ? Object.assign(userInfo, { network: orbit.network }) : userInfo;
+      // if(cb) cb(user);
     }));
 
     socket.on(ApiMessages.swarm.peers, async((cb) => {
@@ -228,23 +260,29 @@ var SocketApi = async ((socketServer, httpServer, events) => {
       await (networkAPI.leaveAllChannels());
       ipfs = null;
       userInfo = {};
-      networkInfo = {};
       events.emit('disconnect');
     }));
 
-    socket.on(ApiMessages.register, async (function (host, username, password) {
-      events.emit('onRegister', host, username, password, (err, res) => {
-        if(!err) {
-          networkInfo.host = host;
-          networkInfo.name = res.network;
-          socket.emit('registered', { name: networkInfo.name, host: networkInfo.host, user: userInfo });
-          events.emit('connect');
-        } else {
-          socket.emit('log', "register error: " + err);
-          socket.emit('register.error', JSON.stringify(err.toString()));
-        }
-      });
-    }));
+    socket.on(ApiMessages.register, handler.connect);
+
+    // socket.on(ApiMessages.register, async((host, username, password) => {
+    //   const hostname = host.split(":")[0];
+    //   const port = host.split(":")[1];
+    //   const network = { host: hostname, port: port };
+    //   const user = { username: username, password: password };
+    //   events.emit('onRegister', network, user);
+    //   // events.emit('onRegister', host, username, password, (err, res) => {
+    //   //   if(!err) {
+    //   //     networkInfo.host = host;
+    //   //     networkInfo.name = res.network;
+    //   //     socket.emit('registered', { name: networkInfo.name, host: networkInfo.host, user: userInfo });
+    //   //     events.emit('connect');
+    //   //   } else {
+    //   //     socket.emit('log', "register error: " + err);
+    //   //     socket.emit('register.error', JSON.stringify(err.toString()));
+    //   //   }
+    //   // });
+    // }));
 
     }
   }));

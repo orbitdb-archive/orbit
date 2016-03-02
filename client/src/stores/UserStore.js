@@ -11,20 +11,19 @@ var UserStore = Reflux.createStore({
     this.user   = {};
     this.socket = null;
   },
+  _handleUserUpdated: function(user) {
+    if(user) {
+      this.user = user;
+      console.log("Logged in as ", user);
+    } else {
+      console.log("Not logged in");
+    }
+    this.trigger(this.user);
+  },
   onSocketConnected: function(socket) {
     console.log("UserStore connected");
     this.socket = socket;
-    this.socket.on('login', (user) => {
-      if(this.user.username) {
-        console.log("Logged in as ", user);
-      } else {
-        console.log("Not logged in");
-      }
-      if(this.user.username !== user.username) {
-        this.user = user;
-        this.trigger(this.user);
-      }
-    });
+    this.socket.on('registered', (network) => this._handleUserUpdated(network.user));
     this.getWhoami();
   },
   onSocketDisconnected: function() {
@@ -44,17 +43,8 @@ var UserStore = Reflux.createStore({
       console.error("Socket not connected");
       return;
     }
-
     console.log("--> whoami");
-    this.socket.emit('whoami', (user) => {
-      this.user = user;
-      if(this.user.username) {
-        console.log("Logged in as ", user);
-      } else {
-        console.log("Not logged in");
-      }
-      this.trigger(this.user);
-    });
+    this.socket.emit('whoami', this._handleUserUpdated);
   }
 });
 
