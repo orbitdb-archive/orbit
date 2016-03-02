@@ -18,6 +18,7 @@ var HttpApi        = require('./core/api/HttpApi');
 var Network        = require('./core/Network');
 
 const OrbitNetwork = require('./src/OrbitNetwork');
+const ipfsDaemon   = require('orbit-common/lib/ipfs-daemon');
 
 Promise.longStackTraces(); // enable regular stack traces in catch
 
@@ -104,49 +105,62 @@ process.env.PATH += ":/usr/local/bin" // fix for Electron app release bug (PATH 
 //   return orbit;
 // });
 
-var stopApplication = () => {
-  // ipfsd.stop();
-  // TODO: disconnec tfrom OrbitDB
-};
+// var stopApplication = () => {
+//   // ipfsd.stop();
+//   // TODO: disconnec tfrom OrbitDB
+// };
 
+let ipfs, orbit;
 var handler = {
   connect: async((host, username, password) => {
-    const hostname = host.split(":")[0];
-    const port = host.split(":")[1];
-    // const network = { host: hostname, port: port };
-    const user = { username: username, password: password };
-    let orbit;
-    // TODO: hard coded until UI is fixe
-    var network = Network.fromConfig(path.resolve(utils.getAppPath(), "network.json"));
-    try {
-      logger.info(`Connecting to Orbit network at '${network.host}:${network.port}' as '${user.username}`);
-      orbit = OrbitNetwork.connect(network.host, network.port, user.username, user.password);
-      logger.info(`Connected to Orbit network at '${network.host}:${network.port}' as '${user.username}`)
-      events.emit('connected', orbit);
-    } catch(e) {
-      logger.error(e.message);
-      logger.error("Stack trace:\n", e.stack);
-      events.emit('orbit.error', e);
-    }
-    return orbit;
+    // const connect = async(() => {
+      const hostname = host.split(":")[0];
+      const port = host.split(":")[1];
+      // const network = { host: hostname, port: port };
+      // TODO: hard coded until UI is fixe
+      var network = Network.fromConfig(path.resolve(utils.getAppPath(), "network.json"));
+      const user = { username: username, password: password };
+      try {
+        logger.info(`Connecting to network at '${network.host}:${network.port}' as '${user.username}`);
+        orbit = await(OrbitNetwork.connect(network.host, network.port, user.username, user.password, ipfs));
+        logger.info(`Connected to '${orbit.network.name}' at '${orbit.network.host}:${orbit.network.port}' as '${user.username}`)
+        events.emit('connected', orbit);
+      } catch(e) {
+        logger.error(e.message);
+        logger.debug("Stack trace:\n", e.stack);
+        events.emit('orbit.error', e.message);
+      }
+    // });
+    // await(connect());
+  }),
+  disconnect: async(() => {
+    // console.log("o", orbit);
+    const host = orbit.network.host;
+    const port = orbit.network.port;
+    const name = orbit.network.name;
+    orbit.disconnect();
+    logger.warn(`Disconnected from '${name}' at '${host}:${port}'`);
   })
 };
 
 /* MAIN */
 // var ipfs;
-var events = new EventEmitter();
-var start = exports.start = async(() => {
+const events = new EventEmitter();
+const start = exports.start = async(() => {
   try {
     var startupTime = "Startup time";
     timer.start(startupTime);
 
     // events.on('onRegister', connectToNetwork);
-    events.on('disconnect', stopApplication);
+    // events.on('disconnect', stopApplication);
+
+    // Start ipfs daemon
+    const ipfsd = await(ipfsDaemon());
+    ipfs = ipfsd.ipfs;
+    // daemon = ipfsd.daemon;
 
     var httpApi   = await (HttpApi(events));
     var socketApi = await (SocketApi(httpApi.socketServer, httpApi.server, events, handler));
-
-    var network = Network.fromConfig(path.resolve(utils.getAppPath(), "network.json"));
 
     // auto-login if there's a user.json file
     var userFile = path.join(__dirname, "user.json");
@@ -154,7 +168,8 @@ var start = exports.start = async(() => {
       var user = JSON.parse(fs.readFileSync(userFile));
       logger.debug(`Using credentials from '${userFile}'`);
       logger.debug(`Registering as '${user.username}'`);
-      handler.connect(network.host + ":" + network.port, user.username, user.password);
+      var network = Network.fromConfig(path.resolve(utils.getAppPath(), "network.json"));
+      await(handler.connect(network.host + ":" + network.port, user.username, user.password));
     }
 
     logger.debug('Startup time: ' + timer.stop(startupTime) + "ms");

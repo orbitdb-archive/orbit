@@ -34,25 +34,19 @@ var SocketApi = async ((socketServer, httpServer, events, handler) => {
   const onConnected = (orbitdb) => {
     orbit = orbitdb;
     ipfs = orbit._client._ipfs;
-    // userInfo = orbit.user;
 
-    // socket.emit('registered', {
-    socket.emit('registered', {
-      name: orbit.network.name,
-      host: orbit.network.host,
-      user: orbit.user
-    });
-
-    socket.emit('login', orbit.user);
+    if(socket) {
+      socket.emit('registered', {
+        name: orbit.network.name,
+        host: orbit.network.host,
+        user: orbit.user
+      });
+    }
   };
 
   const onError = (err) => {
-    socket.emit('error', err);
+    if(socket) socket.emit('orbit.error', err);
   }
-
-  // var onLogin = (user) => {
-  //   if(socket) socket.emit("login", user);
-  // };
 
   var onNewMessages = (channel, data) => {
     if(socket) socket.emit("messages", channel, data);
@@ -255,13 +249,15 @@ var SocketApi = async ((socketServer, httpServer, events, handler) => {
         });
     }));
 
-    socket.on(ApiMessages.deregister, async (function () {
-      logger.warn("SHUTDOWN!");
-      await (networkAPI.leaveAllChannels());
-      ipfs = null;
-      userInfo = {};
-      events.emit('disconnect');
-    }));
+    socket.on(ApiMessages.deregister, handler.disconnect);
+    // socket.on(ApiMessages.deregister, async(() => {
+    //   logger.warn("Shutdown Socket API");
+    //   // await (networkAPI.leaveAllChannels());
+    //   // ipfs = null;
+    //   // userInfo = {};
+    //   handler.disconnect;
+    //   events.emit('disconnect');
+    // }));
 
     socket.on(ApiMessages.register, handler.connect);
 

@@ -6,7 +6,8 @@ const OrbitDB       = require('orbit-db');
 const ChannelSystem = require('./ChannelSystem');
 
 class OrbitNetwork {
-  constructor() {
+  constructor(ipfs) {
+    this._ipfs = ipfs;
     this._client = null;
     this._user = null;
     this._network = null;
@@ -14,9 +15,16 @@ class OrbitNetwork {
   }
 
   connect(host, port, username, password) {
-    this._client = OrbitDB.connect(host, port, username, password);
+    this._client = OrbitDB.connect(host, port, username, password, this._ipfs);
     this._user = this._client.user;
     this._network = this._client.network;
+  }
+
+  disconnect() {
+    this._client.disconnect();
+    this._client = null;
+    this._user = null;
+    this._network = null;
   }
 
   joinChannel(channel, password, onMessageCallback) {
@@ -45,8 +53,8 @@ class OrbitNetwork {
 }
 
 class OrbitNetworkFactory {
-  static connect(host, port, username, password) {
-    const client = new OrbitNetwork();
+  static connect(host, port, username, password, ipfs) {
+    const client = new OrbitNetwork(ipfs);
     client.connect(host, port, username, password);
     return client;
   }

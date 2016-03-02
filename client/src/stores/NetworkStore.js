@@ -26,8 +26,8 @@ var NetworkStore = Reflux.createStore({
     });
   },
   onSocketDisconnected: function() {
-    this.socket.removeAllListeners("registered");
-    this.socket.removeAllListeners("register.error");
+    this.socket.removeAllListeners('registered');
+    this.socket.removeAllListeners('orbit.error');
     this.socket = null;
     this.init();
     this.trigger(this.network);
