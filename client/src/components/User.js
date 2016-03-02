@@ -15,7 +15,7 @@ class User extends React.Component {
     super(props);
     this.state = {
       uid: this.props.userId,
-      username: unknownUsername,
+      username: this.props.userId,
       colorify: props.colorify,
       highlight: props.highlight
     };
@@ -26,7 +26,7 @@ class User extends React.Component {
   }
 
   componentDidMount() {
-    NetworkActions.getUserInfo(this.state.uid, (username) => this.setState({ username: username || unknownUsername }));
+    // NetworkActions.getUserInfo(this.state.uid, (username) => this.setState({ username: username || unknownUsername }));
   }
 
   render() {

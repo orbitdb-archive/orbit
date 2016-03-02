@@ -40,21 +40,21 @@ class Message extends React.Component {
 
   render() {
     var safeTime = (time) => ("0" + time).slice(-2);
-    var date     = new Date(this.state.message.ts);
+    var date     = new Date(this.state.message.meta.ts);
     var ts       = safeTime(date.getHours()) + ":" + safeTime(date.getMinutes()) + ":" + safeTime(date.getSeconds());
     // ts   = this.state.message.ts;
 
     var content = '...';
-    if(this.state.message.type === "msg") {
+    if(this.state.message.meta.type === "text") {
       content = <TextMessage
                   message={this.state.message}
                   useEmojis={this.state.useEmojis}
                   highlight={this.state.username}
                   onHighlight={this.onHighlight.bind(this)}
                   />;
-    } else if(this.state.message.type === "file") {
+    } else if(this.state.message.meta.type === "file") {
       content = <File message={this.state.message}/>;
-    } else if(this.state.message.type === "list") {
+    } else if(this.state.message.meta.type === "list") {
       content = <Directory message={this.state.message} root={true}/>;
     }
 
@@ -69,7 +69,7 @@ class Message extends React.Component {
         className={className}
         onDragEnter={this.onDragEnter.bind(this)}>
         <span className="Timestamp">{ts}</span>
-        <User userId={this.state.message.uid} colorify={this.state.colorifyUsername} highlight={this.state.isCommand}/>
+        <User userId={this.state.message.meta.from} colorify={this.state.colorifyUsername} highlight={this.state.isCommand}/>
         <div className={contentClass}>{content}</div>
       </TransitionGroup>
     );

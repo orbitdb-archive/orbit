@@ -14,8 +14,8 @@ class TextMessage extends React.Component {
     super(props);
     this.state = {
       message: props.message,
-      text: "...",
-      loading: true,
+      text: props.message.value,
+      loading: false,
       useEmojis: props.userEmojis,
       highlight: props.highlight,
       isCommand: false
@@ -29,27 +29,28 @@ class TextMessage extends React.Component {
   componentDidMount() {
     this.ready = true;
 
-    var onMessageReceived = message => {
+    var onMessageReceived = (message) => {
       if(!this.ready)
         return;
 
       if(message) {
-        if(message.content.startsWith('/me')) {
+        if(message.value.startsWith('/me')) {
           this.setState({ isCommand: true });
           this.props.onHighlight(true);
         }
 
-        message.content.split(" ").map((word) => {
+        message.value.split(" ").map((word) => {
           var highlight = MentionHighlighter.highlight(word, this.state.highlight);
           if(typeof highlight[0] !== 'string') this.props.onHighlight();
         });
 
-        this.setState({ text: message.content, loading: false });
+        // this.setState({ text: message.value, loading: false });
       }
-      else
-        setTimeout(() => { ChannelActions.loadMessageContent(this.state.message.hash, onMessageReceived); }, 200);
+      // else
+      //   setTimeout(() => { ChannelActions.loadMessageContent(this.state.message.hash, onMessageReceived); }, 200);
     };
-    ChannelActions.loadMessageContent(this.state.message.hash, onMessageReceived);
+    // ChannelActions.loadMessageContent(this.state.message.hash, onMessageReceived);
+    onMessageReceived(this.state.message);
   }
 
   componentWillUnmount() {

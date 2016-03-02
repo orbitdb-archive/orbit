@@ -107,7 +107,7 @@ class Channel extends React.Component {
     var status = "Public";
 
     if(modes) {
-      if(modes.w && this.state.user && !_.contains(modes.w.ops, this.state.user.id))
+      if(modes.w && this.state.user && !_.includes(modes.w.ops, this.state.user.id))
         this.setState({ writeMode: false });
       else
         this.setState({ writeMode: true });
@@ -124,7 +124,7 @@ class Channel extends React.Component {
       return;
 
     var sorted = messages;
-    if(this.state.flipMessageOrder) sorted = _.sortByOrder(messages, ["ts"], ["asc"]);
+    // if(this.state.flipMessageOrder) sorted = _.sortByOrder(messages, ["ts"], ["asc"]);
 
     if(this.state.flipMessageOrder && this.node.scrollHeight - this.node.scrollTop + 20 > this.node.clientHeight && this.node.scrollHeight > this.node.clientHeight + 1
       && this.state.messages.length > 0 && sorted[sorted.length - 1].ts > this.state.messages[this.state.messages.length - 1].ts
@@ -306,8 +306,8 @@ class Channel extends React.Component {
 
     var messages = this.state.messages.map((e) => {
       return <Message
-                message={e.data}
-                key={e.ts}
+                message={e.payload}
+                key={e.payload.meta.ts}
                 onDragEnter={this.onDragEnter.bind(this)}
                 username={this.state.username}
                 colorifyUsername={this.state.appSettings.colorifyUsernames}

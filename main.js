@@ -111,35 +111,64 @@ process.env.PATH += ":/usr/local/bin" // fix for Electron app release bug (PATH 
 // };
 
 let ipfs, orbit;
+var _handleError = (error) => {
+  logger.error(e.message);
+  logger.debug("Stack trace:\n", e.stack);
+  events.emit('orbit.error', e.message);
+};
+
+var _handleMessage = (channel, message) => {
+  console.log("HANDLE:", channel, message);
+  events.emit('message', channel, message);
+};
+
 var handler = {
   connect: async((host, username, password) => {
-    // const connect = async(() => {
-      const hostname = host.split(":")[0];
-      const port = host.split(":")[1];
-      // const network = { host: hostname, port: port };
-      // TODO: hard coded until UI is fixe
-      var network = Network.fromConfig(path.resolve(utils.getAppPath(), "network.json"));
-      const user = { username: username, password: password };
-      try {
-        logger.info(`Connecting to network at '${network.host}:${network.port}' as '${user.username}`);
-        orbit = await(OrbitNetwork.connect(network.host, network.port, user.username, user.password, ipfs));
-        logger.info(`Connected to '${orbit.network.name}' at '${orbit.network.host}:${orbit.network.port}' as '${user.username}`)
-        events.emit('connected', orbit);
-      } catch(e) {
-        logger.error(e.message);
-        logger.debug("Stack trace:\n", e.stack);
-        events.emit('orbit.error', e.message);
-      }
-    // });
-    // await(connect());
+    const hostname = host.split(":")[0];
+    const port = host.split(":")[1];
+    // const network = { host: hostname, port: port };
+    // TODO: hard coded until UI is fixed
+    var network = Network.fromConfig(path.resolve(utils.getAppPath(), "network.json"));
+    const user = { username: username, password: password };
+    try {
+      logger.info(`Connecting to network at '${network.host}:${network.port}' as '${user.username}`);
+      orbit = await(OrbitNetwork.connect(network.host, network.port, user.username, user.password, ipfs));
+      orbit.events.on('message', _handleMessage);
+      logger.info(`Connected to '${orbit.network.name}' at '${orbit.network.host}:${orbit.network.port}' as '${user.username}`)
+      events.emit('connected', orbit);
+    } catch(e) {
+      _handleError(e);
+    }
   }),
   disconnect: async(() => {
-    // console.log("o", orbit);
     const host = orbit.network.host;
     const port = orbit.network.port;
     const name = orbit.network.name;
     orbit.disconnect();
     logger.warn(`Disconnected from '${name}' at '${host}:${port}'`);
+  }),
+  join: async((channel, password, callback) => {
+    logger.debug(`Join # ${channel} (${password ? " (with password)" : ""}`);
+    orbit.joinChannel(channel, password)
+    if(callback) callback(null, { name: channel, modes: {} })
+  }),
+  getUser: async((userHash, callback) => {
+    if(callback) callback(userHash);
+  }),
+  getMessages: async((channel, startHash, lastHash, amount, callback) => {
+    logger.debug(`Get messages from #${channel}: ${startHash}, ${lastHash}, ${amount}`)
+    const messages = await(orbit.getMessages(channel, { limit: amount }));
+    if(callback) callback(channel, messages);
+  }),
+  sendMessage: async((channel, message, callback) => {
+    try {
+      logger.info(`Send message to #${channel}: ${message}`);
+      const r = orbit.publish(channel, message);
+      if(callback) callback(null);
+    } catch(e) {
+      _handleError(e);
+      if(callback) callback(e.message);
+    }
   })
 };
 

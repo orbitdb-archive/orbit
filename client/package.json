@@ -16,7 +16,7 @@
     "file-loader": "^0.8.4",
     "halogen": "^0.1.10",
     "jquery": "^2.1.4",
-    "lodash": "^3.10.1",
+    "lodash": "^4.6.0",
     "normalize.css": "~3.0.3",
     "object-assign": "^2.0.0",
     "pleasejs": "^0.4.2",

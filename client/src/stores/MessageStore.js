@@ -68,21 +68,23 @@ var MessageStore = Reflux.createStore({
     }
 
     Actions.startLoading(channel);
-
     console.log("--> channel.get: ", channel, startHash, endHash, this.messages[channel] && this.messages[channel].length > 0 ? this.messages[channel][0].hash : "");
     this.loading = true;
-    if(this.messages[channel] && this.messages[channel].length > 0 && _.contains(this.messages[channel], startHash))
+    if(this.messages[channel] && this.messages[channel].length > 0 && _.includes(this.messages[channel], startHash))
       this.trigger(channel, this.messages[channel]);
     else
       this.socket.emit('channel.get', channel, startHash, endHash, amount, this.addMessages);
   },
   addMessages: function(channel: string, newMessages: Array) {
     if(newMessages && this.openChannels[channel]) {
-      console.log("<-- messages: ", newMessages.length, newMessages);
-      var merged    = this.messages[channel].concat(newMessages);
-      var all       = _.uniq(merged, 'hash');
-      var sorted    = _.sortByOrder(all, ["seq"], ["desc"]);
-      this.messages[channel] = sorted;
+      console.log("<-- messages: ", channel, newMessages.length, newMessages);
+      var unique    = _.differenceWith(this.messages[channel], newMessages, _.isEqual);
+      console.log("<-- messages: ", unique);
+      var all       = unique.concat(newMessages);
+      // var all       = _.uniq(merged, 'hash');
+      // var sorted    = _.sortByOrder(all, ["seq"], ["desc"]);
+      // this.messages[channel] = sorted;
+      this.messages[channel] = all;
       this.loading  = false;
       if(newMessages.length > 1) this.canLoadMore = true;
       Actions.stopLoading(channel);
@@ -131,6 +133,7 @@ var MessageStore = Reflux.createStore({
         console.log("Couldn't send message:", err.toString());
         Actions.raiseError(err.toString());
       }
+      Actions.stopLoading(channel);
     });
   },
   onAddFile: function(channel: string, filePath: string) {

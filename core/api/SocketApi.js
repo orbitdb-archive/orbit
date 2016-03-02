@@ -21,15 +21,7 @@ var SocketApi = async ((socketServer, httpServer, events, handler) => {
 
   var socket       = null;
   var ipfs         = null;
-  // var userInfo     = {};
-
   let orbit;
-
-  // var onIpfsStarted = (res) => {
-  //   logger.debug("SocketApi ready");
-  //   userInfo = res.user;
-  //   ipfs     = res.ipfs;
-  // };
 
   const onConnected = (orbitdb) => {
     orbit = orbitdb;
@@ -52,9 +44,9 @@ var SocketApi = async ((socketServer, httpServer, events, handler) => {
     if(socket) socket.emit("messages", channel, data);
   };
 
-  var onMessage = (channelName, message) => {
-    events.emit('message', channelName, message);
-  };
+  // var onMessage = (channelName, message) => {
+  //   events.emit('message', channelName, message);
+  // };
 
   var unsubscribe = (socket, msg) => {
     if(typeof msg === "string")
@@ -74,8 +66,11 @@ var SocketApi = async ((socketServer, httpServer, events, handler) => {
 
   events.removeListener('orbit.error', onError);
   events.removeListener('connected', onConnected);
+  events.removeListener('message', onNewMessages);
   events.on('orbit.error', onError);
   events.on('connected', onConnected);
+  events.on('message', onNewMessages);
+
   // events.removeListener("login", onLogin);
   // events.removeListener("onIpfsStarted", onIpfsStarted);
   // events.on('onIpfsStarted', onIpfsStarted);
@@ -88,7 +83,7 @@ var SocketApi = async ((socketServer, httpServer, events, handler) => {
     if(!socket) {
       socket = s;
 
-    networkAPI.events.on("messages", onNewMessages);
+    // networkAPI.events.on("messages", onNewMessages);
     // networkAPI.events.on("message", onMessage);
 
     // socket.on('error', (e) => {
@@ -109,24 +104,25 @@ var SocketApi = async ((socketServer, httpServer, events, handler) => {
     var channelPasswordMap = {};
     var channelWritePasswordMap = {};
 
-    socket.on(ApiMessages.channel.join, async ((channel, password, callback) => {
-      if(ipfs) {
-        logger.debug("Join #" + channel + (password ? " (with password)" : ""));
-        networkAPI.joinChannel(ipfs, channel, userInfo.id, password)
-          .then((channelInfo) => {
-            logger.debug("Joined #" + channel);
-            channelPasswordMap[channel] = password;
-            channelInfo.name = channel;
-            callback(null, channelInfo);
-          })
-          .catch((err) => {
-            logger.error("Can't join #" + channel + ":", err);
-            callback(err, null);
-          });
-        } else {
-          callback("Not initialized!", null);
-        }
-    }));
+    socket.on(ApiMessages.channel.join, handler.join);
+    // socket.on(ApiMessages.channel.join, async ((channel, password, callback) => {
+    //   if(ipfs) {
+    //     logger.debug("Join #" + channel + (password ? " (with password)" : ""));
+    //     networkAPI.joinChannel(ipfs, channel, userInfo.id, password)
+    //       .then((channelInfo) => {
+    //         logger.debug("Joined #" + channel);
+    //         channelPasswordMap[channel] = password;
+    //         channelInfo.name = channel;
+    //         callback(null, channelInfo);
+    //       })
+    //       .catch((err) => {
+    //         logger.error("Can't join #" + channel + ":", err);
+    //         callback(err, null);
+    //       });
+    //     } else {
+    //       callback("Not initialized!", null);
+    //     }
+    // }));
 
     socket.on(ApiMessages.channel.part, async (function (channelName) {
       logger.debug("Leave channel #" + channelName);
@@ -134,26 +130,30 @@ var SocketApi = async ((socketServer, httpServer, events, handler) => {
       await (networkAPI.leaveChannel(channelName));
     }));
 
-    socket.on(ApiMessages.channel.messages, async (function(channelName, startHash, lastHash, amount, cb) {
-      var password = channelPasswordMap[channelName];
-      networkAPI.getMessages(ipfs, channelName, userInfo.id, password, startHash, lastHash, amount)
-        .then((messages) => cb(channelName, messages))
-        .catch(function(err) {
-          logger.error("Error in channel.get", err);
-          cb(null);
-        });
-    }));
+    socket.on(ApiMessages.channel.messages, handler.getMessages);
 
-    socket.on(ApiMessages.message.send, async((channelName, message, cb) => {
-      var rpwd    = channelPasswordMap[channelName];
-      var wpwd    = channelWritePasswordMap[channelName];
-      networkAPI.sendMessage(ipfs, message, channelName, userInfo.id, rpwd, wpwd)
-        .then((result) => cb(null))
-        .catch((err) => {
-          logger.error("Couldn't send message:", err)
-          cb(err)
-        });
-    }));
+    // socket.on(ApiMessages.channel.messages, async (function(channelName, startHash, lastHash, amount, cb) {
+    //   var password = channelPasswordMap[channelName];
+    //   networkAPI.getMessages(ipfs, channelName, userInfo.id, password, startHash, lastHash, amount)
+    //     .then((messages) => cb(channelName, messages))
+    //     .catch(function(err) {
+    //       logger.error("Error in channel.get", err);
+    //       cb(null);
+    //     });
+    // }));
+
+    socket.on(ApiMessages.message.send, handler.sendMessage);
+
+    // socket.on(ApiMessages.message.send, async((channelName, message, cb) => {
+    //   var rpwd    = channelPasswordMap[channelName];
+    //   var wpwd    = channelWritePasswordMap[channelName];
+    //   networkAPI.sendMessage(ipfs, message, channelName, userInfo.id, rpwd, wpwd)
+    //     .then((result) => cb(null))
+    //     .catch((err) => {
+    //       logger.error("Couldn't send message:", err)
+    //       cb(err)
+    //     });
+    // }));
 
     socket.on(ApiMessages.file.add, async((channelName, filePath, cb) => {
       var rpwd    = channelPasswordMap[channelName];
@@ -223,14 +223,15 @@ var SocketApi = async ((socketServer, httpServer, events, handler) => {
       }
     }));
 
-    socket.on(ApiMessages.user.get, async (function (hash, cb) {
-      networkAPI.getUser(ipfs, hash)
-      .then(cb)
-      .catch(function(err) {
-        // we end up here if the user doesn't exists. ipfs error: { Message: 'invalid ipfs ref path', Code: 0 }
-        cb(null);
-      });
-    }));
+    socket.on(ApiMessages.user.get, handler.getUser);
+    // socket.on(ApiMessages.user.get, async (function (hash, cb) {
+    //   networkAPI.getUser(ipfs, hash)
+    //   .then(cb)
+    //   .catch(function(err) {
+    //     // we end up here if the user doesn't exists. ipfs error: { Message: 'invalid ipfs ref path', Code: 0 }
+    //     cb(null);
+    //   });
+    // }));
 
     socket.on(ApiMessages.whoami, async((callback) => {
       if(callback) {
