@@ -111,7 +111,7 @@ process.env.PATH += ":/usr/local/bin" // fix for Electron app release bug (PATH 
 // };
 
 let ipfs, orbit;
-var _handleError = (error) => {
+var _handleError = (e) => {
   logger.error(e.message);
   logger.debug("Stack trace:\n", e.stack);
   events.emit('orbit.error', e.message);
@@ -132,7 +132,7 @@ var handler = {
     const user = { username: username, password: password };
     try {
       logger.info(`Connecting to network at '${network.host}:${network.port}' as '${user.username}`);
-      orbit = await(OrbitNetwork.connect(network.host, network.port, user.username, user.password, ipfs));
+      orbit = await(OrbitNetwork.connect(network.host, network.port, user.username, user.password, false, ipfs));
       orbit.events.on('message', _handleMessage);
       logger.info(`Connected to '${orbit.network.name}' at '${orbit.network.host}:${orbit.network.port}' as '${user.username}`)
       events.emit('connected', orbit);
