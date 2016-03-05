@@ -306,8 +306,8 @@ class Channel extends React.Component {
 
     var messages = this.state.messages.map((e) => {
       return <Message
-                message={e.payload}
-                key={e.payload.meta.ts}
+                message={e}
+                key={e.meta.ts}
                 onDragEnter={this.onDragEnter.bind(this)}
                 username={this.state.username}
                 colorifyUsername={this.state.appSettings.colorifyUsernames}
