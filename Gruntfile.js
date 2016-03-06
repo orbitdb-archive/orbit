@@ -13,32 +13,34 @@ module.exports = function (grunt) {
       dist: ["dist"],
       dist_nodejs_linux: ["dist/nodejs-linux"],
       dist_nodejs_osx: ["dist/nodejs-osx"],
-      dist_native_osx: ["dist/AnonymousNetworks-darwin-x64"],
-      dist_native_linux: ["dist/AnonymousNetworks-linux-x64"]
+      dist_native_osx: ["dist/Orbit-darwin-x64"],
+      dist_native_linux: ["dist/Orbit-linux-x64"]
     },
 
     electron: {
       osxBuild: {
         options: {
-          name: 'AnonymousNetworks',
+          name: 'Orbit',
           dir: '.tmp',
           out: 'dist/',
           version: '0.34.1',
           platform: 'darwin',
           arch: 'x64',
           overwrite: true,
+          icon: 'assets/orbit.icns',
           cache: '.electron-prebuilt'
         }
       },
       linuxBuild: {
         options: {
-          name: 'AnonymousNetworks',
+          name: 'Orbit',
           dir: '.tmp',
           out: 'dist/',
           version: '0.34.1',
           platform: 'linux',
           arch: 'x64',
           overwrite: true,
+          icon: 'assets/orbit.icns',
           cache: '.electron-prebuilt'
         }
       }
@@ -97,10 +99,10 @@ module.exports = function (grunt) {
           'dist/nodejs-linux/node_modules/ipfsd-ctl/node_modules/subcomandante/subcom',
           'dist/nodejs-osx/node_modules/ipfsd-ctl/node_modules/.bin/ipfs',
           'dist/nodejs-linux/node_modules/ipfsd-ctl/node_modules/.bin/ipfs',
-          'dist/AnonymousNetworks-darwin-x64/AnonymousNetworks.app/Contents/Resources/app/node_modules/ipfsd-ctl/node_modules/subcomandante/subcom',
-          'dist/AnonymousNetworks-darwin-x64/AnonymousNetworks.app/Contents/Resources/app/node_modules/ipfsd-ctl/node_modules/.bin/ipfs',
-          'dist/AnonymousNetworks-linux-x64/AnonymousNetworks.app/Contents/Resources/app/node_modules/ipfsd-ctl/node_modules/subcomandante/subcom',
-          'dist/AnonymousNetworks-linux-x64/AnonymousNetworks.app/Contents/Resources/app/node_modules/ipfsd-ctl/node_modules/.bin/ipfs'
+          'dist/Orbit-darwin-x64/Orbit.app/Contents/Resources/app/node_modules/ipfsd-ctl/node_modules/subcomandante/subcom',
+          'dist/Orbit-darwin-x64/Orbit.app/Contents/Resources/app/node_modules/ipfsd-ctl/node_modules/.bin/ipfs',
+          'dist/Orbit-linux-x64/Orbit.app/Contents/Resources/app/node_modules/ipfsd-ctl/node_modules/subcomandante/subcom',
+          'dist/Orbit-linux-x64/Orbit.app/Contents/Resources/app/node_modules/ipfsd-ctl/node_modules/.bin/ipfs'
         ]
       }
     },
