@@ -25,8 +25,8 @@ class Channel extends React.Component {
       messages: [],
       loading: false,
       loadingIcon: false,
-      writeMode: false,
-      statusMessage: null,
+      writeMode: true,
+      statusMessage: "Public",
       showChannelOptions: false,
       dragEnter: false,
       user: props.user,
@@ -43,11 +43,12 @@ class Channel extends React.Component {
   }
 
   componentWillReceiveProps(nextProps) {
-    if(nextProps.channel !== this.state.channelName)
-      this.setState({ messages: [] });
+    if(nextProps.channel !== this.state.channelName) {
+      this._getMessages(nextProps.channel);
+    }
 
-    if(nextProps.channelInfo !== {})
-      this.setChannelStatus(nextProps.channelInfo);
+    // if(nextProps.channelInfo !== {})
+    //   this.setChannelStatus(nextProps.channelInfo);
 
     this.setState({
       loading: false,
@@ -61,7 +62,14 @@ class Channel extends React.Component {
     });
   }
 
+  _getMessages(channel) {
+    const messages = MessageStore.getMessages(channel);
+    this.setState({ messages: messages });
+  }
+
   componentDidMount() {
+    this._getMessages(this.state.channelName);
+
     this.unsubscribeFromMessageStore = MessageStore.listen(this.onNewMessages.bind(this));
     this.unsubscribeFromErrors       = UIActions.raiseError.listen((errorMessage) => this.setState({ statusMessage: errorMessage }));
     this.unsubscribeFromStartLoading = UIActions.startLoading.listen((channel) => {
@@ -78,10 +86,9 @@ class Channel extends React.Component {
     this.timer = setInterval(() => {
       var node = this.node;
       if(!this.state.flipMessageOrder && node && (node.scrollTop + node.clientHeight + 20) >= node.scrollHeight) {
-        this.loadOlderMessages();
-      } else if(this.state.flipMessageOrder && node && ((node.scrollTop - 1) <= 0 || node.clientHeight >= node.scrollHeight)
-        && (_.last(this.state.messages) && _.last(this.state.messages).seq > 1)) {
-        this.loadOlderMessages();
+        // this.loadOlderMessages();
+      } else if(this.state.flipMessageOrder && node && ((node.scrollTop - 1) <= 0 || node.clientHeight >= node.scrollHeight)) {
+        // this.loadOlderMessages();
       }
     }, 100);
   }
@@ -318,9 +325,9 @@ class Channel extends React.Component {
 
     var firstMessageText = "Beginning of #" + this.state.channelName;
     if(this.state.channelInfo.head && this.state.messages[this.state.messages.length - 1] && this.state.messages[this.state.messages.length - 1].seq === 1 && !this.state.flipMessageOrder)
-      messages.push(<div className="firstMessage">{firstMessageText}</div>);
+      messages.push(<div className="firstMessage" onClick={this.loadOlderMessages.bind(this)}>{firstMessageText}</div>);
     else if((!this.state.channelInfo.head || this.state.messages[0] && this.state.messages[0].seq === 1) && this.state.flipMessageOrder)
-      messages.unshift(<div className="firstMessage">{firstMessageText}</div>);
+      messages.unshift(<div className="firstMessage" onClick={this.loadOlderMessages.bind(this)}>{firstMessageText}</div>);
 
     var channelOptions = this.state.showChannelOptions ? (
       <div className="ChannelOptions">

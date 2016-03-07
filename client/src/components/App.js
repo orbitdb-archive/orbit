@@ -1,8 +1,9 @@
 'use strict';
 
-import React         from 'react';
-import ReactDOM      from 'react-dom';
-import Router        from 'react-router';
+import _ from 'lodash';
+import React from 'react';
+import ReactDOM from 'react-dom';
+import Router from 'react-router';
 import { Route, History } from 'react-router/lib';
 import UIActions     from "actions/SendMessageAction";
 import UserStore     from 'stores/UserStore';
@@ -44,10 +45,11 @@ var App = React.createClass({
   },
   componentDidMount: function() {
     UIActions.onJoinChannel.listen(this.joinChannel);
+    UIActions.onOpenChannel.listen(this.openChannel);
 
-    NetworkActions.connected.listen((network) => {
-      if(network.user) UserActions.getWhoami();
-    });
+    // NetworkActions.connected.listen((network) => {
+    //   if(network.user) UserActions.getWhoami();
+    // });
     NetworkActions.joinedChannel.listen(this.onJoinedChannel);
     NetworkActions.joinChannelError.listen(this.onJoinChannelError);
     NetworkActions.leftChannel.listen(this.onLeftChannel);
@@ -59,9 +61,12 @@ var App = React.createClass({
     this.unsubscribeFromNetworkStore    = NetworkStore.listen(this.onNetworkUpdated);
     this.unsubscribeFromUserStore       = UserStore.listen(this.onUserUpdated);
     this.unsubscribeFromUsersStore      = UsersStore.listen((users) => console.log("Known users updated", users));
-    // this.unsubscribeFromChannelStore    = ChannelStore.listen((channels) => console.log("Channels updated", channels));
+    this.unsubscribeFromChannelStore    = ChannelStore.listen((channels) => {
+      console.log("Channels updated", channels);
+      // this.onJoinedChannel(channels);
+    });
     this.unsubscribeFromMessageStore    = MessageStore.listen((channel, message) => {
-      console.log("New messages on #" + channel);
+      console.log("Notification: New messages on #" + channel);
       if(this.state.currentChannel !== channel) {
         document.title = "* " + this.state.location;
         NotificationActions.unreadMessages(channel);
@@ -76,12 +81,28 @@ var App = React.createClass({
       if(this.state.panelOpen) this.togglePanel();
     }
   },
+  _reset: function() {
+    this.setState(this.getInitialState());
+  },
   onNetworkUpdated: function(network) {
-    this.setState({ networkName: network.name });
+    console.log("Network updated", network);
+    if(!network) {
+      this._reset();
+      this.history.pushState(null, '/connect');
+    } else {
+      this.setState({ networkName: network.name });
+    }
   },
   onUserUpdated: function(user) {
     console.log("User updated", user);
-    if(user.network) this.setState({ networkName: user.network.name });
+
+    if(!user) {
+      this.setState({ user: null });
+      this.history.pushState(null, '/connect');
+      return;
+    }
+
+    // if(user.network) this.setState({ networkName: user.network.name });
 
     if(user === this.state.user)
       return;
@@ -110,12 +131,12 @@ var App = React.createClass({
         this.setState({ panelOpen: !this.state.panelOpen });
     }
   },
-  onJoinedChannel: function(channelInfo) {
-    this.togglePanel(true);
-    if("#" + channelInfo.name !== this.state.location) {
-      this.setState({ location: "#" + channelInfo.name, requirePassword: false, currentChannel: channelInfo.name, joiningToChannel: null });
-      this.history.pushState(null, '/channel/' + channelInfo.name, { user: this.state.user });
-    }
+  onJoinedChannel: function(channel) {
+    console.log("Joined channel #" + channel, ChannelStore.channels);
+    const channelInfo = ChannelStore.channels[channel];
+    // TODO: the check is obsolete? (done is _showChannel)
+    if("#" + channelInfo.name !== this.state.location)
+      this._showChannel(channelInfo.name);
   },
   onLeftChannel: function (channel) {
     if(channel === this.state.currentChannel) {
@@ -132,6 +153,22 @@ var App = React.createClass({
       return;
     console.log("Join channel #" + channelName);
     NetworkActions.joinChannel(channelName, password);
+  },
+  openChannel: function(channel) {
+    if(channel === this.state.currentChannel)
+      return;
+
+    console.log("Open view for channel #" + channel);
+
+    if(!ChannelStore.channels[channel])
+      NetworkActions.joinChannel(channel);
+    else
+      this._showChannel(channel);
+  },
+  _showChannel: function(channel) {
+    this.togglePanel(true);
+    this.setState({ location: "#" + channel, requirePassword: false, currentChannel: channel, joiningToChannel: null });
+    this.history.pushState(null, '/channel/' + channel, { user: this.state.user });
   },
   openSettings: function() {
     this.goToLocation("Settings", "/settings");

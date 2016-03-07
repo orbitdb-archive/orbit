@@ -6,6 +6,10 @@ let ApiMessages = {
   register: "register",
   deregister: "deregister",
   whoami: "whoami",
+  channels: {
+    get: "channels.get",
+    updated: "channels.updated"
+  },
   channel: {
     authenticate: "channel.authenticate",
     join: "channel.join",

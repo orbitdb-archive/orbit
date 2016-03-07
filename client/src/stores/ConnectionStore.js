@@ -2,6 +2,7 @@
 
 import Reflux from 'reflux';
 import SocketActions from 'actions/SocketActions';
+import NetworkActions from 'actions/NetworkActions';
 import ApiUrl from 'utils/apiurl';
 
 var ConnectionStore = Reflux.createStore({
@@ -15,7 +16,22 @@ var ConnectionStore = Reflux.createStore({
 
       this.socket.on('connect', () => {
         console.log("WebSocket connected");
-        this.trigger(this.socket);
+        // this.trigger(this.socket);
+
+        this.socket.on('log', (msg) => {
+          console.log("log>", msg);
+        });
+
+        this.socket.on('registered', (network) => {
+          console.log("Connected to network", network);
+          NetworkActions.connected(network);
+        });
+
+        this.socket.on('orbit.error', (err) => {
+          console.error("Register error:", err);
+          NetworkActions.registerError(err);
+        });
+
         SocketActions.socketConnected(this.socket);
       });
 
@@ -25,9 +41,6 @@ var ConnectionStore = Reflux.createStore({
         SocketActions.socketDisconnected();
       });
 
-      this.socket.on('log', (msg) => {
-        console.log(">", msg);
-      });
     }
 });
 

@@ -26,90 +26,6 @@ var ENV = process.env["ENV"] || "release";
 logger.debug("Running in '" + ENV + "' mode");
 process.env.PATH += ":/usr/local/bin" // fix for Electron app release bug (PATH doesn't get carried over)
 
-/* CONFIG */
-// var config      = {};
-// config.ipfsPath = path.resolve(utils.getUserHome() + '/.ipfs');
-
-/* PROGRAM */
-// var connect = async((config, network, username, password) => {
-//   var user = { id: null, username: null };
-
-//   // Connect to the network server
-//   var network;//
-//   try {
-//     network = await (networkAPI.register(network.address, username, password));
-//   } catch(e) {
-//     throw e;
-//   }
-
-//   var peers     = network.config.Bootstrap;
-//   user.id       = network.user.id;
-//   user.username = network.user.username;
-
-//   // Start ipfs daemon
-//   var ipfsNode = await (ipfsd.init(config.ipfsPath, { SupernodeRouting: network.config.SupernodeRouting }));
-//   if(!ipfsNode) {
-//     throw "IPFS daemon already running! Please make sure ipfs daemon is not running.";
-//     return null;
-//   }
-
-//   var daemon = await (ipfsd.start(ipfsNode));
-
-//   // Connect to server-returned peers
-//   networkAPI.connectToSwarm(daemon.instance, user, peers);
-
-//   return { network: network.name, ipfs: daemon.instance, user: user };
-// });
-
-// move to BotSystem module
-// var _bots = [];
-// var startBots = (ipfs, user) => {
-//   if(_.includes(process.argv, "--bots")) {
-//     var botsDirectory = path.join(__dirname, "bots/");
-//     logger.debug("Starting bots from '" + botsDirectory + "'")
-//     var botFiles = fs.readdirSync(botsDirectory);
-//     botFiles.forEach((file) => {
-//       var Bot = require(path.join(botsDirectory, file));
-//       var bot = new Bot(ipfs, networkAPI.events, user);
-//       bot.init();
-//       _bots.push(bot);
-//     });
-//   } else {
-//     logger.warn("Not starting bots. If you want to run the bots, provide '--bots' argument.");
-//   }
-// };
-
-// var connectToNetwork = async((network, user) => {
-// // var startApplication = async((network, username, password, callback) => {
-//   // // TODO: pickup network address from the input param instead of networkConfig file
-//   // try {
-//   //   var startupTime = "Startup time";
-//   //   timer.start(startupTime);
-//   //   logger.debug("Start program");
-
-//   //   var network = Network.fromConfig(path.resolve(utils.getAppPath(), "network.json"));
-//   //   var res     = await(connect(config, network, username, password));
-//   //   events.emit('login', res.user);
-//   //   startBots(res.ipfs, res.user);
-//   //   events.emit('onIpfsStarted', res);
-//   //   if(callback) callback(null, res);
-//   //   logger.debug('Startup time: ' + timer.stop(startupTime) + "ms");
-//   //   _bots.forEach((bot) => bot.start());
-//   // } catch(e) {
-//   //   logger.error(e);
-//   //   if(callback) callback(e, null);
-//   // }
-//   logger.info(`Connecting to Orbit network at '${network.host}:${network.port}' as '${user.username}`);
-//   const orbit = OrbitNetwork.connect(network.host, network.port, user.username, user.password);
-//   logger.info(`Connected to Orbit network at '${network.host}:${network.port}' as '${user.username}`)
-//   return orbit;
-// });
-
-// var stopApplication = () => {
-//   // ipfsd.stop();
-//   // TODO: disconnec tfrom OrbitDB
-// };
-
 let ipfs, orbit;
 var _handleError = (e) => {
   logger.error(e.message);
@@ -123,6 +39,9 @@ var _handleMessage = (channel, message) => {
 };
 
 var handler = {
+  onSocketConnected: async((socket) => {
+    if(orbit) events.emit('connected', orbit);
+  }),
   connect: async((host, username, password) => {
     const hostname = host.split(":")[0];
     const port = host.split(":")[1];
@@ -144,20 +63,28 @@ var handler = {
     const host = orbit.network.host;
     const port = orbit.network.port;
     const name = orbit.network.name;
+    orbit.events.removeListener('message', _handleMessage);
     orbit.disconnect();
     logger.warn(`Disconnected from '${name}' at '${host}:${port}'`);
+  }),
+  getChannels: async((callback) => {
+    if(orbit && callback) callback(orbit.channels);
   }),
   join: async((channel, password, callback) => {
     logger.debug(`Join # ${channel} (${password ? " (with password)" : ""}`);
     orbit.joinChannel(channel, password)
+    events.emit('channels.updated', orbit.channels);
     if(callback) callback(null, { name: channel, modes: {} })
   }),
   getUser: async((userHash, callback) => {
     if(callback) callback(userHash);
   }),
-  getMessages: async((channel, startHash, lastHash, amount, callback) => {
-    logger.debug(`Get messages from #${channel}: ${startHash}, ${lastHash}, ${amount}`)
-    const messages = await(orbit.getMessages(channel, { limit: amount }));
+  getMessages: async((channel, lessThanHash, greaterThanHash, amount, callback) => {
+    logger.debug(`Get messages from #${channel}: ${lessThanHash}, ${greaterThanHash}, ${amount}`)
+    let options = { limit: amount };
+    if(lessThanHash) options.lt = lessThanHash;
+    if(greaterThanHash) options.gt = greaterThanHash;
+    const messages = await(orbit.getMessages(channel, options));
     if(callback) callback(channel, messages);
   }),
   sendMessage: async((channel, message, callback) => {
@@ -190,6 +117,8 @@ const start = exports.start = async(() => {
 
     var httpApi   = await (HttpApi(events));
     var socketApi = await (SocketApi(httpApi.socketServer, httpApi.server, events, handler));
+
+    events.on('socket.connected', handler.onSocketConnected);
 
     // auto-login if there's a user.json file
     var userFile = path.join(__dirname, "user.json");

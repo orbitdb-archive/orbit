@@ -12,7 +12,9 @@ var Actions = Reflux.createActions([
   "onPanelClosed",
 
   "startLoading",
-  "stopLoading"
+  "stopLoading",
+
+  "onOpenChannel"
 ]);
 
 export default Actions;

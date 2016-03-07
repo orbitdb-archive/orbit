@@ -12,8 +12,16 @@ class OrbitNetwork {
     this._client = null;
     this._user = null;
     this._network = null;
-    this.channels = {};
+    this._channels = {};
     this.events = new EventEmitter();
+  }
+
+  get channels() {
+    return Object.keys(this._channels)
+      .map((f) => this._channels[f])
+      .map((f) => {
+        return { name: f.name, password: f.password };
+      });
   }
 
   connect(host, port, username, password) {
@@ -28,15 +36,15 @@ class OrbitNetwork {
     this._client = null;
     this._user = null;
     this._network = null;
-    this.channels = {};
+    this._channels = {};
     this.events = null;
   }
 
   joinChannel(channel, password) {
     const db = this._client.channel(channel, password);
-    this.channels[channel] = { password: password, db: db };
-    // this.channels.join(channel, password)
-    // this.channels.channels.onMessage((channel, message) => {
+    this._channels[channel] = { name: channel, password: password, db: db };
+    // this._channels.join(channel, password)
+    // this._channels.channels.onMessage((channel, message) => {
     //   this.events.emit('message', channel, message);
     // });
   }
@@ -45,7 +53,7 @@ class OrbitNetwork {
     if(!this._client)
       throw new Error("Not connected to an Orbit Network");
 
-    const db = this.channels[channel].db;
+    const db = this._channels[channel].db;
     return db.add(data);
   }
 
@@ -53,7 +61,7 @@ class OrbitNetwork {
     if(!this._client)
       throw new Error("Not connected to an Orbit Network");
 
-    const db = this.channels[channel].db;
+    const db = this._channels[channel].db;
     return db.iterator(options).collect();
   }
 

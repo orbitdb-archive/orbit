@@ -3,18 +3,20 @@
 import Reflux        from 'reflux';
 import Actions       from 'actions/SendMessageAction';
 import UserActions   from 'actions/UserActions';
+import NetworkActions from 'actions/NetworkActions';
 import SocketActions from 'actions/SocketActions';
 
 var UserStore = Reflux.createStore({
   listenables: [UserActions, SocketActions],
   init: function() {
-    this.user   = {};
+    this.user = null;
     this.socket = null;
+    NetworkActions.connected.listen((network) => this._handleUserUpdated(network.user));
   },
   _handleUserUpdated: function(user) {
+    console.log("--> received user:", user);
     if(user) {
       this.user = user;
-      console.log("Logged in as ", user);
     } else {
       console.log("Not logged in");
     }
@@ -23,28 +25,18 @@ var UserStore = Reflux.createStore({
   onSocketConnected: function(socket) {
     console.log("UserStore connected");
     this.socket = socket;
-    this.socket.on('registered', (network) => this._handleUserUpdated(network.user));
-    this.getWhoami();
   },
   onSocketDisconnected: function() {
     this.socket = null;
-    this.user   = {};
+    this.user = null;
     this.trigger(this.user);
   },
   onDisconnect: function() {
-    this.user = {};
+    this.user = null;
     this.trigger(this.user);
   },
   onGetUser: function(callback) {
     callback(this.user);
-  },
-  getWhoami: function() {
-    if(!this.socket) {
-      console.error("Socket not connected");
-      return;
-    }
-    console.log("--> whoami");
-    this.socket.emit('whoami', this._handleUserUpdated);
   }
 });
 

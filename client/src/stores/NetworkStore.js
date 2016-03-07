@@ -7,19 +7,17 @@ import NetworkActions from 'actions/NetworkActions';
 var NetworkStore = Reflux.createStore({
   listenables: [NetworkActions, SocketActions],
   init: function() {
-    this.network = {};
+    this.network = null;
+    NetworkActions.connected.listen(this._updateNetwork);
+  },
+  _updateNetwork: function(network) {
+    console.log("--> received network:", network);
+    this.network = network;
+    this.trigger(this.network);
   },
   onSocketConnected: function(socket) {
     console.log("NetworkStore connected");
     this.socket = socket;
-    // TODO: rename 'registered' to 'connected'
-    this.socket.on('registered', (network) => {
-      console.log("Connected to network", network);
-      if(network) {
-        this.trigger(network);
-        NetworkActions.connected(network);
-      }
-    });
     this.socket.on('orbit.error', (err) => {
       console.error("Register error:", err);
       NetworkActions.registerError(err);
@@ -29,7 +27,7 @@ var NetworkStore = Reflux.createStore({
     this.socket.removeAllListeners('registered');
     this.socket.removeAllListeners('orbit.error');
     this.socket = null;
-    this.init();
+    this.network = null;
     this.trigger(this.network);
   },
   onConnect: function(host, username, password) {

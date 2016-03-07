@@ -2,6 +2,7 @@
 
 import React from 'react';
 import Channel from 'components/Channel';
+import ChannelStore from 'stores/ChannelStore';
 import ChannelActions from 'actions/ChannelActions';
 import UserActions from 'actions/UserActions';
 import SettingsActions from "actions/SettingsActions";
@@ -23,12 +24,14 @@ class ChannelView extends React.Component {
   componentDidMount() {
     UserActions.getUser((user) => this.setState({ user: user}));
     SettingsActions.get((settings, descriptions) => this.setState({ appSettings: settings }));
-    NetworkActions.getChannel(this.state.channelName, (channel) => this.setState({ channel: channel }));
+    // NetworkActions.getChannel(this.state.channelName, (channel) => this.setState({ channel: channel }));
     this.unsubscribeFromChannelMode = ChannelActions.channelModeUpdated.listen((channel, modes) => {
       var c = _.cloneDeep(this.state.channel);
       c.modes = modes;
       this.setState({ channel: c });
     });
+
+    this.setState({ channel: ChannelStore.channels[this.state.channelName] });
   }
 
   componentWillUnmount() {

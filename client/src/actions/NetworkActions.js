@@ -15,7 +15,8 @@ var NetworkActions = Reflux.createActions([
   "leftChannel",
   "getChannel",
   "getUserInfo",
-  "getOpenChannels"
+  "getOpenChannels",
+  "getChannels"
 ]);
 
 export default NetworkActions;

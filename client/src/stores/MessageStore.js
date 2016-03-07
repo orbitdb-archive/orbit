@@ -9,7 +9,7 @@ import SocketActions from 'actions/SocketActions';
 
 var channelPasswords = {};
 
-var messagesBatchSize = 8;
+var messagesBatchSize = 4;
 
 var MessageStore = Reflux.createStore({
   listenables: [Actions, NetworkActions, SocketActions, ChannelActions],
@@ -22,18 +22,24 @@ var MessageStore = Reflux.createStore({
     this.canLoadMore = true;
   },
   getLatestMessage: function(channel: string) {
-    return this.messages[channel] && this.messages[channel].length > 0 ? this.messages[channel][0].hash : null;
+    return this.messages[channel] && this.messages[channel].length > 0 ? this.messages[channel][this.messages[channel].length - 1].key : null;
   },
   getOldestMessage: function(channel: string) {
-    return this.messages[channel] && this.messages[channel].length > 0 ? this.messages[channel][this.messages[channel].length - 1].hash : null;
+    return this.messages[channel] && this.messages[channel].length > 0 ? this.messages[channel][0].key : null;
+  },
+  getMessages: function(channel: string) {
+    if(!this.messages[channel])
+      this.loadMessages(channel, null, null, messagesBatchSize);
+
+    return this.messages[channel] ? this.messages[channel] : [];
   },
   onSocketConnected: function(socket) {
     console.log("MessageStore connected");
     this.socket = socket;
-    this.socket.on('messages', (channel, messages) => {
-      console.log("--> new messages in #", channel, messages);
+    this.socket.on('messages', (channel, message) => {
+      console.log("--> new messages in #", channel, message);
       this.canLoadMore = true;
-      this.loadMessages(channel, null, this.getLatestMessage(channel), 10000);
+      this.loadMessages(channel, null, this.getLatestMessage(channel), messagesBatchSize);
     });
 
     NetworkActions.leftChannel.listen((c) => delete this.messages[c]);
@@ -51,36 +57,38 @@ var MessageStore = Reflux.createStore({
     this.loading      = false;
     this.canLoadMore  = true;
   },
-  onJoinedChannel: function(channelInfo) {
-    console.log("open #" + channelInfo.name);
-    if(!this.messages[channelInfo.name]) this.messages[channelInfo.name] = [];
-    // this.messages[channelInfo.name] = []; // uncomment to uncache the messages
-    this.openChannels[channelInfo.name] = channelInfo.name;
-    this.loadMessages(channelInfo.name, null, null, messagesBatchSize);
+  onJoinedChannel: function(channel) {
+    console.log("MessageStore - open #" + channel);
+    console.log("current messages:",  this.messages[channel].length);
+    if(!this.messages[channel]) this.messages[channel] = [];
+    this.loadMessages(channel, null, null, messagesBatchSize);
   },
   onLeaveChannel: function(channel: string) {
+    console.log("close #" + channel);
     delete this.openChannels[channel];
   },
-  loadMessages: function(channel: string, startHash: string, endHash: string, amount: number) {
+  loadMessages: function(channel: string, olderThanHash: string, newerThanHash: string, amount: number) {
     if(!this.socket) {
       console.error("Socket not connected");
       return;
     }
 
     Actions.startLoading(channel);
-    console.log("--> channel.get: ", channel, startHash, endHash, this.messages[channel] && this.messages[channel].length > 0 ? this.messages[channel][0].hash : "");
+    console.log("--> channel.get: ", channel, olderThanHash, newerThanHash, this.messages[channel] && this.messages[channel].length > 0 ? this.messages[channel][0].hash : "", amount);
     this.loading = true;
-    if(this.messages[channel] && this.messages[channel].length > 0 && _.includes(this.messages[channel], startHash))
-      this.trigger(channel, this.messages[channel]);
-    else
-      this.socket.emit('channel.get', channel, startHash, endHash, amount, this.addMessages);
+    // if(this.messages[channel] && this.messages[channel].length > 0 && _.includes(this.messages[channel], olderThanHash))
+    //   this.trigger(channel, this.messages[channel]);
+    // else
+    this.socket.emit('channel.get', channel, olderThanHash, newerThanHash, amount, this.addMessages);
   },
   addMessages: function(channel: string, newMessages: Array) {
-    if(newMessages && this.openChannels[channel]) {
+    if(channel && newMessages) {
       console.log("<-- messages: ", channel, newMessages.length, newMessages);
-      var unique    = _.differenceWith(this.messages[channel], newMessages, _.isEqual);
-      console.log("<-- messages: ", unique);
-      var all       = unique.concat(newMessages);
+      // var unique    = _.differenceWith(this.messages[channel], newMessages, _.isEqual);
+      var unique    = _.differenceWith(newMessages, this.messages[channel], _.isEqual);
+      console.log("<-- new messages: ", unique);
+      if(!this.messages[channel]) this.messages[channel] = [];
+      var all       = this.messages[channel].concat(unique);
       // var all       = _.uniq(merged, 'hash');
       // var sorted    = _.sortByOrder(all, ["seq"], ["desc"]);
       // this.messages[channel] = sorted;
@@ -93,9 +101,21 @@ var MessageStore = Reflux.createStore({
   },
   onLoadOlderMessages: function(channel: string) {
     console.log("load more messages from #" + channel);
-    if(!this.loading && this.canLoadMore) {
+    // if(!this.loading && this.canLoadMore) {
+    if(!this.loading) {
       this.canLoadMore = false;
-      this.loadMessages(channel, this.getOldestMessage(channel), null, messagesBatchSize);
+      const oldestHash = this.getOldestMessage(channel);
+      // this.loadMessages(channel, oldestHash, null, messagesBatchSize);
+      console.log("--> channel.get: ", channel, "older than:", oldestHash, messagesBatchSize);
+      this.socket.emit('channel.get', channel, oldestHash, null, messagesBatchSize, (c, newMessages) => {
+        console.log("<-- messages: ", channel, newMessages.length, newMessages, "are older than:", oldestHash);
+        var all = newMessages.concat(this.messages[channel]);
+        this.messages[channel] = all;
+        this.loading  = false;
+        if(newMessages.length > 0) this.canLoadMore = true;
+        Actions.stopLoading(channel);
+        this.trigger(channel, this.messages[channel]);
+      });
     }
   },
   onLoadMessageContent: function(hash: string, callback) {

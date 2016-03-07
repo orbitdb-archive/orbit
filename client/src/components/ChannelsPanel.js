@@ -2,7 +2,7 @@
 
 import React          from "react/addons";
 import TransitionGroup from "react-addons-css-transition-group";
-import Actions        from 'actions/SendMessageAction';
+import UIActions from "actions/SendMessageAction";
 import JoinChannel    from 'components/JoinChannel';
 import ChannelStore   from 'stores/ChannelStore';
 import NetworkActions from 'actions/NetworkActions';
@@ -16,7 +16,7 @@ class ChannelsPanel extends React.Component {
     super(props);
     this.state = {
       currentChannel: props.currentChannel,
-      openChannels: [],
+      openChannels: {},
       joiningToChannel: props.joiningToChannel,
       username: props.username,
       requirePassword: props.requirePassword || false,
@@ -38,14 +38,17 @@ class ChannelsPanel extends React.Component {
   }
 
   componentDidMount() {
-    this.unsubscribeFromChannelStore = ChannelStore.listen((chnls) => {
-      var c = Object.keys(chnls).map((e) => {
-        return { name: chnls[e].name, unreadMessages: chnls[e].unreadMessagesCount };
-      });
-      this.setState({ openChannels: c });
+    this.unsubscribeFromChannelStore = ChannelStore.listen((channels) => {
+      // var c = Object.keys(chnls).map((e) => {
+      //   return { name: chnls[e].name, unreadMessages: chnls[e].unreadMessagesCount };
+      // });
+      // this.setState({ openChannels: c });
+      // console.log("ChannelsPanel - channels updated", channels);
+      this.setState({ openChannels: channels });
     });
 
-    NetworkActions.getOpenChannels();
+    this.setState({ openChannels: ChannelStore.channels });
+    // NetworkActions.getOpenChannels();
   }
 
   componentWillUnmount() {
@@ -59,7 +62,8 @@ class ChannelsPanel extends React.Component {
     }
 
     this.setState({ joiningToChannel: channelName, requirePassword: password !== '', loading: true });
-    Actions.onJoinChannel(channelName, password);
+    // Actions.onJoinChannel(channelName, password);
+    UIActions.onOpenChannel(channelName);
   }
 
   clearRecentChannels() {
@@ -74,6 +78,17 @@ class ChannelsPanel extends React.Component {
     }
   }
 
+  _renderChannel(e) {
+    const name = e.name;
+    return (
+      <div className="row link">
+        <span className='channelName' onClick={this.handleJoinChannel.bind(this, name, "")} key={name}>#{name}</span>
+        {e.unreadMessages > 0 ? <span className={e.unreadMessages > 0 ? 'unreadMessages' : ''}  style={this.state.theme}>{e.unreadMessages > 0 ? e.unreadMessages : ""}</span> : ""}
+        <span className='closeChannelButton' onClick={NetworkActions.leaveChannel.bind(this, e)}>Close</span>
+      </div>
+    );
+  }
+
   render() {
     var headerStyle = this.state.currentChannel ? "header" : "header no-close";
     var color = 'rgba(140, 80, 220, 1)';
@@ -83,16 +98,18 @@ class ChannelsPanel extends React.Component {
       </div>
     ) : "";
 
-    var channelsHeaderStyle = this.state.openChannels.length > 0 ? "panelHeader" : "hidden";
-    var openChannels = this.state.openChannels.map((e) => {
-      return (
-        <div className="row link">
-          <span className='channelName' onClick={this.handleJoinChannel.bind(this, e.name, "")} key={e.name}>#{e.name}</span>
-          {e.unreadMessages > 0 ? <span className={e.unreadMessages > 0 ? 'unreadMessages' : ''}  style={this.state.theme}>{e.unreadMessages > 0 ? e.unreadMessages : ""}</span> : ""}
-          <span className='closeChannelButton' onClick={NetworkActions.leaveChannel.bind(this, e.name)}>Close</span>
-        </div>
-      );
-    });
+    var channelsHeaderStyle = Object.keys(this.state.openChannels).length > 0 ? "panelHeader" : "hidden";
+    var openChannels = Object.keys(this.state.openChannels).length > 0 ? Object.keys(this.state.openChannels).map((f) => this._renderChannel(this.state.openChannels[f])) : [];
+    // var openChannels = this.state.openChannels.map((e) => {
+      // const name = e.channel;
+      // return (
+      //   <div className="row link">
+      //     <span className='channelName' onClick={this.handleJoinChannel.bind(this, name, "")} key={name}>#{name}</span>
+      //     {e.unreadMessages > 0 ? <span className={e.unreadMessages > 0 ? 'unreadMessages' : ''}  style={this.state.theme}>{e.unreadMessages > 0 ? e.unreadMessages : ""}</span> : ""}
+      //     <span className='closeChannelButton' onClick={NetworkActions.leaveChannel.bind(this, e)}>Close</span>
+      //   </div>
+      // );
+    // });
 
     var channelJoinInputStyle = !this.state.loading ? "joinChannelInput" : "joinChannelInput invisible";
 

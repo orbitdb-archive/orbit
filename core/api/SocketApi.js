@@ -41,7 +41,11 @@ var SocketApi = async ((socketServer, httpServer, events, handler) => {
   }
 
   var onNewMessages = (channel, data) => {
-    if(socket) socket.emit("messages", channel, data);
+    if(socket) socket.emit('messages', channel, data);
+  };
+
+  const onChannelsUpdated = (channels) => {
+    if(socket) socket.emit(ApiMessages.channels.updated, channels);
   };
 
   // var onMessage = (channelName, message) => {
@@ -55,21 +59,20 @@ var SocketApi = async ((socketServer, httpServer, events, handler) => {
       Object.keys(msg).forEach((v) => unsubscribe(socket, msg[v]));
   };
 
-  var cleanupSocket = async (function() {
-    await (networkAPI.leaveAllChannels());
-    networkAPI.events.removeAllListeners("messages");
-    if(socket) {
-      Object.keys(ApiMessages).forEach((v) => unsubscribe(socket, ApiMessages[v]));
-      socket = null;
-    }
-  });
+  // var cleanupSocket = async (function() {
+  //   // await (networkAPI.leaveAllChannels());
+  //   // networkAPI.events.removeAllListeners("messages");
+  //   if(socket) Object.keys(ApiMessages).forEach((v) => unsubscribe(socket, ApiMessages[v]));
+  // });
 
   events.removeListener('orbit.error', onError);
   events.removeListener('connected', onConnected);
   events.removeListener('message', onNewMessages);
+  events.removeListener('channels.updated', onChannelsUpdated);
   events.on('orbit.error', onError);
   events.on('connected', onConnected);
   events.on('message', onNewMessages);
+  events.on('channels.updated', onChannelsUpdated);
 
   // events.removeListener("login", onLogin);
   // events.removeListener("onIpfsStarted", onIpfsStarted);
@@ -78,10 +81,8 @@ var SocketApi = async ((socketServer, httpServer, events, handler) => {
 
   io.on('connection', async (function (s) {
     logger.info("UI connected");
-    await (cleanupSocket());
-
-    if(!socket) {
-      socket = s;
+    // cleanupSocket();
+    socket = s;
 
     // networkAPI.events.on("messages", onNewMessages);
     // networkAPI.events.on("message", onMessage);
@@ -91,13 +92,14 @@ var SocketApi = async ((socketServer, httpServer, events, handler) => {
     //   logger.error("Stack trace:\n", e.stack);
     // });
 
-    socket.on(ApiMessages.error, function(err) {
-      logger.error("Caught flash policy server socket error: ")
+    events.emit('socket.connected', socket);
+
+    socket.on(ApiMessages.error, (err) => {
+      logger.error("Socket error: ")
       logger.error(err.stack)
     });
 
-    socket.on(ApiMessages.disconnect, async (function () {
-      await (cleanupSocket());
+    socket.on(ApiMessages.disconnect, async (() => {
       logger.warn("UI diconnected");
     }));
 
@@ -261,6 +263,7 @@ var SocketApi = async ((socketServer, httpServer, events, handler) => {
     // }));
 
     socket.on(ApiMessages.register, handler.connect);
+    socket.on(ApiMessages.channels.get, handler.getChannels);
 
     // socket.on(ApiMessages.register, async((host, username, password) => {
     //   const hostname = host.split(":")[0];
@@ -281,7 +284,6 @@ var SocketApi = async ((socketServer, httpServer, events, handler) => {
     //   // });
     // }));
 
-    }
   }));
 })
 
