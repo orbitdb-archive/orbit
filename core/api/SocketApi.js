@@ -36,9 +36,13 @@ var SocketApi = async ((socketServer, httpServer, events, handler) => {
     }
   };
 
+  const onNetwork = () => {
+    if(socket) socket.emit('network');
+  };
+
   const onError = (err) => {
     if(socket) socket.emit('orbit.error', err);
-  }
+  };
 
   var onNewMessages = (channel, data) => {
     if(socket) socket.emit('messages', channel, data);
@@ -67,10 +71,12 @@ var SocketApi = async ((socketServer, httpServer, events, handler) => {
 
   events.removeListener('orbit.error', onError);
   events.removeListener('connected', onConnected);
+  events.removeListener('network', onNetwork);
   events.removeListener('message', onNewMessages);
   events.removeListener('channels.updated', onChannelsUpdated);
   events.on('orbit.error', onError);
   events.on('connected', onConnected);
+  events.on('network', onNetwork);
   events.on('message', onNewMessages);
   events.on('channels.updated', onChannelsUpdated);
 

@@ -59,7 +59,7 @@ var MessageStore = Reflux.createStore({
   },
   onJoinedChannel: function(channel) {
     console.log("MessageStore - open #" + channel);
-    console.log("current messages:",  this.messages[channel].length);
+    // console.log("current messages:",  this.messages[channel].length);
     if(!this.messages[channel]) this.messages[channel] = [];
     this.loadMessages(channel, null, null, messagesBatchSize);
   },

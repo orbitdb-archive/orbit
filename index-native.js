@@ -37,6 +37,7 @@ electronApp.on('ready', async(() => {
     Menu.setApplicationMenu(menu);
 
     events.on('connected', () => {
+      logger.error("connected");
       var pos  = mainWindow.getPosition();
       var size = mainWindow.getSize();
       var x    = (pos[0] + size[0]/2) - mainWindowSize.width/2;

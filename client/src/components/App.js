@@ -4,25 +4,25 @@ import _ from 'lodash';
 import React from 'react';
 import ReactDOM from 'react-dom';
 import Router from 'react-router';
-import { Route, History } from 'react-router/lib';
-import UIActions     from "actions/SendMessageAction";
-import UserStore     from 'stores/UserStore';
-import UserActions   from 'actions/UserActions';
-import NetworkStore  from 'stores/NetworkStore';
-import NetworkActions  from 'actions/NetworkActions';
+import { Route, History, IndexRoute } from 'react-router/lib';
+import UIActions from "actions/SendMessageAction";
+import UserStore from 'stores/UserStore';
+import UserActions from 'actions/UserActions';
+import NetworkStore from 'stores/NetworkStore';
+import NetworkActions from 'actions/NetworkActions';
 import ConnectionStore from 'stores/ConnectionStore';
-import ChannelStore  from 'stores/ChannelStore';
-import MessageStore  from 'stores/MessageStore';
-import UsersStore    from 'stores/UsersStore';
+import ChannelStore from 'stores/ChannelStore';
+import MessageStore from 'stores/MessageStore';
+import UsersStore from 'stores/UsersStore';
 import SettingsStore from 'stores/SettingsStore';
 import NotificationActions from 'actions/NotificationActions';
 import ChannelsPanel from 'components/ChannelsPanel';
-import ChannelView   from 'components/ChannelView';
-import SettingsView  from 'components/SettingsView';
-import SwarmView     from 'components/SwarmView';
-import LoginView     from 'components/LoginView';
-import Header        from 'components/Header';
-import Themes        from 'app/Themes';
+import ChannelView from 'components/ChannelView';
+import SettingsView from 'components/SettingsView';
+import SwarmView from 'components/SwarmView';
+import LoginView from 'components/LoginView';
+import Header from 'components/Header';
+import Themes from 'app/Themes';
 
 import 'normalize.css';
 import '../styles/main.css';
@@ -53,6 +53,7 @@ var App = React.createClass({
     NetworkActions.joinedChannel.listen(this.onJoinedChannel);
     NetworkActions.joinChannelError.listen(this.onJoinChannelError);
     NetworkActions.leftChannel.listen(this.onLeftChannel);
+    // NetworkActions.network.listen(this._showConnectView);
 
     this.unsubscribeFromSettingsStore   = SettingsStore.listen((settings) => {
       this.setState({ theme: Themes[settings.theme] || null });
@@ -87,17 +88,24 @@ var App = React.createClass({
   onNetworkUpdated: function(network) {
     console.log("Network updated", network);
     if(!network) {
+      console.log("No network", network);
       this._reset();
       this.history.pushState(null, '/connect');
     } else {
       this.setState({ networkName: network.name });
     }
   },
+  _showConnectView: function() {
+          console.log("222");
+
+    this.setState({ location: "Connect", user: null });
+    this.history.pushState(null, '/connect');
+  },
   onUserUpdated: function(user) {
     console.log("User updated", user);
 
     if(!user) {
-      this.setState({ user: null });
+      this.setState({ location: "Connect", user: null });
       this.history.pushState(null, '/connect');
       return;
     }
@@ -224,6 +232,7 @@ var App = React.createClass({
 ReactDOM.render((
   <Router>
     <Route path="/" component={App}>
+      <IndexRoute component={LoginView}/>
       <Route path="channel/:channel" component={ChannelView}/>
       <Route path="settings" component={SettingsView}/>
       <Route path="swarm" component={SwarmView}/>

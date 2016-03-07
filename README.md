@@ -117,10 +117,9 @@ grunt serve
 
 Start Electron:
 ```
-cd client/
-(npm install electron-prebuilt  -g)
+npm install electron-prebuilt
 export ENV=dev
-electron . 
+./node_modules/.bin/electron . 
 ```
 
 Make sure you don't have the node.js version running and no client open the browser.

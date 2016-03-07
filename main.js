@@ -9,8 +9,6 @@ var timer          = require('metrics-timer');
 var Promise        = require('bluebird');
 var async          = require('asyncawait/async');
 var await          = require('asyncawait/await');
-// var ipfsd          = require('./core/ipfs-daemon');
-// var networkAPI     = require('./core/network-api');
 var utils          = require('./core/utils');
 var logger         = require('./core/logger');
 var SocketApi      = require('./core/api/SocketApi');
@@ -34,13 +32,16 @@ var _handleError = (e) => {
 };
 
 var _handleMessage = (channel, message) => {
-  console.log("HANDLE:", channel, message);
   events.emit('message', channel, message);
 };
 
 var handler = {
   onSocketConnected: async((socket) => {
-    if(orbit) events.emit('connected', orbit);
+    logger.warn("socket connected", orbit !== undefined);
+    if(orbit)
+      events.emit('connected', orbit);
+    else
+      events.emit('network');
   }),
   connect: async((host, username, password) => {
     const hostname = host.split(":")[0];
