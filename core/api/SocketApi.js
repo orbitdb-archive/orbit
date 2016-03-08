@@ -48,50 +48,19 @@ var SocketApi = async ((socketServer, httpServer, events, handler) => {
     if(socket) socket.emit(ApiMessages.channels.updated, channels);
   };
 
-  var unsubscribe = (socket, msg) => {
-    if(typeof msg === "string")
-      socket.removeAllListeners(msg);
-    else if(typeof msg === "object")
-      Object.keys(msg).forEach((v) => unsubscribe(socket, msg[v]));
-  };
-
-  // var cleanupSocket = async (function() {
-  //   // await (networkAPI.leaveAllChannels());
-  //   // networkAPI.events.removeAllListeners("messages");
-  //   if(socket) Object.keys(ApiMessages).forEach((v) => unsubscribe(socket, ApiMessages[v]));
-  // });
-
   events.removeListener('orbit.error', onError);
-  // events.removeListener('connected', onConnected);
   events.removeListener('network', onNetwork);
   events.removeListener('message', onNewMessages);
   events.removeListener('channels.updated', onChannelsUpdated);
   events.on('orbit.error', onError);
-  // events.on('connected', onConnected);
   events.on('network', onNetwork);
   events.on('message', onNewMessages);
   events.on('channels.updated', onChannelsUpdated);
 
-  // events.removeListener("login", onLogin);
-  // events.removeListener("onIpfsStarted", onIpfsStarted);
-  // events.on('onIpfsStarted', onIpfsStarted);
-  // events.on("login", onLogin);
-
   io.on('connection', async (function (s) {
-    logger.info("UI connected");
-    // cleanupSocket();
+    logger.debug("UI connected");
     socket = s;
-
-    // networkAPI.events.on("messages", onNewMessages);
-    // networkAPI.events.on("message", onMessage);
-
-    // socket.on('error', (e) => {
-    //   logger.error("WTF ERROR", e.message);
-    //   logger.error("Stack trace:\n", e.stack);
-    // });
-
     events.emit('socket.connected', socket);
-
 
     socket.on(ApiMessages.error, (err) => {
       logger.error("Socket error: ")
@@ -101,68 +70,33 @@ var SocketApi = async ((socketServer, httpServer, events, handler) => {
     socket.on('disconnect', async (() => {
       logger.warn("UI disconnected");
       orbit = null;
-      // Object.keys(ApiMessages).forEach((v) => unsubscribe(socket, ApiMessages[v]));
     }));
 
     socket.on(ApiMessages.network.disconnect, async (() => {
-      logger.warn("wtf!");
       orbit = null;
-      // Object.keys(ApiMessages).forEach((v) => unsubscribe(socket, ApiMessages[v]));
       handler.disconnect();
     }));
 
-    // var channelPasswordMap = {};
-    // var channelWritePasswordMap = {};
-
+    socket.on(ApiMessages.register, handler.connect);
+    socket.on(ApiMessages.channels.get, handler.getChannels);
     socket.on(ApiMessages.channel.join, handler.join);
-    // socket.on(ApiMessages.channel.join, async ((channel, password, callback) => {
-    //   if(ipfs) {
-    //     logger.debug("Join #" + channel + (password ? " (with password)" : ""));
-    //     networkAPI.joinChannel(ipfs, channel, userInfo.id, password)
-    //       .then((channelInfo) => {
-    //         logger.debug("Joined #" + channel);
-    //         channelPasswordMap[channel] = password;
-    //         channelInfo.name = channel;
-    //         callback(null, channelInfo);
-    //       })
-    //       .catch((err) => {
-    //         logger.error("Can't join #" + channel + ":", err);
-    //         callback(err, null);
-    //       });
-    //     } else {
-    //       callback("Not initialized!", null);
-    //     }
-    // }));
-
-    socket.on(ApiMessages.channel.part, async (function (channelName) {
-      logger.debug("Leave channel #" + channelName);
-      delete channelPasswordMap[channelName];
-      await (networkAPI.leaveChannel(channelName));
-    }));
-
     socket.on(ApiMessages.channel.messages, handler.getMessages);
-
-    // socket.on(ApiMessages.channel.messages, async (function(channelName, startHash, lastHash, amount, cb) {
-    //   var password = channelPasswordMap[channelName];
-    //   networkAPI.getMessages(ipfs, channelName, userInfo.id, password, startHash, lastHash, amount)
-    //     .then((messages) => cb(channelName, messages))
-    //     .catch(function(err) {
-    //       logger.error("Error in channel.get", err);
-    //       cb(null);
-    //     });
-    // }));
-
     socket.on(ApiMessages.message.send, handler.sendMessage);
+    socket.on(ApiMessages.user.get, handler.getUser);
 
-    // socket.on(ApiMessages.message.send, async((channelName, message, cb) => {
-    //   var rpwd    = channelPasswordMap[channelName];
-    //   var wpwd    = channelWritePasswordMap[channelName];
-    //   networkAPI.sendMessage(ipfs, message, channelName, userInfo.id, rpwd, wpwd)
-    //     .then((result) => cb(null))
-    //     .catch((err) => {
-    //       logger.error("Couldn't send message:", err)
-    //       cb(err)
-    //     });
+    /* TODO */
+    socket.on(ApiMessages.channel.part, handler.leave);
+    // socket.on(ApiMessages.file.add, handler.addFile);
+    // socket.on(ApiMessages.list.get, handler.getList);
+    // socket.on(ApiMessages.swarm.peers, handler.getSwarmPeers);
+
+    // socket.on(ApiMessages.channel.setMode, handler.setMode);
+
+
+    // socket.on(ApiMessages.channel.part, async (function (channelName) {
+    //   logger.debug("Leave channel #" + channelName);
+    //   delete channelPasswordMap[channelName];
+    //   await (networkAPI.leaveChannel(channelName));
     // }));
 
     socket.on(ApiMessages.file.add, async((channelName, filePath, cb) => {
@@ -203,15 +137,6 @@ var SocketApi = async ((socketServer, httpServer, events, handler) => {
         });
     }));
 
-    socket.on(ApiMessages.message.get, async ((hash, cb) => {
-      networkAPI.getObject(ipfs, hash)
-        .then(cb)
-        .catch((err) => {
-          logger.error("Error in message.get", err);
-          cb(null);
-        });
-    }));
-
     //TODO: get rid of simpleCache and replace with SQLite3 cache (like messages). simpleCache is heavy on memory.
     //TODO: call via networkAPI, not directly ipfsAPI
     var simpleCache = {};
@@ -233,24 +158,6 @@ var SocketApi = async ((socketServer, httpServer, events, handler) => {
       }
     }));
 
-    socket.on(ApiMessages.user.get, handler.getUser);
-    // socket.on(ApiMessages.user.get, async (function (hash, cb) {
-    //   networkAPI.getUser(ipfs, hash)
-    //   .then(cb)
-    //   .catch(function(err) {
-    //     // we end up here if the user doesn't exists. ipfs error: { Message: 'invalid ipfs ref path', Code: 0 }
-    //     cb(null);
-    //   });
-    // }));
-
-    socket.on(ApiMessages.whoami, async((callback) => {
-      if(callback) {
-        callback(orbit ? orbit.user : null);
-      }
-      // const user = orbit ? Object.assign(userInfo, { network: orbit.network }) : userInfo;
-      // if(cb) cb(user);
-    }));
-
     socket.on(ApiMessages.swarm.peers, async((cb) => {
       ipfsAPI.swarmPeers(ipfs)
         .then((peers) => cb(peers.Strings))
@@ -259,40 +166,7 @@ var SocketApi = async ((socketServer, httpServer, events, handler) => {
           cb([]);
         });
     }));
-
-    // socket.on(ApiMessages.deregister, handler.disconnect);
-    // socket.on(ApiMessages.deregister, async(() => {
-    //   logger.warn("Shutdown Socket API");
-    //   // await (networkAPI.leaveAllChannels());
-    //   // ipfs = null;
-    //   // userInfo = {};
-    //   handler.disconnect;
-    //   events.emit('disconnect');
-    // }));
-
-    socket.on(ApiMessages.register, handler.connect);
-    socket.on(ApiMessages.channels.get, handler.getChannels);
-
-    // socket.on(ApiMessages.register, async((host, username, password) => {
-    //   const hostname = host.split(":")[0];
-    //   const port = host.split(":")[1];
-    //   const network = { host: hostname, port: port };
-    //   const user = { username: username, password: password };
-    //   events.emit('onRegister', network, user);
-    //   // events.emit('onRegister', host, username, password, (err, res) => {
-    //   //   if(!err) {
-    //   //     networkInfo.host = host;
-    //   //     networkInfo.name = res.network;
-    //   //     socket.emit('registered', { name: networkInfo.name, host: networkInfo.host, user: userInfo });
-    //   //     events.emit('connect');
-    //   //   } else {
-    //   //     socket.emit('log', "register error: " + err);
-    //   //     socket.emit('register.error', JSON.stringify(err.toString()));
-    //   //   }
-    //   // });
-    // }));
-
   }));
-})
+});
 
 module.exports = SocketApi;

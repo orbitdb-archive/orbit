@@ -77,10 +77,10 @@ class ChannelsPanel extends React.Component {
   _renderChannel(e) {
     const name = e.name;
     return (
-      <div className="row link">
-        <span className='channelName' onClick={this.handleJoinChannel.bind(this, name, "")} key={name}>#{name}</span>
+      <div className="row link" key={Math.random()}>
+        <span className='channelName' onClick={this.handleJoinChannel.bind(this, name, "")} key={Math.random()}>#{name}</span>
         {e.unreadMessages > 0 ? <span className={e.unreadMessages > 0 ? 'unreadMessages' : ''}  style={this.state.theme}>{e.unreadMessages > 0 ? e.unreadMessages : ""}</span> : ""}
-        <span className='closeChannelButton' onClick={NetworkActions.leaveChannel.bind(this, e)}>Close</span>
+        <span className='closeChannelButton' onClick={NetworkActions.leaveChannel.bind(this, name)} key={Math.random()}>Close</span>
       </div>
     );
   }
@@ -96,17 +96,6 @@ class ChannelsPanel extends React.Component {
 
     var channelsHeaderStyle = this.state.openChannels.length > 0 ? "panelHeader" : "hidden";
     var openChannels = this.state.openChannels.length > 0 ? this.state.openChannels.map((f) => this._renderChannel(f)) : [];
-    // var openChannels = this.state.openChannels.map((e) => {
-      // const name = e.channel;
-      // return (
-      //   <div className="row link">
-      //     <span className='channelName' onClick={this.handleJoinChannel.bind(this, name, "")} key={name}>#{name}</span>
-      //     {e.unreadMessages > 0 ? <span className={e.unreadMessages > 0 ? 'unreadMessages' : ''}  style={this.state.theme}>{e.unreadMessages > 0 ? e.unreadMessages : ""}</span> : ""}
-      //     <span className='closeChannelButton' onClick={NetworkActions.leaveChannel.bind(this, e)}>Close</span>
-      //   </div>
-      // );
-    // });
-
     var channelJoinInputStyle = !this.state.loading ? "joinChannelInput" : "joinChannelInput invisible";
 
     return (
@@ -188,6 +177,7 @@ class ChannelsPanel extends React.Component {
           </div>
 
         </TransitionGroup>
+
         <TransitionGroup component="div" transitionName="darkenerAnimation" transitionAppear={true} className={"darkener"} onClick={this.togglePanel.bind(this)} transitionAppearTimeout={5000} transitionEnterTimeout={5000} transitionLeaveTimeout={5000}>
         </TransitionGroup>
       </div>

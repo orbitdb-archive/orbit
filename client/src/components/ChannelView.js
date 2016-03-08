@@ -24,7 +24,6 @@ class ChannelView extends React.Component {
   componentDidMount() {
     UserActions.getUser((user) => this.setState({ user: user}));
     SettingsActions.get((settings, descriptions) => this.setState({ appSettings: settings }));
-    // NetworkActions.getChannel(this.state.channelName, (channel) => this.setState({ channel: channel }));
     this.unsubscribeFromChannelMode = ChannelActions.channelModeUpdated.listen((channel, modes) => {
       var c = _.cloneDeep(this.state.channel);
       c.modes = modes;

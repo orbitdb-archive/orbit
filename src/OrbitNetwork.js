@@ -50,6 +50,13 @@ class OrbitNetwork {
     }
   }
 
+  leaveChannel(channel) {
+    if(this._channels[channel]) {
+      this._channels[channel].db.close();
+      delete this._channels[channel];
+    }
+  }
+
   publish(channel, data) {
     if(!this._client)
       throw new Error("Not connected to an Orbit Network");

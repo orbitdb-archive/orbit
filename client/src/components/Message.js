@@ -62,16 +62,13 @@ class Message extends React.Component {
     var contentClass = this.state.isCommand ? "Content command" : "Content";
 
     return (
-      <TransitionGroup
-        transitionName="messagesAnimation"
-        transitionAppear={true}
-        component="div"
+      <div
         className={className}
         onDragEnter={this.onDragEnter.bind(this)}>
         <span className="Timestamp">{ts}</span>
         <User userId={this.state.message.meta.from} colorify={this.state.colorifyUsername} highlight={this.state.isCommand}/>
         <div className={contentClass}>{content}</div>
-      </TransitionGroup>
+      </div>
     );
   }
 

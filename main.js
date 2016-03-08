@@ -76,6 +76,11 @@ var handler = {
     events.emit('channels.updated', orbit.channels);
     if(callback) callback(null, { name: channel, modes: {} })
   }),
+  leave: async((channel) => {
+    orbit.leaveChannel(channel);
+    events.emit('channels.updated', orbit.channels);
+    logger.debug("Left channel #" + channel);
+  }),
   getUser: async((userHash, callback) => {
     if(callback) callback(userHash);
   }),
@@ -107,13 +112,9 @@ const start = exports.start = async(() => {
     var startupTime = "Startup time";
     timer.start(startupTime);
 
-    // events.on('onRegister', connectToNetwork);
-    // events.on('disconnect', stopApplication);
-
     // Start ipfs daemon
     const ipfsd = await(ipfsDaemon());
     ipfs = ipfsd.ipfs;
-    // daemon = ipfsd.daemon;
 
     var httpApi   = await (HttpApi(events));
     var socketApi = await (SocketApi(httpApi.socketServer, httpApi.server, events, handler));

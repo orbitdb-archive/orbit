@@ -3,7 +3,6 @@
 import Reflux from 'reflux';
 
 var UserActions = Reflux.createActions([
-  "getWhoami",
   "getUser"
 ]);
 

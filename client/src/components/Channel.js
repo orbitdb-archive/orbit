@@ -306,7 +306,7 @@ class Channel extends React.Component {
     var messages = this.state.messages.map((e) => {
       return <Message
                 message={e}
-                key={e.meta.ts}
+                key={e.hash}
                 onDragEnter={this.onDragEnter.bind(this)}
                 username={this.state.username}
                 colorifyUsername={this.state.appSettings.colorifyUsernames}
@@ -364,11 +364,24 @@ class Channel extends React.Component {
     var loadingIcon   = this.state.loadingIcon ? (
       <div className="loadingIcon"><Halogen.MoonLoader color={color} size="16px"/></div>
     ) : "";
-
+/*
+  For messages:
+  <TransitionGroup
+    transitionName="messagesAnimation"
+    transitionAppear={false}
+    transitionEnter={true}
+    transitionLeave={false}
+    transitionAppearTimeout={500}
+    transitionEnterTimeout={500}
+    transitionLeaveTimeout={100}
+    component="div">
+    {messages}
+  </TransitionGroup>
+*/
     return (
       <div className={channelStyle} onDragEnter={this.onDragEnter.bind(this)}>
 
-        <div className={messagesStyle} ref="MessagesView" onScroll={this.onScroll.bind(this)}>
+        <div className={messagesStyle} ref="MessagesView" onScroll={this.onScroll.bind(this)} >
           {messages}
         </div>
 

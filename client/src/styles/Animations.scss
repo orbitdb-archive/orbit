@@ -3,6 +3,17 @@
     100% {opacity: 1;}
 }
 
+@keyframes fadeInFromBottom {
+    0% {
+        opacity: 0;
+        transform: translateY(-5px);
+    }
+    100% {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
 @keyframes fadeInCircles {
     0% {
         opacity: 0.2;

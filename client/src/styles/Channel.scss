@@ -365,3 +365,16 @@ input[type=button], .channelOptionsButton {
   background-color: rgba(0, 0, 0, 0.6);
   border: 2px dotted $main-color;
 }
+
+.messagesAnimation-enter {
+  $duration: 0.3s;
+
+  -webkit-animation-name: fadeIn;
+  animation-name: fadeIn;
+  -webkit-animation-duration: $duration;
+  animation-duration: $duration;
+  -webkit-animation-fill-mode: both;
+  animation-fill-mode: both;
+  -webkit-animation-timing-function: ease-in;
+  animation-timing-function: ease-in;
+}

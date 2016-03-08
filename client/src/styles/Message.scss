@@ -46,17 +46,17 @@ $timestamp-color:  rgba(240, 240, 240, 0.6);
     flex: 1;
   }
 
-  .messagesAnimation-appear {
-    $duration: 0.2s;
+  // .messagesAnimation-appear {
+  //   $duration: 0.2s;
 
-    -webkit-animation-name: fadeIn;
-    animation-name: fadeIn;
-    -webkit-animation-duration: $duration;
-    animation-duration: $duration;
-    -webkit-animation-fill-mode: both;
-    animation-fill-mode: both;
-    -webkit-animation-timing-function: ease-in;
-    animation-timing-function: ease-in;
-  }
+  //   -webkit-animation-name: fadeIn;
+  //   animation-name: fadeIn;
+  //   -webkit-animation-duration: $duration;
+  //   animation-duration: $duration;
+  //   -webkit-animation-fill-mode: both;
+  //   animation-fill-mode: both;
+  //   -webkit-animation-timing-function: ease-in;
+  //   animation-timing-function: ease-in;
+  // }
 }
 

@@ -72,7 +72,6 @@ electronApp.on('ready', async(() => {
     });
 
     mainWindow = new BrowserWindow(connectWindowSize);
-    // mainWindow.setMinimumSize(connectWindowSize.minWidth, connectWindowSize.minHeight);
 
     if(process.env.ENV === 'dev')
       mainWindow.loadUrl('http://localhost:8000/webpack-dev-server/');
@@ -80,7 +79,6 @@ electronApp.on('ready', async(() => {
       mainWindow.loadUrl('file://' + __dirname + '/client/dist/index.html');
 
     mainWindow.webContents.session.setDownloadPath(path.resolve(utils.getUserHome() + '/Downloads'))
-    // mainWindow.openDevTools();
 
     mainWindow.on('closed', () => {
       mainWindow = null;

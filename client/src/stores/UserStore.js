@@ -10,7 +10,6 @@ var UserStore = Reflux.createStore({
   listenables: [UserActions, NetworkActions, SocketActions],
   init: function() {
     this.user = null;
-    // NetworkActions.updateUser.listen((user) => this._handleUserUpdated(user));
   },
   onUpdateUser: function(user) {
     console.log("--> received user:", user);

@@ -5,17 +5,20 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import Router from 'react-router';
 import { Route, History, IndexRoute } from 'react-router/lib';
+
 import UIActions from "actions/SendMessageAction";
+import NetworkActions from 'actions/NetworkActions';
+import NotificationActions from 'actions/NotificationActions';
+
 import UserStore from 'stores/UserStore';
 import UserActions from 'actions/UserActions';
 import NetworkStore from 'stores/NetworkStore';
-import NetworkActions from 'actions/NetworkActions';
 import ConnectionStore from 'stores/ConnectionStore';
 import ChannelStore from 'stores/ChannelStore';
 import MessageStore from 'stores/MessageStore';
 import UsersStore from 'stores/UsersStore';
 import SettingsStore from 'stores/SettingsStore';
-import NotificationActions from 'actions/NotificationActions';
+
 import ChannelsPanel from 'components/ChannelsPanel';
 import ChannelView from 'components/ChannelView';
 import SettingsView from 'components/SettingsView';
@@ -47,12 +50,9 @@ var App = React.createClass({
     UIActions.onJoinChannel.listen(this.joinChannel);
     UIActions.onOpenChannel.listen(this.openChannel);
 
-    // NetworkActions.connected.listen((network) => {
-    //   if(network.user) UserActions.getWhoami();
-    // });
     NetworkActions.joinedChannel.listen(this.onJoinedChannel);
     NetworkActions.joinChannelError.listen(this.onJoinChannelError);
-    NetworkActions.leftChannel.listen(this.onLeftChannel);
+    NetworkActions.leaveChannel.listen(this.onLeaveChannel);
 
     this.unsubscribeFromSettingsStore   = SettingsStore.listen((settings) => {
       this.setState({ theme: Themes[settings.theme] || null });
@@ -63,7 +63,6 @@ var App = React.createClass({
     this.unsubscribeFromUsersStore      = UsersStore.listen((users) => console.log("Known users updated", users));
     this.unsubscribeFromChannelStore    = ChannelStore.listen((channels) => {
       console.log("Channels updated", channels);
-      // this.onJoinedChannel(channels);
     });
     this.unsubscribeFromMessageStore    = MessageStore.listen((channel, message) => {
       console.log("Notification: New messages on #" + channel);
@@ -144,7 +143,7 @@ var App = React.createClass({
     if("#" + channelInfo.name !== this.state.location)
       this._showChannel(channelInfo.name);
   },
-  onLeftChannel: function (channel) {
+  onLeaveChannel: function (channel) {
     if(channel === this.state.currentChannel) {
       this.setState({ location: null, currentChannel: null, requirePassword: false });
       this.history.pushState(null, '/');

@@ -8,7 +8,6 @@ let ApiMessages = {
     connect: "network.connect",
     disconnect: "network.disconnect"
   },
-  whoami: "whoami",
   channels: {
     get: "channels.get",
     updated: "channels.updated"
