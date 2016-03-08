@@ -41,7 +41,6 @@ var SocketApi = async ((socketServer, httpServer, events, handler) => {
   };
 
   var onNewMessages = (channel, data) => {
-    console.log("-->", channel, data);
     if(socket) socket.emit('messages', channel, data);
   };
 

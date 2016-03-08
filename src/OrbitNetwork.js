@@ -30,7 +30,6 @@ class OrbitNetwork {
     this._user = this._client.user;
     this._network = this._client.network;
     this._client.events.on('data', (channel, message) => {
-      console.log(">", channel, message);
       this.events.emit('message', channel, message);
     });
   }
@@ -45,12 +44,10 @@ class OrbitNetwork {
   }
 
   joinChannel(channel, password) {
-    const db = this._client.channel(channel, password);
-    this._channels[channel] = { name: channel, password: password, db: db };
-    // this._channels.join(channel, password)
-    // this._channels.channels.onMessage((channel, message) => {
-    //   this.events.emit('message', channel, message);
-    // });
+    if(!this._channels[channel]) {
+      const db = this._client.channel(channel, password);
+      this._channels[channel] = { name: channel, password: password, db: db };
+    }
   }
 
   publish(channel, data) {
