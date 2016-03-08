@@ -1,19 +1,18 @@
 'use strict';
 
-import Reflux        from 'reflux';
-import Actions       from 'actions/SendMessageAction';
-import UserActions   from 'actions/UserActions';
+import Reflux from 'reflux';
+import Actions from 'actions/SendMessageAction';
+import UserActions from 'actions/UserActions';
 import NetworkActions from 'actions/NetworkActions';
 import SocketActions from 'actions/SocketActions';
 
 var UserStore = Reflux.createStore({
-  listenables: [UserActions, SocketActions],
+  listenables: [UserActions, NetworkActions, SocketActions],
   init: function() {
     this.user = null;
-    this.socket = null;
-    NetworkActions.connected.listen((network) => this._handleUserUpdated(network.user));
+    // NetworkActions.updateUser.listen((user) => this._handleUserUpdated(user));
   },
-  _handleUserUpdated: function(user) {
+  onUpdateUser: function(user) {
     console.log("--> received user:", user);
     if(user) {
       this.user = user;
@@ -24,10 +23,8 @@ var UserStore = Reflux.createStore({
   },
   onSocketConnected: function(socket) {
     console.log("UserStore connected");
-    this.socket = socket;
   },
   onSocketDisconnected: function() {
-    this.socket = null;
     this.user = null;
     this.trigger(this.user);
   },

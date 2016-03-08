@@ -13,7 +13,7 @@ class OrbitNetwork {
     this._user = null;
     this._network = null;
     this._channels = {};
-    this.events = new EventEmitter();
+    this.events = null;
   }
 
   get channels() {
@@ -25,10 +25,14 @@ class OrbitNetwork {
   }
 
   connect(host, port, username, password) {
+    this.events = new EventEmitter();
     this._client = OrbitDB.connect(host, port, username, password, this._ipfs);
     this._user = this._client.user;
     this._network = this._client.network;
-    this._client.events.on('data', (channel, message) => this.events.emit('message', channel, message));
+    this._client.events.on('data', (channel, message) => {
+      console.log(">", channel, message);
+      this.events.emit('message', channel, message);
+    });
   }
 
   disconnect() {

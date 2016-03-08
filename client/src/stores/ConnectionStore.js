@@ -16,33 +16,28 @@ var ConnectionStore = Reflux.createStore({
 
       this.socket.on('connect', () => {
         console.log("WebSocket connected");
-        // this.trigger(this.socket);
 
-        this.socket.on('log', (msg) => {
-          console.log("log>", msg);
+        // this.socket.on('log', (msg) => {
+        //   console.log("log>", msg);
+        // });
+
+        this.socket.on('network', (network) => {
+          if(network) console.log(network ? "Connected to network: " + network : "Not connected");
+          NetworkActions.updateNetwork(network);
+          // NetworkActions.connected(network);
         });
 
-        this.socket.on('registered', (network) => {
-          console.log("Connected to network", network);
-          NetworkActions.connected(network);
-        });
-
-        this.socket.on('network', () => {
-          console.log("111");
-          NetworkActions.network();
-        });
-
-        this.socket.on('orbit.error', (err) => {
-          console.error("Register error:", err);
-          NetworkActions.registerError(err);
-        });
+        // this.socket.on('registered', (network) => {
+        //   console.log("Connected to network", network);
+        //   NetworkActions.connected(network);
+        // });
 
         SocketActions.socketConnected(this.socket);
       });
 
       this.socket.on('disconnect', () => {
         console.log("WebSocket disconnected");
-        this.trigger(null);
+        this.socket.removeAllListeners('network');
         SocketActions.socketDisconnected();
       });
 

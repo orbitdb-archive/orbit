@@ -1,6 +1,7 @@
 'use strict';
 
 import React   from 'react/addons';
+import NetworkStore from 'stores/NetworkStore';
 import NetworkActions from "actions/NetworkActions";
 import BackgroundAnimation from 'components/BackgroundAnimation';
 import Halogen from 'halogen';
@@ -14,21 +15,28 @@ var maxLogoSize = 320;
 class LoginView extends React.Component{
   constructor(props) {
     super(props);
-    this.state = {
-      error: props.meta,
+    this.state = this._getInitialState(props);
+  }
+
+  _getInitialState(props) {
+    return {
+      error: props ? props.meta : null,
       connecting: false,
+      connected: false,
       username: null,
       password: null,
       displayPasswordField: false,
       currentLength: null,
       logoSize: Math.min(window.innerWidth, maxLogoSize)
     };
-  }
+  };
 
   componentDidMount() {
     window.addEventListener('resize', this.onResize.bind(this));
 
     if(this.refs.username) this.refs.username.focus();
+
+    this.unsubscribeFromNetworkStore = NetworkStore.listen(this.onNetworkUpdated.bind(this));
 
     NetworkActions.registerError.listen((err) => {
       if(err.toString().replace(/\"/g, "") === "Invalid username or password")
@@ -38,8 +46,17 @@ class LoginView extends React.Component{
     });
   }
 
+  onNetworkUpdated(network) {
+    if(network) {
+      this.setState({ error: null, connecting: false, connected: true });
+    } else {
+      this.setState(this._getInitialState());
+    }
+  }
+
   componentWillUnmount() {
     window.removeEventListener('resize', this.onResize);
+    this.unsubscribeFromNetworkStore();
   }
 
   componentDidUpdate() {
@@ -72,6 +89,9 @@ class LoginView extends React.Component{
   }
 
   render() {
+    if(this.state.connected)
+      return (<div></div>);
+
     var color = "rgba(140, 80, 220, 0.7)";
     var errorMsg   = this.state.error ? <div className="error">{this.state.error}</div> : "";
     var passwordFieldStyle = this.state.displayPasswordField ? "row" : "hidden";
@@ -89,6 +109,7 @@ class LoginView extends React.Component{
             placeholder={this.state.username ? "" : "..."}
             defaultValue={this.state.username ? this.state.username : ""}
             maxLength="32"
+            autoFocus
             onChange={this.calculateNicknameLength.bind(this)}/>
           {this.state.currentLength != null ? <span className="nicknameLength">{this.state.currentLength}</span> : ""}
         </div>

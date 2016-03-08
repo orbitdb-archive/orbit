@@ -8,13 +8,23 @@ var NetworkStore = Reflux.createStore({
   listenables: [NetworkActions, SocketActions],
   init: function() {
     this.network = null;
-    NetworkActions.connected.listen(this._updateNetwork);
+    // NetworkActions.connected.listen(this._updateNetwork);
   },
-  _updateNetwork: function(network) {
+  network: function() {
+    return this.network;
+  },
+  onUpdateNetwork: function(network) {
     console.log("--> received network:", network);
+    if(!network) console.log("Not connected to network");
     this.network = network;
     this.trigger(this.network);
+    NetworkActions.updateUser(network ? network.user : null);
   },
+  // _updateNetwork: function(network) {
+  //   console.log("--> received network:", network);
+  //   this.network = network;
+  //   this.trigger(this.network);
+  // },
   onSocketConnected: function(socket) {
     console.log("NetworkStore connected");
     this.socket = socket;
@@ -40,7 +50,7 @@ var NetworkStore = Reflux.createStore({
   },
   onDisconnect: function() {
     console.log("--> disconnect");
-    this.socket.emit('deregister');
+    this.socket.emit('network.disconnect');
     this.init();
     this.trigger(this.network);
   }

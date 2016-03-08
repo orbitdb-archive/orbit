@@ -19,25 +19,21 @@ var SocketApi = async ((socketServer, httpServer, events, handler) => {
   var io = socketIo(socketServer);
   socketServer.listen(httpServer);
 
-  var socket       = null;
-  var ipfs         = null;
+  var socket = null;
   let orbit;
 
-  const onConnected = (orbitdb) => {
-    orbit = orbitdb;
-    ipfs = orbit._client._ipfs;
+  const onNetwork = (orbitdb) => {
+    if(orbitdb)
+      orbit = orbitdb;
 
     if(socket) {
-      socket.emit('registered', {
+      const network = orbit ? {
         name: orbit.network.name,
         host: orbit.network.host,
         user: orbit.user
-      });
+      } : null;
+      socket.emit('network', network);
     }
-  };
-
-  const onNetwork = () => {
-    if(socket) socket.emit('network');
   };
 
   const onError = (err) => {
@@ -45,16 +41,13 @@ var SocketApi = async ((socketServer, httpServer, events, handler) => {
   };
 
   var onNewMessages = (channel, data) => {
+    console.log("-->", channel, data);
     if(socket) socket.emit('messages', channel, data);
   };
 
   const onChannelsUpdated = (channels) => {
     if(socket) socket.emit(ApiMessages.channels.updated, channels);
   };
-
-  // var onMessage = (channelName, message) => {
-  //   events.emit('message', channelName, message);
-  // };
 
   var unsubscribe = (socket, msg) => {
     if(typeof msg === "string")
@@ -70,12 +63,12 @@ var SocketApi = async ((socketServer, httpServer, events, handler) => {
   // });
 
   events.removeListener('orbit.error', onError);
-  events.removeListener('connected', onConnected);
+  // events.removeListener('connected', onConnected);
   events.removeListener('network', onNetwork);
   events.removeListener('message', onNewMessages);
   events.removeListener('channels.updated', onChannelsUpdated);
   events.on('orbit.error', onError);
-  events.on('connected', onConnected);
+  // events.on('connected', onConnected);
   events.on('network', onNetwork);
   events.on('message', onNewMessages);
   events.on('channels.updated', onChannelsUpdated);
@@ -100,17 +93,27 @@ var SocketApi = async ((socketServer, httpServer, events, handler) => {
 
     events.emit('socket.connected', socket);
 
+
     socket.on(ApiMessages.error, (err) => {
       logger.error("Socket error: ")
       logger.error(err.stack)
     });
 
-    socket.on(ApiMessages.disconnect, async (() => {
-      logger.warn("UI diconnected");
+    socket.on('disconnect', async (() => {
+      logger.warn("UI disconnected");
+      orbit = null;
+      // Object.keys(ApiMessages).forEach((v) => unsubscribe(socket, ApiMessages[v]));
     }));
 
-    var channelPasswordMap = {};
-    var channelWritePasswordMap = {};
+    socket.on(ApiMessages.network.disconnect, async (() => {
+      logger.warn("wtf!");
+      orbit = null;
+      // Object.keys(ApiMessages).forEach((v) => unsubscribe(socket, ApiMessages[v]));
+      handler.disconnect();
+    }));
+
+    // var channelPasswordMap = {};
+    // var channelWritePasswordMap = {};
 
     socket.on(ApiMessages.channel.join, handler.join);
     // socket.on(ApiMessages.channel.join, async ((channel, password, callback) => {
@@ -258,7 +261,7 @@ var SocketApi = async ((socketServer, httpServer, events, handler) => {
         });
     }));
 
-    socket.on(ApiMessages.deregister, handler.disconnect);
+    // socket.on(ApiMessages.deregister, handler.disconnect);
     // socket.on(ApiMessages.deregister, async(() => {
     //   logger.warn("Shutdown Socket API");
     //   // await (networkAPI.leaveAllChannels());

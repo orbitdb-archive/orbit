@@ -53,7 +53,6 @@ var App = React.createClass({
     NetworkActions.joinedChannel.listen(this.onJoinedChannel);
     NetworkActions.joinChannelError.listen(this.onJoinChannelError);
     NetworkActions.leftChannel.listen(this.onLeftChannel);
-    // NetworkActions.network.listen(this._showConnectView);
 
     this.unsubscribeFromSettingsStore   = SettingsStore.listen((settings) => {
       this.setState({ theme: Themes[settings.theme] || null });
@@ -88,7 +87,6 @@ var App = React.createClass({
   onNetworkUpdated: function(network) {
     console.log("Network updated", network);
     if(!network) {
-      console.log("No network", network);
       this._reset();
       this.history.pushState(null, '/connect');
     } else {
@@ -141,7 +139,7 @@ var App = React.createClass({
   },
   onJoinedChannel: function(channel) {
     console.log("Joined channel #" + channel, ChannelStore.channels);
-    const channelInfo = ChannelStore.channels[channel];
+    const channelInfo = ChannelStore.get(channel);
     // TODO: the check is obsolete? (done is _showChannel)
     if("#" + channelInfo.name !== this.state.location)
       this._showChannel(channelInfo.name);
@@ -168,7 +166,7 @@ var App = React.createClass({
 
     console.log("Open view for channel #" + channel);
 
-    if(!ChannelStore.channels[channel])
+    if(!ChannelStore.get(channel))
       NetworkActions.joinChannel(channel);
     else
       this._showChannel(channel);
@@ -232,7 +230,6 @@ var App = React.createClass({
 ReactDOM.render((
   <Router>
     <Route path="/" component={App}>
-      <IndexRoute component={LoginView}/>
       <Route path="channel/:channel" component={ChannelView}/>
       <Route path="settings" component={SettingsView}/>
       <Route path="swarm" component={SwarmView}/>

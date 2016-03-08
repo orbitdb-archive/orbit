@@ -2,9 +2,12 @@
 
 let ApiMessages = {
   error: "error",
-  disconnect: "disconnect",
   register: "register",
   deregister: "deregister",
+  network: {
+    connect: "network.connect",
+    disconnect: "network.disconnect"
+  },
   whoami: "whoami",
   channels: {
     get: "channels.get",

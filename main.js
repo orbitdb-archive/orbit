@@ -37,11 +37,7 @@ var _handleMessage = (channel, message) => {
 
 var handler = {
   onSocketConnected: async((socket) => {
-    logger.warn("socket connected", orbit !== undefined);
-    if(orbit)
-      events.emit('connected', orbit);
-    else
-      events.emit('network');
+    events.emit('network', orbit);
   }),
   connect: async((host, username, password) => {
     const hostname = host.split(":")[0];
@@ -55,7 +51,7 @@ var handler = {
       orbit = await(OrbitNetwork.connect(network.host, network.port, user.username, user.password, false, ipfs));
       orbit.events.on('message', _handleMessage);
       logger.info(`Connected to '${orbit.network.name}' at '${orbit.network.host}:${orbit.network.port}' as '${user.username}`)
-      events.emit('connected', orbit);
+      events.emit('network', orbit);
     } catch(e) {
       _handleError(e);
     }
@@ -72,7 +68,7 @@ var handler = {
     if(orbit && callback) callback(orbit.channels);
   }),
   join: async((channel, password, callback) => {
-    logger.debug(`Join # ${channel} (${password ? " (with password)" : ""}`);
+    logger.debug(`Join #${channel}`);
     orbit.joinChannel(channel, password)
     events.emit('channels.updated', orbit.channels);
     if(callback) callback(null, { name: channel, modes: {} })

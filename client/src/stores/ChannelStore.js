@@ -1,9 +1,9 @@
 'use strict';
 
-import _         from 'lodash';
-import Reflux         from 'reflux';
-import UIActions      from 'actions/SendMessageAction';
-import SocketActions  from 'actions/SocketActions';
+import _ from 'lodash';
+import Reflux from 'reflux';
+import UIActions from 'actions/SendMessageAction';
+import SocketActions from 'actions/SocketActions';
 import NetworkActions from 'actions/NetworkActions';
 import ChannelActions from 'actions/ChannelActions';
 import NotificationActions from 'actions/NotificationActions';
@@ -11,12 +11,14 @@ import NotificationActions from 'actions/NotificationActions';
 var ChannelStore = Reflux.createStore({
   listenables: [NetworkActions, SocketActions, ChannelActions],
   init: function() {
-    this.network = {};
-    this.channels = {};
-    this.passwordMap = {};
+    this.channels = [];
+    this.passwordMap = null;
   },
   channels: function() {
     return this.channels;
+  },
+  get: function(channel) {
+    return _.find(this.channels, { name: channel });
   },
   onSocketConnected: function(socket) {
     console.log("ChannelStore connected");
@@ -26,18 +28,21 @@ var ChannelStore = Reflux.createStore({
   },
   _updateChannels: function(channels) {
     console.log("--> received channels:", channels);
-    channels.forEach((f) => this.channels[f.name] = f);
+    // channels.forEach((f) => this.channels[f.name] = f);
+    this.channels = channels;
     this.trigger(this.channels);
   },
   onSocketDisconnected: function() {
+    this.socket.removeAllListeners('channels.updated');
     this.socket = null;
-    this.channels = {};
-    this.trigger(this.channels);
+    this.onDisconnect();
+    // this.channels = null;
+    // this.trigger(this.channels);
   },
   onDisconnect: function() {
-    this.network = {};
-    this.channels = {};
-    this.passwordMap = {};
+    // this.channels = null;
+    // this.passwordMap = null;
+    this.init();
     this.trigger(this.channels);
   },
   onJoinChannel: function(channel, password) {
@@ -46,8 +51,8 @@ var ChannelStore = Reflux.createStore({
       return;
     }
 
-    if(this.passwordMap[channel] && !password)
-      password = this.passwordMap[channel];
+    // if(this.passwordMap[channel] && !password)
+    //   password = this.passwordMap[channel];
 
     this.socket.emit("channel.join", channel, password, (err, res) => {
       console.log("--> joined channel", channel, password ? "********" : password);
@@ -69,27 +74,27 @@ var ChannelStore = Reflux.createStore({
     console.log("--> leave channel", channel);
     this.socket.emit("channel.part", channel);
     delete this.channels[channel];
-    delete this.passwordMap[channel];
+    // delete this.passwordMap[channel];
     this.trigger(this.channels);
     NetworkActions.leftChannel(channel);
-  },
-  onSetChannelMode: function(channel, mode) {
-    console.log("--> set channel mode", mode);
-    this.socket.emit('channel.password', channel, mode, (err, res) => {
-      if(err) {
-        console.log("Couldn't set channel mode:", err.toString());
-        UIActions.raiseError(err.toString());
-      } else {
-        if(res.modes.r) {
-          this.readPassword = res.modes.r ? res.modes.r.password : '';
-          this.passwordMap[channel] = res.modes.r.password;
-        } else {
-          this.readPassword = '';
-        }
-        ChannelActions.channelModeUpdated(channel, res.modes);
-      }
-    });
   }
+  // onSetChannelMode: function(channel, mode) {
+  //   console.log("--> set channel mode", mode);
+  //   this.socket.emit('channel.password', channel, mode, (err, res) => {
+  //     if(err) {
+  //       console.log("Couldn't set channel mode:", err.toString());
+  //       UIActions.raiseError(err.toString());
+  //     } else {
+  //       if(res.modes.r) {
+  //         this.readPassword = res.modes.r ? res.modes.r.password : '';
+  //         this.passwordMap[channel] = res.modes.r.password;
+  //       } else {
+  //         this.readPassword = '';
+  //       }
+  //       ChannelActions.channelModeUpdated(channel, res.modes);
+  //     }
+  //   });
+  // }
 });
 
 export default ChannelStore;

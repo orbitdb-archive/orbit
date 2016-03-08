@@ -1,13 +1,13 @@
 'use strict';
 
-import React          from "react/addons";
+import React from "react/addons";
 import TransitionGroup from "react-addons-css-transition-group";
 import UIActions from "actions/SendMessageAction";
-import JoinChannel    from 'components/JoinChannel';
-import ChannelStore   from 'stores/ChannelStore';
+import JoinChannel from 'components/JoinChannel';
+import ChannelStore from 'stores/ChannelStore';
 import NetworkActions from 'actions/NetworkActions';
 import BackgroundAnimation from 'components/BackgroundAnimation';
-import Halogen        from 'halogen';
+import Halogen from 'halogen';
 import 'styles/ChannelsPanel.scss';
 import 'styles/RecentChannels.scss';
 
@@ -16,7 +16,7 @@ class ChannelsPanel extends React.Component {
     super(props);
     this.state = {
       currentChannel: props.currentChannel,
-      openChannels: {},
+      openChannels: [],
       joiningToChannel: props.joiningToChannel,
       username: props.username,
       requirePassword: props.requirePassword || false,
@@ -39,14 +39,10 @@ class ChannelsPanel extends React.Component {
 
   componentDidMount() {
     this.unsubscribeFromChannelStore = ChannelStore.listen((channels) => {
-      // var c = Object.keys(chnls).map((e) => {
-      //   return { name: chnls[e].name, unreadMessages: chnls[e].unreadMessagesCount };
-      // });
-      // this.setState({ openChannels: c });
-      // console.log("ChannelsPanel - channels updated", channels);
       this.setState({ openChannels: channels });
     });
 
+      // console.log("ChannelsPanel - channels updated", ChannelStore.channels);
     this.setState({ openChannels: ChannelStore.channels });
     // NetworkActions.getOpenChannels();
   }
@@ -98,8 +94,8 @@ class ChannelsPanel extends React.Component {
       </div>
     ) : "";
 
-    var channelsHeaderStyle = Object.keys(this.state.openChannels).length > 0 ? "panelHeader" : "hidden";
-    var openChannels = Object.keys(this.state.openChannels).length > 0 ? Object.keys(this.state.openChannels).map((f) => this._renderChannel(this.state.openChannels[f])) : [];
+    var channelsHeaderStyle = this.state.openChannels.length > 0 ? "panelHeader" : "hidden";
+    var openChannels = this.state.openChannels.length > 0 ? this.state.openChannels.map((f) => this._renderChannel(f)) : [];
     // var openChannels = this.state.openChannels.map((e) => {
       // const name = e.channel;
       // return (

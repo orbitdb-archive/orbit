@@ -45,12 +45,13 @@ var MessageStore = Reflux.createStore({
     NetworkActions.leftChannel.listen((c) => delete this.messages[c]);
   },
   onSocketDisconnected: function() {
-    this.socket.removeAllListeners("messages");
+    this.socket.removeAllListeners('messages');
     this.socket = null;
     this.messages = {};
     this.contents = {};
   },
   onDisconnect: function() {
+    // this.socket.removeAllListeners('messages');
     this.messages     = {};
     this.contents     = {};
     this.openChannels = {};
@@ -61,7 +62,7 @@ var MessageStore = Reflux.createStore({
     console.log("MessageStore - open #" + channel);
     // console.log("current messages:",  this.messages[channel].length);
     if(!this.messages[channel]) this.messages[channel] = [];
-    this.loadMessages(channel, null, null, messagesBatchSize);
+    // this.loadMessages(channel, null, null, messagesBatchSize);
   },
   onLeaveChannel: function(channel: string) {
     console.log("close #" + channel);
