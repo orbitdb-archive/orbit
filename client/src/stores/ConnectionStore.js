@@ -17,20 +17,10 @@ var ConnectionStore = Reflux.createStore({
       this.socket.on('connect', () => {
         console.log("WebSocket connected");
 
-        // this.socket.on('log', (msg) => {
-        //   console.log("log>", msg);
-        // });
-
         this.socket.on('network', (network) => {
           if(network) console.log(network ? "Connected to network: " + network : "Not connected");
           NetworkActions.updateNetwork(network);
-          // NetworkActions.connected(network);
         });
-
-        // this.socket.on('registered', (network) => {
-        //   console.log("Connected to network", network);
-        //   NetworkActions.connected(network);
-        // });
 
         SocketActions.socketConnected(this.socket);
       });

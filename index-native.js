@@ -28,6 +28,24 @@ electronApp.on('window-all-closed', () => {
   }
 });
 
+const setWindowToNormal = () => {
+  var pos  = mainWindow.getPosition();
+  var size = mainWindow.getSize();
+  var x    = (pos[0] + size[0]/2) - mainWindowSize.width/2;
+  var y    = (pos[1] + size[1]/2) - mainWindowSize.height/2;
+  mainWindow.setSize(mainWindowSize.width, mainWindowSize.height);
+  mainWindow.setPosition(x, y);
+};
+
+const setWindowToLogin = () => {
+  var pos  = mainWindow.getPosition();
+  var size = mainWindow.getSize();
+  var x    = (pos[0] + size[0]/2) - connectWindowSize.width/2;
+  var y    = (pos[1] + size[1]/2) - connectWindowSize.height/2;
+  mainWindow.setSize(connectWindowSize.width, connectWindowSize.height);
+  mainWindow.setPosition(x, y);
+};
+
 electronApp.on('ready', async(() => {
   try {
     logger.info("Starting the system");
@@ -36,23 +54,21 @@ electronApp.on('ready', async(() => {
 
     Menu.setApplicationMenu(menu);
 
+    events.on('network', (orbit) => {
+      if(orbit)
+        setWindowToNormal();
+      else
+        setWindowToLogin();
+    });
+
     events.on('connected', () => {
       logger.error("connected");
-      var pos  = mainWindow.getPosition();
-      var size = mainWindow.getSize();
-      var x    = (pos[0] + size[0]/2) - mainWindowSize.width/2;
-      var y    = (pos[1] + size[1]/2) - mainWindowSize.height/2;
-      mainWindow.setSize(mainWindowSize.width, mainWindowSize.height);
-      mainWindow.setPosition(x, y);
+      setWindowToNormal();
     });
 
     events.on('disconnect', () => {
-      var pos  = mainWindow.getPosition();
-      var size = mainWindow.getSize();
-      var x    = (pos[0] + size[0]/2) - connectWindowSize.width/2;
-      var y    = (pos[1] + size[1]/2) - connectWindowSize.height/2;
-      mainWindow.setSize(connectWindowSize.width, connectWindowSize.height);
-      mainWindow.setPosition(x, y);
+      logger.error("disconnected");
+      setWindowToLogin();
     });
 
     mainWindow = new BrowserWindow(connectWindowSize);

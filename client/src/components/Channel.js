@@ -24,7 +24,7 @@ class Channel extends React.Component {
       password: props.password,
       messages: [],
       loading: false,
-      loadingIcon: false,
+      loadingIcon: true,
       writeMode: true,
       statusMessage: "Public",
       showChannelOptions: false,
@@ -64,7 +64,7 @@ class Channel extends React.Component {
 
   _getMessages(channel) {
     const messages = MessageStore.getMessages(channel);
-    this.setState({ messages: messages });
+    this.setState({ messages: messages, loading: false });
   }
 
   componentDidMount() {
@@ -83,12 +83,14 @@ class Channel extends React.Component {
 
     this.node = this.refs.MessagesView;
     this.scrollHeight = 0;
+    const margin = 20;
     this.timer = setInterval(() => {
       var node = this.node;
-      if(!this.state.flipMessageOrder && node && (node.scrollTop + node.clientHeight + 20) >= node.scrollHeight) {
+      if(!this.state.flipMessageOrder && node && (node.scrollTop + node.clientHeight + margin) >= node.scrollHeight) {
         // this.loadOlderMessages();
-      } else if(this.state.flipMessageOrder && node && ((node.scrollTop - 1) <= 0 || node.clientHeight >= node.scrollHeight)) {
-        // this.loadOlderMessages();
+      } else if(this.state.flipMessageOrder && node && ((node.scrollTop - margin) <= 0 || node.clientHeight >= node.scrollHeight)) {
+        // console.log("load more 1")
+        this.loadOlderMessages();
       }
     }, 100);
   }
@@ -130,11 +132,10 @@ class Channel extends React.Component {
     if(channel !== this.state.channelName)
       return;
 
-    var sorted = messages;
-    // if(this.state.flipMessageOrder) sorted = _.sortByOrder(messages, ["ts"], ["asc"]);
+    // if(this.state.flipMessageOrder) messages = _.sortByOrder(messages, ["ts"], ["asc"]);
 
     if(this.state.flipMessageOrder && this.node.scrollHeight - this.node.scrollTop + 20 > this.node.clientHeight && this.node.scrollHeight > this.node.clientHeight + 1
-      && this.state.messages.length > 0 && sorted[sorted.length - 1].ts > this.state.messages[this.state.messages.length - 1].ts
+      && this.state.messages.length > 0 && messages[messages.length - 1].meta.ts > this.state.messages[this.state.messages.length - 1].meta.ts
       && this.node.scrollHeight > 0) {
       this.setState({
         displayNewMessagesIcon: true,
@@ -143,17 +144,14 @@ class Channel extends React.Component {
     }
 
     if(!this.state.flipMessageOrder && this.node.scrollTop > 0
-      && this.state.messages.length > 0 && sorted[0].ts > this.state.messages[0].ts) {
+      && this.state.messages.length > 0 && messages[0].meta.ts > this.state.messages[0].meta.ts) {
       this.setState({
         displayNewMessagesIcon: true,
         unreadMessages: this.state.unreadMessages + 1
        });
     }
 
-    this.setState({
-      messages: sorted,
-      loading: false
-    });
+    this.setState({ messages: messages, loading: false });
   }
 
   sendMessage(text: string) {
@@ -167,45 +165,39 @@ class Channel extends React.Component {
   }
 
   loadOlderMessages() {
-    if(!this.state.loading && this.state.channelInfo) {
+    if(!this.state.loading) {
       this.setState({ loading: true });
       ChannelActions.loadOlderMessages(this.state.channelName);
     }
   }
 
   componentWillUpdate() {
-    var node    = this.refs.MessagesView;
-    // var padding = 0;
+    let node = this.refs.MessagesView;
+    const margin = 20;
 
     if(!this.state.flipMessageOrder) {
-      // this.shouldScroll = node.scrollTop > 0 && this.scrollHeight < node.scrollHeight;
       this.shouldScroll = (node.scrollHeight - this.scrollHeight) > 0 && node.scrollTop > 0;
     } else {
-      var newHeight             = this.scrollHeight + (node.scrollHeight - this.scrollHeight);
-      this.shouldScroll         = (newHeight >= node.scrollHeight - 10 && this.scrollTop > node.scrollTop) && (this.scrollTop > 0 || node.scrollTop > 0);
-      this.shouldScrollToBottom = (node.scrollTop + node.clientHeight + 20) >= this.scrollHeight;
+      this.shouldScroll = this.scrollHeight < node.scrollHeight && node.scrollTop > (0 + margin);
+      this.scrollAmount = node.scrollHeight - this.scrollHeight;
+      this.shouldScrollToBottom = (node.scrollTop + node.clientHeight + margin) >= this.scrollHeight;
     }
 
-    this.toScroll     = (node.scrollHeight - this.scrollHeight);
-    this.scrollTop    = node.scrollTop;
-    this.clientHeight = node.clientHeight;
+    this.scrollTop = node.scrollTop;
     this.scrollHeight = node.scrollHeight;
-    // console.log(this.shouldScroll);
   }
 
   componentDidUpdate() {
-    var node = this.refs.MessagesView;
+    let node = this.refs.MessagesView;
     if(!this.state.flipMessageOrder && this.shouldScroll) {
-      // console.log(this.scrollTop, node.scrollTop, this.scrollHeight, node.scrollHeight, this.clientHeight, node.clientHeight, this.toScroll);
-      // node.scrollTop = this.scrollTop + (node.scrollHeight - this.scrollHeight) + this.toScroll;
-      node.scrollTop = this.scrollTop + this.toScroll;
+      node.scrollTop = this.scrollTop + this.scrollAmount;
     } else if(this.state.flipMessageOrder && !this.shouldScroll) {
-      node.scrollTop = this.scrollTop + this.toScroll;
-      // node.scrollTop = this.scrollTop + (node.scrollHeight - this.scrollHeight);
+      node.scrollTop = this.scrollTop + this.scrollAmount;
     }
     if(this.state.flipMessageOrder && this.shouldScrollToBottom) {
       node.scrollTop = node.scrollHeight + node.clientHeight;
     }
+    // this.scrollTop = node.scrollTop;
   }
 
   changePasswords(event) {
@@ -234,14 +226,14 @@ class Channel extends React.Component {
   }
 
   showChannelOptions(event) {
-    event.preventDefault();
-    if(this.state.writeMode) {
-      this.setState({ showChannelOptions: !this.state.showChannelOptions });
-      if(this.state.showChannelOptions) {
-        this.refs.readPassword.value = this.state.password ? this.state.password : '';
-        // this.refs.writePassword.value = '';
-      }
-    }
+    // event.preventDefault();
+    // if(this.state.writeMode) {
+    //   this.setState({ showChannelOptions: !this.state.showChannelOptions });
+    //   if(this.state.showChannelOptions) {
+    //     this.refs.readPassword.value = this.state.password ? this.state.password : '';
+    //     // this.refs.writePassword.value = '';
+    //   }
+    // }
   }
 
   onDrop(files) {

@@ -31,7 +31,7 @@ class ChannelView extends React.Component {
       this.setState({ channel: c });
     });
 
-    this.setState({ channel: ChannelStore.channels[this.state.channelName] });
+    this.setState({ channel: ChannelStore.get(this.state.channelName) });
   }
 
   componentWillUnmount() {

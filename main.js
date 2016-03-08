@@ -53,6 +53,7 @@ var handler = {
       logger.info(`Connected to '${orbit.network.name}' at '${orbit.network.host}:${orbit.network.port}' as '${user.username}`)
       events.emit('network', orbit);
     } catch(e) {
+      orbit = null;
       _handleError(e);
     }
   }),
@@ -62,7 +63,9 @@ var handler = {
     const name = orbit.network.name;
     orbit.events.removeListener('message', _handleMessage);
     orbit.disconnect();
+    orbit = null;
     logger.warn(`Disconnected from '${name}' at '${host}:${port}'`);
+    events.emit('network', null);
   }),
   getChannels: async((callback) => {
     if(orbit && callback) callback(orbit.channels);
