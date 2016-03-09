@@ -153,9 +153,10 @@ var MessageStore = Reflux.createStore({
     Actions.startLoading(channel);
     this.socket.emit('file.add', channel, filePath, (err) => {
       if(err) {
-        console.log("Couldn't add file:", err.toString());
+        console.log("Couldn't add file:", filePath, err.toString());
         Actions.raiseError(err.toString());
       }
+      Actions.stopLoading(channel);
     });
   },
   // TODO: move to SwarmStore

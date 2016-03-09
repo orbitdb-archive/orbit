@@ -90,7 +90,7 @@ class Channel extends React.Component {
         // this.loadOlderMessages();
       } else if(this.state.flipMessageOrder && node && ((node.scrollTop - margin) <= 0 || node.clientHeight >= node.scrollHeight)) {
         // console.log("load more 1")
-        this.loadOlderMessages();
+        // this.loadOlderMessages();
       }
     }, 100);
   }

@@ -8,7 +8,6 @@ var await       = require('asyncawait/await');
 var socketIo    = require('socket.io');
 var logger      = require('../logger');
 var networkAPI  = require('../network-api');
-var ipfsAPI     = require('../ipfs-api-promised');
 var ApiMessages = require('../ApiMessages');
 var Channel     = require('../Channel')
 
@@ -83,80 +82,31 @@ var SocketApi = async ((socketServer, httpServer, events, handler) => {
     socket.on(ApiMessages.channel.messages, handler.getMessages);
     socket.on(ApiMessages.message.send, handler.sendMessage);
     socket.on(ApiMessages.user.get, handler.getUser);
+    socket.on(ApiMessages.channel.part, handler.leave);
+    socket.on(ApiMessages.file.add, handler.addFile);
 
     /* TODO */
-    socket.on(ApiMessages.channel.part, handler.leave);
-    // socket.on(ApiMessages.file.add, handler.addFile);
-    // socket.on(ApiMessages.list.get, handler.getList);
+    // socket.on(ApiMessages.file.get, handler.getList);
     // socket.on(ApiMessages.swarm.peers, handler.getSwarmPeers);
-
     // socket.on(ApiMessages.channel.setMode, handler.setMode);
 
-
-    // socket.on(ApiMessages.channel.part, async (function (channelName) {
-    //   logger.debug("Leave channel #" + channelName);
-    //   delete channelPasswordMap[channelName];
-    //   await (networkAPI.leaveChannel(channelName));
+    // socket.on(ApiMessages.list.get, async (function(hash, cb) {
+    //   if(!simpleCache[hash]) {
+    //     ipfsAPI.ls(ipfs, hash)
+    //       .then(function(result) {
+    //         if(result.Objects) {
+    //           simpleCache[hash] = result.Objects[0].Links;
+    //           cb(result.Objects[0].Links);
+    //         }
+    //       })
+    //       .catch(function(err) {
+    //         logger.error("Error in list.get", err);
+    //         cb(null);
+    //       });
+    //   } else {
+    //     cb(simpleCache[hash]);
+    //   }
     // }));
-
-    socket.on(ApiMessages.file.add, async((channelName, filePath, cb) => {
-      var rpwd    = channelPasswordMap[channelName];
-      var wpwd    = channelWritePasswordMap[channelName];
-      networkAPI.addFile(ipfs, filePath, channelName, userInfo.id, rpwd, wpwd)
-        .then((result) => cb(null))
-        .catch((err) => cb(err));
-    }));
-
-    socket.on(ApiMessages.channel.setMode, async((channel, modes, cb) => {
-      var password = channelPasswordMap[channel];
-      networkAPI.setChannelMode(ipfs, channel, userInfo.id, password, modes)
-        .then(async ((newMode) => {
-          logger.debug("Channel mode set to:", newMode);
-          channelPasswordMap[channel] = newMode.modes.r ? newMode.modes.r.password : '';
-
-          if(password !== channelPasswordMap[channel]) {
-            var message = newMode.modes.r ? "/me set channel password to '" + channelPasswordMap[channel] + "'" : "/me removed channel password";
-            await(networkAPI.sendMessage(ipfs, message, channel, userInfo.id, channelPasswordMap[channel], null));
-          }
-
-          if(_(modes).pluck('mode').find((m) => { return  m === '+w' })) {
-            var message = "/me is now moderating the channel";
-            await(networkAPI.sendMessage(ipfs, message, channel, userInfo.id, channelPasswordMap[channel], null));
-          }
-
-          if(_(modes).pluck('mode').find((m) => { return  m === '-w' })) {
-            var message = "/me disabled channel moderation mode";
-            await(networkAPI.sendMessage(ipfs, message, channel, userInfo.id, channelPasswordMap[channel], null));
-          }
-
-          cb(null, newMode);
-        }))
-        .catch((err) => {
-          logger.error("Couldn't set channel mode:", err);
-          cb(err, null);
-        });
-    }));
-
-    //TODO: get rid of simpleCache and replace with SQLite3 cache (like messages). simpleCache is heavy on memory.
-    //TODO: call via networkAPI, not directly ipfsAPI
-    var simpleCache = {};
-    socket.on(ApiMessages.list.get, async (function(hash, cb) {
-      if(!simpleCache[hash]) {
-        ipfsAPI.ls(ipfs, hash)
-          .then(function(result) {
-            if(result.Objects) {
-              simpleCache[hash] = result.Objects[0].Links;
-              cb(result.Objects[0].Links);
-            }
-          })
-          .catch(function(err) {
-            logger.error("Error in list.get", err);
-            cb(null);
-          });
-      } else {
-        cb(simpleCache[hash]);
-      }
-    }));
 
     socket.on(ApiMessages.swarm.peers, async((cb) => {
       ipfsAPI.swarmPeers(ipfs)

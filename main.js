@@ -15,8 +15,10 @@ var SocketApi      = require('./core/api/SocketApi');
 var HttpApi        = require('./core/api/HttpApi');
 var Network        = require('./core/Network');
 
-const OrbitNetwork = require('./src/OrbitNetwork');
 const ipfsDaemon   = require('orbit-common/lib/ipfs-daemon');
+const ipfsAPI      = require('orbit-common/lib/ipfs-api-promised');
+const Post         = require('orbit-db/src/post/Post');
+const OrbitNetwork = require('./src/OrbitNetwork');
 
 Promise.longStackTraces(); // enable regular stack traces in catch
 
@@ -101,6 +103,36 @@ var handler = {
       _handleError(e);
       if(callback) callback(e.message);
     }
+  }),
+  addFile:  async((channel, filePath, callback) => {
+    const addToIpfs = async((ipfs, filePath) => {
+      if(!fs.existsSync(filePath))
+        throw "File not found at '" + filePath + "'";
+
+      var fileHash = await (ipfsAPI.add(ipfs, filePath));
+
+      // FIXME: ipfs-api returns an empty dir name as the last hash, ignore this
+      if(fileHash[fileHash.length-1].Name === '')
+        return fileHash[fileHash.length-2].Hash;
+
+      return fileHash[fileHash.length-1].Hash;
+    });
+
+    logger.info("Adding file from path '" + filePath + "'");
+    var isDirectory = await (utils.isDirectory(filePath));
+    var fileHash    = await (addToIpfs(ipfs, filePath));
+    var size        = await (utils.getFileSize(filePath));
+    logger.info("Added local file '" + filePath + "' as " + fileHash);
+
+    const data = {
+      content: filePath.split("/").pop(),
+      file: fileHash,
+      size: size
+    };
+    const post = await(Post.create(ipfs, Post.Types.File, data));
+    orbit.publish(channel, post.Hash);
+
+    if(callback) callback(null);
   })
 };
 

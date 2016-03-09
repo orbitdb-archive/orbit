@@ -13,8 +13,7 @@ class TextMessage extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      message: props.message,
-      text: props.message.value,
+      text: props.text,
       loading: false,
       useEmojis: props.userEmojis,
       highlight: props.highlight,
@@ -29,28 +28,26 @@ class TextMessage extends React.Component {
   componentDidMount() {
     this.ready = true;
 
-    var onMessageReceived = (message) => {
+    const onMessageReceived = (text) => {
       if(!this.ready)
         return;
 
-      if(message) {
-        if(message.value.startsWith('/me')) {
+      if(text) {
+        // TODO: move to message, should be here
+        if(text.startsWith('/me')) {
           this.setState({ isCommand: true });
           this.props.onHighlight(true);
         }
 
-        message.value.split(" ").map((word) => {
-          var highlight = MentionHighlighter.highlight(word, this.state.highlight);
+        text.split(" ").map((word) => {
+          const highlight = MentionHighlighter.highlight(word, this.state.highlight);
           if(typeof highlight[0] !== 'string') this.props.onHighlight();
         });
 
-        // this.setState({ text: message.value, loading: false });
+        this.setState({ text: text, loading: false });
       }
-      // else
-      //   setTimeout(() => { ChannelActions.loadMessageContent(this.state.message.hash, onMessageReceived); }, 200);
     };
-    // ChannelActions.loadMessageContent(this.state.message.hash, onMessageReceived);
-    onMessageReceived(this.state.message);
+    onMessageReceived(this.state.text);
   }
 
   componentWillUnmount() {
@@ -58,18 +55,18 @@ class TextMessage extends React.Component {
   }
 
   render() {
-    var emojiOpts = {
+    const emojiOpts = {
       emojiType: 'emojione',
       attributes: { width: '16px', height: '16px' }
     };
 
     // Create links from urls
-    var withLinks = ReactAutolink.autolink(this.state.text, { target: "_blank", rel: "nofollow" });
+    const withLinks = ReactAutolink.autolink(this.state.text, { target: "_blank", rel: "nofollow" });
 
     // Higlight specified words (ie. username)
-    var highlighted = _.flatten(withLinks.map(item => {
+    const highlighted = _.flatten(withLinks.map(item => {
       if(typeof item === 'string') {
-        var highlight = MentionHighlighter.highlight(item, this.state.highlight, { highlightClassName: 'highlight', key: Math.random() + 17 });
+        const highlight = MentionHighlighter.highlight(item, this.state.highlight, { highlightClassName: 'highlight', key: Math.random() + 17 });
         return highlight;
       } else {
         return item;
@@ -77,23 +74,22 @@ class TextMessage extends React.Component {
     }));
 
     // Create emojies
-    var emojified = _.flatten(highlighted.map(item => {
+    const emojified = _.flatten(highlighted.map(item => {
       emojiOpts.alt = item;
       emojiOpts.key = Math.random();
       return (typeof item === 'string' && this.state.useEmojis) ? ReactEmoji.emojify(item, emojiOpts) : item;
     }));
 
     // Create links from IPFS hashes
-    var finalText = _.flatten(emojified.map(item => {
+    const finalText = _.flatten(emojified.map(item => {
       return (typeof item === 'string') ? ReactIpfsLink.linkify(item, { target: "_blank", rel: "nofollow", key: Math.random() + 19 }) : item;
     }));
 
     // Remove the command from rendering
     if(this.state.isCommand) finalText.splice(0, 1);
 
-    var style   = this.state.loading ? "TextMessage loading" : "TextMessage";
-    var content = this.state.loading ? this.state.text
-                                     // : <span className="content2">{finalText}</span>;
+    const style   = this.state.loading ? "TextMessage loading" : "TextMessage";
+    const content = this.state.loading ? this.state.text
                                      : <TransitionGroup transitionName="textAnimation" transitionAppear={true} className="content2">
                                          <span className="content2">{finalText}</span>
                                        </TransitionGroup>;
