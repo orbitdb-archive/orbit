@@ -1,13 +1,11 @@
 'use strict';
 
-var async       = require('asyncawait/async');
-var await       = require('asyncawait/await');
 var socketIo    = require('socket.io');
 var logger      = require('orbit-common/lib/logger');
 var ApiMessages = require('../ApiMessages');
 
 /* SOCKET API */
-var SocketApi = async ((socketServer, httpServer, events, handler) => {
+var SocketApi = (socketServer, httpServer, events, handler) => {
   logger.debug("Starting socket server");
 
   var io = socketIo(socketServer);
@@ -48,7 +46,7 @@ var SocketApi = async ((socketServer, httpServer, events, handler) => {
   events.on('message', onNewMessages);
   events.on('channels.updated', onChannelsUpdated);
 
-  io.on('connection', async (function (s) {
+  io.on('connection', (s) => {
     logger.debug("UI connected");
     socket = s;
     events.emit('socket.connected', socket);
@@ -58,16 +56,11 @@ var SocketApi = async ((socketServer, httpServer, events, handler) => {
       logger.error(err.stack)
     });
 
-    socket.on('disconnect', async (() => {
+    socket.on('disconnect', () => {
       logger.warn("UI disconnected");
-      // orbit = null;
-    }));
+    });
 
-    socket.on(ApiMessages.network.disconnect, async (() => {
-      // orbit = null;
-      handler.disconnect();
-    }));
-
+    socket.on(ApiMessages.network.disconnect, handler.disconnect);
     socket.on(ApiMessages.register, handler.connect);
     socket.on(ApiMessages.channels.get, handler.getChannels);
     socket.on(ApiMessages.channel.join, handler.join);
@@ -82,15 +75,17 @@ var SocketApi = async ((socketServer, httpServer, events, handler) => {
     // socket.on(ApiMessages.swarm.peers, handler.getSwarmPeers);
     // socket.on(ApiMessages.channel.setMode, handler.setMode);
 
-    socket.on(ApiMessages.swarm.peers, async((cb) => {
+    socket.on(ApiMessages.swarm.peers, (cb) => {
       ipfsAPI.swarmPeers(ipfs)
         .then((peers) => cb(peers.Strings))
         .catch((err) => {
           logger.warn("swarm.get", err);
           cb([]);
         });
-    }));
-  }));
-});
+    });
+
+  });
+
+};
 
 module.exports = SocketApi;

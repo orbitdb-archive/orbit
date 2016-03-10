@@ -5,5 +5,5 @@ const main   = require('./src/main');
 
 (async(() => {
   const events = await(main.start());
-  logger.info("System started");
+  logger.info("Systems started");
 }))();
