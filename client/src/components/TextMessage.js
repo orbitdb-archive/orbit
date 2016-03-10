@@ -1,19 +1,19 @@
 'use strict';
 
-import React         from "react";
+import React from "react";
 import TransitionGroup from "react-addons-css-transition-group";
-import ReactEmoji    from "react-emoji";
+import ReactEmoji from "react-emoji";
 import ReactAutolink from "react-autolink";
 import ReactIpfsLink from "components/plugins/react-ipfs-link";
 import MentionHighlighter from 'components/plugins/mention-highlighter';
-import ChannelActions from "actions/ChannelActions"; // TODO: move to MessageActions?
 import "styles/TextMessage.scss";
 
 class TextMessage extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      text: props.text,
+      post: props.post,
+      text: props.post.content,
       loading: false,
       useEmojis: props.userEmojis,
       highlight: props.highlight,

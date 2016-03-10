@@ -1,56 +1,63 @@
-var electronApp   = require('app');
-var BrowserWindow = require('browser-window');
-var path          = require('path');
-var Menu          = require('menu');
-var async         = require('asyncawait/async');
-var await         = require('asyncawait/await');
+'use strict';
 
-var main          = require('./main');
-var logger        = require('./core/logger');
-var utils         = require('./core/utils');
+const electronApp = require('app');
+const Window      = require('browser-window');
+const path        = require('path');
+const Menu        = require('menu');
+const async       = require('asyncawait/async');
+const await       = require('asyncawait/await');
+const main        = require('./src/main');
+const logger      = require('orbit-common/lib/logger');
+const utils       = require('./src/utils');
 
 require('crash-reporter').start();
-logger.info("Run index-native.js");
+logger.debug("Run index-native.js");
 
-var connectWindowSize = { width: 300, height: 500, center: true, minWidth: 300, minHeight: 500 };
-var mainWindowSize    = { width: 1200, height: 800, center: true, minWidth: 1200, minHeight: 800 };
-var mainWindow = null;
+const connectWindowSize = { width: 300, height: 500, center: true, minWidth: 300, minHeight: 500 };
+const mainWindowSize    = { width: 1200, height: 800, center: true, minWidth: 1200, minHeight: 800 };
+let mainWindow = null;
 
-var template = require('./menu-native')(electronApp);
-menu = Menu.buildFromTemplate(template);
+const template = require('./menu-native')(electronApp);
+const menu = Menu.buildFromTemplate(template);
 
-process.on('SIGINT', () => electronApp.quit())
-process.on('SIGTERM', () => electronApp.quit())
-
-electronApp.on('window-all-closed', () => {
-  if (process.platform != 'darwin') {
-    electronApp.quit();
-  }
-});
+let events;
 
 const setWindowToNormal = () => {
-  var pos  = mainWindow.getPosition();
-  var size = mainWindow.getSize();
-  var x    = (pos[0] + size[0]/2) - mainWindowSize.width/2;
-  var y    = (pos[1] + size[1]/2) - mainWindowSize.height/2;
+  const pos  = mainWindow.getPosition();
+  const size = mainWindow.getSize();
+  const x    = (pos[0] + size[0]/2) - mainWindowSize.width/2;
+  const y    = (pos[1] + size[1]/2) - mainWindowSize.height/2;
   mainWindow.setSize(mainWindowSize.width, mainWindowSize.height);
   mainWindow.setPosition(x, y);
 };
 
 const setWindowToLogin = () => {
-  var pos  = mainWindow.getPosition();
-  var size = mainWindow.getSize();
-  var x    = (pos[0] + size[0]/2) - connectWindowSize.width/2;
-  var y    = (pos[1] + size[1]/2) - connectWindowSize.height/2;
+  const pos  = mainWindow.getPosition();
+  const size = mainWindow.getSize();
+  const x    = (pos[0] + size[0]/2) - connectWindowSize.width/2;
+  const y    = (pos[1] + size[1]/2) - connectWindowSize.height/2;
   mainWindow.setSize(connectWindowSize.width, connectWindowSize.height);
   mainWindow.setPosition(x, y);
 };
 
+const shutdown = () => {
+  logger.info("Shutting down...");
+  events.emit('shutdown');
+  setTimeout(() => {
+    logger.info("All done!");
+    electronApp.quit();
+  }, 1000);
+};
+
+electronApp.on('window-all-closed', shutdown);
+process.on('SIGINT', () => shutdown)
+process.on('SIGTERM', () => shutdown)
+
 electronApp.on('ready', async(() => {
   try {
-    logger.info("Starting the system");
-    var events = await(main.start());
-    logger.info("System started");
+    logger.info("Starting the systems");
+    events = await(main.start());
+    logger.info("Systems started");
 
     Menu.setApplicationMenu(menu);
 
@@ -71,7 +78,7 @@ electronApp.on('ready', async(() => {
       setWindowToLogin();
     });
 
-    mainWindow = new BrowserWindow(connectWindowSize);
+    mainWindow = new Window(connectWindowSize);
 
     if(process.env.ENV === 'dev')
       mainWindow.loadUrl('http://localhost:8000/webpack-dev-server/');

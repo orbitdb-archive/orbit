@@ -1,15 +1,10 @@
 'use strict';
 
-var _           = require('lodash');
-var Base58      = require('bs58');
-var crypto      = require('crypto');
 var async       = require('asyncawait/async');
 var await       = require('asyncawait/await');
 var socketIo    = require('socket.io');
-var logger      = require('../logger');
-var networkAPI  = require('../network-api');
+var logger      = require('orbit-common/lib/logger');
 var ApiMessages = require('../ApiMessages');
-var Channel     = require('../Channel')
 
 /* SOCKET API */
 var SocketApi = async ((socketServer, httpServer, events, handler) => {
@@ -22,10 +17,8 @@ var SocketApi = async ((socketServer, httpServer, events, handler) => {
   let orbit;
 
   const onNetwork = (orbitdb) => {
-    if(orbitdb)
-      orbit = orbitdb;
-
-    if(socket) {
+    orbit = orbitdb;
+    if(socket && orbit) {
       const network = orbit ? {
         name: orbit.network.name,
         host: orbit.network.host,
@@ -79,34 +72,16 @@ var SocketApi = async ((socketServer, httpServer, events, handler) => {
     socket.on(ApiMessages.register, handler.connect);
     socket.on(ApiMessages.channels.get, handler.getChannels);
     socket.on(ApiMessages.channel.join, handler.join);
-    socket.on(ApiMessages.channel.messages, handler.getMessages);
-    socket.on(ApiMessages.message.send, handler.sendMessage);
-    socket.on(ApiMessages.user.get, handler.getUser);
     socket.on(ApiMessages.channel.part, handler.leave);
+    socket.on(ApiMessages.channel.messages, handler.getMessages);
+    socket.on(ApiMessages.user.get, handler.getUser);
+    socket.on(ApiMessages.message.send, handler.sendMessage);
     socket.on(ApiMessages.file.add, handler.addFile);
+    socket.on(ApiMessages.directory.get, handler.getDirectory);
 
     /* TODO */
-    // socket.on(ApiMessages.file.get, handler.getList);
     // socket.on(ApiMessages.swarm.peers, handler.getSwarmPeers);
     // socket.on(ApiMessages.channel.setMode, handler.setMode);
-
-    // socket.on(ApiMessages.list.get, async (function(hash, cb) {
-    //   if(!simpleCache[hash]) {
-    //     ipfsAPI.ls(ipfs, hash)
-    //       .then(function(result) {
-    //         if(result.Objects) {
-    //           simpleCache[hash] = result.Objects[0].Links;
-    //           cb(result.Objects[0].Links);
-    //         }
-    //       })
-    //       .catch(function(err) {
-    //         logger.error("Error in list.get", err);
-    //         cb(null);
-    //       });
-    //   } else {
-    //     cb(simpleCache[hash]);
-    //   }
-    // }));
 
     socket.on(ApiMessages.swarm.peers, async((cb) => {
       ipfsAPI.swarmPeers(ipfs)

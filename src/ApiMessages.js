@@ -31,8 +31,8 @@ let ApiMessages = {
   file: {
     add: "file.add"
   },
-  list: {
-    get: "list.get"
+  directory: {
+    get: "directory.get"
   },
   swarm: {
     peers: "swarm.get"

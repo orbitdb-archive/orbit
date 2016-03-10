@@ -105,28 +105,6 @@ var MessageStore = Reflux.createStore({
       });
     }
   },
-  onLoadMessageContent: function(hash: string, callback) {
-    if(!this.socket) {
-      console.error("Socket not connected");
-      return;
-    }
-
-    if(this.contents[hash]) {
-      callback(this.contents[hash]);
-      return;
-    }
-
-    Actions.startLoading("");
-    this.socket.emit('message.get', hash, (result) => {
-      if(result) {
-        this.contents[hash] = JSON.parse(result.Data);
-        Actions.stopLoading("");
-        callback(this.contents[hash]);
-      } else {
-        callback(null);
-      }
-    });
-  },
   onSendMessage: function(channel: string, text: string, callback) {
     if(!this.socket) {
       console.error("Socket not connected");
@@ -165,15 +143,16 @@ var MessageStore = Reflux.createStore({
     this.socket.emit('swarm.get', callback);
   },
   onLoadDirectoryInfo: function(hash, cb) {
-    console.log("--> list.get:", hash);
+    console.log("--> get directory:", hash);
     if(hash) {
-      this.socket.emit('list.get', hash, (result) => {
+      this.socket.emit('directory.get', hash, (result) => {
+        console.log("<-- directory:", result);
         if(result) {
           result = result.map((e) => {
             return {
               hash: e.Hash,
               size: e.Size,
-              type: e.Type === 1 ? "list" : "file",
+              type: e.Type === 1 ? "directory" : "file",
               name: e.Name
             };
           });

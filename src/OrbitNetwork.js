@@ -4,7 +4,6 @@ const EventEmitter  = require('events').EventEmitter;
 const await         = require('asyncawait/await');
 const async         = require('asyncawait/async');
 const OrbitDB       = require('orbit-db');
-const ChannelSystem = require('./ChannelSystem');
 
 class OrbitNetwork {
   constructor(ipfs) {

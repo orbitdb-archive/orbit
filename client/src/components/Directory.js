@@ -1,9 +1,8 @@
 'use strict';
 
-import React   from'react/addons';
-import Actions from 'actions/SendMessageAction';
+import React from'react/addons';
 import ChannelActions from 'actions/ChannelActions';
-import File    from 'components/File';
+import File from 'components/File';
 import {getHumanReadableBytes} from '../utils/utils.js';
 import 'styles/Directory.scss';
 
@@ -13,9 +12,10 @@ class Directory extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      name: "...",
+      name: props.name,
+      hash: props.hash,
       link: null,
-      size: props.message.size,
+      size: props.size,
       children: [],
       open: false,
       loading: true
@@ -23,22 +23,9 @@ class Directory extends React.Component {
   }
 
   componentDidMount() {
-    var raiseLoaded = (name, link, children) => {
-      this.setState({children: children, name: name, link: link, loading: false});
-    };
-
-    var raiseInfoLoaded = (message) => {
-      if(message)
-        ChannelActions.loadDirectoryInfo(message.link, raiseLoaded.bind(null, message.content, message.link));
-      else
-        ChannelActions.loadMessageContent(this.props.message.hash, raiseInfoLoaded);
-    };
-
-    if(this.props.root) {
-      ChannelActions.loadMessageContent(this.props.message.hash, raiseInfoLoaded);
-    } else {
-      ChannelActions.loadDirectoryInfo(this.props.message.hash, raiseLoaded.bind(null, this.props.message.name, this.props.message.hash));
-    }
+    ChannelActions.loadDirectoryInfo(this.props.hash, (objects) => {
+      this.setState({ children: objects, loading: false });
+    });
   }
 
   openDirectory(e) {
@@ -49,24 +36,27 @@ class Directory extends React.Component {
 
   render() {
     // var downloadLink = apiURL + this.state.link + "?name=" + this.state.name + "&action=download";
-    var size         = getHumanReadableBytes(this.state.size);
-    var style        = this.state.loading ? "Directory loading" : "Directory";
-    var children     = [];
-    var name         = this.state.loading ? this.state.name
-                                          : <TransitionGroup transitionName="directoryAnimation" transitionAppear={true}>
-                                              <a href="" onClick={this.openDirectory.bind(this)}>{this.state.name}</a>
-                                            </TransitionGroup>;
+    var size     = getHumanReadableBytes(this.state.size);
+    var style    = this.state.loading ? "Directory loading" : "Directory";
+    var children = [];
+    var name     = (
+      <TransitionGroup transitionName="directoryAnimation" transitionAppear={true}>
+        <a href="" onClick={this.openDirectory.bind(this)}>{this.state.name}</a>
+      </TransitionGroup>
+    );
 
     if(this.state.children && this.state.open) {
       children = this.state.children.map((e) => {
-        return e.type === "file" ? <File message={e} key={e.hash}/> : <Directory message={e} key={e.hash}/>;
+        return e.type === "file" ?
+          <File hash={e.hash} name={e.name} size={e.size} key={e.hash}/> :
+          <Directory hash={e.hash} name={e.name} size={e.size} key={e.hash}/>;
       });
     }
 
     // <a className="download" href={downloadLink} target="_blank">Download</a>
     return (
       <div className="DirectoryView">
-        <span className={style}>
+        <span className="Directory">
           {name}
           <span className="size">{size}</span>
         </span>

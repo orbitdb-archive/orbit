@@ -1,11 +1,11 @@
 'use strict';
 
-import React        from "react";
+import React from "react";
 import TransitionGroup from "react-addons-css-transition-group";
-import User         from "components/User";
-import TextMessage  from "components/TextMessage";
-import File         from "components/File";
-import Directory    from "components/Directory";
+import User from "components/User";
+import TextMessage from "components/TextMessage";
+import File from "components/File";
+import Directory from "components/Directory";
 import "styles/Message.scss";
 
 class Message extends React.Component {
@@ -42,22 +42,22 @@ class Message extends React.Component {
     var safeTime = (time) => ("0" + time).slice(-2);
     var date     = new Date(this.state.message.meta.ts);
     var ts       = safeTime(date.getHours()) + ":" + safeTime(date.getMinutes()) + ":" + safeTime(date.getSeconds());
-    // ts   = this.state.message.ts;
+    // ts   = this.state.message.meta.ts; // for debugging timestamps
 
     const post = this.state.message.value;
-    let content = (<div>{post}</div>);
+    let content = (<div>{JSON.stringify(post)}</div>);
 
-    if(post.type === "text") {
+    if(post.meta.type === "text") {
       content = <TextMessage
-                  text={post.content}
+                  post={post}
                   useEmojis={this.state.useEmojis}
                   highlight={this.state.username}
                   onHighlight={this.onHighlight.bind(this)}
                   />;
-    } else if(post.type === "file") {
-      content = <File message={this.state.message}/>;
-    } else if(post.type === "list") {
-      content = <Directory message={this.state.message} root={true}/>;
+    } else if(post.meta.type === "file") {
+      content = <File hash={post.hash} name={post.name} size={post.size}/>;
+    } else if(post.meta.type === "directory") {
+      content = <Directory hash={post.hash} name={post.name} size={post.size} root={true}/>;
     }
 
     var className = this.state.hasHighlights ? "Message highlighted" : "Message";

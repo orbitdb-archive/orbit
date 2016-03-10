@@ -1,51 +1,38 @@
 'use strict';
 
-import React   from'react/addons';
+import React from'react/addons';
 import ChannelActions from 'actions/ChannelActions';
 import {getHumanReadableBytes} from '../utils/utils.js';
 import apiurl from 'utils/apiurl';
 import 'styles/File.scss';
 
 var TransitionGroup = React.addons.CSSTransitionGroup;
-var getFileUrl      = apiurl.getApiUrl() + "/api/get/";
-var pinFileUrl      = apiurl.getApiUrl() + "/api/pin/";
+var getFileUrl      = apiurl.getApiUrl() + "/api/cat/";
 
 class File extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      message: props.message,
-      name: "...",
-      link: null,
-      size: props.message.size,
-      loading: true
+      name: props.name,
+      file: props.hash,
+      size: props.size
     };
   }
 
-  componentDidMount() {
-    if(!this.props.message.name) {
-      ChannelActions.loadMessageContent(this.state.message.hash, (message) => {
-        this.setState({name: message.content, link: message.link, loading: false});
-      });
-    } else {
-      this.setState({name: this.state.message.name, link: this.state.message.hash, loading: false});
-    }
-  }
-
   render() {
-    var openLink     = getFileUrl + this.state.link + "?name=" + this.state.name;
+    var openLink     = getFileUrl + this.state.file + "?name=" + this.state.name;
+    // var openLink     = "http://localhost:5001/api/v0/cat?arg=" + this.state.file + "?stream=true";
     var downloadLink = openLink + "&action=download";
     var size         = getHumanReadableBytes(this.state.size);
-    var style        = this.state.loading ? "File loading" : "File";
-    var content      = this.state.loading ?
-      this.state.name :
+    var content      = (
       <TransitionGroup transitionName="fileAnimation" transitionAppear={true}>
         <a href={openLink} target="_blank">{this.state.name}</a>
-      </TransitionGroup>;
+      </TransitionGroup>
+    );
 
     return (
       <div>
-        <div className={style} key={this.state.message.hash}>
+        <div className="File" key={this.state.file}>
           {content}
           <a className="download" href={downloadLink}>Download</a>
           <span className="size">{size}</span>
