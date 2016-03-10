@@ -101,7 +101,7 @@ class LoginView extends React.Component{
     var form = !this.state.connecting ? (
       <TransitionGroup transitionName="loginScreenAnimation" transitionAppear={true} component="div" className="inputs" transitionAppearTimeout={5000} transitionEnterTimeout={5000} transitionLeaveTimeout={5000}>
         <div className="row">
-          <span className="label">Network</span><input type="text" ref="network" value="localhost:3333" disabled/>
+          <span className="label">Network</span><input type="text" ref="network" value="localhost:3333" disabled style={this.state.theme}/>
         </div>
         <div className="row">
           <span className="label">Nickname</span>
@@ -112,6 +112,7 @@ class LoginView extends React.Component{
             defaultValue={this.state.username ? this.state.username : ""}
             maxLength="32"
             autoFocus
+            style={this.state.theme}
             onChange={this.calculateNicknameLength.bind(this)}/>
           {this.state.currentLength != null ? <span className="nicknameLength">{this.state.currentLength}</span> : ""}
         </div>
@@ -120,7 +121,7 @@ class LoginView extends React.Component{
           <input type="password" ref="password" placeholder={this.state.password ? "" : "..."} defaultValue={this.state.password ? this.state.password : ""}/>
         </div>
         <div className="row">
-          <input type="submit" value="Connect"/>
+          <input type="submit" value="Connect" style={this.state.theme}/>
         </div>
         <div className="row">
           {errorMsg}
@@ -128,7 +129,7 @@ class LoginView extends React.Component{
       </TransitionGroup>
     ) : (
       <div className="centerrow">
-        <Halogen.DotLoader color={color}/>
+        <Halogen.DotLoader color={color} style={this.state.theme}/>
       </div>
     );
 
