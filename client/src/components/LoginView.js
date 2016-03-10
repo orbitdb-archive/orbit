@@ -4,6 +4,7 @@ import React   from 'react/addons';
 import NetworkStore from 'stores/NetworkStore';
 import NetworkActions from "actions/NetworkActions";
 import BackgroundAnimation from 'components/BackgroundAnimation';
+import Themes from 'app/Themes';
 import Halogen from 'halogen';
 import 'styles/LoginView.scss';
 
@@ -27,6 +28,7 @@ class LoginView extends React.Component{
       password: null,
       displayPasswordField: false,
       currentLength: null,
+      theme: Themes.Default,
       logoSize: Math.min(window.innerWidth, maxLogoSize)
     };
   };
@@ -138,7 +140,7 @@ class LoginView extends React.Component{
           </TransitionGroup>
           {form}
         </form>
-        <BackgroundAnimation size={this.state.logoSize}/>
+        <BackgroundAnimation size={this.state.logoSize} theme={this.state.theme}/>
       </div>
     );
   }

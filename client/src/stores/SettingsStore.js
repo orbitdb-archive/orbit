@@ -10,7 +10,7 @@ var settingsDescriptions = {
 };
 
 var defaultSettings = {
-  theme: "Purple",
+  theme: Themes.Default,
   useEmojis: true,
   colorifyUsernames: true,
   flipMessageOrder: true
