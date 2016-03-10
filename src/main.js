@@ -57,14 +57,16 @@ var handler = {
     }
   }),
   disconnect: async(() => {
-    const host = orbit.network.host;
-    const port = orbit.network.port;
-    const name = orbit.network.name;
-    orbit.events.removeListener('message', _handleMessage);
-    orbit.disconnect();
-    orbit = null;
-    logger.warn(`Disconnected from '${name}' at '${host}:${port}'`);
-    events.emit('network', null);
+    if(orbit) {
+      const host = orbit.network.host;
+      const port = orbit.network.port;
+      const name = orbit.network.name;
+      orbit.events.removeListener('message', _handleMessage);
+      orbit.disconnect();
+      orbit = null;
+      logger.warn(`Disconnected from '${name}' at '${host}:${port}'`);
+      events.emit('network', null);
+    }
   }),
   getChannels: async((callback) => {
     if(orbit && callback) callback(orbit.channels);
@@ -170,7 +172,7 @@ const start = exports.start = async(() => {
     });
 
     // auto-login if there's a user.json file
-    var userFile = path.join(__dirname, "user.json");
+    var userFile = path.join(path.resolve(utils.getAppPath(), "user.json"));
     if(fs.existsSync(userFile)) {
       var user = JSON.parse(fs.readFileSync(userFile));
       logger.debug(`Using credentials from '${userFile}'`);

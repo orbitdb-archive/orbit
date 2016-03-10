@@ -16,9 +16,8 @@ var SocketApi = async ((socketServer, httpServer, events, handler) => {
   var socket = null;
   let orbit;
 
-  const onNetwork = (orbitdb) => {
-    orbit = orbitdb;
-    if(socket && orbit) {
+  const onNetwork = (orbit) => {
+    if(socket) {
       const network = orbit ? {
         name: orbit.network.name,
         host: orbit.network.host,
@@ -61,11 +60,11 @@ var SocketApi = async ((socketServer, httpServer, events, handler) => {
 
     socket.on('disconnect', async (() => {
       logger.warn("UI disconnected");
-      orbit = null;
+      // orbit = null;
     }));
 
     socket.on(ApiMessages.network.disconnect, async (() => {
-      orbit = null;
+      // orbit = null;
       handler.disconnect();
     }));
 

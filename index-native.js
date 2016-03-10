@@ -6,9 +6,9 @@ const path        = require('path');
 const Menu        = require('menu');
 const async       = require('asyncawait/async');
 const await       = require('asyncawait/await');
-const main        = require('./src/main');
 const logger      = require('orbit-common/lib/logger');
 const utils       = require('./src/utils');
+const main        = require('./src/main');
 
 require('crash-reporter').start();
 logger.debug("Run index-native.js");
@@ -19,7 +19,6 @@ let mainWindow = null;
 
 const template = require('./menu-native')(electronApp);
 const menu = Menu.buildFromTemplate(template);
-
 let events;
 
 const setWindowToNormal = () => {
