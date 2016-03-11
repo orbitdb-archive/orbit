@@ -9,7 +9,7 @@ import SocketActions from 'actions/SocketActions';
 
 var channelPasswords = {};
 
-var messagesBatchSize = 4;
+var messagesBatchSize = 32;
 
 var MessageStore = Reflux.createStore({
   listenables: [Actions, NetworkActions, SocketActions, ChannelActions],
@@ -18,7 +18,7 @@ var MessageStore = Reflux.createStore({
     this.contents    = {};
     this.socket      = null;
     this.loading     = false;
-    this.canLoadMore = true;
+    // this.canLoadMore = true;
   },
   getLatestMessage: function(channel: string) {
     return this.messages[channel] && this.messages[channel].length > 0 ? this.messages[channel][this.messages[channel].length - 1].key : null;
@@ -37,7 +37,7 @@ var MessageStore = Reflux.createStore({
     this.socket = socket;
     this.socket.on('messages', (channel, message) => {
       console.log("--> new messages in #", channel, message);
-      this.canLoadMore = true;
+      // this.canLoadMore = true;
       this.loadMessages(channel, null, this.getLatestMessage(channel), messagesBatchSize);
     });
   },
@@ -51,7 +51,7 @@ var MessageStore = Reflux.createStore({
     this.messages     = {};
     this.contents     = {};
     this.loading      = false;
-    this.canLoadMore  = true;
+    // this.canLoadMore  = true;
   },
   onJoinedChannel: function(channel) {
     console.log("MessageStore - open #" + channel);
@@ -81,7 +81,7 @@ var MessageStore = Reflux.createStore({
       var all       = this.messages[channel].concat(unique);
       this.messages[channel] = all;
       this.loading  = false;
-      if(newMessages.length > 1) this.canLoadMore = true;
+      // if(newMessages.length > 1) this.canLoadMore = true;
       Actions.stopLoading(channel);
       this.trigger(channel, this.messages[channel]);
     }
@@ -90,18 +90,24 @@ var MessageStore = Reflux.createStore({
     console.log("load more messages from #" + channel);
     // if(!this.loading && this.canLoadMore) {
     if(!this.loading) {
-      this.canLoadMore = false;
+      this.loading = true;
+      // this.canLoadMore = false;
+      Actions.startLoading(channel);
       const oldestHash = this.getOldestMessage(channel);
       // this.loadMessages(channel, oldestHash, null, messagesBatchSize);
       console.log("--> channel.get: ", channel, "older than:", oldestHash, messagesBatchSize);
       this.socket.emit('channel.get', channel, oldestHash, null, messagesBatchSize, (c, newMessages) => {
         console.log("<-- messages: ", channel, newMessages.length, newMessages, "are older than:", oldestHash);
-        var all = newMessages.concat(this.messages[channel]);
-        this.messages[channel] = all;
-        this.loading  = false;
-        if(newMessages.length > 0) this.canLoadMore = true;
+        const diff = _.differenceWith(newMessages, this.messages[channel], _.isEqual);
+        // console.log("DIFF", diff, this.messages[channel]);
+        if(diff.length > 0) {
+          const all = diff.concat(this.messages[channel]);
+          this.messages[channel] = all;
+          // this.canLoadMore = true;
+          this.trigger(channel, this.messages[channel]);
+        }
+        this.loading = false;
         Actions.stopLoading(channel);
-        this.trigger(channel, this.messages[channel]);
       });
     }
   },
