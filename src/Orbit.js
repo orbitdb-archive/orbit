@@ -147,7 +147,8 @@ class Orbit {
     const data = {
       name: filePath.split("/").pop(),
       hash: hash,
-      size: size
+      size: size,
+      from: this.orbit.user.id
     };
 
     const type = isDirectory ? Post.Types.Directory : Post.Types.File;
