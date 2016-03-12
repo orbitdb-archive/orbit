@@ -10,11 +10,9 @@ var ApiMessages = require('../ApiMessages');
 var SocketApi = (socketServer, httpServer, events, handler) => {
   logger.debug("Starting socket server");
 
-  var io = socketIo(socketServer);
+  let socket = null;
+  const io = socketIo(socketServer);
   socketServer.listen(httpServer);
-
-  var socket = null;
-  let orbit;
 
   const onNetwork = (orbit) => {
     if(socket) {

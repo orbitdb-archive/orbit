@@ -9,7 +9,7 @@ import SocketActions from 'actions/SocketActions';
 
 var channelPasswords = {};
 
-var messagesBatchSize = 32;
+var messagesBatchSize = 16;
 
 var MessageStore = Reflux.createStore({
   listenables: [Actions, NetworkActions, SocketActions, ChannelActions],

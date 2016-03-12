@@ -24,7 +24,7 @@ class Channel extends React.Component {
       password: props.password,
       messages: [],
       loading: false,
-      loadingIcon: true,
+      loadingIcon: false,
       writeMode: true,
       statusMessage: "Public",
       showChannelOptions: false,
@@ -51,7 +51,6 @@ class Channel extends React.Component {
     //   this.setChannelStatus(nextProps.channelInfo);
 
     this.setState({
-      loading: false,
       channelName: nextProps.channel,
       channelInfo: nextProps.channelInfo,
       user: nextProps.user,
@@ -64,7 +63,8 @@ class Channel extends React.Component {
 
   _getMessages(channel) {
     const messages = MessageStore.getMessages(channel);
-    this.setState({ messages: messages, loading: false });
+    // this.setState({ messages: messages, loading: false });
+    this.setState({ messages: messages });
   }
 
   componentDidMount() {
@@ -133,7 +133,6 @@ class Channel extends React.Component {
       return;
 
     // if(this.state.flipMessageOrder) messages = _.sortByOrder(messages, ["ts"], ["asc"]);
-
     if(this.state.flipMessageOrder && this.node.scrollHeight - this.node.scrollTop + 20 > this.node.clientHeight && this.node.scrollHeight > this.node.clientHeight + 1
       && this.state.messages.length > 0 && messages[messages.length - 1].meta.ts > this.state.messages[this.state.messages.length - 1].meta.ts
       && this.node.scrollHeight > 0) {
@@ -172,7 +171,7 @@ class Channel extends React.Component {
   }
 
   componentWillUpdate() {
-    let node = this.refs.MessagesView;
+    const node = this.refs.MessagesView;
     const margin = 20;
 
     if(!this.state.flipMessageOrder) {
@@ -188,16 +187,16 @@ class Channel extends React.Component {
   }
 
   componentDidUpdate() {
-    let node = this.refs.MessagesView;
+    const node = this.refs.MessagesView;
     if(!this.state.flipMessageOrder && this.shouldScroll) {
       node.scrollTop = this.scrollTop + this.scrollAmount;
     } else if(this.state.flipMessageOrder && !this.shouldScroll) {
       node.scrollTop = this.scrollTop + this.scrollAmount;
     }
-    if(this.state.flipMessageOrder && this.shouldScrollToBottom) {
+
+    if((this.state.flipMessageOrder && this.shouldScrollToBottom)) {
       node.scrollTop = node.scrollHeight + node.clientHeight;
     }
-    // this.scrollTop = node.scrollTop;
   }
 
   changePasswords(event) {
@@ -270,13 +269,13 @@ class Channel extends React.Component {
     node.scrollTop = this.state.flipMessageOrder ? node.scrollHeight + node.clientHeight : 0;
   }
 
-  onHighlight(message) {
-    if(message.ts > this.state.lastCheckedTime) {
-      console.log("Mention! Do something with it");
-      this.setState({ lastCheckedTime: new Date().getTime() });
-      NotificationActions.newHighlight(this.state.channelName);
-    }
-  }
+  // onHighlight(message) {
+  //   if(message.ts > this.state.lastCheckedTime) {
+  //     console.log("Mention! Do something with it");
+  //     this.setState({ lastCheckedTime: new Date().getTime() });
+  //     NotificationActions.newHighlight(this.state.channelName);
+  //   }
+  // }
 
   render() {
     document.title = "#" + this.state.channelName + (this.state.unreadMessages > 0 ?  " (" + this.state.unreadMessages + ")" : "");
@@ -311,7 +310,7 @@ class Channel extends React.Component {
                 username={this.state.username}
                 colorifyUsername={this.state.appSettings.colorifyUsernames}
                 useEmojis={this.state.appSettings.useEmojis}
-                onHighlight={this.onHighlight.bind(this)}
+                // onHighlight={this.onHighlight.bind(this)}
               />;
     });
 
