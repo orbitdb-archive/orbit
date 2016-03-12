@@ -1,5 +1,7 @@
 'use strict';
 
+const async     = require('asyncawait/async');
+const await     = require('asyncawait/await');
 var socketIo    = require('socket.io');
 var logger      = require('orbit-common/lib/logger');
 var ApiMessages = require('../ApiMessages');
@@ -60,16 +62,16 @@ var SocketApi = (socketServer, httpServer, events, handler) => {
       logger.warn("UI disconnected");
     });
 
-    socket.on(ApiMessages.network.disconnect, handler.disconnect);
-    socket.on(ApiMessages.register, handler.connect);
-    socket.on(ApiMessages.channels.get, handler.getChannels);
-    socket.on(ApiMessages.channel.join, handler.join);
-    socket.on(ApiMessages.channel.part, handler.leave);
-    socket.on(ApiMessages.channel.messages, handler.getMessages);
-    socket.on(ApiMessages.user.get, handler.getUser);
-    socket.on(ApiMessages.message.send, handler.sendMessage);
-    socket.on(ApiMessages.file.add, handler.addFile);
-    socket.on(ApiMessages.directory.get, handler.getDirectory);
+    socket.on(ApiMessages.network.disconnect, async(() => handler.disconnect()));
+    socket.on(ApiMessages.register, async((host, username, password) => handler.connect(host, username, password)));
+    socket.on(ApiMessages.channels.get, async((cb) => handler.getChannels(cb)));
+    socket.on(ApiMessages.channel.join, async((channel, password, cb) => handler.join(channel, password, cb)));
+    socket.on(ApiMessages.channel.part, async((channel) => handler.leave(channel)));
+    socket.on(ApiMessages.channel.messages, async((channel, lessThanHash, greaterThanHash, amount, callback) => handler.getMessages(channel, lessThanHash, greaterThanHash, amount, callback)));
+    socket.on(ApiMessages.user.get, async((hash, cb) => handler.getUser(hash, cb)));
+    socket.on(ApiMessages.message.send, async((channel, message, cb) => handler.sendMessage(channel, message, cb)));
+    socket.on(ApiMessages.file.add, async((channel, filePath, cb) => handler.addFile(channel, filePath, cb)));
+    socket.on(ApiMessages.directory.get, async((hash, cb) => handler.getDirectory(hash, cb)));
 
     /* TODO */
     // socket.on(ApiMessages.swarm.peers, handler.getSwarmPeers);

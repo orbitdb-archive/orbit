@@ -68,7 +68,7 @@ class Message extends React.Component {
         className={className}
         onDragEnter={this.onDragEnter.bind(this)}>
         <span className="Timestamp">{ts}</span>
-        <User userId={this.state.message.by} colorify={this.state.colorifyUsername} highlight={this.state.isCommand}/>
+        <User userId={this.state.message.value.meta.from} colorify={this.state.colorifyUsername} highlight={this.state.isCommand}/>
         <div className={contentClass}>{content}</div>
       </div>
     );
