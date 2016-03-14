@@ -292,11 +292,18 @@ class Channel extends React.Component {
     ) : null;
 
     var controlsBar = this.state.writeMode ? (
-      <TransitionGroup component="div" transitionName="controlsAnimation" transitionAppear={true}>
-        <div className="Controls">
+      <TransitionGroup
+        component="div"
+        transitionName="controlsAnimation"
+        transitionAppear={true}
+        transitionAppearTimeout={1000}
+        transitionEnterTimeout={0}
+        transitionLeaveTimeout={0}
+        >
+        <div className="Controls" key="controls">
           <SendMessage onSendMessage={this.sendMessage.bind(this)} key="SendMessage" username={this.state.username} theme={theme}/>
-          <Dropzone className="dropzone2" onDrop={this.onDrop.bind(this)}>
-            <div className="icon flaticon-tool490" style={theme}/>
+          <Dropzone className="dropzone2" onDrop={this.onDrop.bind(this)} key="dropzone2">
+            <div className="icon flaticon-tool490" style={theme} key="icon"/>
           </Dropzone>
         </div>
       </TransitionGroup>
@@ -318,7 +325,7 @@ class Channel extends React.Component {
     // if(this.state.channelInfo.head && this.state.messages[this.state.messages.length - 1] && this.state.messages[this.state.messages.length - 1].seq === 1 && !this.state.flipMessageOrder)
     //   messages.push(<div className="firstMessage" onClick={this.loadOlderMessages.bind(this)}>{firstMessageText}</div>);
     // else if((!this.state.channelInfo.head || this.state.messages[0] && this.state.messages[0].seq === 1) && this.state.flipMessageOrder)
-    messages.unshift(<div className="firstMessage" onClick={this.loadOlderMessages.bind(this)}>{firstMessageText}</div>);
+    messages.unshift(<div className="firstMessage" onClick={this.loadOlderMessages.bind(this)} key="notification">{firstMessageText}</div>);
 
     var channelOptions = this.state.showChannelOptions ? (
       <div className="ChannelOptions">
@@ -346,6 +353,7 @@ class Channel extends React.Component {
         onDragEnter={this.onDragEnter.bind(this)}
         onDragLeave={this.onDragLeave.bind(this)}
         style={theme}
+        key="dropzone"
         >
         <div ref="dropLabel" style={theme}>Add files to #{this.state.channelName}</div>
       </Dropzone>

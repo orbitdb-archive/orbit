@@ -49,7 +49,7 @@ class TextMessage extends React.Component {
 
     return _.flatten(items.map((item) => {
       emojiOpts.alt = item;
-      emojiOpts.key = Math.random();
+      emojiOpts.key = Math.random() + 81;
       return (typeof item === 'string' && this.state.useEmojis) ? ReactEmoji.emojify(item, emojiOpts) : item;
     }));
   }
@@ -63,14 +63,20 @@ class TextMessage extends React.Component {
 
   render() {
     // Create links from urls
-    let finalText = ReactAutolink.autolink(this.state.text, { target: "_blank", rel: "nofollow" });
+    let finalText = ReactAutolink.autolink(this.state.text, { target: "_blank", rel: "nofollow", key: Math.random() });
     finalText = this._highlight(finalText);
     finalText = this._emojify(finalText);
     finalText = this._ipfsfy(finalText);
 
     const content = (
-      <TransitionGroup transitionName="textAnimation" transitionAppear={true} className="content2">
-        <span className="content2">{finalText}</span>
+      <TransitionGroup
+        transitionName="textAnimation"
+        transitionAppear={true}
+        transitionAppearTimeout={1000}
+        transitionEnterTimeout={0}
+        transitionLeaveTimeout={0}
+        className="content2">
+        <span className="content2" key="content2">{finalText}</span>
       </TransitionGroup>
     );
 
