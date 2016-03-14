@@ -108,6 +108,16 @@ class Orbit {
     if(callback) callback(channel, messages);
   }
 
+  getPost(hash, callback) {
+    try {
+      const res = await(this.ipfs.object.get(hash));
+      if(callback) callback(null, JSON.parse(res.Data));
+    } catch(e) {
+      this._handleError(e);
+      if(callback) callback(e.message, null);
+    }
+  }
+
   sendMessage(channel, message, callback) {
     try {
       logger.debug(`Send message to #${channel}: ${message}`);
@@ -116,7 +126,7 @@ class Orbit {
         from: this.orbit.user.id
       };
       const post = await(Post.create(this.ipfs, Post.Types.Message, data));
-      this._channels[channel].db.add(post);
+      this._channels[channel].db.add(post.Hash);
       if(callback) callback(null);
     } catch(e) {
       this._handleError(e);

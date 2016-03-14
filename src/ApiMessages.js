@@ -21,6 +21,9 @@ let ApiMessages = {
     info: "channel.info",
     setMode: "channel.password"
   },
+  post: {
+    get: "post.get"
+  },
   user: {
     get: "user.get"
   },

@@ -66,6 +66,7 @@ var SocketApi = (socketServer, httpServer, events, handler) => {
     socket.on(ApiMessages.channel.join, async((channel, password, cb) => handler.join(channel, password, cb)));
     socket.on(ApiMessages.channel.part, async((channel) => handler.leave(channel)));
     socket.on(ApiMessages.channel.messages, async((channel, lessThanHash, greaterThanHash, amount, callback) => handler.getMessages(channel, lessThanHash, greaterThanHash, amount, callback)));
+    socket.on(ApiMessages.post.get, async((hash, callback) => handler.getPost(hash, callback)));
     socket.on(ApiMessages.user.get, async((hash, cb) => handler.getUser(hash, cb)));
     socket.on(ApiMessages.message.send, async((channel, message, cb) => handler.sendMessage(channel, message, cb)));
     socket.on(ApiMessages.file.add, async((channel, filePath, cb) => handler.addFile(channel, filePath, cb)));

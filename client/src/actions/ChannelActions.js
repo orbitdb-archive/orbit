@@ -7,6 +7,7 @@ var ChannelActions = Reflux.createActions([
   "loadOlderMessages",
   "sendMessage",
   "addFile",
+  "loadPost",
   "loadDirectoryInfo",
   "setChannelMode",
   "channelModeUpdated"

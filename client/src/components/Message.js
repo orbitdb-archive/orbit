@@ -7,6 +7,7 @@ import User from "components/User";
 import File from "components/File";
 import TextMessage from "components/TextMessage";
 import Directory from "components/Directory";
+import ChannelActions from 'actions/ChannelActions';
 import "styles/Message.scss";
 
 class Message extends React.Component {
@@ -14,6 +15,7 @@ class Message extends React.Component {
     super(props);
     this.state = {
       message: props.message,
+      post: null,
       colorifyUsername: props.colorifyUsername,
       useEmojis: props.useEmojis,
       username: props.username,
@@ -23,17 +25,19 @@ class Message extends React.Component {
   }
 
   componentDidMount() {
-    const content = this.state.message.value.content;
-    if(content) {
-      if(content.startsWith('/me'))
-        this.setState({ isCommand: true });
+    ChannelActions.loadPost(this.state.message.value, (err, post) => {
+      if(post && post.content) {
+        if(post.content.startsWith('/me'))
+          this.setState({ isCommand: true });
 
-      content.split(" ").forEach((word) => {
-        const highlight = MentionHighlighter.highlight(word, this.state.username);
-        if(typeof highlight[0] !== 'string')
-          this.setState({ hasHighlights: true });
-      });
-    }
+        post.content.split(" ").forEach((word) => {
+          const highlight = MentionHighlighter.highlight(word, this.state.username);
+          if(typeof highlight[0] !== 'string')
+            this.setState({ hasHighlights: true });
+        });
+      }
+      this.setState({ post: post });
+    });
   }
 
   componentWillReceiveProps(nextProps) {
@@ -57,14 +61,14 @@ class Message extends React.Component {
     var className = this.state.hasHighlights ? "Message highlighted" : "Message";
     var contentClass = this.state.isCommand ? "Content command" : "Content";
 
-    const post = this.state.message.value;
-    let content = (<div>{JSON.stringify(post)}</div>);
+    const post = this.state.post;
+    let content = (<div>...</div>);
 
-    if(post.meta.type === "text") {
+    if(post && post.meta.type === "text") {
       content = <TextMessage text={post.content} useEmojis={this.state.useEmojis} highlightWords={this.state.username}/>;
-    } else if(post.meta.type === "file") {
+    } else if(post && post.meta.type === "file") {
       content = <File hash={post.hash} name={post.name} size={post.size}/>;
-    } else if(post.meta.type === "directory") {
+    } else if(post && post.meta.type === "directory") {
       content = <Directory hash={post.hash} name={post.name} size={post.size} root={true}/>;
     }
 
@@ -73,7 +77,7 @@ class Message extends React.Component {
         className={className}
         onDragEnter={this.onDragEnter.bind(this)}>
         <span className="Timestamp">{ts}</span>
-        <User userId={this.state.message.value.meta.from} colorify={this.state.colorifyUsername} highlight={this.state.isCommand}/>
+        <User userId={this.state.post ? this.state.post.meta.from : null} colorify={this.state.colorifyUsername} highlight={this.state.isCommand}/>
         <div className={contentClass}>{content}</div>
       </div>
     );

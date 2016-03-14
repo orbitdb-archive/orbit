@@ -22,7 +22,12 @@ class User extends React.Component {
   }
 
   componentWillReceiveProps(nextProps) {
-    this.setState({ colorify: nextProps.colorify, highlight: nextProps.highlight });
+    this.setState({
+      uid: nextProps.userId,
+      username: nextProps.userId,
+      colorify: nextProps.colorify,
+      highlight: nextProps.highlight
+    });
   }
 
   componentDidMount() {
