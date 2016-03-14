@@ -118,9 +118,8 @@ var MessageStore = Reflux.createStore({
         this.posts[hash] = data;
         callback(err, data);
       });
-    }
-    else {
-      callback(null, this.posts[hash])
+    } else {
+      callback(null, this.posts[hash]);
     }
   },
   onSendMessage: function(channel: string, text: string, callback) {
