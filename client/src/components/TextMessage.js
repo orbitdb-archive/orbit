@@ -13,7 +13,7 @@ class TextMessage extends React.Component {
     super(props);
     this.state = {
       text: props.text,
-      useEmojis: props.userEmojis,
+      useEmojis: props.useEmojis,
       highlightWords: props.highlightWords
     };
   }
