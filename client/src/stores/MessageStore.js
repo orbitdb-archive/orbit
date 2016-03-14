@@ -112,29 +112,7 @@ var MessageStore = Reflux.createStore({
     }
   },
   onLoadPost: function(hash: string, callback) {
-    // if(!this.loading && this.canLoadMore) {
-    // if(!this.loading) {
-      // this.loading = true;
-      // this.canLoadMore = false;
-      // Actions.startLoading(channel);
-      // const oldestHash = this.getOldestMessage(channel);
-      // this.loadMessages(channel, oldestHash, null, messagesBatchSize);
-      console.log("--> post.get: ", hash);
-      this.socket.emit('post.get', hash, (err, data) => {
-        console.log("<-- post: ", hash, data, err);
-        if(callback) callback(err, data);
-        // const diff = _.differenceWith(newMessages, this.messages[channel], _.isEqual);
-        // // console.log("DIFF", diff, this.messages[channel]);
-        // if(diff.length > 0) {
-        //   const all = diff.concat(this.messages[channel]);
-        //   this.messages[channel] = all;
-        //   // this.canLoadMore = true;
-        //   this.trigger(channel, this.messages[channel]);
-        // }
-        // this.loading = false;
-        // Actions.stopLoading(channel);
-      });
-    // }
+    this.socket.emit('post.get', hash, callback);
   },
   onSendMessage: function(channel: string, text: string, callback) {
     if(!this.socket) {
@@ -167,11 +145,6 @@ var MessageStore = Reflux.createStore({
       }
       Actions.stopLoading(channel);
     });
-  },
-  // TODO: move to SwarmStore
-  onGetSwarm: function(callback) {
-    console.log("--> swarm.get");
-    this.socket.emit('swarm.get', callback);
   },
   onLoadDirectoryInfo: function(hash, cb) {
     console.log("--> get directory:", hash);
