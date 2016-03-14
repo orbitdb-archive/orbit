@@ -173,7 +173,7 @@ var App = React.createClass({
   _showChannel: function(channel) {
     this.togglePanel(true);
     this.setState({ location: "#" + channel, requirePassword: false, currentChannel: channel, joiningToChannel: null });
-    this.history.pushState(null, '/channel/' + channel, { user: this.state.user });
+    this.history.pushState(null, '/channel/' + channel);
   },
   openSettings: function() {
     this.goToLocation("Settings", "/settings");
