@@ -79,7 +79,7 @@ class Header extends React.Component {
         );
       else
         return (
-          <span className="channel" onClick={this.openChannel.bind(this, e.name)}>#{e.name}</span>
+          <span className="channel" onClick={this.openChannel.bind(this, e.name)} key={e.name}>#{e.name}</span>
         );
     });
 
