@@ -5,7 +5,6 @@ const path         = require('path');
 const EventEmitter = require('events').EventEmitter;
 const async        = require('asyncawait/async');
 const await        = require('asyncawait/await');
-const ipfsAPI      = require('orbit-common/lib/ipfs-api-promised');
 const logger       = require('orbit-common/lib/logger');
 const OrbitDB      = require('orbit-db');
 const Post         = require('orbit-db/src/post/Post');
@@ -139,7 +138,7 @@ class Orbit {
       if(!fs.existsSync(filePath))
         throw "File not found at '" + filePath + "'";
 
-      var hash = await (ipfsAPI.add(ipfs, filePath));
+      var hash = await (this.ipfs.add(filePath));
 
       // FIXME: ipfs-api returns an empty dir name as the last hash, ignore this
       if(hash[hash.length-1].Name === '')
@@ -171,7 +170,7 @@ class Orbit {
 
   getDirectory(hash, callback) {
     try {
-      const result = await(ipfsAPI.ls(this.ipfs, hash));
+      const result = await(this.ipfs.ls(hash));
       if(result.Objects && callback)
         callback(result.Objects[0].Links);
     } catch(e) {
