@@ -9,5 +9,6 @@ node_modules/
 cache.db
 debug.log
 user.json
+Vagrantfile
 
 client/node_modules/
