@@ -46,6 +46,10 @@ var NetworkStore = Reflux.createStore({
     this.socket.emit('network.disconnect');
     this.init();
     this.trigger(this.network);
+  },
+  onGetPeers: function(callback) {
+    console.log("--> swarm.get");
+    this.socket.emit('swarm.get', callback);
   }
 });
 

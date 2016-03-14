@@ -1,7 +1,7 @@
 'use strict';
 
-import React   from 'react';
-import Actions from "actions/SendMessageAction";
+import React from 'react';
+import NetworkActions from "actions/NetworkActions";
 import 'styles/SwarmView.scss';
 
 var TransitionGroup = React.addons.CSSTransitionGroup;
@@ -16,9 +16,9 @@ class SwarmView extends React.Component {
 
   componentDidMount() {
     this.poller = setInterval(() => {
-      Actions.getSwarm((peers) => this.setState({ peers: peers }));
+      NetworkActions.getPeers((peers) => this.setState({ peers: peers }));
     }, 1000);
-    Actions.getSwarm((peers) => this.setState({ peers: peers }));
+    NetworkActions.getPeers((peers) => this.setState({ peers: peers }));
   }
 
   componentWillUnmount() {

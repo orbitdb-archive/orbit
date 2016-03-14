@@ -98,6 +98,11 @@ class Orbit {
     if(callback) callback(this.orbit.user.id);
   }
 
+  getSwarmPeers(callback) {
+    const peers = await(this.ipfs.swarm.peers());
+    if(callback) callback(peers.Strings);
+  }
+
   getMessages(channel, lessThanHash, greaterThanHash, amount, callback) {
     // logger.debug(`Get messages from #${channel}: ${lessThanHash}, ${greaterThanHash}, ${amount}`)
     let options = { limit: amount };

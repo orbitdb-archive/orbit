@@ -18,7 +18,8 @@ var NetworkActions = Reflux.createActions([
   "getChannels",
 
   "updateNetwork",
-  "updateUser"
+  "updateUser",
+  "getPeers"
 ]);
 
 export default NetworkActions;

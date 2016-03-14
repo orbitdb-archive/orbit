@@ -71,20 +71,9 @@ var SocketApi = (socketServer, httpServer, events, handler) => {
     socket.on(ApiMessages.message.send, async((channel, message, cb) => handler.sendMessage(channel, message, cb)));
     socket.on(ApiMessages.file.add, async((channel, filePath, cb) => handler.addFile(channel, filePath, cb)));
     socket.on(ApiMessages.directory.get, async((hash, cb) => handler.getDirectory(hash, cb)));
-
+    socket.on(ApiMessages.swarm.peers, async((cb) => handler.getSwarmPeers(cb)));
     /* TODO */
-    // socket.on(ApiMessages.swarm.peers, handler.getSwarmPeers);
     // socket.on(ApiMessages.channel.setMode, handler.setMode);
-
-    socket.on(ApiMessages.swarm.peers, (cb) => {
-      ipfsAPI.swarmPeers(ipfs)
-        .then((peers) => cb(peers.Strings))
-        .catch((err) => {
-          logger.warn("swarm.get", err);
-          cb([]);
-        });
-    });
-
   });
 
 };
