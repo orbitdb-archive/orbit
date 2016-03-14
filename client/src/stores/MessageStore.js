@@ -18,6 +18,7 @@ var MessageStore = Reflux.createStore({
     this.contents    = {};
     this.socket      = null;
     this.loading     = false;
+    this.posts       = {}; // simple cache for message contents
     // this.canLoadMore = true;
   },
   getLatestMessage: function(channel: string) {
@@ -112,7 +113,15 @@ var MessageStore = Reflux.createStore({
     }
   },
   onLoadPost: function(hash: string, callback) {
-    this.socket.emit('post.get', hash, callback);
+    if(!this.posts[hash]) {
+      this.socket.emit('post.get', hash, (err, data) => {
+        this.posts[hash] = data;
+        callback(err, data);
+      });
+    }
+    else {
+      callback(null, this.posts[hash])
+    }
   },
   onSendMessage: function(channel: string, text: string, callback) {
     if(!this.socket) {
