@@ -143,7 +143,7 @@ class Orbit {
       if(!fs.existsSync(filePath))
         throw "File not found at '" + filePath + "'";
 
-      var hash = await (this.ipfs.add(filePath));
+      var hash = await (this.ipfs.add(filePath, { recursive: true }));
 
       // FIXME: ipfs-api returns an empty dir name as the last hash, ignore this
       if(hash[hash.length-1].Name === '')
@@ -168,7 +168,7 @@ class Orbit {
     const type = isDirectory ? Post.Types.Directory : Post.Types.File;
     const post = await(Post.create(this.ipfs, type, data));
 
-    this._channels[channel].db.add(post);
+    this._channels[channel].db.add(post.Hash);
 
     if(callback) callback(null);
   }
