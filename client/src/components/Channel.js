@@ -25,6 +25,7 @@ class Channel extends React.Component {
       messages: [],
       loading: false,
       loadingIcon: false,
+      loadingText: 'Connecting...',
       writeMode: true,
       statusMessage: "Public",
       showChannelOptions: false,
@@ -72,13 +73,13 @@ class Channel extends React.Component {
 
     this.unsubscribeFromMessageStore = MessageStore.listen(this.onNewMessages.bind(this));
     this.unsubscribeFromErrors       = UIActions.raiseError.listen((errorMessage) => this.setState({ statusMessage: errorMessage }));
-    this.unsubscribeFromStartLoading = UIActions.startLoading.listen((channel) => {
+    this.unsubscribeFromStartLoading = UIActions.startLoading.listen((channel, loadingMessage) => {
       if(channel === this.state.channelName)
-        this.setState({ loadingIcon: true });
+        this.setState({ loadingIcon: true, loadingText: loadingMessage, loading: true });
     });
     this.unsubscribeFromStopLoading = UIActions.stopLoading.listen((channel) => {
       if(channel === this.state.channelName)
-        this.setState({ loadingIcon: false });
+        this.setState({ loadingIcon: false, loading: false });
     });
 
     this.node = this.refs.MessagesView;
@@ -86,10 +87,12 @@ class Channel extends React.Component {
     const margin = 20;
     this.timer = setInterval(() => {
       var node = this.node;
+      // console.log("check", node.scrollTop, node.clientHeight, node.scrollHeight)
       if(!this.state.flipMessageOrder && node && (node.scrollTop + node.clientHeight + margin) >= node.scrollHeight) {
         this.loadOlderMessages();
-      } else if(this.state.flipMessageOrder && node && ((node.scrollTop - margin) <= 0 || node.clientHeight >= node.scrollHeight)) {
-        // console.log("load more 1")
+      // } else if(this.state.flipMessageOrder && node && ((node.scrollTop - margin) <= 0 || node.clientHeight >= node.scrollHeight)) {
+      } else if(this.state.flipMessageOrder && node && (node.scrollTop - margin <= 0 || node.scrollHeight === node.clientHeight)) {
+        // console.log("load more 1", node.scrollTop, node.clientHeight, node.scrollHeight)
         this.loadOlderMessages();
       }
     }, 500);
@@ -100,7 +103,8 @@ class Channel extends React.Component {
     this.unsubscribeFromErrors();
     this.unsubscribeFromStartLoading();
     this.unsubscribeFromStopLoading();
-    this.setState({ messages: [], loading: false });
+    // this.setState({ messages: [], loading: false });
+    this.setState({ messages: [] });
     clearInterval(this.timer);
   }
 
@@ -150,7 +154,8 @@ class Channel extends React.Component {
        });
     }
 
-    this.setState({ messages: messages, loading: false });
+    // this.setState({ messages: messages, loading: false });
+    this.setState({ messages: messages });
   }
 
   sendMessage(text: string) {
@@ -165,10 +170,11 @@ class Channel extends React.Component {
 
   loadOlderMessages() {
     if(!this.state.loading) {
-      this.setState({ loading: true });
       ChannelActions.loadOlderMessages(this.state.channelName);
     }
   }
+
+
 
   componentWillUpdate() {
     const node = this.refs.MessagesView;
@@ -321,7 +327,7 @@ class Channel extends React.Component {
               />;
     });
 
-    var firstMessageText = "Beginning of #" + this.state.channelName;
+    var firstMessageText = this.state.loadingIcon ? this.state.loadingText : "Beginning of #" + this.state.channelName;
     // if(this.state.channelInfo.head && this.state.messages[this.state.messages.length - 1] && this.state.messages[this.state.messages.length - 1].seq === 1 && !this.state.flipMessageOrder)
     //   messages.push(<div className="firstMessage" onClick={this.loadOlderMessages.bind(this)}>{firstMessageText}</div>);
     // else if((!this.state.channelInfo.head || this.state.messages[0] && this.state.messages[0].seq === 1) && this.state.flipMessageOrder)
@@ -369,7 +375,9 @@ class Channel extends React.Component {
     var messagesStyle = this.state.flipMessageOrder ? "Messages" : "Messages flopped";
     var color         = 'rgba(255, 255, 255, 0.7)';
     var loadingIcon   = this.state.loadingIcon ? (
-      <div className="loadingIcon"><Halogen.MoonLoader color={color} size="16px"/></div>
+      <div className="loadingBar">
+        <Halogen.MoonLoader className="loadingIcon" color={color} size="16px"/>
+      </div>
     ) : "";
 /*
   For messages:
