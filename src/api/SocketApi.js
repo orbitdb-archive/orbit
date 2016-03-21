@@ -37,14 +37,26 @@ var SocketApi = (socketServer, httpServer, events, handler) => {
     if(socket) socket.emit(ApiMessages.channels.updated, channels);
   };
 
+  const onLoading = (channel, hash) => {
+    if(socket) socket.emit('db.load', channel, hash);
+  };
+
+  const onLoaded = (channel, hash) => {
+    if(socket) socket.emit('db.loaded', channel, hash);
+  };
+
   events.removeListener('orbit.error', onError);
   events.removeListener('network', onNetwork);
   events.removeListener('message', onNewMessages);
   events.removeListener('channels.updated', onChannelsUpdated);
+  events.removeListener('db.load', onLoading);
+  events.removeListener('db.loaded', onLoaded);
   events.on('orbit.error', onError);
   events.on('network', onNetwork);
   events.on('message', onNewMessages);
   events.on('channels.updated', onChannelsUpdated);
+  events.on('db.load', onLoading);
+  events.on('db.loaded', onLoaded);
 
   io.on('connection', (s) => {
     logger.debug("UI connected");

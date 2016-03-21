@@ -27,7 +27,16 @@ class Orbit {
   }
 
   _handleMessage(channel, message) {
+    // logger.debug(channel + ">", message);
     this.events.emit('message', channel, message);
+  }
+
+  _handleStartLoading(channel, hash) {
+    this.events.emit('db.load', channel, hash)
+  }
+
+  _handleStopLoading(channel, hash) {
+    this.events.emit('db.loaded', channel, hash)
   }
 
   onSocketConnected(socket) {
@@ -45,6 +54,8 @@ class Orbit {
       logger.info(`Connecting to network at '${network.host}:${network.port}' as '${user.username}`);
       this.orbit = await(OrbitDB.connect(network.host, network.port, user.username, user.password, this.ipfs));
       this.orbit.events.on('data', this._handleMessage.bind(this));
+      this.orbit.events.on('load', this._handleStartLoading.bind(this));
+      this.orbit.events.on('loaded', this._handleStopLoading.bind(this));
       logger.info(`Connected to '${this.orbit.network.name}' at '${this.orbit.network.host}:${this.orbit.network.port}' as '${user.username}`)
       this.events.emit('network', this.orbit);
     } catch(e) {
@@ -56,6 +67,8 @@ class Orbit {
   disconnect() {
     if(this.orbit) {
       this.orbit.events.removeListener('message', this._handleMessage);
+      this.orbit.events.removeListener('load', this._handleStartLoading);
+      this.orbit.events.removeListener('loaded', this._handleStopLoading);
       logger.warn(`Disconnected from '${this.orbit.network.name}' at '${this.orbit.network.host}:${this.orbit.network.port}'`);
       this.orbit.disconnect();
       this.orbit = null;
@@ -104,10 +117,10 @@ class Orbit {
   }
 
   getMessages(channel, lessThanHash, greaterThanHash, amount, callback) {
-    // logger.debug(`Get messages from #${channel}: ${lessThanHash}, ${greaterThanHash}, ${amount}`)
+    logger.debug(`Get messages from #${channel}: ${lessThanHash}, ${greaterThanHash}, ${amount}`)
     let options = { limit: amount };
     if(lessThanHash) options.lt = lessThanHash;
-    if(greaterThanHash) options.gt = greaterThanHash;
+    if(greaterThanHash) options.gte = greaterThanHash;
     const messages = this._channels[channel].db.iterator(options).collect();
     if(callback) callback(channel, messages);
   }
