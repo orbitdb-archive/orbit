@@ -52,7 +52,9 @@ class Orbit {
     const user = { username: username, password: password };
     try {
       logger.info(`Connecting to network at '${network.host}:${network.port}' as '${user.username}`);
-      this.orbit = await(OrbitDB.connect(network.host, network.port, user.username, user.password, this.ipfs, { cacheFile: path.resolve(utils.getAppPath(), "orbit-db-cache.json") }));
+      const cacheFile = path.resolve(utils.getAppPath(), "orbit-db-cache.json");
+      logger.debug("Load cache from:", cacheFile);
+      this.orbit = await(OrbitDB.connect(network.host, network.port, user.username, user.password, this.ipfs, { cacheFile: cacheFile }));
       this.orbit.events.on('data', this._handleMessage.bind(this));
       this.orbit.events.on('load', this._handleStartLoading.bind(this));
       this.orbit.events.on('loaded', this._handleStopLoading.bind(this));
