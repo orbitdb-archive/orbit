@@ -46,10 +46,10 @@
 }
 
 .textAnimation-appear {
-  $duration: 0.1s;
+  $duration: 0.4s;
 
-  -webkit-animation-name: fadeIn;
-  animation-name: fadeIn;
+  -webkit-animation-name: fadeInFromBottom;
+  animation-name: fadeInFromBottom;
   -webkit-animation-duration: $duration;
   animation-duration: $duration;
   -webkit-animation-fill-mode: both;
