@@ -1,17 +1,17 @@
 'use strict';
 
-import _            from 'lodash';
-import React        from 'react';
+import _ from 'lodash';
+import React from 'react';
 import TransitionGroup from "react-addons-css-transition-group";
-import Message      from 'components/Message';
-import SendMessage  from 'components/SendMessage';
-import Dropzone     from 'react-dropzone';
+import Message from 'components/Message';
+import SendMessage from 'components/SendMessage';
+import Dropzone from 'react-dropzone';
 import MessageStore from 'stores/MessageStore';
-import UIActions    from 'actions/SendMessageAction';
+import UIActions from 'actions/SendMessageAction';
 import ChannelActions from 'actions/ChannelActions';
 import NetworkActions from 'actions/NetworkActions';
 import NotificationActions from 'actions/NotificationActions';
-import Halogen      from 'halogen';
+import Halogen from 'halogen';
 import 'styles/Channel.scss';
 
 class Channel extends React.Component {
@@ -45,6 +45,8 @@ class Channel extends React.Component {
 
   componentWillReceiveProps(nextProps) {
     if(nextProps.channel !== this.state.channelName) {
+      console.log("Change channel:", nextProps.channel);
+      UIActions.focusOnSendMessage();
       this._getMessages(nextProps.channel);
     }
 
@@ -74,8 +76,9 @@ class Channel extends React.Component {
     this.unsubscribeFromMessageStore = MessageStore.listen(this.onNewMessages.bind(this));
     this.unsubscribeFromErrors       = UIActions.raiseError.listen((errorMessage) => this.setState({ statusMessage: errorMessage }));
     this.unsubscribeFromStartLoading = UIActions.startLoading.listen((channel, loadingMessage) => {
-      if(channel === this.state.channelName)
+      if(channel === this.state.channelName) {
         this.setState({ loadingIcon: true, loadingText: loadingMessage, loading: true });
+      }
     });
     this.unsubscribeFromStopLoading = UIActions.stopLoading.listen((channel) => {
       if(channel === this.state.channelName)
@@ -284,7 +287,7 @@ class Channel extends React.Component {
   // }
 
   render() {
-    document.title = "#" + this.state.channelName + (this.state.unreadMessages > 0 ?  " (" + this.state.unreadMessages + ")" : "");
+    document.title = (this.state.unreadMessages > 0 ?  " (" + this.state.unreadMessages + ")" : "") + "#" + this.state.channelName;
     var theme = this.state.theme;
     var showChannelOptions = this.state.showChannelOptions ? "ChannelOptions" : "none";
 

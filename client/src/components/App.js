@@ -47,6 +47,8 @@ var App = React.createClass({
     };
   },
   componentDidMount: function() {
+    document.title = "Orbit";
+
     UIActions.onJoinChannel.listen(this.joinChannel);
     UIActions.onOpenChannel.listen(this.openChannel);
 
@@ -185,6 +187,7 @@ var App = React.createClass({
     NetworkActions.disconnect();
     this.setState({ user: null });
     this.goToLocation("Connect", "/connect");
+    document.title = "Orbit";
   },
   goToLocation: function(name, url) {
     this.togglePanel();

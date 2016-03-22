@@ -14,7 +14,8 @@ var Actions = Reflux.createActions([
   "startLoading",
   "stopLoading",
 
-  "onOpenChannel"
+  "onOpenChannel",
+  "focusOnSendMessage"
 ]);
 
 export default Actions;

@@ -1,6 +1,6 @@
 'use strict';
 
-import React   from 'react/addons';
+import React from 'react/addons';
 import Actions from "actions/SendMessageAction";
 import 'styles/SendMessage.scss';
 
@@ -15,11 +15,13 @@ class SendMessage extends React.Component {
 
   componentDidMount() {
     this.unsubscribe = Actions.onPanelClosed.listen(() => this.refs.message.focus());
+    this.unsubscribe2 = Actions.focusOnSendMessage.listen(() => this.refs.message.focus());
     this.refs.message.focus();
   }
 
   componentWillUnmount() {
     this.unsubscribe();
+    this.unsubscribe2();
   }
 
   componentWillReceiveProps(nextProps) {

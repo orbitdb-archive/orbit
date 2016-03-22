@@ -39,10 +39,11 @@ var MessageStore = Reflux.createStore({
     this.socket.on('messages', (channel, message) => {
       console.log("--> new messages in #", channel, message);
       this.canLoadMore = true;
-      this.loadMessages(channel, null, this.getLatestMessage(channel), messagesBatchSize);
+      // this.loadMessages(channel, null, this.getLatestMessage(channel), messagesBatchSize);
+      this.loadMessages(channel, null, null, messagesBatchSize);
     });
     this.socket.on('db.load', (channel, hash) => {
-      // console.log("--> loading data for #", channel, hash);
+      console.log("--> loading data for #", channel, hash);
       Actions.startLoading(channel, "Loading messages...");
     });
     this.socket.on('db.loaded', (channel, hash) => {
@@ -66,10 +67,20 @@ var MessageStore = Reflux.createStore({
   onJoinedChannel: function(channel) {
     console.log("MessageStore - open #" + channel);
     if(!this.messages[channel]) this.messages[channel] = [];
+    this.canLoadMore = true;
+    this.loading = false;
+    // this.loadMessages(channel, null, this.getLatestMessage(channel), messagesBatchSize);
+    this.loadMessages(channel, null, null, messagesBatchSize);
   },
   onLeaveChannel: function(channel: string) {
     console.log("MessageStore - close #" + channel);
+    this.canLoadMore = true;
+    this.loading = false;
     delete this.messages[channel];
+  },
+  onOpenChannel: function(channel: string) {
+    MessageStore.canLoadMore = true;
+    MessageStore.loading = false;
   },
   loadMessages: function(channel: string, olderThanHash: string, newerThanHash: string, amount: number) {
     if(!this.socket) {
@@ -78,9 +89,7 @@ var MessageStore = Reflux.createStore({
     }
 
     console.log("--> channel.get: ", channel, olderThanHash, newerThanHash, amount);
-    // Actions.startLoading(channel);
     this.loading = true;
-    // this.socket.emit('channel.get', channel, olderThanHash, newerThanHash, amount, this.addMessages);
     this.socket.emit('channel.get', channel, olderThanHash, newerThanHash, amount, this.addMessages);
   },
   addMessages: function(channel: string, newMessages: Array) {
@@ -89,18 +98,19 @@ var MessageStore = Reflux.createStore({
       var unique    = _.differenceWith(newMessages, this.messages[channel], _.isEqual);
       // console.log("<-- new messages: ", unique.length);
       if(!this.messages[channel]) this.messages[channel] = [];
-      var all       = this.messages[channel].concat(unique);
+      var all = this.messages[channel].concat(unique);
       this.messages[channel] = all;
-      this.loading  = false;
-      // if(newMessages.length > 1) this.canLoadMore = true;
+      this.loading = false;
+      // console.log(this.messages[channel][this.messages[channel].length -1].hash === newMessages[newMessages.length - 1].hash);
+      // if(this.messages[channel][this.messages[channel].length - 1].hash === newMessages[newMessages.length - 1].hash) this.canLoadMore = false;
       // Actions.stopLoading(channel);
       this.trigger(channel, this.messages[channel]);
     }
   },
   onLoadOlderMessages: function(channel: string) {
-    if(!this.loading && this.canLoadMore) {
-      // console.log("load more messages from #" + channel);
     // if(!this.loading) {
+    console.log("load more messages from #" + channel, this.canLoadMore, this.loading);
+    if(!this.loading && this.canLoadMore) {
       this.loading = true;
       this.canLoadMore = false;
       Actions.startLoading(channel, "Loading older messages...");
