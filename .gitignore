@@ -1,14 +1,19 @@
 *sublime*
+
 .DS_Store
 **/.DS_Store
-.tmp/
-dist/
-.electron-prebuilt/
+
 .vagrant/
+.tmp/
+.electron-prebuilt/
+
+dist/
+client/node_modules/
 node_modules/
+
 cache.db
 debug.log
 user.json
-Vagrantfile
+orbit-db-cache.json
 
-client/node_modules/
+Vagrantfile
