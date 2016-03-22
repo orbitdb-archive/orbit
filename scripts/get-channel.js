@@ -20,17 +20,17 @@ let run = (async(() => {
     const db = orbit.channel(channelName);
 
     orbit.events.on('loaded', (channel, hash) => {
-        let items = await(db.iterator({ limit: -1 }).collect());
+        let items = db.iterator({ limit: -1 }).collect();
         let values = items.map((f) => {
             const obj = await(orbit._ipfs.object.get(f.value));
-            const v = JSON.parse(obj.Data)["content"];
-            return { key: f.key, value: v };
+            const v = JSON.parse(obj.Data);
+            return { key: f.key, ts: v.meta.ts, user: v.meta.from, value: v.content };
         });
 
         console.log("---------------------------------------------------")
-        console.log("Key | Value")
+        console.log("Key | From | Value")
         console.log("---------------------------------------------------")
-        console.log(values.map((e) => `${e.key} | ${e.value}`).join("\n"));
+        console.log(values.map((e) => `${e.key} | ${e.user} | ${e.value}`).join("\n"));
         console.log("---------------------------------------------------")
         process.exit(0);
     });
