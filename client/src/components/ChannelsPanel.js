@@ -2,7 +2,7 @@
 
 import React from "react/addons";
 import TransitionGroup from "react-addons-css-transition-group";
-import UIActions from "actions/SendMessageAction";
+import UIActions from "actions/UIActions";
 import JoinChannel from 'components/JoinChannel';
 import ChannelStore from 'stores/ChannelStore';
 import NetworkActions from 'actions/NetworkActions';

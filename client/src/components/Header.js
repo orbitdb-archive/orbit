@@ -4,7 +4,7 @@ import React from 'react/addons';
 import ChannelStore from 'stores/ChannelStore';
 import NetworkActions from 'actions/NetworkActions';
 import NotificationActions from 'actions/NotificationActions';
-import UIActions from "actions/SendMessageAction";
+import UIActions from "actions/UIActions";
 import 'styles/Header.scss';
 
 var TransitionGroup = React.addons.CSSTransitionGroup;

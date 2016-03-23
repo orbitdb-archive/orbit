@@ -2,7 +2,7 @@
 
 import _ from 'lodash';
 import Reflux from 'reflux';
-import Actions from 'actions/SendMessageAction';
+import UIActions from 'actions/UIActions';
 import NetworkActions from 'actions/NetworkActions';
 import ChannelActions from 'actions/ChannelActions';
 import SocketActions from 'actions/SocketActions';
@@ -12,7 +12,7 @@ var channelPasswords = {};
 var messagesBatchSize = 16;
 
 var MessageStore = Reflux.createStore({
-  listenables: [Actions, NetworkActions, SocketActions, ChannelActions],
+  listenables: [UIActions, NetworkActions, SocketActions, ChannelActions],
   init: function() {
     this.messages    = {};
     this.contents    = {};
@@ -39,16 +39,21 @@ var MessageStore = Reflux.createStore({
     this.socket.on('messages', (channel, message) => {
       console.log("--> new messages in #", channel, message);
       this.canLoadMore = true;
-      // this.loadMessages(channel, null, this.getLatestMessage(channel), messagesBatchSize);
       this.loadMessages(channel, null, null, messagesBatchSize);
     });
-    this.socket.on('db.load', (channel, hash) => {
-      console.log("--> loading data for #", channel, hash);
-      Actions.startLoading(channel, "Loading messages...");
+
+    // Handle DB loading state
+    this.socket.on('db.load', (action, channel) => {
+      if(action === 'sync')
+        UIActions.startLoading(channel, "loadhistory", "Connecting...");
+      else if(action === 'query')
+        UIActions.startLoading(channel, "query", "Loading messages...");
     });
-    this.socket.on('db.loaded', (channel, hash) => {
-      // console.log("--> done loading #", channel, hash);
-      Actions.stopLoading(channel);
+    this.socket.on('db.loaded', (action, channel) => {
+      if(action === 'sync')
+        UIActions.stopLoading(channel, "loadhistory");
+      else if(action === 'query')
+        UIActions.stopLoading(channel, "query");
     });
   },
   onSocketDisconnected: function() {
@@ -103,24 +108,23 @@ var MessageStore = Reflux.createStore({
       this.loading = false;
       // console.log(this.messages[channel][this.messages[channel].length -1].hash === newMessages[newMessages.length - 1].hash);
       // if(this.messages[channel][this.messages[channel].length - 1].hash === newMessages[newMessages.length - 1].hash) this.canLoadMore = false;
-      // Actions.stopLoading(channel);
+      // UIActions.stopLoading(channel);
       this.trigger(channel, this.messages[channel]);
     }
   },
   onLoadOlderMessages: function(channel: string) {
     // if(!this.loading) {
-    console.log("load more messages from #" + channel, this.canLoadMore, this.loading);
     if(!this.loading && this.canLoadMore) {
+      console.log("load more messages from #" + channel, this.canLoadMore, this.loading);
       this.loading = true;
       this.canLoadMore = false;
-      Actions.startLoading(channel, "Loading older messages...");
+      UIActions.startLoading(channel, "loadolder", "Loading more messages...");
       const oldestHash = this.getOldestMessage(channel);
       // this.loadMessages(channel, oldestHash, null, messagesBatchSize);
       console.log("--> channel.get: ", channel, "older than:", oldestHash, messagesBatchSize);
       this.socket.emit('channel.get', channel, oldestHash, null, messagesBatchSize, (c, newMessages) => {
         console.log("<-- messages: ", channel, newMessages.length, newMessages, "are older than:", oldestHash);
         const diff = _.differenceWith(newMessages, this.messages[channel], _.isEqual);
-        // console.log("DIFF", diff, this.messages[channel]);
         if(diff.length > 0) {
           const all = diff.concat(this.messages[channel]);
           this.messages[channel] = all;
@@ -128,7 +132,7 @@ var MessageStore = Reflux.createStore({
           this.trigger(channel, this.messages[channel]);
         }
         this.loading = false;
-        Actions.stopLoading(channel);
+        UIActions.stopLoading(channel, "loadolder");
       });
     }
   },
@@ -147,15 +151,14 @@ var MessageStore = Reflux.createStore({
       console.error("Socket not connected");
       return;
     }
-
     console.log("--> send message:", text);
-    // Actions.startLoading(channel);
+    UIActions.startLoading(channel, "send");
     this.socket.emit('message.send', channel, text, (err) => {
       if(err) {
         console.log("Couldn't send message:", err.toString());
-        Actions.raiseError(err.toString());
+        UIActions.raiseError(err.toString());
       }
-      // Actions.stopLoading(channel);
+      UIActions.stopLoading(channel, "send");
     });
   },
   onAddFile: function(channel: string, filePath: string) {
@@ -165,13 +168,13 @@ var MessageStore = Reflux.createStore({
     }
 
     console.log("--> add file:", filePath);
-    Actions.startLoading(channel);
+    UIActions.startLoading(channel);
     this.socket.emit('file.add', channel, filePath, (err) => {
       if(err) {
         console.log("Couldn't add file:", filePath, err.toString());
-        Actions.raiseError(err.toString());
+        UIActions.raiseError(err.toString());
       }
-      Actions.stopLoading(channel);
+      UIActions.stopLoading(channel);
     });
   },
   onLoadDirectoryInfo: function(hash, cb) {

@@ -31,12 +31,12 @@ class Orbit {
     this.events.emit('message', channel, message);
   }
 
-  _handleStartLoading(channel, hash) {
-    this.events.emit('db.load', channel, hash)
+  _handleStartLoading(action, channel) {
+    this.events.emit('db.load', action, channel)
   }
 
-  _handleStopLoading(channel, hash) {
-    this.events.emit('db.loaded', channel, hash)
+  _handleStopLoading(action, channel) {
+    this.events.emit('db.loaded', action, channel)
   }
 
   onSocketConnected(socket) {

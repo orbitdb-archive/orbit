@@ -7,7 +7,8 @@ import Message from 'components/Message';
 import SendMessage from 'components/SendMessage';
 import Dropzone from 'react-dropzone';
 import MessageStore from 'stores/MessageStore';
-import UIActions from 'actions/SendMessageAction';
+import LoadingStateStore from 'stores/LoadingStateStore';
+import UIActions from 'actions/UIActions';
 import ChannelActions from 'actions/ChannelActions';
 import NetworkActions from 'actions/NetworkActions';
 import NotificationActions from 'actions/NotificationActions';
@@ -24,7 +25,7 @@ class Channel extends React.Component {
       password: props.password,
       messages: [],
       loading: false,
-      loadingIcon: false,
+      // loadingIcon: false,
       loadingText: 'Connecting...',
       writeMode: true,
       statusMessage: "Public",
@@ -66,24 +67,29 @@ class Channel extends React.Component {
 
   _getMessages(channel) {
     const messages = MessageStore.getMessages(channel);
-    // this.setState({ messages: messages, loading: false });
     this.setState({ messages: messages });
+  }
+
+  _onLoadStateChange(state) {
+    const loadingState = state[this.state.channelName];
+    if(loadingState) {
+      const loading = Object.keys(loadingState).filter((f) => loadingState[f].loading);
+      const loadingText = loadingState[loading[0]] ? loadingState[loading[0]].message : null;
+      console.log("---- Loading", loading.length > 0, loading, loadingText, loadingState);
+      this.setState({ loading: loading.length > 0, loadingText: loadingText });
+    }
+  }
+
+  _onError(errorMessage) {
+    this.setState({ statusMessage: errorMessage });
   }
 
   componentDidMount() {
     this._getMessages(this.state.channelName);
 
     this.unsubscribeFromMessageStore = MessageStore.listen(this.onNewMessages.bind(this));
-    this.unsubscribeFromErrors       = UIActions.raiseError.listen((errorMessage) => this.setState({ statusMessage: errorMessage }));
-    this.unsubscribeFromStartLoading = UIActions.startLoading.listen((channel, loadingMessage) => {
-      if(channel === this.state.channelName) {
-        this.setState({ loadingIcon: true, loadingText: loadingMessage, loading: true });
-      }
-    });
-    this.unsubscribeFromStopLoading = UIActions.stopLoading.listen((channel) => {
-      if(channel === this.state.channelName)
-        this.setState({ loadingIcon: false, loading: false });
-    });
+    this.stopListeningLoadingState = LoadingStateStore.listen(this._onLoadStateChange.bind(this));
+    this.unsubscribeFromErrors = UIActions.raiseError.listen(this._onError.bind(this));
 
     this.node = this.refs.MessagesView;
     this.scrollHeight = 0;
@@ -104,9 +110,7 @@ class Channel extends React.Component {
   componentWillUnmount() {
     this.unsubscribeFromMessageStore();
     this.unsubscribeFromErrors();
-    this.unsubscribeFromStartLoading();
-    this.unsubscribeFromStopLoading();
-    // this.setState({ messages: [], loading: false });
+    this.stopListeningLoadingState();
     this.setState({ messages: [] });
     clearInterval(this.timer);
   }
@@ -330,11 +334,8 @@ class Channel extends React.Component {
               />;
     });
 
-    var firstMessageText = this.state.loadingIcon ? this.state.loadingText : "Beginning of #" + this.state.channelName;
-    // if(this.state.channelInfo.head && this.state.messages[this.state.messages.length - 1] && this.state.messages[this.state.messages.length - 1].seq === 1 && !this.state.flipMessageOrder)
-    //   messages.push(<div className="firstMessage" onClick={this.loadOlderMessages.bind(this)}>{firstMessageText}</div>);
-    // else if((!this.state.channelInfo.head || this.state.messages[0] && this.state.messages[0].seq === 1) && this.state.flipMessageOrder)
-    messages.unshift(<div className="firstMessage" onClick={this.loadOlderMessages.bind(this)} key="notification">{firstMessageText}</div>);
+    var firstMessageText = this.state.loading && this.state.loadingText ? this.state.loadingText : `Beginning of # ${this.state.channelName}`;
+    messages.unshift(<div className="firstMessage" key="firstMessage">{firstMessageText}</div>);
 
     var channelOptions = this.state.showChannelOptions ? (
       <div className="ChannelOptions">
@@ -377,7 +378,7 @@ class Channel extends React.Component {
     var channelStyle  = this.state.flipMessageOrder ? "Channel flipped" : "Channel";
     var messagesStyle = this.state.flipMessageOrder ? "Messages" : "Messages flopped";
     var color         = 'rgba(255, 255, 255, 0.7)';
-    var loadingIcon   = this.state.loadingIcon ? (
+    var loadingIcon   = this.state.loading ? (
       <div className="loadingBar">
         <Halogen.MoonLoader className="loadingIcon" color={color} size="16px"/>
       </div>

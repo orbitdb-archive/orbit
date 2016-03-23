@@ -2,7 +2,7 @@
 
 import _ from 'lodash';
 import Reflux from 'reflux';
-import UIActions from 'actions/SendMessageAction';
+import UIActions from 'actions/UIActions';
 import SocketActions from 'actions/SocketActions';
 import NetworkActions from 'actions/NetworkActions';
 import ChannelActions from 'actions/ChannelActions';

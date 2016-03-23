@@ -1,7 +1,7 @@
 'use strict';
 
 import React from 'react/addons';
-import Actions from "actions/SendMessageAction";
+import Actions from "actions/UIActions";
 import 'styles/SendMessage.scss';
 
 class SendMessage extends React.Component {

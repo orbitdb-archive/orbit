@@ -4,18 +4,12 @@ import Reflux from 'reflux';
 
 var Actions = Reflux.createActions([
   "raiseError",
-  "getSwarm",
-
   "onJoinChannel",
-  "raiseInvalidChannelPassword",
-
   "onPanelClosed",
-
-  "startLoading",
-  "stopLoading",
-
   "onOpenChannel",
-  "focusOnSendMessage"
+  "focusOnSendMessage",
+  "startLoading",
+  "stopLoading"
 ]);
 
 export default Actions;

@@ -1,7 +1,7 @@
 'use strict';
 
-import React   from 'react/addons';
-import Actions from 'actions/SendMessageAction';
+import React from 'react/addons';
+import Actions from 'actions/UIActions';
 import 'styles/JoinChannel.scss';
 
 var TransitionGroup        = React.addons.CSSTransitionGroup;
@@ -27,10 +27,9 @@ class JoinChannel extends React.Component {
   }
 
   componentDidUpdate(prevProps, prevState) {
-    if(this.state.requirePassword)
-      this.refs.password.focus();
-
-    Actions.raiseInvalidChannelPassword.listen(() => this.setState({ statusMsg: "Incorrect password" }));
+    // if(this.state.requirePassword)
+    //   this.refs.password.focus();
+    // Actions.raiseInvalidChannelPassword.listen(() => this.setState({ statusMsg: "Incorrect password" }));
   }
 
   componentDidMount() {

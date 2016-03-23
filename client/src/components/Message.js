@@ -65,7 +65,7 @@ class Message extends React.Component {
     let content = (<div>...</div>);
 
     if(post && post.meta.type === "text") {
-      content = <TextMessage text={post.content} useEmojis={this.state.useEmojis} highlightWords={this.state.username}/>;
+      content = <TextMessage text={post.content} useEmojis={this.state.useEmojis} highlightWords={this.state.username} key={post.hash}/>;
     } else if(post && post.meta.type === "file") {
       content = <File hash={post.hash} name={post.name} size={post.size}/>;
     } else if(post && post.meta.type === "directory") {

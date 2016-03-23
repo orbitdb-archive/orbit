@@ -6,7 +6,7 @@ import ReactDOM from 'react-dom';
 import Router from 'react-router';
 import { Route, History, IndexRoute } from 'react-router/lib';
 
-import UIActions from "actions/SendMessageAction";
+import UIActions from "actions/UIActions";
 import NetworkActions from 'actions/NetworkActions';
 import NotificationActions from 'actions/NotificationActions';
 
@@ -18,6 +18,7 @@ import ChannelStore from 'stores/ChannelStore';
 import MessageStore from 'stores/MessageStore';
 import UsersStore from 'stores/UsersStore';
 import SettingsStore from 'stores/SettingsStore';
+import LoadingStateStore from 'stores/LoadingStateStore';
 
 import ChannelsPanel from 'components/ChannelsPanel';
 import ChannelView from 'components/ChannelView';
