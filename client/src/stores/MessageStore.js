@@ -38,7 +38,7 @@ var MessageStore = Reflux.createStore({
     this.socket = socket;
     this.socket.on('messages', (channel, message) => {
       console.log("--> new messages in #", channel, message);
-      this.canLoadMore = true;
+      // this.canLoadMore = true;
       this.loadMessages(channel, null, null, messagesBatchSize);
     });
 
@@ -95,20 +95,21 @@ var MessageStore = Reflux.createStore({
 
     console.log("--> channel.get: ", channel, olderThanHash, newerThanHash, amount);
     this.loading = true;
+    UIActions.startLoading(channel, "loadmessages", "Loading messages...");
     this.socket.emit('channel.get', channel, olderThanHash, newerThanHash, amount, this.addMessages);
   },
   addMessages: function(channel: string, newMessages: Array) {
     if(channel && newMessages) {
       console.log("<-- messages: ", channel, newMessages.length, newMessages);
       var unique    = _.differenceWith(newMessages, this.messages[channel], _.isEqual);
-      // console.log("<-- new messages: ", unique.length);
+      console.log("<-- new messages count: ", unique.length);
       if(!this.messages[channel]) this.messages[channel] = [];
       var all = this.messages[channel].concat(unique);
       this.messages[channel] = all;
       this.loading = false;
-      // console.log(this.messages[channel][this.messages[channel].length -1].hash === newMessages[newMessages.length - 1].hash);
-      // if(this.messages[channel][this.messages[channel].length - 1].hash === newMessages[newMessages.length - 1].hash) this.canLoadMore = false;
-      // UIActions.stopLoading(channel);
+      if(unique.length > 1)
+        this.canLoadMore = true;
+      UIActions.stopLoading(channel, "loadmessages");
       this.trigger(channel, this.messages[channel]);
     }
   },
@@ -128,7 +129,7 @@ var MessageStore = Reflux.createStore({
         if(diff.length > 0) {
           const all = diff.concat(this.messages[channel]);
           this.messages[channel] = all;
-          this.canLoadMore = true;
+          // this.canLoadMore = true;
           this.trigger(channel, this.messages[channel]);
         }
         this.loading = false;

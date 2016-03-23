@@ -73,7 +73,7 @@ class Channel extends React.Component {
   _onLoadStateChange(state) {
     const loadingState = state[this.state.channelName];
     if(loadingState) {
-      const loading = Object.keys(loadingState).filter((f) => loadingState[f].loading);
+      const loading = Object.keys(loadingState).filter((f) => loadingState[f] && loadingState[f].loading);
       const loadingText = loadingState[loading[0]] ? loadingState[loading[0]].message : null;
       console.log("---- Loading", loading.length > 0, loading, loadingText, loadingState);
       this.setState({ loading: loading.length > 0, loadingText: loadingText });
