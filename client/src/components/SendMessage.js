@@ -36,11 +36,31 @@ class SendMessage extends React.Component {
     return;
   }
 
+  onKeyDown(event) {
+    // console.log("KEYDOWN", event.type, event.which);
+    if(event.which === 9) {
+      // Tab
+      event.preventDefault();
+      // TODO: autocomplete user names
+    } else if(event.which === 186) {
+      // ':'
+      // TODO: bring up emoji preview
+    }
+    return;
+  }
+
   render() {
     return (
       <div className="SendMessage">
         <form onSubmit={this.sendMessage.bind(this)}>
-          <input type="text" ref="message" placeholder="Type a message..." autoComplete={true} style={this.state.theme}/>
+          <input
+            type="text"
+            ref="message"
+            placeholder="Type a message..."
+            autoComplete={true}
+            style={this.state.theme}
+            onKeyDown={this.onKeyDown.bind(this)}
+            />
         </form>
       </div>
     );
