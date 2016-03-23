@@ -37,7 +37,7 @@ class TextMessage extends React.Component {
   // Higlight specified words (ie. username)
   _highlight(items) {
     return _.flatten(items.map((item) => {
-      return (typeof item === 'string') ? MentionHighlighter.highlight(item, this.state.highlightWords, { highlightClassName: 'highlight', key: Math.random() }) : item;
+      return MentionHighlighter.highlight(item, this.state.highlightWords, { highlightClassName: 'highlight', key: Math.random() });
     }));
   }
 
@@ -50,7 +50,6 @@ class TextMessage extends React.Component {
 
     return _.flatten(items.map((item) => {
       emojiOpts.alt = item;
-      emojiOpts.key = Math.random() + 81;
       return (typeof item === 'string' && this.state.useEmojis) ? ReactEmoji.emojify(item, emojiOpts) : item;
     }));
   }
