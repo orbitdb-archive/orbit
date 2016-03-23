@@ -183,6 +183,7 @@ class Channel extends React.Component {
       else
         console.error("File upload not yet implemented in browser. Try the electron app.");
     });
+    UIActions.focusOnSendMessage();
   }
 
   onDragEnter(event) {
@@ -209,7 +210,7 @@ class Channel extends React.Component {
   }
 
   render() {
-    document.title = (this.state.unreadMessages > 0 ?  " (" + this.state.unreadMessages + ")" : "") + "#" + this.state.channelName;
+    document.title = (this.state.unreadMessages > 0 ?  "(" + this.state.unreadMessages + ") " : "") + "#" + this.state.channelName;
     const theme = this.state.theme;
     const channelMode = (<div className={"statusMessage"} style={theme}>{this.state.channelMode}</div>);
 
