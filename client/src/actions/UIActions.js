@@ -2,14 +2,14 @@
 
 import Reflux from 'reflux';
 
-var Actions = Reflux.createActions([
+var UIActions = Reflux.createActions([
   "raiseError",
-  "onJoinChannel",
-  "onPanelClosed",
-  "onOpenChannel",
+  "joinChannel",
+  "showChannel",
   "focusOnSendMessage",
   "startLoading",
-  "stopLoading"
+  "stopLoading",
+  "onPanelClosed"
 ]);
 
-export default Actions;
+export default UIActions;

@@ -8,7 +8,6 @@ class SendMessage extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      username: props.username,
       theme: props.theme
     };
   }

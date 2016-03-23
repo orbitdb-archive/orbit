@@ -9,7 +9,7 @@ var LoadingStateStore = Reflux.createStore({
     this.queue = {};
   },
   onStartLoading: function(id, action, message, progress) {
-    console.log("LoadingStateStore - start loading:", id, action, message, progress);
+    // console.log("LoadingStateStore - start loading:", id, action, message, progress);
     if(!this.queue[id])
       this.queue[id] = {};
 
@@ -22,11 +22,11 @@ var LoadingStateStore = Reflux.createStore({
     this.trigger(this.queue);
   },
   onUpdateLoading: function(id, action, progress) {
-    console.log("LoadingStateStore - update loading:", id, action, progress);
+    // console.log("LoadingStateStore - update loading:", id, action, progress);
     // TODO
   },
   onStopLoading: function(id, action) {
-    console.log("LoadingStateStore - stop loading:", id, action);
+    // console.log("LoadingStateStore - stop loading:", id, action);
     if(this.queue[id] && this.queue[id][action]) {
       this.queue[id][action].loading = false;
       delete this.queue[id][action];

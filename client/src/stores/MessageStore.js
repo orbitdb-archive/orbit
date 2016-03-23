@@ -70,14 +70,14 @@ const MessageStore = Reflux.createStore({
     // console.log("MessageStore - open #" + channel);
     if(!this.messages[channel]) this.messages[channel] = [];
     this._resetLoadingState();
-    this.loadMessages(channel, null, null, messagesBatchSize);
+    // this.loadMessages(channel, null, null, messagesBatchSize);
   },
   onLeaveChannel: function(channel: string) {
     // console.log("MessageStore - close #" + channel);
     this._resetLoadingState();
     delete this.messages[channel];
   },
-  onOpenChannel: function(channel: string) {
+  onShowChannel: function(channel: string) {
     if(!this.messages[channel]) this.messages[channel] = [];
     this._resetLoadingState();
   },

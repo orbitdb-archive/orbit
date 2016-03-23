@@ -40,20 +40,19 @@ var ChannelStore = Reflux.createStore({
     this.trigger(this.channels);
   },
   onJoinChannel: function(channel, password) {
-    if(!this.socket) {
-      console.error("Socket not connected");
-      return;
+    if(!this.get(channel)) {
+      this.socket.emit("channel.join", channel, password, (err, res) => {
+        console.log("--> joined channel", channel, password ? "********" : password);
+        if(!err) {
+          NetworkActions.joinedChannel(channel);
+        } else {
+          console.error("Can't join #" + channel + ":", err);
+          NetworkActions.joinChannelError(channel, err);
+        }
+      });
+    } else {
+      UIActions.showChannel(channel);
     }
-
-    this.socket.emit("channel.join", channel, password, (err, res) => {
-      console.log("--> joined channel", channel, password ? "********" : password);
-      if(!err) {
-        NetworkActions.joinedChannel(channel);
-      } else {
-        console.error("Can't join #" + channel + ":", err);
-        NetworkActions.joinChannelError(channel, err);
-      }
-    });
   },
   onLeaveChannel: function(channel) {
     console.log("--> leave channel", channel);

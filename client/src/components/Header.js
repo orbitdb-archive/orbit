@@ -54,7 +54,7 @@ class Header extends React.Component {
 
   openChannel(channel, event) {
     event.stopPropagation();
-    UIActions.onOpenChannel(channel);
+    UIActions.showChannel(channel);
   }
 
   onDragEnter(event) {

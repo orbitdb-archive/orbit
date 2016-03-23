@@ -58,8 +58,7 @@ class ChannelsPanel extends React.Component {
     }
 
     this.setState({ joiningToChannel: channelName, requirePassword: password !== '', loading: true });
-    // Actions.onJoinChannel(channelName, password);
-    UIActions.onOpenChannel(channelName);
+    UIActions.joinChannel(channelName, password);
   }
 
   clearRecentChannels() {
