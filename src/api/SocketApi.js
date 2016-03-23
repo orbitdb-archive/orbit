@@ -37,12 +37,12 @@ var SocketApi = (socketServer, httpServer, events, handler) => {
     if(socket) socket.emit(ApiMessages.channels.updated, channels);
   };
 
-  const onLoading = (channel, hash) => {
-    if(socket) socket.emit('db.load', channel, hash);
+  const onLoading = (action, channel) => {
+    if(socket) socket.emit('db.load', action, channel);
   };
 
-  const onLoaded = (channel, hash) => {
-    if(socket) socket.emit('db.loaded', channel, hash);
+  const onLoaded = (action, channel) => {
+    if(socket) socket.emit('db.loaded', action, channel);
   };
 
   events.removeListener('orbit.error', onError);

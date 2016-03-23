@@ -16,9 +16,6 @@ class Message extends React.Component {
     this.state = {
       message: props.message,
       post: null,
-      colorifyUsername: props.colorifyUsername,
-      useEmojis: props.useEmojis,
-      username: props.username,
       hasHighlights: false,
       isCommand: false
     };
@@ -31,7 +28,7 @@ class Message extends React.Component {
           this.setState({ isCommand: true });
 
         post.content.split(" ").forEach((word) => {
-          const highlight = MentionHighlighter.highlight(word, this.state.username);
+          const highlight = MentionHighlighter.highlight(word, this.props.highlightWords);
           if(typeof highlight[0] !== 'string')
             this.setState({ hasHighlights: true });
         });
@@ -40,32 +37,23 @@ class Message extends React.Component {
     });
   }
 
-  componentWillReceiveProps(nextProps) {
-    this.setState({
-      colorifyUsername: nextProps.colorifyUsername,
-      useEmojis: nextProps.useEmojis,
-      username: nextProps.username
-    });
-  }
-
   onDragEnter(event) {
     this.props.onDragEnter(event);
   }
 
   render() {
-    var safeTime = (time) => ("0" + time).slice(-2);
-    var date     = new Date(this.state.message.meta.ts);
-    var ts       = safeTime(date.getHours()) + ":" + safeTime(date.getMinutes()) + ":" + safeTime(date.getSeconds());
-    // ts   = this.state.message.meta.ts; // for debugging timestamps
+    const safeTime = (time) => ("0" + time).slice(-2);
+    const date = new Date(this.state.message.meta.ts);
+    const ts = safeTime(date.getHours()) + ":" + safeTime(date.getMinutes()) + ":" + safeTime(date.getSeconds());
 
-    var className = this.state.hasHighlights ? "Message highlighted" : "Message";
-    var contentClass = this.state.isCommand ? "Content command" : "Content";
+    const className = this.state.hasHighlights ? "Message highlighted" : "Message";
+    const contentClass = this.state.isCommand ? "Content command" : "Content";
 
     const post = this.state.post;
     let content = (<div>...</div>);
 
     if(post && post.meta.type === "text") {
-      content = <TextMessage text={post.content} useEmojis={this.state.useEmojis} highlightWords={this.state.username}/>;
+      content = <TextMessage text={post.content} useEmojis={this.props.useEmojis} highlightWords={this.props.highlightWords} key={post.hash}/>;
     } else if(post && post.meta.type === "file") {
       content = <File hash={post.hash} name={post.name} size={post.size}/>;
     } else if(post && post.meta.type === "directory") {
@@ -77,7 +65,7 @@ class Message extends React.Component {
         className={className}
         onDragEnter={this.onDragEnter.bind(this)}>
         <span className="Timestamp">{ts}</span>
-        <User userId={this.state.post ? this.state.post.meta.from : null} colorify={this.state.colorifyUsername} highlight={this.state.isCommand}/>
+        <User userId={this.state.post ? this.state.post.meta.from : null} colorify={this.props.colorifyUsername} highlight={this.state.isCommand}/>
         <div className={contentClass}>{content}</div>
       </div>
     );

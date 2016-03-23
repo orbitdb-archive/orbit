@@ -6,7 +6,7 @@ import ReactDOM from 'react-dom';
 import Router from 'react-router';
 import { Route, History, IndexRoute } from 'react-router/lib';
 
-import UIActions from "actions/SendMessageAction";
+import UIActions from "actions/UIActions";
 import NetworkActions from 'actions/NetworkActions';
 import NotificationActions from 'actions/NotificationActions';
 
@@ -18,6 +18,7 @@ import ChannelStore from 'stores/ChannelStore';
 import MessageStore from 'stores/MessageStore';
 import UsersStore from 'stores/UsersStore';
 import SettingsStore from 'stores/SettingsStore';
+import LoadingStateStore from 'stores/LoadingStateStore';
 
 import ChannelsPanel from 'components/ChannelsPanel';
 import ChannelView from 'components/ChannelView';
@@ -49,8 +50,8 @@ var App = React.createClass({
   componentDidMount: function() {
     document.title = "Orbit";
 
-    UIActions.onJoinChannel.listen(this.joinChannel);
-    UIActions.onOpenChannel.listen(this.openChannel);
+    UIActions.joinChannel.listen(this.joinChannel);
+    UIActions.showChannel.listen(this.showChannel);
 
     NetworkActions.joinedChannel.listen(this.onJoinedChannel);
     NetworkActions.joinChannelError.listen(this.onJoinChannelError);
@@ -138,12 +139,20 @@ var App = React.createClass({
         this.setState({ panelOpen: !this.state.panelOpen });
     }
   },
+  joinChannel: function(channelName, password) {
+    if(channelName === this.state.currentChannel)
+      return;
+    console.log("Join channel #" + channelName);
+    NetworkActions.joinChannel(channelName, password);
+  },
+  onJoinChannelError: function(channel, err) {
+    if(!this.state.panelOpen) this.setState({ panelOpen: true });
+    this.setState({ joiningToChannel: channel, requirePassword: true} );
+  },
   onJoinedChannel: function(channel) {
     console.log("Joined channel #" + channel, ChannelStore.channels);
     const channelInfo = ChannelStore.get(channel);
-    // TODO: the check is obsolete? (done is _showChannel)
-    if("#" + channelInfo.name !== this.state.location)
-      this._showChannel(channelInfo.name);
+    this.showChannel(channelInfo.name);
   },
   onLeaveChannel: function (channel) {
     if(channel === this.state.currentChannel) {
@@ -151,28 +160,12 @@ var App = React.createClass({
       this.history.pushState(null, '/');
     }
   },
-  onJoinChannelError: function(channel, err) {
-    if(!this.state.panelOpen) this.setState({ panelOpen: true });
-    this.setState({ joiningToChannel: channel, requirePassword: true} );
-  },
-  joinChannel: function(channelName, password) {
-    if(channelName === this.state.currentChannel)
-      return;
-    console.log("Join channel #" + channelName);
-    NetworkActions.joinChannel(channelName, password);
-  },
-  openChannel: function(channel) {
+  showChannel: function(channel) {
     if(channel === this.state.currentChannel)
       return;
 
     console.log("Open view for channel #" + channel);
 
-    if(!ChannelStore.get(channel))
-      NetworkActions.joinChannel(channel);
-    else
-      this._showChannel(channel);
-  },
-  _showChannel: function(channel) {
     this.togglePanel(true);
     this.setState({ location: "#" + channel, requirePassword: false, currentChannel: channel, joiningToChannel: null });
     this.history.pushState(null, '/channel/' + channel);

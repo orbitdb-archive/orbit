@@ -7,7 +7,8 @@ import Message from 'components/Message';
 import SendMessage from 'components/SendMessage';
 import Dropzone from 'react-dropzone';
 import MessageStore from 'stores/MessageStore';
-import UIActions from 'actions/SendMessageAction';
+import LoadingStateStore from 'stores/LoadingStateStore';
+import UIActions from 'actions/UIActions';
 import ChannelActions from 'actions/ChannelActions';
 import NetworkActions from 'actions/NetworkActions';
 import NotificationActions from 'actions/NotificationActions';
@@ -20,43 +21,32 @@ class Channel extends React.Component {
 
     this.state = {
       channelName: props.channel,
-      channelInfo: props.channelInfo,
-      password: props.password,
       messages: [],
       loading: false,
-      loadingIcon: false,
       loadingText: 'Connecting...',
+      reachedChannelStart: false,
       writeMode: true,
-      statusMessage: "Public",
-      showChannelOptions: false,
+      channelMode: "Public",
+      error: null,
       dragEnter: false,
-      user: props.user,
       username: props.user ? props.user.username : '',
-      // channelInfo: {},
       flipMessageOrder: props.appSettings.flipMessageOrder,
       displayNewMessagesIcon: false,
       unreadMessages: 0,
       appSettings: props.appSettings,
-      theme: props.theme,
-      lastCheckedTime: new Date().getTime(),
-      messagesSeen: []
+      theme: props.theme
     };
   }
 
   componentWillReceiveProps(nextProps) {
     if(nextProps.channel !== this.state.channelName) {
-      console.log("Change channel:", nextProps.channel);
+      this.setState({ reachedChannelStart: false });
       UIActions.focusOnSendMessage();
       this._getMessages(nextProps.channel);
     }
 
-    // if(nextProps.channelInfo !== {})
-    //   this.setChannelStatus(nextProps.channelInfo);
-
     this.setState({
       channelName: nextProps.channel,
-      channelInfo: nextProps.channelInfo,
-      user: nextProps.user,
       username: nextProps.user ? nextProps.user.username : '',
       appSettings: nextProps.appSettings,
       theme: nextProps.theme,
@@ -66,36 +56,42 @@ class Channel extends React.Component {
 
   _getMessages(channel) {
     const messages = MessageStore.getMessages(channel);
-    // this.setState({ messages: messages, loading: false });
     this.setState({ messages: messages });
+  }
+
+  _onLoadStateChange(state) {
+    const loadingState = state[this.state.channelName];
+    if(loadingState) {
+      const loading = Object.keys(loadingState).filter((f) => loadingState[f] && loadingState[f].loading);
+      const loadingText = loadingState[loading[0]] ? loadingState[loading[0]].message : null;
+      this.setState({ loading: loading.length > 0, loadingText: loadingText });
+    }
+  }
+
+  _onError(errorMessage) {
+    this.setState({ error: errorMessage });
+  }
+
+  _onReachedChannelStart() {
+    this.setState({ reachedChannelStart: true });
   }
 
   componentDidMount() {
     this._getMessages(this.state.channelName);
 
     this.unsubscribeFromMessageStore = MessageStore.listen(this.onNewMessages.bind(this));
-    this.unsubscribeFromErrors       = UIActions.raiseError.listen((errorMessage) => this.setState({ statusMessage: errorMessage }));
-    this.unsubscribeFromStartLoading = UIActions.startLoading.listen((channel, loadingMessage) => {
-      if(channel === this.state.channelName) {
-        this.setState({ loadingIcon: true, loadingText: loadingMessage, loading: true });
-      }
-    });
-    this.unsubscribeFromStopLoading = UIActions.stopLoading.listen((channel) => {
-      if(channel === this.state.channelName)
-        this.setState({ loadingIcon: false, loading: false });
-    });
+    this.stopListeningLoadingState = LoadingStateStore.listen(this._onLoadStateChange.bind(this));
+    this.stopListeningChannelState = ChannelActions.reachedChannelStart.listen(this._onReachedChannelStart.bind(this));
+    this.unsubscribeFromErrors = UIActions.raiseError.listen(this._onError.bind(this));
 
     this.node = this.refs.MessagesView;
     this.scrollHeight = 0;
     const margin = 20;
     this.timer = setInterval(() => {
       var node = this.node;
-      // console.log("check", node.scrollTop, node.clientHeight, node.scrollHeight)
       if(!this.state.flipMessageOrder && node && (node.scrollTop + node.clientHeight + margin) >= node.scrollHeight) {
         this.loadOlderMessages();
-      // } else if(this.state.flipMessageOrder && node && ((node.scrollTop - margin) <= 0 || node.clientHeight >= node.scrollHeight)) {
       } else if(this.state.flipMessageOrder && node && (node.scrollTop - margin <= 0 || node.scrollHeight === node.clientHeight)) {
-        // console.log("load more 1", node.scrollTop, node.clientHeight, node.scrollHeight)
         this.loadOlderMessages();
       }
     }, 500);
@@ -104,42 +100,16 @@ class Channel extends React.Component {
   componentWillUnmount() {
     this.unsubscribeFromMessageStore();
     this.unsubscribeFromErrors();
-    this.unsubscribeFromStartLoading();
-    this.unsubscribeFromStopLoading();
-    // this.setState({ messages: [], loading: false });
+    this.stopListeningLoadingState();
+    this.stopListeningChannelState();
     this.setState({ messages: [] });
     clearInterval(this.timer);
-  }
-
-  /* CHANNEL MODES */
-  // Public,      // open to all, default mode
-  // Private,     // will not show up in search result (not used atm)
-  // Secret,      // require password to enter
-  // Moderated    // only ops can talk
-  setChannelStatus(channelInfo) {
-    this.setState({ channelInfo: channelInfo });
-
-    var modes  = channelInfo.modes;
-    var status = "Public";
-
-    if(modes) {
-      if(modes.w && this.state.user && !_.includes(modes.w.ops, this.state.user.id))
-        this.setState({ writeMode: false });
-      else
-        this.setState({ writeMode: true });
-
-      if(modes.r) status = "Secret";
-      if(modes.w) status = "Moderated";
-      if(modes.r && modes.w) status = "Private";
-    }
-    this.setState({ statusMessage: status });
   }
 
   onNewMessages(channel: string, messages: array) {
     if(channel !== this.state.channelName)
       return;
 
-    // if(this.state.flipMessageOrder) messages = _.sortByOrder(messages, ["ts"], ["asc"]);
     if(this.state.flipMessageOrder && this.node.scrollHeight - this.node.scrollTop + 20 > this.node.clientHeight && this.node.scrollHeight > this.node.clientHeight + 1
       && this.state.messages.length > 0 && messages[messages.length - 1].meta.ts > this.state.messages[this.state.messages.length - 1].meta.ts
       && this.node.scrollHeight > 0) {
@@ -157,7 +127,6 @@ class Channel extends React.Component {
        });
     }
 
-    // this.setState({ messages: messages, loading: false });
     this.setState({ messages: messages });
   }
 
@@ -172,12 +141,9 @@ class Channel extends React.Component {
   }
 
   loadOlderMessages() {
-    if(!this.state.loading) {
-      ChannelActions.loadOlderMessages(this.state.channelName);
-    }
+    if(!this.state.loading)
+      ChannelActions.loadMoreMessages(this.state.channelName);
   }
-
-
 
   componentWillUpdate() {
     const node = this.refs.MessagesView;
@@ -208,42 +174,6 @@ class Channel extends React.Component {
     }
   }
 
-  changePasswords(event) {
-    event.preventDefault();
-    var newReadPassword  = this.refs.readPassword.value.trim();
-    var moderated        = this.refs.writePassword.checked;
-    var newModes         = [];
-
-    if(!this.state.channelInfo.modes.r && newReadPassword !== ''
-      || this.state.channelInfo.modes.r && newReadPassword !== this.state.channelInfo.modes.r.password)
-      newModes.push({ mode: "+r", params: { password: newReadPassword } });
-    else if(this.state.channelInfo.modes.r && newReadPassword === '')
-      newModes.push({ mode: "-r" });
-    // else if()
-    //   newModes.push({ mode: "+r", params: { password: newReadPassword } });
-
-    if(!this.state.channelInfo.modes.w && moderated)
-      newModes.push({ mode: "+w", params: { ops: [this.state.user.id] } });
-    else if(this.state.channelInfo.modes.w && !moderated)
-      newModes.push({ mode: "-w" });
-
-    if(newModes.length > 0)
-      ChannelActions.setChannelMode(this.state.channelName, newModes);
-
-    this.setState({ showChannelOptions: !this.state.showChannelOptions });
-  }
-
-  showChannelOptions(event) {
-    // event.preventDefault();
-    // if(this.state.writeMode) {
-    //   this.setState({ showChannelOptions: !this.state.showChannelOptions });
-    //   if(this.state.showChannelOptions) {
-    //     this.refs.readPassword.value = this.state.password ? this.state.password : '';
-    //     // this.refs.writePassword.value = '';
-    //   }
-    // }
-  }
-
   onDrop(files) {
     this.setState({ dragEnter: false });
     console.log('Dropped files: ', files);
@@ -253,6 +183,7 @@ class Channel extends React.Component {
       else
         console.error("File upload not yet implemented in browser. Try the electron app.");
     });
+    UIActions.focusOnSendMessage();
   }
 
   onDragEnter(event) {
@@ -278,29 +209,12 @@ class Channel extends React.Component {
     node.scrollTop = this.state.flipMessageOrder ? node.scrollHeight + node.clientHeight : 0;
   }
 
-  // onHighlight(message) {
-  //   if(message.ts > this.state.lastCheckedTime) {
-  //     console.log("Mention! Do something with it");
-  //     this.setState({ lastCheckedTime: new Date().getTime() });
-  //     NotificationActions.newHighlight(this.state.channelName);
-  //   }
-  // }
-
   render() {
-    document.title = (this.state.unreadMessages > 0 ?  " (" + this.state.unreadMessages + ")" : "") + "#" + this.state.channelName;
-    var theme = this.state.theme;
-    var showChannelOptions = this.state.showChannelOptions ? "ChannelOptions" : "none";
+    document.title = (this.state.unreadMessages > 0 ?  "(" + this.state.unreadMessages + ") " : "") + "#" + this.state.channelName;
+    const theme = this.state.theme;
+    const channelMode = (<div className={"statusMessage"} style={theme}>{this.state.channelMode}</div>);
 
-    var statusMessage = this.state.statusMessage != null ? (
-      <div
-        className={"statusMessage" + (this.state.showChannelOptions || !this.state.writeMode ? " active" : "")}
-        onClick={this.showChannelOptions.bind(this)}
-        style={theme}>
-        {this.state.statusMessage}
-      </div>
-    ) : null;
-
-    var controlsBar = this.state.writeMode ? (
+    const controlsBar = (
       <TransitionGroup
         component="div"
         transitionName="controlsAnimation"
@@ -310,50 +224,32 @@ class Channel extends React.Component {
         transitionLeaveTimeout={0}
         >
         <div className="Controls" key="controls">
-          <SendMessage onSendMessage={this.sendMessage.bind(this)} key="SendMessage" username={this.state.username} theme={theme}/>
+          <SendMessage onSendMessage={this.sendMessage.bind(this)} key="SendMessage" theme={theme}/>
           <Dropzone className="dropzone2" onDrop={this.onDrop.bind(this)} key="dropzone2">
             <div className="icon flaticon-tool490" style={theme} key="icon"/>
           </Dropzone>
         </div>
       </TransitionGroup>
-    ) : (<div></div>);
+    );
 
-    var messages = this.state.messages.map((e) => {
+    const messages = this.state.messages.map((e) => {
       return <Message
                 message={e}
                 key={e.hash}
                 onDragEnter={this.onDragEnter.bind(this)}
-                username={this.state.username}
+                highlightWords={this.state.username}
                 colorifyUsername={this.state.appSettings.colorifyUsernames}
                 useEmojis={this.state.appSettings.useEmojis}
-                // onHighlight={this.onHighlight.bind(this)}
               />;
     });
 
-    var firstMessageText = this.state.loadingIcon ? this.state.loadingText : "Beginning of #" + this.state.channelName;
-    // if(this.state.channelInfo.head && this.state.messages[this.state.messages.length - 1] && this.state.messages[this.state.messages.length - 1].seq === 1 && !this.state.flipMessageOrder)
-    //   messages.push(<div className="firstMessage" onClick={this.loadOlderMessages.bind(this)}>{firstMessageText}</div>);
-    // else if((!this.state.channelInfo.head || this.state.messages[0] && this.state.messages[0].seq === 1) && this.state.flipMessageOrder)
-    messages.unshift(<div className="firstMessage" onClick={this.loadOlderMessages.bind(this)} key="notification">{firstMessageText}</div>);
+    let channelStateText = this.state.loading && this.state.loadingText ? this.state.loadingText : `Older messages...`;
+    if(this.state.reachedChannelStart)
+      channelStateText = `Beginning of # ${this.state.channelName}`;
 
-    var channelOptions = this.state.showChannelOptions ? (
-      <div className="ChannelOptions">
-        <div className="row">
-          <div className="headerText">CHANNEL ACCESS</div>
-          <div className="instructionText">
-            By setting the read password, you make the channel private and only people who know the password can join.
-            By setting the write password, only you can post to the channel.
-          </div>
-        </div>
-        <form onSubmit={this.changePasswords.bind(this)}>
-          <input type="text" ref="readPassword" placeholder="read-password" defaultValue={this.state.channelInfo.modes.r ? this.state.channelInfo.modes.r.password : ''} style={theme}/>
-          <label>Moderated</label> <input type="checkbox" ref="writePassword" defaultChecked={this.state.channelInfo.modes.w} style={theme}/>
-          <input type="submit" value="Set" style={theme}/>
-        </form>
-      </div>
-    ) : null;
+    messages.unshift(<div className="firstMessage" key="firstMessage">{channelStateText}</div>);
 
-    var dropzone = this.state.dragEnter ? (
+    const fileDrop = this.state.dragEnter ? (
       <Dropzone
         className="dropzone"
         activeClassName="dropzoneActive"
@@ -368,49 +264,32 @@ class Channel extends React.Component {
       </Dropzone>
     ) : "";
 
-    var showNewMessageNotification = this.state.displayNewMessagesIcon ? (
+    const showNewMessageNotification = this.state.displayNewMessagesIcon ? (
       <div className="newMessagesBar" onClick={this.onScrollToBottom.bind(this)}>
         There are <span className="newMessagesNumber">{this.state.unreadMessages}</span> new messages
       </div>
     ) : (<span></span>);
 
-    var channelStyle  = this.state.flipMessageOrder ? "Channel flipped" : "Channel";
-    var messagesStyle = this.state.flipMessageOrder ? "Messages" : "Messages flopped";
-    var color         = 'rgba(255, 255, 255, 0.7)';
-    var loadingIcon   = this.state.loadingIcon ? (
+    const channelStyle  = this.state.flipMessageOrder ? "Channel flipped" : "Channel";
+    const messagesStyle = this.state.flipMessageOrder ? "Messages" : "Messages flopped";
+    const color         = 'rgba(255, 255, 255, 0.7)';
+    const loadingIcon   = this.state.loading ? (
       <div className="loadingBar">
         <Halogen.MoonLoader className="loadingIcon" color={color} size="16px"/>
       </div>
     ) : "";
-/*
-  For messages:
-  <TransitionGroup
-    transitionName="messagesAnimation"
-    transitionAppear={false}
-    transitionEnter={true}
-    transitionLeave={false}
-    transitionAppearTimeout={500}
-    transitionEnterTimeout={500}
-    transitionLeaveTimeout={100}
-    component="div">
-    {messages}
-  </TransitionGroup>
-*/
+
     return (
       <div className={channelStyle} onDragEnter={this.onDragEnter.bind(this)}>
-
         <div className={messagesStyle} ref="MessagesView" onScroll={this.onScroll.bind(this)} >
           {messages}
         </div>
 
-        {channelOptions}
-
         {showNewMessageNotification}
         {controlsBar}
-
-        {dropzone}
+        {fileDrop}
         {loadingIcon}
-        {statusMessage}
+        {channelMode}
       </div>
     );
   }

@@ -128,8 +128,8 @@ class LoginView extends React.Component{
         </div>
       </TransitionGroup>
     ) : (
-      <div className="centerrow">
-        <Halogen.DotLoader color={color} style={this.state.theme}/>
+      <div className="centerrow" style={this.state.theme}>
+        <Halogen.DotLoader color={color}/>
       </div>
     );
 

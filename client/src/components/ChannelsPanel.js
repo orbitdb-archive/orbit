@@ -2,7 +2,7 @@
 
 import React from "react/addons";
 import TransitionGroup from "react-addons-css-transition-group";
-import UIActions from "actions/SendMessageAction";
+import UIActions from "actions/UIActions";
 import JoinChannel from 'components/JoinChannel';
 import ChannelStore from 'stores/ChannelStore';
 import NetworkActions from 'actions/NetworkActions';
@@ -58,8 +58,7 @@ class ChannelsPanel extends React.Component {
     }
 
     this.setState({ joiningToChannel: channelName, requirePassword: password !== '', loading: true });
-    // Actions.onJoinChannel(channelName, password);
-    UIActions.onOpenChannel(channelName);
+    UIActions.joinChannel(channelName, password);
   }
 
   clearRecentChannels() {

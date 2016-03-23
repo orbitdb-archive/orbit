@@ -20,29 +20,6 @@ class Orbit {
     this._channels = {};
   }
 
-  _handleError(e) {
-    logger.error(e.message);
-    logger.debug("Stack trace:\n", e.stack);
-    this.events.emit('orbit.error', e.message);
-  }
-
-  _handleMessage(channel, message) {
-    // logger.debug(channel + ">", message);
-    this.events.emit('message', channel, message);
-  }
-
-  _handleStartLoading(channel, hash) {
-    this.events.emit('db.load', channel, hash)
-  }
-
-  _handleStopLoading(channel, hash) {
-    this.events.emit('db.loaded', channel, hash)
-  }
-
-  onSocketConnected(socket) {
-    this.events.emit('network', this.orbit);
-  }
-
   connect(host, username, password) {
     const hostname = host.split(":")[0];
     const port = host.split(":")[1];
@@ -206,6 +183,29 @@ class Orbit {
   get network() {
     return this.orbit.network;
   }
+
+  _handleError(e) {
+    logger.error(e.message);
+    logger.debug("Stack trace:\n", e.stack);
+    this.events.emit('orbit.error', e.message);
+  }
+
+  _handleMessage(channel, message) {
+    this.events.emit('message', channel, message);
+  }
+
+  _handleStartLoading(action, channel) {
+    this.events.emit('db.load', action, channel)
+  }
+
+  _handleStopLoading(action, channel) {
+    this.events.emit('db.loaded', action, channel)
+  }
+
+  onSocketConnected(socket) {
+    this.events.emit('network', this.orbit);
+  }
+
 }
 
 module.exports = Orbit;

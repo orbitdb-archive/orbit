@@ -1,7 +1,7 @@
 'use strict';
 
 import Reflux from 'reflux';
-import Actions from 'actions/SendMessageAction';
+import Actions from 'actions/UIActions';
 import UserActions from 'actions/UserActions';
 import NetworkActions from 'actions/NetworkActions';
 import SocketActions from 'actions/SocketActions';
