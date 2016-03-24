@@ -9,6 +9,7 @@ import TextMessage from "components/TextMessage";
 import Directory from "components/Directory";
 import ChannelActions from 'actions/ChannelActions';
 import UserActions from 'actions/UserActions';
+import NotificationActions from 'actions/NotificationActions';
 import "styles/Message.scss";
 
 class Message extends React.Component {
@@ -30,8 +31,10 @@ class Message extends React.Component {
 
         post.content.split(" ").forEach((word) => {
           const highlight = MentionHighlighter.highlight(word, this.props.highlightWords);
-          if(typeof highlight[0] !== 'string')
+          if(typeof highlight[0] !== 'string') {
             this.setState({ hasHighlights: true });
+            NotificationActions.mention(this.state.channelName, post.content);
+          }
         });
       }
       UserActions.addUser(post.meta.from);

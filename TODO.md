@@ -1,9 +1,7 @@
 # TODO
 
 ### WIP
-- easier network setup than network.json
 - Tab to finish the username when writing
-- fix notifications
 
 ### Must have
 - Move loading icon in Channel to its own component

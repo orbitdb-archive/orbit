@@ -9,7 +9,9 @@ import { Route, History, IndexRoute } from 'react-router/lib';
 import UIActions from "actions/UIActions";
 import NetworkActions from 'actions/NetworkActions';
 import NotificationActions from 'actions/NotificationActions';
+import AppActions from 'actions/AppActions';
 
+import AppStateStore from 'stores/AppStateStore';
 import UserStore from 'stores/UserStore';
 import UserActions from 'actions/UserActions';
 import NetworkStore from 'stores/NetworkStore';
@@ -57,23 +59,27 @@ var App = React.createClass({
     NetworkActions.joinChannelError.listen(this.onJoinChannelError);
     NetworkActions.leaveChannel.listen(this.onLeaveChannel);
 
-    this.unsubscribeFromSettingsStore   = SettingsStore.listen((settings) => {
+    this.unsubscribeFromSettingsStore = SettingsStore.listen((settings) => {
       this.setState({ theme: Themes[settings.theme] || null });
     });
     this.unsubscribeFromConnectionStore = ConnectionStore.listen(this.onDaemonConnected);
-    this.unsubscribeFromNetworkStore    = NetworkStore.listen(this.onNetworkUpdated);
-    this.unsubscribeFromUserStore       = UserStore.listen(this.onUserUpdated);
-    this.unsubscribeFromUsersStore      = UsersStore.listen((users) => console.log("Known users updated", users));
-    this.unsubscribeFromChannelStore    = ChannelStore.listen((channels) => {
-      console.log("Channels updated", channels);
-    });
-    this.unsubscribeFromMessageStore    = MessageStore.listen((channel, message) => {
-      console.log("Notification: New messages on #" + channel);
-      if(this.state.currentChannel !== channel) {
-        document.title = "* " + this.state.location;
-        NotificationActions.unreadMessages(channel);
-      }
-    });
+    this.unsubscribeFromNetworkStore = NetworkStore.listen(this.onNetworkUpdated);
+    this.unsubscribeFromUserStore = UserStore.listen(this.onUserUpdated);
+    this.unsubscribeFromMessageStore = MessageStore.listen(this._handleNewMessage);
+    NotificationActions.mention.listen(this._handleMention);
+  },
+  _handleMention: function(channel, message) {
+    if(this.state.currentChannel !== channel) {
+      document.title = "! " + this.state.location;
+      AppActions.increaseMentionsCount(channel, 1);
+      // TODO: pass on to backend
+    }
+  },
+  _handleNewMessage: function(channel, message) {
+    if(this.state.currentChannel !== channel) {
+      document.title = "* " + this.state.location;
+      AppActions.increaseUnreadMessagesCount(channel, 1);
+    }
   },
   onDaemonConnected: function(socket) {
     if(socket)
@@ -156,6 +162,7 @@ var App = React.createClass({
   },
   onLeaveChannel: function (channel) {
     if(channel === this.state.currentChannel) {
+      AppActions.setCurrentChannel(null);
       this.setState({ location: null, currentChannel: null, requirePassword: false });
       this.history.pushState(null, '/');
     }
@@ -165,6 +172,8 @@ var App = React.createClass({
       return;
 
     console.log("Open view for channel #" + channel);
+
+    AppActions.setCurrentChannel(channel);
 
     this.togglePanel(true);
     this.setState({ location: "#" + channel, requirePassword: false, currentChannel: channel, joiningToChannel: null });
@@ -184,6 +193,7 @@ var App = React.createClass({
   },
   goToLocation: function(name, url) {
     this.togglePanel();
+    AppActions.setCurrentChannel(channel);
     this.setState({ location: name, currentChannel: null });
     this.history.pushState(null, url);
   },

@@ -6,7 +6,6 @@ import UIActions from 'actions/UIActions';
 import SocketActions from 'actions/SocketActions';
 import NetworkActions from 'actions/NetworkActions';
 import ChannelActions from 'actions/ChannelActions';
-import NotificationActions from 'actions/NotificationActions';
 
 var ChannelStore = Reflux.createStore({
   listenables: [NetworkActions, SocketActions, ChannelActions],

@@ -5,6 +5,7 @@ import TransitionGroup from "react-addons-css-transition-group";
 import UIActions from "actions/UIActions";
 import JoinChannel from 'components/JoinChannel';
 import ChannelStore from 'stores/ChannelStore';
+import AppStateStore from 'stores/AppStateStore';
 import NetworkActions from 'actions/NetworkActions';
 import BackgroundAnimation from 'components/BackgroundAnimation';
 import Halogen from 'halogen';
@@ -22,6 +23,7 @@ class ChannelsPanel extends React.Component {
       requirePassword: props.requirePassword || false,
       loading: false,
       theme: props.theme,
+      appState: AppStateStore.state,
       networkName: props.networkName
     };
   }
@@ -38,16 +40,19 @@ class ChannelsPanel extends React.Component {
   }
 
   componentDidMount() {
+    this.stopListeningAppState = AppStateStore.listen((appState) => {
+      this.setState({ appState: appState });
+    });
+
     this.unsubscribeFromChannelStore = ChannelStore.listen((channels) => {
       this.setState({ openChannels: channels });
     });
 
-      // console.log("ChannelsPanel - channels updated", ChannelStore.channels);
     this.setState({ openChannels: ChannelStore.channels });
-    // NetworkActions.getOpenChannels();
   }
 
   componentWillUnmount() {
+    this.stopListeningAppState();
     this.unsubscribeFromChannelStore();
   }
 
@@ -75,10 +80,14 @@ class ChannelsPanel extends React.Component {
 
   _renderChannel(e) {
     const name = e.name;
+    const unreadMessagesCount = this.state.appState.unreadMessages[name] ? this.state.appState.unreadMessages[name] : 0;
+    const hasUnreadMessages = unreadMessagesCount > 0;
+    const mentionsCount = this.state.appState.mentions[name] ? this.state.appState.mentions[name] : 0;
+    const className = "unreadMessages " + (mentionsCount > 0 ? "hasMentions" : "");
     return (
       <div className="row link" key={Math.random()}>
         <span className='channelName' onClick={this.handleJoinChannel.bind(this, name, "")} key={Math.random()}>#{name}</span>
-        {e.unreadMessages > 0 ? <span className={e.unreadMessages > 0 ? 'unreadMessages' : ''}  style={this.state.theme}>{e.unreadMessages > 0 ? e.unreadMessages : ""}</span> : ""}
+        {hasUnreadMessages ? <span className={className} style={this.state.theme}>{hasUnreadMessages ? unreadMessagesCount : ""}</span> : ""}
         <span className='closeChannelButton' onClick={NetworkActions.leaveChannel.bind(this, name)} key={Math.random()}>Close</span>
       </div>
     );

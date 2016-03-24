@@ -6,6 +6,9 @@ import UIActions from 'actions/UIActions';
 import NetworkActions from 'actions/NetworkActions';
 import ChannelActions from 'actions/ChannelActions';
 import SocketActions from 'actions/SocketActions';
+import NotificationActions from 'actions/NotificationActions';
+import ChannelStore from 'stores/ChannelStore';
+import UserStore from 'stores/UserStore';
 
 const messagesBatchSize = 16;
 
@@ -15,6 +18,14 @@ const MessageStore = Reflux.createStore({
     this.socket = null;
     this.posts = {}; // simple cache for message contents
     this._reset();
+
+    // Listen for changes in channels
+    this.unsubscribeFromChannelStore = ChannelStore.listen((channels) => {
+      channels.forEach((channel) => {
+        if(!this.messages[channel.name])
+          this.messages[channel.name] = [];
+      });
+    });
   },
   _reset: function() {
     this.messages = {};
@@ -117,10 +128,31 @@ const MessageStore = Reflux.createStore({
       else
         this.messages[channel] = this.messages[channel].concat(unique);
 
+      // Load message content
+      unique.forEach((f) => this._loadPost(channel, f));
+
       this.trigger(channel, this.messages[channel]);
-    } else if(older) {
+    } else {
       ChannelActions.reachedChannelStart();
     }
+  },
+  _loadPost: function(channel: string, message) {
+    const hasMentions = (text: string, mention: string) => {
+      return text.split(' ').map((word) => {
+          const match = word.startsWith(mention)
+                  || word.startsWith(mention + ":")
+                  || word.startsWith("@" + mention)
+                  || word.startsWith(mention + ",");
+          return match;
+      }).filter((f) => f === true).length > 0;
+    };
+
+    this.onLoadPost(message.value, (err, post) => {
+      if(post && post.content) {
+        if(hasMentions(post.content, UserStore.user.username))
+          NotificationActions.mention(channel, post.content);
+      }
+    });
   },
   onLoadPost: function(hash: string, callback) {
     if(!this.posts[hash]) {

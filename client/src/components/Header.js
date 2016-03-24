@@ -1,9 +1,9 @@
 'use strict';
 
+import _ from 'lodash';
 import React from 'react/addons';
+import AppStateStore from 'stores/AppStateStore';
 import ChannelStore from 'stores/ChannelStore';
-import NetworkActions from 'actions/NetworkActions';
-import NotificationActions from 'actions/NotificationActions';
 import UIActions from "actions/UIActions";
 import 'styles/Header.scss';
 
@@ -14,38 +14,32 @@ class Header extends React.Component {
     super(props);
     this.state = {
       location: props.location,
-      notifications: null,
+      appState: AppStateStore.state,
       openChannels: [],
       theme: props.theme
     };
   }
 
   componentDidMount() {
-    this.unsubscribeFromNotifications = NotificationActions.unreadMessages.listen((channel) => {
-      if(this.state.channelName !== channel)
-        this.setState({ notifications: true });
+    this.stopListeningAppState = AppStateStore.listen((appState) => {
+      this.setState({ appState: appState });
     });
 
-    this.unsubscribeFromChannelStore = ChannelStore.listen((chnls) => {
-      var parsed = Object.keys(chnls).map((e) => {
-        return { name: chnls[e].name, unreadMessages: chnls[e].unreadMessagesCount };
+    this.unsubscribeFromChannelStore = ChannelStore.listen((channels) => {
+      var names = Object.keys(channels).map((e) => {
+        return { name: channels[e].name };
       });
-      // var filtered = _.filter(parsed, (e) => {
-      //   return '#' + e.name !== this.state.location && this.state.location;
-      // });
-
-      this.setState({ openChannels: parsed });
+      this.setState({ openChannels: names });
     });
-
-    // NetworkActions.getOpenChannels();
   }
 
   componentWillUnmount() {
-    this.unsubscribeFromNotifications();
+    this.stopListeningAppState();
+    this.unsubscribeFromChannelStore();
   }
 
   componentWillReceiveProps(nextProps) {
-    this.setState({ location: nextProps.location, notifications: false, theme: nextProps.theme });
+    this.setState({ location: nextProps.location, theme: nextProps.theme });
   }
 
   openChannelsPanel() {
@@ -70,13 +64,17 @@ class Header extends React.Component {
     });
 
     var channels = filteredChannels.map((e) => {
-      if(e.unreadMessages > 0)
+      const unreadMessagesCount = this.state.appState.unreadMessages[e.name] ? this.state.appState.unreadMessages[e.name] : 0;
+      const mentionsCount = this.state.appState.mentions[e.name] ? this.state.appState.mentions[e.name] : 0;
+      if(unreadMessagesCount > 0) {
+        const className = "unreadMessages " + (mentionsCount > 0 ? "hasMentions" : "");
         return (
           <span className="channel">
             <span onClick={this.openChannel.bind(this, e.name)}>#{e.name}</span>
-            <span className="unreadMessages">{e.unreadMessages}</span>
+            <span className={className} style={this.state.theme}>{unreadMessagesCount}</span>
           </span>
         );
+      }
       else
         return (
           <span className="channel" onClick={this.openChannel.bind(this, e.name)} key={e.name}>#{e.name}</span>
@@ -98,9 +96,10 @@ class Header extends React.Component {
               transitionName="channelHeaderAnimation"
               transitionEnter={true}
               transitionLeave={false}
+              transitionAppear={false}
               transitionAppearTimeout={0}
               transitionEnterTimeout={1000}
-              transitionLeaveTimeout={1000}>
+              transitionLeaveTimeout={0}>
               {location}
             </TransitionGroup>
           </div>
