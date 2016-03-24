@@ -17,7 +17,6 @@ $channel-name-min-height: 1.6em;
     right: 1.1em;
     padding-top: -0.2em;
   }
-
 }
 
 .Header:hover {
@@ -75,17 +74,13 @@ $channel-name-min-height: 1.6em;
   }
 
   .unreadMessages {
-    // border-left: 6px solid $main-color;
     display: flex;
-    // flex: 1 1 100%;
-    // padding-left: 0.3em;
     margin-left: 0.3em;
-    // padding-top: 0.2em;
-    padding: 0.2em;
-    height: 1.0em;
-    width: 1.0em;
+    margin-right: 0em;
+    padding: 0.1em;
+    height: 1.1em;
+    width: 1.2em;
 
-    // padding-right: 0.4em;
     justify-content: center;
 
     font-family: "Lato";
@@ -93,9 +88,14 @@ $channel-name-min-height: 1.6em;
     font-size: 0.6em;
     color: rgba(240, 240, 240, 0.9);
 
-    background: rgba(240, 240, 240, 0.1);
+    background-color: rgba(240, 240, 240, 0.1);
     border-radius: 32px;
   }
+
+  .hasMentions {
+    background-color: $main-color;
+  }
+
 }
 
 .channelHeaderAnimation-enter {
