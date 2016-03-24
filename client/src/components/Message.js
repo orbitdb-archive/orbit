@@ -8,6 +8,7 @@ import File from "components/File";
 import TextMessage from "components/TextMessage";
 import Directory from "components/Directory";
 import ChannelActions from 'actions/ChannelActions';
+import UserActions from 'actions/UserActions';
 import "styles/Message.scss";
 
 class Message extends React.Component {
@@ -33,6 +34,7 @@ class Message extends React.Component {
             this.setState({ hasHighlights: true });
         });
       }
+      UserActions.addUser(post.meta.from);
       this.setState({ post: post });
     });
   }
