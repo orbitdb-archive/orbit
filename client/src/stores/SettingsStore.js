@@ -12,8 +12,7 @@ var settingsDescriptions = {
 var defaultSettings = {
   theme: Themes.Default,
   useEmojis: true,
-  colorifyUsernames: true,
-  flipMessageOrder: true
+  colorifyUsernames: true
 };
 
 var SettingsStore = Reflux.createStore({
@@ -35,7 +34,6 @@ var SettingsStore = Reflux.createStore({
       // Default settings
       this.settings.useEmojis = (this.settings.useEmojis !== undefined) ? this.settings.useEmojis : defaultSettings.useEmojis;
       this.settings.colorifyUsernames = (this.settings.colorifyUsernames !== undefined) ? this.settings.colorifyUsernames : defaultSettings.colorifyUsernames;
-      this.settings.flipMessageOrder = (this.settings.flipMessageOrder !== undefined) ? this.settings.flipMessageOrder : defaultSettings.flipMessageOrder;
       this.settings.theme = this.settings.theme || defaultSettings.theme;
 
       // Save the defaults for this user
