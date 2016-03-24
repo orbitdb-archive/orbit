@@ -49,8 +49,10 @@ class TextMessage extends React.Component {
     };
 
     return _.flatten(items.map((item) => {
-      emojiOpts.alt = item;
-      return (typeof item === 'string' && this.state.useEmojis) ? ReactEmoji.emojify(item, emojiOpts) : item;
+      if(typeof item !== 'string') return item;
+      if(item.indexOf('d:') > 0) return item; // Handle 'd:' specially
+      emojiOpts.attributes.alt = item.trim();
+      return ReactEmoji.emojify(item, emojiOpts);
     }));
   }
 
@@ -65,7 +67,7 @@ class TextMessage extends React.Component {
     // Create links from urls
     let finalText = ReactAutolink.autolink(this.state.text, { target: "_blank", rel: "nofollow", key: Math.random() });
     finalText = this._highlight(finalText);
-    finalText = this._emojify(finalText);
+    finalText = this.state.useEmojis ? this._emojify(finalText) : finalText;
     finalText = this._ipfsfy(finalText);
 
     const content = (
