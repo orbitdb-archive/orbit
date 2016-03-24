@@ -10,8 +10,6 @@ import MessageStore from 'stores/MessageStore';
 import LoadingStateStore from 'stores/LoadingStateStore';
 import UIActions from 'actions/UIActions';
 import ChannelActions from 'actions/ChannelActions';
-import NetworkActions from 'actions/NetworkActions';
-import NotificationActions from 'actions/NotificationActions';
 import Halogen from 'halogen';
 import 'styles/Channel.scss';
 
@@ -20,27 +18,34 @@ class Channel extends React.Component {
     super(props);
 
     this.state = {
+      channelChanged: true,
       channelName: props.channel,
       messages: [],
       loading: false,
       loadingText: 'Connecting...',
       reachedChannelStart: false,
-      writeMode: true,
       channelMode: "Public",
       error: null,
       dragEnter: false,
       username: props.user ? props.user.username : '',
-      flipMessageOrder: props.appSettings.flipMessageOrder,
       displayNewMessagesIcon: false,
       unreadMessages: 0,
       appSettings: props.appSettings,
       theme: props.theme
     };
+
+    this.scrollTimer = null;
+    this.topMargin = 120;
+    this.bottomMargin = 20;
   }
 
   componentWillReceiveProps(nextProps) {
     if(nextProps.channel !== this.state.channelName) {
-      this.setState({ reachedChannelStart: false });
+      this.setState({
+        channelChanged: true,
+        displayNewMessagesIcon: false,
+        reachedChannelStart: false
+      });
       UIActions.focusOnSendMessage();
       this._getMessages(nextProps.channel);
     }
@@ -49,8 +54,7 @@ class Channel extends React.Component {
       channelName: nextProps.channel,
       username: nextProps.user ? nextProps.user.username : '',
       appSettings: nextProps.appSettings,
-      theme: nextProps.theme,
-      flipMessageOrder: nextProps.appSettings.flipMessageOrder
+      theme: nextProps.theme
     });
   }
 
@@ -69,6 +73,7 @@ class Channel extends React.Component {
   }
 
   _onError(errorMessage) {
+    console.error("Channel:", errorMessage);
     this.setState({ error: errorMessage });
   }
 
@@ -85,46 +90,32 @@ class Channel extends React.Component {
     this.unsubscribeFromErrors = UIActions.raiseError.listen(this._onError.bind(this));
 
     this.node = this.refs.MessagesView;
-    this.scrollHeight = 0;
-    const margin = 20;
-    this.timer = setInterval(() => {
-      var node = this.node;
-      if(!this.state.flipMessageOrder && node && (node.scrollTop + node.clientHeight + margin) >= node.scrollHeight) {
-        this.loadOlderMessages();
-      } else if(this.state.flipMessageOrder && node && (node.scrollTop - margin <= 0 || node.scrollHeight === node.clientHeight)) {
-        this.loadOlderMessages();
-      }
-    }, 500);
+    // this.scrollHeight = 0;
+    this.loadOlderMessages();
   }
 
   componentWillUnmount() {
+    clearTimeout(this.scrollTimer);
     this.unsubscribeFromMessageStore();
     this.unsubscribeFromErrors();
     this.stopListeningLoadingState();
     this.stopListeningChannelState();
     this.setState({ messages: [] });
-    clearInterval(this.timer);
   }
 
   onNewMessages(channel: string, messages: array) {
     if(channel !== this.state.channelName)
       return;
 
-    if(this.state.flipMessageOrder && this.node.scrollHeight - this.node.scrollTop + 20 > this.node.clientHeight && this.node.scrollHeight > this.node.clientHeight + 1
-      && this.state.messages.length > 0 && messages[messages.length - 1].meta.ts > this.state.messages[this.state.messages.length - 1].meta.ts
+    this.node = this.refs.MessagesView;
+    if(this.node.scrollHeight - this.node.scrollTop + this.bottomMargin > this.node.clientHeight
+      && this.node.scrollHeight > this.node.clientHeight + 1
+      && this.state.messages.length > 0 && _.last(messages).meta.ts > _.last(this.state.messages).meta.ts
       && this.node.scrollHeight > 0) {
       this.setState({
         displayNewMessagesIcon: true,
         unreadMessages: this.state.unreadMessages + 1
       });
-    }
-
-    if(!this.state.flipMessageOrder && this.node.scrollTop > 0
-      && this.state.messages.length > 0 && messages[0].meta.ts > this.state.messages[0].meta.ts) {
-      this.setState({
-        displayNewMessagesIcon: true,
-        unreadMessages: this.state.unreadMessages + 1
-       });
     }
 
     this.setState({ messages: messages });
@@ -146,32 +137,36 @@ class Channel extends React.Component {
   }
 
   componentWillUpdate() {
-    const node = this.refs.MessagesView;
-    const margin = 20;
-
-    if(!this.state.flipMessageOrder) {
-      this.shouldScroll = (node.scrollHeight - this.scrollHeight) > 0 && node.scrollTop > 0;
-    } else {
-      this.shouldScroll = this.scrollHeight < node.scrollHeight && node.scrollTop > (0 + margin);
-      this.scrollAmount = node.scrollHeight - this.scrollHeight;
-      this.shouldScrollToBottom = (node.scrollTop + node.clientHeight + margin) >= this.scrollHeight;
-    }
-
-    this.scrollTop = node.scrollTop;
-    this.scrollHeight = node.scrollHeight;
+    this.node = this.refs.MessagesView;
+    this.scrollTop = this.node.scrollTop;
+    this.scrollHeight = this.node.scrollHeight;
   }
 
   componentDidUpdate() {
-    const node = this.refs.MessagesView;
-    if(!this.state.flipMessageOrder && this.shouldScroll) {
-      node.scrollTop = this.scrollTop + this.scrollAmount;
-    } else if(this.state.flipMessageOrder && !this.shouldScroll) {
-      node.scrollTop = this.scrollTop + this.scrollAmount;
+    this.node = this.refs.MessagesView;
+    this.scrollAmount = this.node.scrollHeight - this.scrollHeight;
+    this.keepScrollPosition = (this.scrollAmount > 0 && this.scrollTop > (0 + this.topMargin)) || this.state.reachedChannelStart;
+    this.shouldScrollToBottom = (this.node.scrollTop + this.node.clientHeight + this.bottomMargin) >= this.scrollHeight;
+
+    if(!this.keepScrollPosition)
+      this.node.scrollTop += this.scrollAmount;
+
+    if(this.shouldScrollToBottom)
+      this.node.scrollTop = this.node.scrollHeight + this.node.clientHeight;
+
+    // If the channel was changed, scroll to bottom to avoid weird positioning
+    // TODO: replace with remembering each channel's scroll position on channel change
+    if(this.state.channelChanged) {
+      this.onScrollToBottom();
+      this.setState({ channelChanged: false });
     }
 
-    if((this.state.flipMessageOrder && this.shouldScrollToBottom)) {
-      node.scrollTop = node.scrollHeight + node.clientHeight;
-    }
+    if(this._shouldLoadMoreMessages())
+      this.loadOlderMessages();
+  }
+
+  _shouldLoadMoreMessages() {
+    return this.node && (this.node.scrollTop - this.topMargin <= 0 || this.node.scrollHeight === this.node.clientHeight);
   }
 
   onDrop(files) {
@@ -195,18 +190,26 @@ class Channel extends React.Component {
   }
 
   onScroll(event) {
-    var node = this.node;
-    if(this.state.flipMessageOrder && node.scrollHeight - node.scrollTop - 10 <= node.clientHeight) {
-      this.setState({ displayNewMessagesIcon: false, unreadMessages: 0 });
-    }
-    else if(!this.state.flipMessageOrder && node.scrollTop === 0) {
+    if(this.scrollTimer)
+      clearTimeout(this.scrollTimer);
+
+    // After scroll has finished, check if we should load more messages
+    // Using timeout here because of OS-applied scroll inertia
+    this.scrollTimer = setTimeout(() => {
+      if(this._shouldLoadMoreMessages())
+        this.loadOlderMessages();
+    }, 800);
+
+    // If we scrolled to the bottom, hide the "new messages" label
+    this.node = this.refs.MessagesView;
+    if(this.node.scrollHeight - this.node.scrollTop - 10 <= this.node.clientHeight) {
       this.setState({ displayNewMessagesIcon: false, unreadMessages: 0 });
     }
   }
 
   onScrollToBottom() {
-    var node = this.node;
-    node.scrollTop = this.state.flipMessageOrder ? node.scrollHeight + node.clientHeight : 0;
+    UIActions.focusOnSendMessage();
+    this.node.scrollTop = this.node.scrollHeight + this.node.clientHeight;
   }
 
   render() {
@@ -270,21 +273,17 @@ class Channel extends React.Component {
       </div>
     ) : (<span></span>);
 
-    const channelStyle  = this.state.flipMessageOrder ? "Channel flipped" : "Channel";
-    const messagesStyle = this.state.flipMessageOrder ? "Messages" : "Messages flopped";
-    const color         = 'rgba(255, 255, 255, 0.7)';
-    const loadingIcon   = this.state.loading ? (
+    const loadingIcon = this.state.loading ? (
       <div className="loadingBar">
-        <Halogen.MoonLoader className="loadingIcon" color={color} size="16px"/>
+        <Halogen.MoonLoader className="loadingIcon" color="rgba(255, 255, 255, 0.7)" size="16px"/>
       </div>
     ) : "";
 
     return (
-      <div className={channelStyle} onDragEnter={this.onDragEnter.bind(this)}>
-        <div className={messagesStyle} ref="MessagesView" onScroll={this.onScroll.bind(this)} >
+      <div className="Channel flipped" onDragEnter={this.onDragEnter.bind(this)}>
+        <div className="Messages" ref="MessagesView" onScroll={this.onScroll.bind(this)} >
           {messages}
         </div>
-
         {showNewMessageNotification}
         {controlsBar}
         {fileDrop}
