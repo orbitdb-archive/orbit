@@ -22,7 +22,7 @@ class Channel extends React.Component {
       channelName: props.channel,
       messages: [],
       loading: false,
-      loadingText: 'Connecting...',
+      loadingText: 'Syncing...',
       reachedChannelStart: false,
       channelMode: "Public",
       error: null,
