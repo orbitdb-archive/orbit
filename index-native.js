@@ -13,7 +13,7 @@ const main        = require('./src/main');
 require('crash-reporter').start();
 logger.debug("Run index-native.js");
 
-const connectWindowSize = { width: 510, height: 420, center: true, minWidth: 510, minHeight: 420 };
+const connectWindowSize = { width: 500, height: 420, center: true, minWidth: 500, minHeight: 420 };
 const mainWindowSize    = { width: 1200, height: 800, center: true, minWidth: 1200, minHeight: 800 };
 let mainWindow = null;
 
