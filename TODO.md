@@ -1,7 +1,12 @@
 # TODO
+- Tab to finish the username when writing
+- Move loading icon in Channel to its own component
+- Move new messages notification bar in Channel to its own component
+- Move controlsBar from Channel to its own component
 - Remember scroll position after channel change
-- Multiline supports in the send message input field
+- Add snippet message type for multiline messages (includes: rendering, code higlighting, markdown, etc.)
 - Try right-aligned channels panels
+ 
 - Add keyboard shortcuts for: open channels panel, close channels panel, next channel, previous channel, focus on send message, open settings
   + check https://github.com/glenjamin/react-hotkey
 - Add trackbar to channel (line between new and previously seen messages)
@@ -12,7 +17,6 @@
 - Display notifications when app is unfocused
 - move message type from MetaInfo to Message.content
 - SwarmStore
-- Tab to finish the username when writing
 - If it's truly a linked list, you could take advantage of https://ipfs.io/ipfs/QmTtqKeVpgQ73KbeoaaomvLoYMP7XKemhTgPNjasWjfh9b/ for efficient seeking to any point in the history. (from Ion)
 - Private messages (one-to-one messages)
 - Add Katex/Mathjax support along with markdown (from davidar)
