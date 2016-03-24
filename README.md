@@ -115,53 +115,7 @@ Make sure you don't have the node.js version running and no client open the brow
 ## Run your own network
 Get https://github.com/haadcode/orbit-server and start the server, edit `./network.json` and point to appropriate url (eg. localhost:3006)
 
-## Notes
-### Demo app ideas
-- Email
-- Twitter
-- Spotify
-- Netflix
-- Collaborative document editing
-- Git
-- Wiki
-- Forums
+## Contributing
+Would be happy to accept PRs! If you want to work on something, it'd be good to talk beforehand to make sure nobody else is working on it. You can reach me on Twitter [@haadcode](https://twitter.com/haadcode) or on IRC #ipfs on Freenode.
 
-### Backlog
-- Multiline supports in the send message input field
-- Try right-aligned channels panels
-- Add keyboard shortcuts for: open channels panel, close channels panel, next channel, previous channel, focus on send message, open settings
-  + check https://github.com/glenjamin/react-hotkey
-- Add trackbar to channel (line between new and previously seen messages)
-- Fix browser file upload
-- Skip lists for LL items in order to prevent channel history traversal to get stuck completely
-- Fix Electron non-dev flow
-- Add notification bubbles to native app
-- Display notifications when app is unfocused
-- move message type from MetaInfo to Message.content
-- SwarmStore
-- Tab to finish the username when writing
-- If it's truly a linked list, you could take advantage of https://ipfs.io/ipfs/QmTtqKeVpgQ73KbeoaaomvLoYMP7XKemhTgPNjasWjfh9b/ for efficient seeking to any point in the history. (from Ion)
-- Private messages (one-to-one messages)
-- Add Katex/Mathjax support along with markdown (from davidar)
-- Empty channels when no swarm peers. Notify the user that there are no peers atm., re-try logic in backend for connecting to peers if connection failed and there are 0 peers
-- feature: markdown as content type in messages (like files/lists)
-- add caching of packages to go-ipfs / node install.js
-- password for username is unclear (and buggy: can't enter no password)
-- feature: download manager
-- cache UI fonts locally (package with the app)
-  + http://stackoverflow.com/questions/8966740/how-to-host-google-web-fonts-on-my-own-server
-- flashing "Anonymous" user name for a known user
-- bug: slow internet makes the app respond slower (how ui elements appear, sending messages feedback delay, etc.)
-- subcomandante needs to be platform-agnostic (remove #!/usr/bin/env node)
-- convert MessageStore (UI) to ES6
-- easier network setup than network.json
-- hook log4js to ws so that backend logs get to browser
-- aliases for peer addresses, "known as"
-- bug: loading time at join if there are new messages in network
-- favorites view, add(/remove) to favorites, uses DirectoryView only, localStorage for storing Maps {hash,links}, check possibility to save to network
-- fix autolinks for http://localhost:port (fix in react-autolink)
-- add file progress notification (loading text)
-- emoji auto-completion
-- emoji descriptions to image alt (fix in react-emoji)
-- fancy link preview
-- download a directory
+See [TODO](https://github.com/haadcode/orbit/blob/master/TODO.md) for ideas and tasks up for grabs.
