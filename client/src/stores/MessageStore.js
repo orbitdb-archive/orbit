@@ -104,15 +104,19 @@ const MessageStore = Reflux.createStore({
     console.log("MessageStore - new messages count: ", unique.length);
 
     if(unique.length > 0) {
+      // If we received more than 1 message, there are more messages to be loaded
+      if(unique.length > 1) {
+        this.canLoadMore = true;
+      } else if(unique.length === 1 && this.messages[channel].length === 0) {
+        // Special case for a channel that has only one message
+        ChannelActions.reachedChannelStart();
+      }
+
+      // Append the new messages either at the end (newer) or at the beginning (older)
       if(older)
         this.messages[channel] = unique.concat(this.messages[channel]);
       else
         this.messages[channel] = this.messages[channel].concat(unique);
-
-      if(unique.length > 1)
-        this.canLoadMore = true;
-       else
-        ChannelActions.reachedChannelStart();
 
       this.trigger(channel, this.messages[channel]);
     } else {
