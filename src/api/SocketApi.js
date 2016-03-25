@@ -7,7 +7,7 @@ var logger      = require('orbit-common/lib/logger');
 var ApiMessages = require('../ApiMessages');
 
 /* SOCKET API */
-var SocketApi = (socketServer, httpServer, events, handler) => {
+var SocketApi = (socketServer, httpServer, events, orbit) => {
   logger.debug("Starting socket server");
 
   let socket = null;
@@ -29,7 +29,7 @@ var SocketApi = (socketServer, httpServer, events, handler) => {
     if(socket) socket.emit('orbit.error', err);
   };
 
-  var onNewMessages = (channel, data) => {
+  const onNewMessages = (channel, data) => {
     if(socket) socket.emit('messages', channel, data);
   };
 
@@ -72,20 +72,18 @@ var SocketApi = (socketServer, httpServer, events, handler) => {
       logger.warn("UI disconnected");
     });
 
-    socket.on(ApiMessages.network.disconnect, async(() => handler.disconnect()));
-    socket.on(ApiMessages.register, async((host, username, password) => handler.connect(host, username, password)));
-    socket.on(ApiMessages.channels.get, async((cb) => handler.getChannels(cb)));
-    socket.on(ApiMessages.channel.join, async((channel, password, cb) => handler.join(channel, password, cb)));
-    socket.on(ApiMessages.channel.part, async((channel) => handler.leave(channel)));
-    socket.on(ApiMessages.channel.messages, async((channel, lessThanHash, greaterThanHash, amount, callback) => handler.getMessages(channel, lessThanHash, greaterThanHash, amount, callback)));
-    socket.on(ApiMessages.post.get, async((hash, callback) => handler.getPost(hash, callback)));
-    socket.on(ApiMessages.user.get, async((hash, cb) => handler.getUser(hash, cb)));
-    socket.on(ApiMessages.message.send, async((channel, message, cb) => handler.sendMessage(channel, message, cb)));
-    socket.on(ApiMessages.file.add, async((channel, filePath, cb) => handler.addFile(channel, filePath, cb)));
-    socket.on(ApiMessages.directory.get, async((hash, cb) => handler.getDirectory(hash, cb)));
-    socket.on(ApiMessages.swarm.peers, async((cb) => handler.getSwarmPeers(cb)));
-    /* TODO */
-    // socket.on(ApiMessages.channel.setMode, handler.setMode);
+    socket.on(ApiMessages.network.disconnect, async(() => orbit.disconnect()));
+    socket.on(ApiMessages.register, async((host, username, password) => orbit.connect(host, username, password)));
+    socket.on(ApiMessages.channels.get, async((cb) => orbit.getChannels(cb)));
+    socket.on(ApiMessages.channel.join, async((channel, password, cb) => orbit.join(channel, password, cb)));
+    socket.on(ApiMessages.channel.part, async((channel) => orbit.leave(channel)));
+    socket.on(ApiMessages.channel.messages, async((channel, lessThanHash, greaterThanHash, amount, callback) => orbit.getMessages(channel, lessThanHash, greaterThanHash, amount, callback)));
+    socket.on(ApiMessages.post.get, async((hash, callback) => orbit.getPost(hash, callback)));
+    socket.on(ApiMessages.user.get, async((hash, cb) => orbit.getUser(hash, cb)));
+    socket.on(ApiMessages.message.send, async((channel, message, cb) => orbit.sendMessage(channel, message, cb)));
+    socket.on(ApiMessages.file.add, async((channel, filePath, cb) => orbit.addFile(channel, filePath, cb)));
+    socket.on(ApiMessages.directory.get, async((hash, cb) => orbit.getDirectory(hash, cb)));
+    socket.on(ApiMessages.swarm.peers, async((cb) => orbit.getSwarmPeers(cb)));
   });
 
 };
