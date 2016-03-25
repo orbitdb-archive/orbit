@@ -62,11 +62,6 @@ class ChannelsPanel extends React.Component {
   }
 
   handleJoinChannel(channelName, password) {
-    // if("#" + channelName === this.state.currentChannel) {
-    //   this.togglePanel();
-    //   return;
-    // }
-
     this.setState({ joiningToChannel: channelName, requirePassword: password !== '', loading: true });
     UIActions.joinChannel(channelName, password);
   }

@@ -13,10 +13,8 @@ class Header extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      location: props.location,
       appState: AppStateStore.state,
-      openChannels: [],
-      theme: props.theme
+      openChannels: []
     };
   }
 
@@ -38,14 +36,6 @@ class Header extends React.Component {
     this.unsubscribeFromChannelStore();
   }
 
-  componentWillReceiveProps(nextProps) {
-    this.setState({ location: nextProps.location, theme: nextProps.theme });
-  }
-
-  onClose() {
-    this.props.onClose();
-  }
-
   openChannel(channel, event) {
     event.stopPropagation();
     UIActions.showChannel(channel);
@@ -57,12 +47,10 @@ class Header extends React.Component {
   }
 
   render() {
-    var style = this.state.location && this.state.location !== "Connect" ? "Header" : "Header none";
-
+    // TODO: move channels to its own component
     var filteredChannels = _.filter(this.state.openChannels, (e) => {
-      return '#' + e.name !== this.state.location && this.state.location;
+      return '#' + e.name !== this.props.title && this.props.title;
     });
-
     var channels = filteredChannels.map((e) => {
       const unreadMessagesCount = this.state.appState.unreadMessages[e.name] ? this.state.appState.unreadMessages[e.name] : 0;
       const mentionsCount = this.state.appState.mentions[e.name] ? this.state.appState.mentions[e.name] : 0;
@@ -71,7 +59,7 @@ class Header extends React.Component {
         return (
           <span className="channel">
             <span onClick={this.openChannel.bind(this, e.name)}>#{e.name}</span>
-            <span className={className} style={this.state.theme}>{unreadMessagesCount}</span>
+            <span className={className} style={this.props.theme}>{unreadMessagesCount}</span>
           </span>
         );
       }
@@ -81,14 +69,8 @@ class Header extends React.Component {
         );
     });
 
-    var location = this.state.location ? <span key={this.state.location}>{this.state.location}</span> : '';
-
     return (
-      <div className={style}
-           onDragEnter={this.onDragEnter.bind(this)}
-           key="Header"
-           onClick={this.onClose.bind(this)}
-           >
+      <div className="Header" onClick={this.props.onClick} onDragEnter={this.onDragEnter.bind(this)}>
         <div className="ChannelName">
           <div className="currentChannel">
             <TransitionGroup
@@ -100,7 +82,7 @@ class Header extends React.Component {
               transitionAppearTimeout={0}
               transitionEnterTimeout={1000}
               transitionLeaveTimeout={0}>
-              {location}
+              <span>{this.props.title}</span>
             </TransitionGroup>
           </div>
           {channels}

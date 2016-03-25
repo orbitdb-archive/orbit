@@ -3,9 +3,11 @@
 import _ from 'lodash';
 import Reflux from 'reflux';
 import AppActions from 'actions/AppActions';
+import NetworkActions from 'actions/NetworkActions';
+import NotificationActions from 'actions/NotificationActions';
 
 const AppStateStore = Reflux.createStore({
-  listenables: [AppActions],
+  listenables: [AppActions, NetworkActions, NotificationActions],
   init: function() {
     this.state = {
       location: null,
@@ -31,6 +33,10 @@ const AppStateStore = Reflux.createStore({
       this.trigger(this.state);
     }
   },
+  onLeaveChannel: function (channel) {
+    if(channel === this.state.currentChannel)
+      this.onSetCurrentChannel(null);
+  },
   onIncreaseUnreadMessagesCount: function(channel, inc) {
     if(channel !== this.state.currentChannel) {
       if(!this.state.unreadMessages[channel])
@@ -39,7 +45,7 @@ const AppStateStore = Reflux.createStore({
       this.trigger(this.state);
     }
   },
-  increaseMentionsCount: function(channel, message) {
+  onMention: function(channel, message) {
     if(channel !== this.state.currentChannel) {
       if(!this.state.mentions[channel])
         this.state.mentions[channel] = 0;

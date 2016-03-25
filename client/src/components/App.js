@@ -6,10 +6,11 @@ import ReactDOM from 'react-dom';
 import Router from 'react-router';
 import { Route, History, IndexRoute } from 'react-router/lib';
 
+import AppActions from 'actions/AppActions';
 import UIActions from "actions/UIActions";
+import SocketActions from 'actions/SocketActions';
 import NetworkActions from 'actions/NetworkActions';
 import NotificationActions from 'actions/NotificationActions';
-import AppActions from 'actions/AppActions';
 
 import AppStateStore from 'stores/AppStateStore';
 import UserStore from 'stores/UserStore';
@@ -48,7 +49,6 @@ var App = React.createClass({
   getInitialState: function() {
     return {
       panelOpen: false,
-      // location: null,
       user: null,
       joiningToChannel: null,
       requirePassword: false,
@@ -61,29 +61,34 @@ var App = React.createClass({
 
     UIActions.joinChannel.listen(this.joinChannel);
     UIActions.showChannel.listen(this.showChannel);
-
     NetworkActions.joinedChannel.listen(this.onJoinedChannel);
     NetworkActions.joinChannelError.listen(this.onJoinChannelError);
-    NetworkActions.leaveChannel.listen(this.onLeaveChannel);
+    SocketActions.socketDisconnected.listen(this.onDaemonDisconnected);
+    NotificationActions.mention.listen(this._handleMention);
 
-    this.unsubscribeFromSettingsStore = SettingsStore.listen((settings) => {
-      this.setState({ theme: Themes[settings.theme] || null });
-    });
     this.unsubscribeFromConnectionStore = ConnectionStore.listen(this.onDaemonConnected);
     this.unsubscribeFromNetworkStore = NetworkStore.listen(this.onNetworkUpdated);
     this.unsubscribeFromUserStore = UserStore.listen(this.onUserUpdated);
     this.unsubscribeFromMessageStore = MessageStore.listen(this._handleNewMessage);
-    NotificationActions.mention.listen(this._handleMention);
     this.stopListeningAppState = AppStateStore.listen(this._handleAppStateChange);
-  },
-  goToLocation: function(name, url) {
-    this.history.pushState(null, url);
+    this.unsubscribeFromSettingsStore = SettingsStore.listen((settings) => {
+      this.setState({ theme: Themes[settings.theme] || null });
+    });
   },
   _handleAppStateChange: function(state) {
     console.log("STATE CHANGED", state);
+
     if(state.currentChannel) {
+      let prefix = '';
+      if(Object.keys(state.unreadMessages).length > 0)
+        prefix = '*';
+      if(Object.keys(state.mentions).length > 0)
+        prefix = '!';
+
+      document.title = prefix + ' ' + AppStateStore.state.location;
       this.goToLocation(state.currentChannel, views.Channel + state.currentChannel);
     } else {
+      document.title = "Orbit";
       this.goToLocation(state.location, views[state.location]);
     }
 
@@ -92,23 +97,14 @@ var App = React.createClass({
   },
   _handleMention: function(channel, message) {
     if(AppStateStore.state.currentChannel !== channel) {
-      document.title = "! " + (AppStateStore.state.location ? AppStateStore.state.location : "Orbit");
-      AppActions.increaseMentionsCount(channel, 1);
+      // document.title = "! " + document.title;
       // TODO: pass on to backend
     }
   },
   _handleNewMessage: function(channel, message) {
     if(AppStateStore.state.currentChannel !== channel) {
-      document.title = "* " + (AppStateStore.state.location ? AppStateStore.state.location : "Orbit");
+      // document.title = "* " + document.title;
       AppActions.increaseUnreadMessagesCount(channel, 1);
-    }
-  },
-  onDaemonConnected: function(socket) {
-    if(socket) {
-      console.log("Daemon connected", socket);
-    } else {
-      console.error("Daemon disconnected");
-      if(this.state.panelOpen) this.closePanel();
     }
   },
   _reset: function() {
@@ -166,10 +162,6 @@ var App = React.createClass({
     const channelInfo = ChannelStore.get(channel);
     this.showChannel(channelInfo.name);
   },
-  onLeaveChannel: function (channel) {
-    if(channel === AppStateStore.state.currentChannel)
-      AppActions.setCurrentChannel(null);
-  },
   showChannel: function(channel) {
     AppActions.setCurrentChannel(channel);
   },
@@ -190,18 +182,23 @@ var App = React.createClass({
     NetworkActions.disconnect();
     this.setState({ user: null });
     AppActions.setLocation("Connect");
-    document.title = "Orbit";
+  },
+  onDaemonDisconnected: function() {
+    AppActions.setLocation(null);
+  },
+  goToLocation: function(name, url) {
+    this.history.pushState(null, url);
   },
   render: function() {
-    var header = (
+    const header = AppStateStore.state.location && AppStateStore.state.location !== "Connect" ? (
       <Header
-        onClose={this.openPanel}
-        location={AppStateStore.state.location}
+        onClick={this.openPanel}
+        title={AppStateStore.state.location}
         theme={this.state.theme}>
       </Header>
-    );
+    ) : null;
 
-    var panel = this.state.panelOpen ? (
+    const panel = this.state.panelOpen ? (
       <ChannelsPanel
         onClose={this.closePanel}
         onOpenSwarmView={this.openSwarmView}
