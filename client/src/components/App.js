@@ -70,14 +70,14 @@ var App = React.createClass({
   },
   _handleMention: function(channel, message) {
     if(this.state.currentChannel !== channel) {
-      document.title = "! " + this.state.location;
+      document.title = "! " + (this.state.location ? this.state.location : "Orbit");
       AppActions.increaseMentionsCount(channel, 1);
       // TODO: pass on to backend
     }
   },
   _handleNewMessage: function(channel, message) {
     if(this.state.currentChannel !== channel) {
-      document.title = "* " + this.state.location;
+      document.title = "* " + (this.state.location ? this.state.location : "Orbit");
       AppActions.increaseUnreadMessagesCount(channel, 1);
     }
   },
