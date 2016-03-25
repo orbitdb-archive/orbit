@@ -23,7 +23,6 @@ var UsersStore = Reflux.createStore({
     onAddUser: function(user) {
       if(!_.includes(this.users, user))
         this.users.push(user);
-      console.log("USERS", this.users);
     }
     // onGetUserInfo: function(hash, callback) {
     //   if(!this.users[hash]) {

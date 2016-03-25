@@ -56,11 +56,16 @@ class ChannelsPanel extends React.Component {
     this.unsubscribeFromChannelStore();
   }
 
+  onClose() {
+    if(this.state.currentChannel !== null)
+      this.props.onClose();
+  }
+
   handleJoinChannel(channelName, password) {
-    if("#" + channelName === this.state.currentChannel) {
-      this.togglePanel();
-      return;
-    }
+    // if("#" + channelName === this.state.currentChannel) {
+    //   this.togglePanel();
+    //   return;
+    // }
 
     this.setState({ joiningToChannel: channelName, requirePassword: password !== '', loading: true });
     UIActions.joinChannel(channelName, password);
@@ -69,13 +74,6 @@ class ChannelsPanel extends React.Component {
   clearRecentChannels() {
     localStorage.setItem("channels", null);
     this.setState({recentChannels: []});
-  }
-
-  togglePanel() {
-    if(this.state.currentChannel !== null) {
-      this.props.onOpenChannelsPanel();
-      this.setState({ requirePassword: false });
-    }
   }
 
   _renderChannel(e) {
@@ -125,7 +123,7 @@ class ChannelsPanel extends React.Component {
               transitionEnterTimeout={5000}
               transitionLeaveTimeout={5000}
               component="div">
-              <div className={headerStyle} onClick={this.togglePanel.bind(this)}>
+              <div className={headerStyle} onClick={this.onClose.bind(this)}>
                 <div className="logo">Orbit</div>
               </div>
             </TransitionGroup>
@@ -186,7 +184,7 @@ class ChannelsPanel extends React.Component {
 
         </TransitionGroup>
 
-        <TransitionGroup component="div" transitionName="darkenerAnimation" transitionAppear={true} className={"darkener"} onClick={this.togglePanel.bind(this)} transitionAppearTimeout={5000} transitionEnterTimeout={5000} transitionLeaveTimeout={5000}>
+        <TransitionGroup component="div" transitionName="darkenerAnimation" transitionAppear={true} className={"darkener"} onClick={this.onClose.bind(this)} transitionAppearTimeout={5000} transitionEnterTimeout={5000} transitionLeaveTimeout={5000}>
         </TransitionGroup>
       </div>
     );

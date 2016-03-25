@@ -42,8 +42,8 @@ class Header extends React.Component {
     this.setState({ location: nextProps.location, theme: nextProps.theme });
   }
 
-  openChannelsPanel() {
-    this.props.onOpenChannelsPanel();
+  onClose() {
+    this.props.onClose();
   }
 
   openChannel(channel, event) {
@@ -87,7 +87,7 @@ class Header extends React.Component {
       <div className={style}
            onDragEnter={this.onDragEnter.bind(this)}
            key="Header"
-           onClick={this.openChannelsPanel.bind(this)}
+           onClick={this.onClose.bind(this)}
            >
         <div className="ChannelName">
           <div className="currentChannel">

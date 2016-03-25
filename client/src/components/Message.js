@@ -8,15 +8,12 @@ import File from "components/File";
 import TextMessage from "components/TextMessage";
 import Directory from "components/Directory";
 import ChannelActions from 'actions/ChannelActions';
-import UserActions from 'actions/UserActions';
-import NotificationActions from 'actions/NotificationActions';
 import "styles/Message.scss";
 
 class Message extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      message: props.message,
       post: null,
       hasHighlights: false,
       isCommand: false
@@ -24,20 +21,7 @@ class Message extends React.Component {
   }
 
   componentDidMount() {
-    ChannelActions.loadPost(this.state.message.value, (err, post) => {
-      if(post && post.content) {
-        if(post.content.startsWith('/me'))
-          this.setState({ isCommand: true });
-
-        post.content.split(" ").forEach((word) => {
-          const highlight = MentionHighlighter.highlight(word, this.props.highlightWords);
-          if(typeof highlight[0] !== 'string') {
-            this.setState({ hasHighlights: true });
-            NotificationActions.mention(this.state.channelName, post.content);
-          }
-        });
-      }
-      UserActions.addUser(post.meta.from);
+    ChannelActions.loadPost(this.props.message.value, (err, post) => {
       this.setState({ post: post });
     });
   }
@@ -48,7 +32,7 @@ class Message extends React.Component {
 
   render() {
     const safeTime = (time) => ("0" + time).slice(-2);
-    const date = new Date(this.state.message.meta.ts);
+    const date = new Date(this.props.message.meta.ts);
     const ts = safeTime(date.getHours()) + ":" + safeTime(date.getMinutes()) + ":" + safeTime(date.getSeconds());
 
     const className = this.state.hasHighlights ? "Message highlighted" : "Message";

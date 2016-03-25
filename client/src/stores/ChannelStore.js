@@ -6,6 +6,7 @@ import UIActions from 'actions/UIActions';
 import SocketActions from 'actions/SocketActions';
 import NetworkActions from 'actions/NetworkActions';
 import ChannelActions from 'actions/ChannelActions';
+import AppStateStore from 'stores/AppStateStore';
 
 var ChannelStore = Reflux.createStore({
   listenables: [NetworkActions, SocketActions, ChannelActions],
@@ -39,6 +40,9 @@ var ChannelStore = Reflux.createStore({
     this.trigger(this.channels);
   },
   onJoinChannel: function(channel, password) {
+    if(channel === AppStateStore.state.currentChannel)
+      return;
+
     if(!this.get(channel)) {
       this.socket.emit("channel.join", channel, password, (err, res) => {
         console.log("--> joined channel", channel, password ? "********" : password);

@@ -7,10 +7,11 @@ import NetworkActions from 'actions/NetworkActions';
 import ChannelActions from 'actions/ChannelActions';
 import SocketActions from 'actions/SocketActions';
 import NotificationActions from 'actions/NotificationActions';
+import UserActions from 'actions/UserActions';
 import ChannelStore from 'stores/ChannelStore';
 import UserStore from 'stores/UserStore';
 
-const messagesBatchSize = 16;
+const messagesBatchSize = 8;
 
 const MessageStore = Reflux.createStore({
   listenables: [UIActions, NetworkActions, SocketActions, ChannelActions],
@@ -148,6 +149,7 @@ const MessageStore = Reflux.createStore({
     };
 
     this.onLoadPost(message.value, (err, post) => {
+      UserActions.addUser(post.meta.from);
       if(post && post.content) {
         if(hasMentions(post.content, UserStore.user.username))
           NotificationActions.mention(channel, post.content);

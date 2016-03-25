@@ -8,16 +8,26 @@ const AppStateStore = Reflux.createStore({
   listenables: [AppActions],
   init: function() {
     this.state = {
+      location: null,
       currentChannel: null,
       unreadMessages: {},
       mentions: {}
     };
   },
+  onSetLocation: function(location) {
+    if(location === this.state.location)
+      return;
+
+    this.state.currentChannel = null;
+    this.state.location = location;
+    this.trigger(this.state);
+  },
   onSetCurrentChannel: function(channel) {
     if(channel !== this.state.currentChannel) {
       this.state.currentChannel = channel;
-      this._resetUnreadMessages(channel);
-      this._resetMentions(channel);
+      this.state.location = channel ? `#${channel}` : null;
+      delete this.state.unreadMessages[channel];
+      delete this.state.mentions[channel];
       this.trigger(this.state);
     }
   },
@@ -36,14 +46,6 @@ const AppStateStore = Reflux.createStore({
       this.state.mentions[channel] += 1;
       this.trigger(this.state);
     }
-  },
-  _resetUnreadMessages: function(channel) {
-    delete this.state.unreadMessages[channel];
-    this.trigger(this.state);
-  },
-  _resetMentions: function(channel) {
-    delete this.state.mentions[channel];
-    this.trigger(this.state);
   }
 });
 

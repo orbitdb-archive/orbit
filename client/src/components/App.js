@@ -35,16 +35,23 @@ import '../styles/main.css';
 import 'styles/App.scss';
 import 'styles/Scrollbars.scss';
 
+const views = {
+  "Index": "/",
+  "Settings": "/settings",
+  "Swarm": "/swarm",
+  "Connect": "/connect",
+  "Channel": "/channel/"
+};
+
 var App = React.createClass({
   mixins: [History],
   getInitialState: function() {
     return {
       panelOpen: false,
-      location: null,
+      // location: null,
       user: null,
       joiningToChannel: null,
       requirePassword: false,
-      currentChannel: null,
       theme: null,
       networkName: "Unknown Network"
     };
@@ -67,26 +74,41 @@ var App = React.createClass({
     this.unsubscribeFromUserStore = UserStore.listen(this.onUserUpdated);
     this.unsubscribeFromMessageStore = MessageStore.listen(this._handleNewMessage);
     NotificationActions.mention.listen(this._handleMention);
+    this.stopListeningAppState = AppStateStore.listen(this._handleAppStateChange);
+  },
+  goToLocation: function(name, url) {
+    this.history.pushState(null, url);
+  },
+  _handleAppStateChange: function(state) {
+    console.log("STATE CHANGED", state);
+    if(state.currentChannel) {
+      this.goToLocation(state.currentChannel, views.Channel + state.currentChannel);
+    } else {
+      this.goToLocation(state.location, views[state.location]);
+    }
+
+    if(state.currentChannel || state.location)
+      this.closePanel();
   },
   _handleMention: function(channel, message) {
-    if(this.state.currentChannel !== channel) {
-      document.title = "! " + (this.state.location ? this.state.location : "Orbit");
+    if(AppStateStore.state.currentChannel !== channel) {
+      document.title = "! " + (AppStateStore.state.location ? AppStateStore.state.location : "Orbit");
       AppActions.increaseMentionsCount(channel, 1);
       // TODO: pass on to backend
     }
   },
   _handleNewMessage: function(channel, message) {
-    if(this.state.currentChannel !== channel) {
-      document.title = "* " + (this.state.location ? this.state.location : "Orbit");
+    if(AppStateStore.state.currentChannel !== channel) {
+      document.title = "* " + (AppStateStore.state.location ? AppStateStore.state.location : "Orbit");
       AppActions.increaseUnreadMessagesCount(channel, 1);
     }
   },
   onDaemonConnected: function(socket) {
-    if(socket)
+    if(socket) {
       console.log("Daemon connected", socket);
-    else {
+    } else {
       console.error("Daemon disconnected");
-      if(this.state.panelOpen) this.togglePanel();
+      if(this.state.panelOpen) this.closePanel();
     }
   },
   _reset: function() {
@@ -96,58 +118,42 @@ var App = React.createClass({
     console.log("Network updated", network);
     if(!network) {
       this._reset();
-      this.history.pushState(null, '/connect');
+      AppActions.setLocation("Connect");
     } else {
       this.setState({ networkName: network.name });
     }
   },
   _showConnectView: function() {
-          console.log("222");
-
-    this.setState({ location: "Connect", user: null });
-    this.history.pushState(null, '/connect');
+    this.setState({ user: null });
+    AppActions.setLocation("Connect");
   },
   onUserUpdated: function(user) {
     console.log("User updated", user);
 
     if(!user) {
-      this.setState({ location: "Connect", user: null });
-      this.history.pushState(null, '/connect');
+      this.setState({ user: null });
+      AppActions.setLocation("Connect");
       return;
     }
-
-    // if(user.network) this.setState({ networkName: user.network.name });
 
     if(user === this.state.user)
       return;
 
-    if(!user.username) {
-      if(this.state.panelOpen) {
-        UIActions.onPanelClosed();
-        this.setState({ panelOpen: !this.state.panelOpen });
-      }
+    this.setState({ user: user });
 
-      this.setState({ location: "Connect", user: user });
-      this.history.pushState(null, '/connect');
+    if(!user.username) {
+      this.closePanel();
+      AppActions.setLocation("Connect");
     } else {
-      this.setState({ user: user });
-      if(!this.state.panelOpen) this.togglePanel();
-      this.setState({ location: null, user: user });
-      this.history.pushState(null, '/');
-    }
-  },
-  togglePanel: function(close = false) {
-    if(location && this.state.user) {
-      if(this.state.panelOpen) UIActions.onPanelClosed();
-      if(close)
-        this.setState({ panelOpen: false });
-      else
-        this.setState({ panelOpen: !this.state.panelOpen });
+      if(!this.state.panelOpen) this.openPanel();
+      AppActions.setLocation(null);
     }
   },
   joinChannel: function(channelName, password) {
-    if(channelName === this.state.currentChannel)
+    if(channelName === AppStateStore.state.currentChannel) {
+      this.closePanel();
       return;
+    }
     console.log("Join channel #" + channelName);
     NetworkActions.joinChannel(channelName, password);
   },
@@ -161,58 +167,47 @@ var App = React.createClass({
     this.showChannel(channelInfo.name);
   },
   onLeaveChannel: function (channel) {
-    if(channel === this.state.currentChannel) {
+    if(channel === AppStateStore.state.currentChannel)
       AppActions.setCurrentChannel(null);
-      this.setState({ location: null, currentChannel: null, requirePassword: false });
-      this.history.pushState(null, '/');
-    }
   },
   showChannel: function(channel) {
-    if(channel === this.state.currentChannel)
-      return;
-
-    console.log("Open view for channel #" + channel);
-
     AppActions.setCurrentChannel(channel);
-
-    this.togglePanel(true);
-    this.setState({ location: "#" + channel, requirePassword: false, currentChannel: channel, joiningToChannel: null });
-    this.history.pushState(null, '/channel/' + channel);
   },
   openSettings: function() {
-    this.goToLocation("Settings", "/settings");
+    AppActions.setLocation("Settings");
   },
   openSwarmView: function() {
-    this.goToLocation("Swarm", "/swarm");
+    AppActions.setLocation("Swarm");
+  },
+  closePanel: function() {
+    this.setState({ panelOpen: false });
+    UIActions.onPanelClosed();
+  },
+  openPanel: function() {
+    this.setState({ panelOpen: true });
   },
   disconnect: function() {
     NetworkActions.disconnect();
     this.setState({ user: null });
-    this.goToLocation("Connect", "/connect");
+    AppActions.setLocation("Connect");
     document.title = "Orbit";
-  },
-  goToLocation: function(name, url) {
-    this.togglePanel();
-    AppActions.setCurrentChannel(channel);
-    this.setState({ location: name, currentChannel: null });
-    this.history.pushState(null, url);
   },
   render: function() {
     var header = (
       <Header
-        onOpenChannelsPanel={this.togglePanel}
-        location={this.state.location}
+        onClose={this.openPanel}
+        location={AppStateStore.state.location}
         theme={this.state.theme}>
       </Header>
     );
 
     var panel = this.state.panelOpen ? (
       <ChannelsPanel
-        onOpenChannelsPanel={this.togglePanel}
+        onClose={this.closePanel}
         onOpenSwarmView={this.openSwarmView}
         onOpenSettings={this.openSettings}
         onDisconnect={this.disconnect}
-        currentChannel={this.state.location}
+        currentChannel={AppStateStore.state.location}
         username={this.state.user ? this.state.user.username : ""}
         requirePassword={this.state.requirePassword}
         theme={this.state.theme}

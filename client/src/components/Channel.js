@@ -90,7 +90,6 @@ class Channel extends React.Component {
     this.unsubscribeFromErrors = UIActions.raiseError.listen(this._onError.bind(this));
 
     this.node = this.refs.MessagesView;
-    // this.scrollHeight = 0;
     this.loadOlderMessages();
   }
 
