@@ -19,6 +19,7 @@ const MessageStore = Reflux.createStore({
     this.socket = null;
     this.posts = {}; // simple cache for message contents
     this._reset();
+    this.hasLoaded = false;
 
     // Listen for changes in channels
     this.unsubscribeFromChannelStore = ChannelStore.listen((channels) => {
@@ -58,14 +59,18 @@ const MessageStore = Reflux.createStore({
 
     // Handle DB loading state
     this.socket.on('db.load', (action, channel) => {
-      if(action === 'sync')
+      if(action === 'sync') {
+        this.hasLoaded = false;
         UIActions.startLoading(channel, "loadhistory", "Syncing...");
+      }
       else if(action === 'query')
         UIActions.startLoading(channel, "query", "Loading...");
     });
     this.socket.on('db.loaded', (action, channel) => {
-      if(action === 'sync')
+      if(action === 'sync') {
+        this.hasLoaded = true;
         UIActions.stopLoading(channel, "loadhistory");
+      }
       else if(action === 'query')
         UIActions.stopLoading(channel, "query");
     });
@@ -144,7 +149,7 @@ const MessageStore = Reflux.createStore({
       this.trigger(channel, this.messages[channel]);
     } else if(older) {
       ChannelActions.reachedChannelStart();
-    } else if(!older && this.messages[channel].length === 0) {
+    } else if(!older && this.messages[channel].length === 0 && this.hasLoaded) {
       ChannelActions.reachedChannelStart();
     }
   },
