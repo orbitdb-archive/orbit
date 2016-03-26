@@ -119,9 +119,14 @@ const MessageStore = Reflux.createStore({
 
     if(unique.length > 0) {
       // If we received more than 1 message, there are more messages to be loaded
-      if(unique.length > 1) {
-        this.canLoadMore = true;
-      } else if(unique.length === 1 || (this.messages[channel].length === 0 && !older)) {
+      // if(unique.length > 1) {
+      //   this.canLoadMore = true;
+      // } else if(unique.length === 1 && this.messages[channel].length === 0 && older) {
+      //   // Special case for a channel that has only one message
+      //   ChannelActions.reachedChannelStart();
+      // }
+      this.canLoadMore = true;
+      if(unique.length === 1 && this.messages[channel].length === 0 && older) {
         // Special case for a channel that has only one message
         ChannelActions.reachedChannelStart();
       }
@@ -137,7 +142,9 @@ const MessageStore = Reflux.createStore({
 
       NotificationActions.newMessage(channel);
       this.trigger(channel, this.messages[channel]);
-    } else {
+    } else if(older) {
+      ChannelActions.reachedChannelStart();
+    } else if(!older && this.messages[channel].length === 0) {
       ChannelActions.reachedChannelStart();
     }
   },
