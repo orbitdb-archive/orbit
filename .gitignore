@@ -7,7 +7,9 @@
 .tmp/
 .electron-prebuilt/
 
-dist/
+dist/nodejs-linux
+dist/nodejs-osx
+dist/Orbit-darwin-x64/
 client/node_modules/
 node_modules/
 
