@@ -100,6 +100,9 @@ const MessageStore = Reflux.createStore({
     }
   },
   loadMessages: function(channel: string, olderThanHash: string, newerThanHash: string, amount: number) {
+    if(!this.socket)
+      return;
+
     console.log("--> channel.get: ", channel, olderThanHash, newerThanHash, amount);
     this.loading = true;
     UIActions.startLoading(channel, "loadmessages", "Loading messages...");
@@ -118,7 +121,7 @@ const MessageStore = Reflux.createStore({
       // If we received more than 1 message, there are more messages to be loaded
       if(unique.length > 1) {
         this.canLoadMore = true;
-      } else if(unique.length === 1 && this.messages[channel].length === 0 && !older) {
+      } else if(unique.length === 1 || (this.messages[channel].length === 0 && !older)) {
         // Special case for a channel that has only one message
         ChannelActions.reachedChannelStart();
       }
@@ -132,6 +135,7 @@ const MessageStore = Reflux.createStore({
       // Load message content
       unique.forEach((f) => this._loadPost(channel, f));
 
+      NotificationActions.newMessage(channel);
       this.trigger(channel, this.messages[channel]);
     } else {
       ChannelActions.reachedChannelStart();
@@ -151,7 +155,7 @@ const MessageStore = Reflux.createStore({
     this.onLoadPost(message.value, (err, post) => {
       UserActions.addUser(post.meta.from);
       if(post && post.content) {
-        if(hasMentions(post.content, UserStore.user.username))
+        if(hasMentions(post.content.toLowerCase(), UserStore.user.username.toLowerCase()))
           NotificationActions.mention(channel, post.content);
       }
     });

@@ -18,7 +18,6 @@ var ConnectionStore = Reflux.createStore({
         console.log("WebSocket connected");
 
         this.socket.on('network', (network) => {
-          if(network) console.log(network ? "Connected to network: " + network : "Not connected");
           NetworkActions.updateNetwork(network);
         });
 

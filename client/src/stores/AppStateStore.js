@@ -13,7 +13,8 @@ const AppStateStore = Reflux.createStore({
       location: null,
       currentChannel: null,
       unreadMessages: {},
-      mentions: {}
+      mentions: {},
+      hasFocus: true
     };
   },
   onSetLocation: function(location) {
@@ -37,21 +38,31 @@ const AppStateStore = Reflux.createStore({
     if(channel === this.state.currentChannel)
       this.onSetCurrentChannel(null);
   },
-  onIncreaseUnreadMessagesCount: function(channel, inc) {
-    if(channel !== this.state.currentChannel) {
+  onNewMessage: function(channel) {
+    if(channel !== this.state.currentChannel || !this.state.hasFocus) {
       if(!this.state.unreadMessages[channel])
         this.state.unreadMessages[channel] = 0;
-      this.state.unreadMessages[channel] += inc;
+      this.state.unreadMessages[channel] += 1;
       this.trigger(this.state);
     }
   },
   onMention: function(channel, message) {
-    if(channel !== this.state.currentChannel) {
+    if(channel !== this.state.currentChannel || !this.state.hasFocus) {
       if(!this.state.mentions[channel])
         this.state.mentions[channel] = 0;
       this.state.mentions[channel] += 1;
       this.trigger(this.state);
     }
+  },
+  onWindowLostFocus: function() {
+    this.state.hasFocus = false;
+    this.trigger(this.state);
+  },
+  onWindowOnFocus: function() {
+    this.state.hasFocus = true;
+    delete this.state.unreadMessages[this.state.currentChannel];
+    delete this.state.mentions[this.state.currentChannel];
+    this.trigger(this.state);
   }
 });
 

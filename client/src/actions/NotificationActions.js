@@ -3,7 +3,8 @@
 import Reflux from 'reflux';
 
 var NotificationActions = Reflux.createActions([
-  "mention"
+  "mention",
+  "newMessage"
 ]);
 
 export default NotificationActions;

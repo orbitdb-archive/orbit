@@ -50,6 +50,7 @@ var App = React.createClass({
     return {
       panelOpen: false,
       user: null,
+      location: null,
       joiningToChannel: null,
       requirePassword: false,
       theme: null,
@@ -57,56 +58,77 @@ var App = React.createClass({
     };
   },
   componentDidMount: function() {
-    document.title = "Orbit";
+    document.title = 'Orbit';
 
     UIActions.joinChannel.listen(this.joinChannel);
     UIActions.showChannel.listen(this.showChannel);
     NetworkActions.joinedChannel.listen(this.onJoinedChannel);
     NetworkActions.joinChannelError.listen(this.onJoinChannelError);
     SocketActions.socketDisconnected.listen(this.onDaemonDisconnected);
-    NotificationActions.mention.listen(this._handleMention);
+    // NotificationActions.newMessage.listen(this._handleNewMessage);
+    // NotificationActions.mention.listen(this._handleMention);
 
     this.unsubscribeFromConnectionStore = ConnectionStore.listen(this.onDaemonConnected);
     this.unsubscribeFromNetworkStore = NetworkStore.listen(this.onNetworkUpdated);
     this.unsubscribeFromUserStore = UserStore.listen(this.onUserUpdated);
-    this.unsubscribeFromMessageStore = MessageStore.listen(this._handleNewMessage);
     this.stopListeningAppState = AppStateStore.listen(this._handleAppStateChange);
     this.unsubscribeFromSettingsStore = SettingsStore.listen((settings) => {
       this.setState({ theme: Themes[settings.theme] || null });
     });
+
+    window.onblur = () => {
+      AppActions.windowLostFocus();
+      console.log("LOST FOCUS!");
+    };
+
+    window.onfocus = () => {
+      AppActions.windowOnFocus();
+      console.log("GOT FOCUS!");
+    };
   },
   _handleAppStateChange: function(state) {
     console.log("STATE CHANGED", state);
 
-    if(state.currentChannel) {
-      let prefix = '';
-      if(Object.keys(state.unreadMessages).length > 0)
-        prefix = '*';
-      if(Object.keys(state.mentions).length > 0)
-        prefix = '!';
+    let prefix = '', suffix = '';
 
-      document.title = prefix + ' ' + AppStateStore.state.location;
+    if(!AppStateStore.state.hasFocus && AppStateStore.state.unreadMessages[AppStateStore.state.currentChannel] > 0)
+      suffix = `(${AppStateStore.state.unreadMessages[AppStateStore.state.currentChannel]})`;
+
+    if(Object.keys(state.unreadMessages).length > 1 || (Object.keys(state.unreadMessages).length === 1 && !Object.keys(state.unreadMessages).includes(AppStateStore.state.currentChannel)))
+      prefix = '*';
+
+    if(Object.keys(state.mentions).length > 0)
+      prefix = '!';
+
+
+    if(state.currentChannel) {
+      document.title = prefix + ' ' + AppStateStore.state.location + ' ' + suffix;
       this.goToLocation(state.currentChannel, views.Channel + state.currentChannel);
     } else {
-      document.title = "Orbit";
+      document.title = prefix + ' Orbit';
       this.goToLocation(state.location, views[state.location]);
     }
 
     if(state.currentChannel || state.location)
       this.closePanel();
   },
-  _handleMention: function(channel, message) {
-    if(AppStateStore.state.currentChannel !== channel) {
-      // document.title = "! " + document.title;
-      // TODO: pass on to backend
-    }
-  },
-  _handleNewMessage: function(channel, message) {
-    if(AppStateStore.state.currentChannel !== channel) {
-      // document.title = "* " + document.title;
-      AppActions.increaseUnreadMessagesCount(channel, 1);
-    }
-  },
+  // _handleMention: function(channel, message) {
+  //   if(channel !== AppStateStore.state.currentChannel || !AppStateStore.state.hasFocus) {
+  //     // document.title = '! ' + (AppStateStore.state.location ? AppStateStore.state.location : 'Orbit');
+  //     // console.log("TITLE2", document.title);
+  //   }
+  // },
+  // _handleNewMessage: function(channel, message) {
+  //   let prefix = '';
+  //   if(channel === AppStateStore.state.currentChannel && !AppStateStore.state.hasFocus) {
+  //     if(AppStateStore.state.unreadMessages[channel])
+  //       prefix = `(${AppStateStore.state.unreadMessages[channel]})`;
+  //   } else if(!AppStateStore.state.hasFocus) {
+  //     prefix = '*';
+  //   }
+  //   // document.title = prefix + ' ' + (AppStateStore.state.location ? AppStateStore.state.location : 'Orbit');
+  //   // console.log("TITLE1", document.title);
+  // },
   _reset: function() {
     this.setState(this.getInitialState());
   },
@@ -127,7 +149,7 @@ var App = React.createClass({
     console.log("User updated", user);
 
     if(!user) {
-      this.setState({ user: null });
+      console.log("1");
       AppActions.setLocation("Connect");
       return;
     }
@@ -137,13 +159,9 @@ var App = React.createClass({
 
     this.setState({ user: user });
 
-    if(!user.username) {
-      this.closePanel();
-      AppActions.setLocation("Connect");
-    } else {
-      if(!this.state.panelOpen) this.openPanel();
-      AppActions.setLocation(null);
-    }
+    console.log("3");
+    if(!this.state.panelOpen) this.openPanel();
+    AppActions.setLocation(null);
   },
   joinChannel: function(channelName, password) {
     if(channelName === AppStateStore.state.currentChannel) {
@@ -163,6 +181,8 @@ var App = React.createClass({
     this.showChannel(channelInfo.name);
   },
   showChannel: function(channel) {
+    document.title = `#${channel}`;
+    console.log("TITLE", document.title);
     AppActions.setCurrentChannel(channel);
   },
   openSettings: function() {
@@ -184,16 +204,17 @@ var App = React.createClass({
     AppActions.setLocation("Connect");
   },
   onDaemonDisconnected: function() {
-    AppActions.setLocation(null);
+    AppActions.setLocation("Connect");
   },
   goToLocation: function(name, url) {
-    this.history.pushState(null, url);
+    this.history.pushState(null, url ? url : '/');
   },
   render: function() {
     const header = AppStateStore.state.location && AppStateStore.state.location !== "Connect" ? (
       <Header
         onClick={this.openPanel}
         title={AppStateStore.state.location}
+        channels={ChannelStore.channels}
         theme={this.state.theme}>
       </Header>
     ) : null;

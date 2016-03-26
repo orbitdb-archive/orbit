@@ -3,7 +3,6 @@
 import _ from 'lodash';
 import React from 'react/addons';
 import AppStateStore from 'stores/AppStateStore';
-import ChannelStore from 'stores/ChannelStore';
 import UIActions from "actions/UIActions";
 import 'styles/Header.scss';
 
@@ -22,18 +21,10 @@ class Header extends React.Component {
     this.stopListeningAppState = AppStateStore.listen((appState) => {
       this.setState({ appState: appState });
     });
-
-    this.unsubscribeFromChannelStore = ChannelStore.listen((channels) => {
-      var names = Object.keys(channels).map((e) => {
-        return { name: channels[e].name };
-      });
-      this.setState({ openChannels: names });
-    });
   }
 
   componentWillUnmount() {
     this.stopListeningAppState();
-    this.unsubscribeFromChannelStore();
   }
 
   openChannel(channel, event) {
@@ -47,11 +38,10 @@ class Header extends React.Component {
   }
 
   render() {
-    // TODO: move channels to its own component
-    var filteredChannels = _.filter(this.state.openChannels, (e) => {
+    const channelNames = _.filter(this.props.channels, (e) => {
       return '#' + e.name !== this.props.title && this.props.title;
     });
-    var channels = filteredChannels.map((e) => {
+    const channels = channelNames.map((e) => {
       const unreadMessagesCount = this.state.appState.unreadMessages[e.name] ? this.state.appState.unreadMessages[e.name] : 0;
       const mentionsCount = this.state.appState.mentions[e.name] ? this.state.appState.mentions[e.name] : 0;
       if(unreadMessagesCount > 0) {
@@ -82,7 +72,7 @@ class Header extends React.Component {
               transitionAppearTimeout={0}
               transitionEnterTimeout={1000}
               transitionLeaveTimeout={0}>
-              <span>{this.props.title}</span>
+              <span key="title">{this.props.title}</span>
             </TransitionGroup>
           </div>
           {channels}

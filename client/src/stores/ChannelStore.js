@@ -13,9 +13,9 @@ var ChannelStore = Reflux.createStore({
   init: function() {
     this.channels = [];
   },
-  channels: function() {
-    return this.channels;
-  },
+  // channels: function() {
+  //   return this.channels;
+  // },
   get: function(channel) {
     return _.find(this.channels, { name: channel });
   },
