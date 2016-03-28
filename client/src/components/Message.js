@@ -22,6 +22,18 @@ class Message extends React.Component {
 
   componentDidMount() {
     ChannelActions.loadPost(this.props.message.value, (err, post) => {
+      if(post && post.content) {
+        if(post.content.startsWith('/me'))
+          this.setState({ isCommand: true });
+
+        post.content.split(" ").forEach((word) => {
+          const highlight = MentionHighlighter.highlight(word, this.props.highlightWords);
+          if(typeof highlight[0] !== 'string') {
+            this.setState({ hasHighlights: true });
+            NotificationActions.mention(this.state.channelName, post.content);
+          }
+        });
+      }
       this.setState({ post: post });
     });
   }
