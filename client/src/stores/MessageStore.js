@@ -35,6 +35,7 @@ const MessageStore = Reflux.createStore({
     this._resetLoadingState();
   },
   _resetLoadingState: function() {
+    this.hasLoaded = false;
     this.loading = false;
     this.canLoadMore = true;
   },
