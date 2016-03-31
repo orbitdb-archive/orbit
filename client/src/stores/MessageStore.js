@@ -144,7 +144,7 @@ const MessageStore = Reflux.createStore({
         this.messages[channel] = this.messages[channel].concat(unique);
 
       // Load message content
-      unique.forEach((f) => this._loadPost(channel, f));
+      unique.reverse().forEach((f) => this._loadPost(channel, f));
 
       NotificationActions.newMessage(channel);
       this.trigger(channel, this.messages[channel]);
