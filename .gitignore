@@ -6,6 +6,7 @@
 .vagrant/
 .tmp/
 .electron-prebuilt/
+npm-debug.log
 
 dist/nodejs-linux
 dist/nodejs-osx
