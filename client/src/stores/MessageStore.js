@@ -125,12 +125,6 @@ const MessageStore = Reflux.createStore({
 
     if(unique.length > 0) {
       // If we received more than 1 message, there are more messages to be loaded
-      // if(unique.length > 1) {
-      //   this.canLoadMore = true;
-      // } else if(unique.length === 1 && this.messages[channel].length === 0 && older) {
-      //   // Special case for a channel that has only one message
-      //   ChannelActions.reachedChannelStart();
-      // }
       this.canLoadMore = true;
       if(unique.length === 1 && this.messages[channel].length === 0 && older) {
         // Special case for a channel that has only one message
@@ -145,6 +139,9 @@ const MessageStore = Reflux.createStore({
 
       // Load message content
       unique.reverse().forEach((f) => this._loadPost(channel, f));
+
+      // Sort by timestamp
+      this.messages[channel] = _.sortBy(this.messages[channel], (e) => e.meta.ts);
 
       NotificationActions.newMessage(channel);
       this.trigger(channel, this.messages[channel]);
