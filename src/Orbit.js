@@ -5,13 +5,12 @@ const path         = require('path');
 const EventEmitter = require('events').EventEmitter;
 const async        = require('asyncawait/async');
 const await        = require('asyncawait/await');
-const logger       = require('orbit-common/lib/logger');
+const logger       = require('orbit-common/lib/logger')("Orbit.Orbit");
 const OrbitDB      = require('orbit-db');
 const Post         = require('orbit-db/src/post/Post');
 const Network      = require('./NetworkConfig');
 const utils        = require('./utils');
 
-/* HANDLER - TODO: move to its own file */
 class Orbit {
   constructor(ipfs, events) {
     this.ipfs = ipfs;
@@ -69,10 +68,14 @@ class Orbit {
   join(channel, password, callback) {
     logger.debug(`Join #${channel}`);
     if(!this._channels[channel]) {
+      logger.debug("000")
       const db = this.orbit.channel(channel, password);
+      logger.debug("111")
       this._channels[channel] = { name: channel, password: password, db: db };
       this.events.emit('channels.updated', this.getChannels());
+      logger.debug("222")
     }
+      logger.debug("666")
     if(callback) callback(null, { name: channel, modes: {} })
   }
 
@@ -131,18 +134,20 @@ class Orbit {
   }
 
   addFile(channel, filePath, callback) {
-    const addToIpfs = async((ipfs, filePath) => {
-      if(!fs.existsSync(filePath))
-        throw "File not found at '" + filePath + "'";
+    const addToIpfs = (ipfs, filePath) => {
+      return new Promise((resolve, reject) => {
+        if(!fs.existsSync(filePath))
+          throw "File not found at '" + filePath + "'";
 
-      var hash = await (this.ipfs.add(filePath, { recursive: true }));
+        this.ipfs.add(filePath, { recursive: true }).then((hash) => {
+          // FIXME: ipfs-api returns an empty dir name as the last hash, ignore this
+          if(hash[hash.length-1].Name === '')
+            resolve(hash[hash.length-2].Hash);
 
-      // FIXME: ipfs-api returns an empty dir name as the last hash, ignore this
-      if(hash[hash.length-1].Name === '')
-        return hash[hash.length-2].Hash;
-
-      return hash[hash.length-1].Hash;
-    });
+          resolve(hash[hash.length-1].Hash);
+        });
+      });
+    }
 
     logger.info("Adding file from path '" + filePath + "'");
     var isDirectory = await (utils.isDirectory(filePath));
