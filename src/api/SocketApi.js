@@ -1,10 +1,9 @@
 'use strict';
 
-const async     = require('asyncawait/async');
-const await     = require('asyncawait/await');
-var socketIo    = require('socket.io');
-var logger      = require('orbit-common/lib/logger');
-var ApiMessages = require('../ApiMessages');
+const async       = require('asyncawait/async');
+const socketIo    = require('socket.io');
+const logger      = require('orbit-common/lib/logger')("Orbit.SocketApi");
+const ApiMessages = require('../ApiMessages');
 
 /* SOCKET API */
 var SocketApi = (socketServer, httpServer, events, orbit) => {

@@ -10,8 +10,7 @@ const bodyParser     = require('body-parser');
 const methodOverride = require('method-override');
 const mime           = require('mime');
 const http           = require('http');
-const ipfsAPI        = require('orbit-common/lib/ipfs-api-promised');
-const logger         = require('orbit-common/lib/logger');
+const logger         = require('orbit-common/lib/logger')("Orbit.HttpApi");
 
 /* HTTP API */
 const HttpApi = async ((ipfsInstance, events) => {
@@ -42,7 +41,7 @@ const HttpApi = async ((ipfsInstance, events) => {
 
     const hash = req.params.hash;
     try {
-      ipfsAPI.cat(ipfs, hash, (err, result) => {
+      ipfs.cat(ipfs, hash, (err, result) => {
         if(err) next(err);
         if(result) {
           const filename = req.query.name || "";
