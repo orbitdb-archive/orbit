@@ -93,14 +93,14 @@ module.exports = function (grunt) {
         },
         src: [
           '.tmp/node_modules/**',
-          'dist/nodejs-osx/node_modules/orbit-common/node_modules/ipfsd-ctl/node_modules/subcomandante/subcom',
-          'dist/nodejs-linux/node_modules/orbit-common/node_modules/ipfsd-ctl/node_modules/subcomandante/subcom',
-          'dist/nodejs-osx/node_modules/orbit-common/node_modules/ipfsd-ctl/node_modules/.bin/ipfs',
-          'dist/nodejs-linux/node_modules/orbit-common/node_modules/ipfsd-ctl/node_modules/.bin/ipfs',
-          'dist/Orbit-darwin-x64/Orbit.app/Contents/Resources/app/node_modules/orbit-common/node_modules/ipfsd-ctl/node_modules/subcomandante/subcom',
-          'dist/Orbit-darwin-x64/Orbit.app/Contents/Resources/app/node_modules/orbit-common/node_modules/ipfsd-ctl/node_modules/.bin/ipfs',
-          'dist/Orbit-linux-x64/Orbit.app/Contents/Resources/app/node_modules/orbit-common/node_modules/ipfsd-ctl/node_modules/subcomandante/subcom',
-          'dist/Orbit-linux-x64/Orbit.app/Contents/Resources/app/node_modules/orbit-common/node_modules/ipfsd-ctl/node_modules/.bin/ipfs'
+          'dist/nodejs-osx/node_modules/orbit-common/node_modules/subcomandante/subcom',
+          'dist/nodejs-linux/node_modules/orbit-common/node_modules/subcomandante/subcom',
+          'dist/nodejs-osx/node_modules/orbit-common/node_modules/go-ipfs-dep/go-ipfs/ipfs',
+          'dist/nodejs-linux/node_modules/orbit-common/node_modules/go-ipfs-dep/go-ipfs/ipfs',
+          'dist/Orbit-darwin-x64/Orbit.app/Contents/Resources/app/node_modules/subcomandante/subcom',
+          'dist/Orbit-darwin-x64/Orbit.app/Contents/Resources/app/node_modules/go-ipfs-dep/go-ipfs/ipfs',
+          'dist/Orbit-linux-x64/Orbit.app/Contents/Resources/app/node_modules/subcomandante/subcom',
+          'dist/Orbit-linux-x64/Orbit.app/Contents/Resources/app/node_modules/go-ipfs-dep/go-ipfs/ipfs'
         ]
       }
     },
@@ -110,7 +110,7 @@ module.exports = function (grunt) {
         options: {
           cwd: ".tmp"
         },
-        cmd: 'npm',
+        cmd: 'npm3',
         args: [
           'install',
           '--cache-min 9999999',
@@ -175,6 +175,5 @@ module.exports = function (grunt) {
     grunt.task.run('clean:cache');
     grunt.task.run('copy:main');
   });
-
 
 };
