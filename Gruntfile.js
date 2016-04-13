@@ -5,7 +5,8 @@ module.exports = function (grunt) {
   grunt.loadNpmTasks('grunt-contrib-clean');
   grunt.loadNpmTasks('grunt-contrib-copy');
   grunt.loadNpmTasks('grunt-chmod');
-  grunt.loadNpmTasks('grunt-run');
+
+  const spawn = require('child_process').spawn;
 
   grunt.initConfig({
     clean: {
@@ -104,21 +105,16 @@ module.exports = function (grunt) {
         ]
       }
     },
+  });
 
-    run: {
-      npm_install: {
-        options: {
-          cwd: ".tmp"
-        },
-        cmd: 'npm3',
-        args: [
-          'install',
-          '--cache-min 9999999',
-          '--production'
-        ]
-      },
-    }
-
+  grunt.registerTask('npm_install', '', function () {
+      var done = this.async();
+      var params = ['install', '--production', '--cache-min 9999999'];
+      var npm = spawn('npm3', params, { cwd: '.tmp' });
+      npm.stdout.pipe(process.stdout);
+      npm.stderr.pipe(process.stderr);
+      npm.on('error', (err) => done(false));
+      npm.on('exit', done);
   });
 
   grunt.registerTask('default', ["build"]);
@@ -136,7 +132,7 @@ module.exports = function (grunt) {
     grunt.task.run('copy:nodejs_osx');
     grunt.task.run('copy:nodejs_linux');
 
-    grunt.task.run('run:npm_install');
+    grunt.task.run('npm_install');
     grunt.task.run('electron:osxBuild');
     grunt.task.run('chmod:bins');
   });
@@ -158,7 +154,7 @@ module.exports = function (grunt) {
   grunt.registerTask('build_native_osx', function() {
     grunt.task.run('clean:dist_native_osx');
     grunt.task.run('copy_files');
-    grunt.task.run('run:npm_install');
+    grunt.task.run('npm_install');
     grunt.task.run('electron:osxBuild');
     grunt.task.run('chmod:bins');
   });
@@ -166,7 +162,7 @@ module.exports = function (grunt) {
   grunt.registerTask('build_native_linux', function() {
     grunt.task.run('clean:dist_native_linux');
     grunt.task.run('copy_files');
-    grunt.task.run('run:npm_install');
+    grunt.task.run('npm_install');
     grunt.task.run('electron:linuxBuild');
     grunt.task.run('chmod:bins');
   });
