@@ -26,20 +26,22 @@ class Orbit {
     // TODO: hard coded until UI is fixed
     var network = Network.fromFile(path.resolve(utils.getAppPath(), "network.json"));
     const user = { username: username, password: password };
-    try {
-      logger.info(`Connecting to network at '${network.host}:${network.port}' as '${user.username}`);
-      const cacheFile = path.resolve(utils.getAppPath(), "orbit-db-cache.json");
-      logger.debug("Load cache from:", cacheFile);
-      this.orbit = await(OrbitDB.connect(network.host, network.port, user.username, user.password, this.ipfs, { cacheFile: cacheFile }));
-      this.orbit.events.on('data', this._handleMessage.bind(this));
-      this.orbit.events.on('load', this._handleStartLoading.bind(this));
-      this.orbit.events.on('loaded', this._handleStopLoading.bind(this));
-      logger.info(`Connected to '${this.orbit.network.name}' at '${this.orbit.network.host}:${this.orbit.network.port}' as '${user.username}`)
-      this.events.emit('network', this.orbit);
-    } catch(e) {
-      this.orbit = null;
-      this._handleError(e);
-    }
+    logger.info(`Connecting to network at '${network.host}:${network.port}' as '${user.username}`);
+    const cacheFile = path.resolve(utils.getAppPath(), "orbit-db-cache.json");
+    logger.debug("Load cache from:", cacheFile);
+    OrbitDB.connect(network.host, network.port, user.username, user.password, this.ipfs, { cacheFile: cacheFile })
+      .then((orbit) => {
+        this.orbit = orbit;
+        this.orbit.events.on('data', this._handleMessage.bind(this));
+        this.orbit.events.on('load', this._handleStartLoading.bind(this));
+        this.orbit.events.on('loaded', this._handleStopLoading.bind(this));
+        logger.info(`Connected to '${this.orbit.network.name}' at '${this.orbit.network.host}:${this.orbit.network.port}' as '${user.username}`)
+        this.events.emit('network', this.orbit);
+      })
+      .catch((e) => {
+        this.orbit = null;
+        this._handleError(e);
+      });
   }
 
   disconnect() {
@@ -68,15 +70,14 @@ class Orbit {
   join(channel, password, callback) {
     logger.debug(`Join #${channel}`);
     if(!this._channels[channel]) {
-      logger.debug("000")
-      const db = this.orbit.channel(channel, password);
-      logger.debug("111")
-      this._channels[channel] = { name: channel, password: password, db: db };
-      this.events.emit('channels.updated', this.getChannels());
-      logger.debug("222")
+      this.orbit.channel(channel, password).then((db) => {
+        this._channels[channel] = { name: channel, password: password, db: db };
+        this.events.emit('channels.updated', this.getChannels());
+        if(callback) callback(null, { name: channel, modes: {} })
+      });
+    } else {
+      if(callback) callback(null, { name: channel, modes: {} })
     }
-      logger.debug("666")
-    if(callback) callback(null, { name: channel, modes: {} })
   }
 
   leave(channel) {
@@ -94,8 +95,12 @@ class Orbit {
   }
 
   getSwarmPeers(callback) {
-    const peers = await(this.ipfs.swarm.peers());
-    if(callback) callback(peers.Strings);
+    this.ipfs.swarm.peers().then((peers) => {
+      if(callback) callback(peers.Strings);
+    }).catch((e) => {
+      this._handleError(e);
+      if(callback) callback(null);
+    });
   }
 
   getMessages(channel, lessThanHash, greaterThanHash, amount, callback) {
@@ -108,29 +113,28 @@ class Orbit {
   }
 
   getPost(hash, callback) {
-    try {
-      const res = await(this.ipfs.object.get(hash));
+    this.ipfs.object.get(hash).then((res) => {
       if(callback) callback(null, JSON.parse(res.Data));
-    } catch(e) {
+    }).catch((e) => {
       this._handleError(e);
       if(callback) callback(e.message, null);
-    }
+    });
   }
 
   sendMessage(channel, message, callback) {
-    try {
-      logger.debug(`Send message to #${channel}: ${message}`);
-      const data = {
-        content: message,
-        from: this.orbit.user.id
-      };
-      const post = await(Post.create(this.ipfs, Post.Types.Message, data));
-      this._channels[channel].db.add(post.Hash);
-      if(callback) callback(null);
-    } catch(e) {
+    logger.debug(`Send message to #${channel}: ${message}`);
+    const data = {
+      content: message,
+      from: this.orbit.user.id
+    };
+    Post.create(this.ipfs, Post.Types.Message, data).then((post) => {
+      this._channels[channel].db.add(post.Hash).then((hash) => {
+        if(callback) callback(null);
+      });
+    }).catch((e) => {
       this._handleError(e);
       if(callback) callback(e.message);
-    }
+    });
   }
 
   addFile(channel, filePath, callback) {
@@ -165,20 +169,19 @@ class Orbit {
     const type = isDirectory ? Post.Types.Directory : Post.Types.File;
     const post = await(Post.create(this.ipfs, type, data));
 
-    this._channels[channel].db.add(post.Hash);
-
-    if(callback) callback(null);
+    this._channels[channel].db.add(post.Hash).then((hash) => {
+      if(callback) callback(null);
+    });
   }
 
   getDirectory(hash, callback) {
-    try {
-      const result = await(this.ipfs.ls(hash));
+    this.ipfs.ls(hash).then((result) => {
       if(result.Objects && callback)
         callback(result.Objects[0].Links);
-    } catch(e) {
+    }).catch((e) => {
       this._handleError(e);
       if(callback) callback(null);
-    }
+    });
   }
 
   get user() {
