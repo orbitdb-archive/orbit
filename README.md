@@ -12,7 +12,7 @@ There's currently a server (https://github.com/haadcode/orbit-server) that track
 
 **Please note that Orbit is not secure at the moment!**
 
-![Screenshot](https://raw.githubusercontent.com/haadcode/anonymous-networks/master/screenshots/screenshot1%202016-04-14.png)
+![Screenshot](https://raw.githubusercontent.com/haadcode/orbit/master/screenshots/screenshot3%202016-04-14.png)
 
 ## Requirements
 - Node.js >= v4.2.x
