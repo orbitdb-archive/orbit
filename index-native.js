@@ -7,7 +7,7 @@ const Menu        = require('menu');
 const async       = require('asyncawait/async');
 const await       = require('asyncawait/await');
 const logger      = require('logplease').create("Orbit.Index-Native");
-const utils       = require('./src/utils');
+const utils       = require('orbit-common/lib/utils');
 const main        = require('./src/main');
 
 require('crash-reporter').start();
