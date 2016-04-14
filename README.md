@@ -1,8 +1,6 @@
 # Orbit
 
-***Warning: Orbit is currently going through a big refactoring, things might be broken and instructions might be out of date. If something is not working, please open an issue and I'll make sure to fix it.***
-
-Previously known as: **Anonymous Networks**
+***Warning: Orbit is very much work-in-progress, things might be broken and instructions might be out of date. If something is not working, please let me know and I'll make sure to fix it.***
 
 ## Introduction
 
@@ -14,12 +12,11 @@ There's currently a server (https://github.com/haadcode/orbit-server) that track
 
 **Please note that Orbit is not secure at the moment!**
 
-![Screenshot 1](https://raw.githubusercontent.com/haadcode/anonymous-networks/master/screenshots/screenshot1%202015-11-17.png)
-![Screenshot 2](https://raw.githubusercontent.com/haadcode/anonymous-networks/master/screenshots/screenshot2%202015-11-17.png)
+![Screenshot](https://raw.githubusercontent.com/haadcode/anonymous-networks/master/screenshots/screenshot1%202016-04-14.png)
 
 ## Requirements
-- Node.js v4.2.x
-- npm
+- Node.js >= v4.2.x
+- npm > v3.0.0
 
 For development
 
