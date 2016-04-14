@@ -5,11 +5,12 @@ const path         = require('path');
 const EventEmitter = require('events').EventEmitter;
 const async        = require('asyncawait/async');
 const await        = require('asyncawait/await');
-const logger       = require('orbit-common/lib/logger')("Orbit.Orbit");
+const Logger       = require('logplease');
+const logger       = Logger.create("Orbit.Orbit", { color: Logger.Colors.Green });
+const utils        = require('orbit-common/lib/utils');
 const OrbitDB      = require('orbit-db');
 const Post         = require('orbit-db/src/post/Post');
 const Network      = require('./NetworkConfig');
-const utils        = require('./utils');
 
 class Orbit {
   constructor(ipfs, events) {
@@ -167,10 +168,10 @@ class Orbit {
     };
 
     const type = isDirectory ? Post.Types.Directory : Post.Types.File;
-    const post = await(Post.create(this.ipfs, type, data));
-
-    this._channels[channel].db.add(post.Hash).then((hash) => {
-      if(callback) callback(null);
+    Post.create(this.ipfs, type, data).then((post) => {
+      this._channels[channel].db.add(post.Hash).then((hash) => {
+        if(callback) callback(null);
+      });
     });
   }
 

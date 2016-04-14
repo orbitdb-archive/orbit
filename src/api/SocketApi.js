@@ -2,7 +2,7 @@
 
 const async       = require('asyncawait/async');
 const socketIo    = require('socket.io');
-const logger      = require('orbit-common/lib/logger')("Orbit.SocketApi");
+const logger      = require('logplease').create("Orbit.SocketApi");
 const ApiMessages = require('../ApiMessages');
 
 /* SOCKET API */

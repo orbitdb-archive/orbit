@@ -1,5 +1,8 @@
 # Changelog for Orbit
 
+**2.1.0**
+- Use IPFS daemon v0.4.0
+
 **v2.0.0**
 - Major refactoring, a lot of code is in flux
 - Use orbit-db as the IPFS backend

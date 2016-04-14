@@ -10,6 +10,8 @@ import NotificationActions from 'actions/NotificationActions';
 import UserActions from 'actions/UserActions';
 import ChannelStore from 'stores/ChannelStore';
 import UserStore from 'stores/UserStore';
+import Logger from 'logplease';
+const logger = Logger.create('MessageStore', { color: Logger.Colors.Grey });
 
 const messagesBatchSize = 8;
 
@@ -49,12 +51,13 @@ const MessageStore = Reflux.createStore({
     return this.messages[channel] && this.messages[channel].length > 0 ? this.messages[channel][0].key : null;
   },
   onSocketConnected: function(socket) {
-    console.log("MessageStore connected");
+    logger.debug("connected");
     this.socket = socket;
 
     // Handle new messages
     this.socket.on('messages', (channel, message) => {
-      console.log("--> new messages in #", channel, message);
+      logger.debug("--> new messages in #" + channel);
+      console.log(message);
       this.loadMessages(channel, null, null, messagesBatchSize);
     });
 
@@ -100,7 +103,7 @@ const MessageStore = Reflux.createStore({
   },
   onLoadMoreMessages: function(channel: string) {
     if(!this.loading && this.canLoadMore) {
-      console.log("MessageStore - load more messages from #" + channel);
+      logger.debug("load more messages from #" + channel);
       this.canLoadMore = false;
       this.loadMessages(channel, this.getOldestMessage(channel), null, messagesBatchSize);
     }
@@ -109,7 +112,7 @@ const MessageStore = Reflux.createStore({
     if(!this.socket)
       return;
 
-    console.log("--> channel.get: ", channel, olderThanHash, newerThanHash, amount);
+    logger.debug("--> #" + channel + ".get " + olderThanHash + " " + newerThanHash  + " " + amount);
     this.loading = true;
     UIActions.startLoading(channel, "loadmessages", "Loading messages...");
     this.socket.emit('channel.get', channel, olderThanHash, newerThanHash, amount, (c, messages) => {
@@ -119,9 +122,10 @@ const MessageStore = Reflux.createStore({
     });
   },
   _addMessages: function(channel: string, newMessages: Array, older: boolean) {
-    console.log("<-- messages: ", channel, newMessages.length, newMessages);
+    logger.debug("<-- messages: " + channel + " - " + newMessages.length);
+    console.log(newMessages);
     var unique = _.differenceWith(newMessages, this.messages[channel], _.isEqual);
-    console.log("MessageStore - new messages count: ", unique.length);
+    logger.debug("Unique new messages:" + unique.length);
 
     if(unique.length > 0) {
       // If we received more than 1 message, there are more messages to be loaded

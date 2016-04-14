@@ -1,8 +1,10 @@
 'use strict';
 
-import Reflux         from 'reflux';
+import Reflux from 'reflux';
 import SocketActions  from 'actions/SocketActions';
 import NetworkActions from 'actions/NetworkActions';
+import Logger from 'logplease';
+const logger = Logger.create('NetworkStore', { color: Logger.Colors.Yellow });
 
 var NetworkStore = Reflux.createStore({
   listenables: [NetworkActions, SocketActions],
@@ -13,17 +15,18 @@ var NetworkStore = Reflux.createStore({
     return this.network;
   },
   onUpdateNetwork: function(network) {
-    console.log("--> received network:", network);
+    logger.debug("Received network");
     if(!network) console.log("Not connected to network");
     this.network = network;
     this.trigger(this.network);
     NetworkActions.updateUser(network ? network.user : null);
   },
   onSocketConnected: function(socket) {
-    console.log("NetworkStore connected");
+    logger.debug("connected");
     this.socket = socket;
     this.socket.on('orbit.error', (err) => {
-      console.error("Register error:", err);
+      logger.error("Register error");
+      console.log(err);
       NetworkActions.registerError(err);
     });
   },

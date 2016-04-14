@@ -10,7 +10,7 @@ const bodyParser     = require('body-parser');
 const methodOverride = require('method-override');
 const mime           = require('mime');
 const http           = require('http');
-const logger         = require('orbit-common/lib/logger')("Orbit.HttpApi");
+const logger         = require('logplease').create("Orbit.HttpApi");
 
 /* HTTP API */
 const HttpApi = async ((ipfsInstance, events) => {

@@ -7,11 +7,11 @@ const Promise      = require('bluebird');
 const async        = require('asyncawait/async');
 const await        = require('asyncawait/await');
 const ipfsDaemon   = require('orbit-common/lib/ipfs-daemon');
-const logger       = require('orbit-common/lib/logger')("Orbit.Main");
+const logger       = require('logplease').create("Orbit.Main");
+const utils        = require('orbit-common/lib/utils');
 const SocketApi    = require('./api/SocketApi');
 const HttpApi      = require('./api/HttpApi');
 const Network      = require('./NetworkConfig');
-const utils        = require('./utils');
 const Orbit        = require('./Orbit');
 
 Promise.longStackTraces(); // enable regular stack traces in catch

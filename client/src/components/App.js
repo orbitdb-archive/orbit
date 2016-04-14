@@ -5,6 +5,7 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import Router from 'react-router';
 import { Route, History, IndexRoute } from 'react-router/lib';
+import Logger from 'logplease';
 
 import AppActions from 'actions/AppActions';
 import UIActions from "actions/UIActions";
@@ -44,6 +45,8 @@ const views = {
   "Channel": "/channel/"
 };
 
+const logger = Logger.create('App', { color: Logger.Colors.Red });
+
 var App = React.createClass({
   mixins: [History],
   getInitialState: function() {
@@ -78,16 +81,16 @@ var App = React.createClass({
 
     window.onblur = () => {
       AppActions.windowLostFocus();
-      console.log("LOST FOCUS!");
+      logger.debug("Lost focus!");
     };
 
     window.onfocus = () => {
       AppActions.windowOnFocus();
-      console.log("GOT FOCUS!");
+      logger.debug("Got focus!");
     };
   },
   _handleAppStateChange: function(state) {
-    console.log("STATE CHANGED", state);
+    // console.log("STATE CHANGED", state);
 
     let prefix = '', suffix = '';
 
@@ -112,28 +115,12 @@ var App = React.createClass({
     if(state.currentChannel || state.location)
       this.closePanel();
   },
-  // _handleMention: function(channel, message) {
-  //   if(channel !== AppStateStore.state.currentChannel || !AppStateStore.state.hasFocus) {
-  //     // document.title = '! ' + (AppStateStore.state.location ? AppStateStore.state.location : 'Orbit');
-  //     // console.log("TITLE2", document.title);
-  //   }
-  // },
-  // _handleNewMessage: function(channel, message) {
-  //   let prefix = '';
-  //   if(channel === AppStateStore.state.currentChannel && !AppStateStore.state.hasFocus) {
-  //     if(AppStateStore.state.unreadMessages[channel])
-  //       prefix = `(${AppStateStore.state.unreadMessages[channel]})`;
-  //   } else if(!AppStateStore.state.hasFocus) {
-  //     prefix = '*';
-  //   }
-  //   // document.title = prefix + ' ' + (AppStateStore.state.location ? AppStateStore.state.location : 'Orbit');
-  //   // console.log("TITLE1", document.title);
-  // },
   _reset: function() {
     this.setState(this.getInitialState());
   },
   onNetworkUpdated: function(network) {
-    console.log("Network updated", network);
+    logger.debug("Network updated");
+    console.log(network);
     if(!network) {
       this._reset();
       AppActions.setLocation("Connect");
@@ -146,10 +133,10 @@ var App = React.createClass({
     AppActions.setLocation("Connect");
   },
   onUserUpdated: function(user) {
-    console.log("User updated", user);
+    logger.debug("User updated");
+    console.log(user);
 
     if(!user) {
-      console.log("1");
       AppActions.setLocation("Connect");
       return;
     }
@@ -159,7 +146,6 @@ var App = React.createClass({
 
     this.setState({ user: user });
 
-    console.log("3");
     if(!this.state.panelOpen) this.openPanel();
     AppActions.setLocation(null);
   },
@@ -168,7 +154,7 @@ var App = React.createClass({
       this.closePanel();
       return;
     }
-    console.log("Join channel #" + channelName);
+    logger.debug("Join channel #" + channelName);
     NetworkActions.joinChannel(channelName, password);
   },
   onJoinChannelError: function(channel, err) {
@@ -176,13 +162,13 @@ var App = React.createClass({
     this.setState({ joiningToChannel: channel, requirePassword: true} );
   },
   onJoinedChannel: function(channel) {
-    console.log("Joined channel #" + channel, ChannelStore.channels);
+    logger.debug("Join channel #" + channel, ChannelStore.channels);
     const channelInfo = ChannelStore.get(channel);
     this.showChannel(channelInfo.name);
   },
   showChannel: function(channel) {
     document.title = `#${channel}`;
-    console.log("TITLE", document.title);
+    logger.debug("Set title:" + document.title);
     AppActions.setCurrentChannel(channel);
   },
   openSettings: function() {

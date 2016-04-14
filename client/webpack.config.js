@@ -14,7 +14,7 @@ module.exports = {
     publicPath: '/assets/'
   },
 
-  cache: true,
+  cache: false,
   debug: true,
   devtool: 'sourcemap',
   entry: [
@@ -49,7 +49,7 @@ module.exports = {
     loaders: [{
       test: /\.(js|jsx)$/,
       exclude: /node_modules/,
-      loader: 'react-hot!babel-loader'
+      loader: 'react-hot!babel-loader',
     }, {
       test: /\.scss/,
       loader: 'style-loader!css-loader!sass-loader?outputStyle=expanded'
