@@ -41,7 +41,7 @@ const HttpApi = async ((ipfsInstance, events) => {
 
     const hash = req.params.hash;
     try {
-      ipfs.cat(ipfs, hash, (err, result) => {
+      ipfs.cat(hash, (err, result) => {
         if(err) next(err);
         if(result) {
           const filename = req.query.name || "";
@@ -56,7 +56,7 @@ const HttpApi = async ((ipfsInstance, events) => {
         }
       });
     } catch(e) {
-      logger.error(e);
+      logger.error(e.stack);
     }
   }));
 
