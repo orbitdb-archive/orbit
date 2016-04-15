@@ -185,32 +185,32 @@ const MessageStore = Reflux.createStore({
     }
   },
   onSendMessage: function(channel: string, text: string, callback) {
-    console.log("--> send message:", text);
+    logger.debug("--> send message" + text);
     UIActions.startLoading(channel, "send");
     this.socket.emit('message.send', channel, text, (err) => {
       if(err) {
-        console.log("Couldn't send message:", err.toString());
+        logger.warn("Couldn't send message: " + err.toString());
         UIActions.raiseError(err.toString());
       }
       UIActions.stopLoading(channel, "send");
     });
   },
   onAddFile: function(channel: string, filePath: string) {
-    console.log("--> add file:", filePath);
+    logger.debug("--> add file: " + filePath);
     UIActions.startLoading(channel);
     this.socket.emit('file.add', channel, filePath, (err) => {
       if(err) {
-        console.log("Couldn't add file:", filePath, err.toString());
+        logger.warn("Couldn't add file: " + filePath + " - " + err.toString());
         UIActions.raiseError(err.toString());
       }
       UIActions.stopLoading(channel);
     });
   },
   onLoadDirectoryInfo: function(hash, cb) {
-    console.log("--> get directory:", hash);
     if(hash) {
       this.socket.emit('directory.get', hash, (result) => {
-        console.log("<-- directory:", result);
+        logger.debug("<-- received directory:");
+        console.log(result);
         if(result) {
           result = result.map((e) => {
             return {

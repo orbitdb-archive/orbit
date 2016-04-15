@@ -15,8 +15,8 @@ var NetworkStore = Reflux.createStore({
     return this.network;
   },
   onUpdateNetwork: function(network) {
-    logger.debug("Received network");
-    if(!network) console.log("Not connected to network");
+    logger.debug("Received network state");
+    if(!network) logger.debug("not connected to a network");
     this.network = network;
     this.trigger(this.network);
     NetworkActions.updateUser(network ? network.user : null);
@@ -41,17 +41,21 @@ var NetworkStore = Reflux.createStore({
       console.error("Socket not connected");
       return;
     }
-    console.log("--> connect", host, username, "********");
+    logger.debug("--> connect to " + host + " as " + username);
     this.socket.emit('register', host, username, password); // TODO: rename event to 'connect'
   },
   onDisconnect: function() {
-    console.log("--> disconnect");
+    logger.debug("disconnect");
     this.socket.emit('network.disconnect');
     this.init();
     this.trigger(this.network);
   },
   onGetPeers: function(callback) {
-    console.log("--> swarm.get");
+    if(!this.socket) {
+      console.error("Socket not connected");
+      return;
+    }
+    logger.debug("swarm.get");
     this.socket.emit('swarm.get', callback);
   }
 });
