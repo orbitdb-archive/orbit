@@ -3,7 +3,7 @@
 import _ from 'lodash';
 import React from 'react';
 import { render } from 'react-dom';
-import { Router, Route, browserHistory } from 'react-router';
+import { Router, Route, hashHistory } from 'react-router';
 import Logger from 'logplease';
 
 import AppActions from 'actions/AppActions';
@@ -188,7 +188,7 @@ var App = React.createClass({
     AppActions.setLocation("Connect");
   },
   goToLocation: function(name, url) {
-    browserHistory.push(url ? url : '/');
+    hashHistory.push(url ? url : '/');
   },
   render: function() {
     const header = AppStateStore.state.location && AppStateStore.state.location !== "Connect" ? (
@@ -227,7 +227,7 @@ var App = React.createClass({
 
 /* MAIN */
 render(
-  <Router history={browserHistory}>
+  <Router history={hashHistory}>
     <Route path="/" component={App}>
       <Route path="channel/:channel" component={ChannelView}/>
       <Route path="settings" component={SettingsView}/>

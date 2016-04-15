@@ -35252,7 +35252,7 @@
 	    _AppActions2.default.setLocation("Connect");
 	  },
 	  goToLocation: function goToLocation(name, url) {
-	    _reactRouter.browserHistory.push(url ? url : '/');
+	    _reactRouter.hashHistory.push(url ? url : '/');
 	  },
 	  render: function render() {
 	    var header = _AppStateStore2.default.state.location && _AppStateStore2.default.state.location !== "Connect" ? _react2.default.createElement(_Header2.default, {
@@ -35287,7 +35287,7 @@
 	/* MAIN */
 	(0, _reactDom.render)(_react2.default.createElement(
 	  _reactRouter.Router,
-	  { history: _reactRouter.browserHistory },
+	  { history: _reactRouter.hashHistory },
 	  _react2.default.createElement(
 	    _reactRouter.Route,
 	    { path: '/', component: App },
