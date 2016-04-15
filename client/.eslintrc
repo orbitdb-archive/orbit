@@ -13,20 +13,20 @@
     "es6": true
   },
   "rules": {
-    "no-undef": false,
-    "global-strict": false,
+    "no-undef": 0,
+    "global-strict": 0,
     "no-extra-semi": 1,
-    "no-underscore-dangle": false,
-    "no-console": false,
-    "no-multi-spaces": false,
+    "no-underscore-dangle": 0,
+    "no-console": 0,
+    "no-multi-spaces": 0,
     "no-extra-bind": 0,
-    "curly": false,
-    "no-use-before-define": false,
-    "quotes": false,
-    "no-unused-vars": false,
-    "no-irregular-whitespace": false,
-    "camelcase": false,
-    "new-cap": false,
-    "comma-dangle": false
+    "curly": 0,
+    "no-use-before-define": 0,
+    "quotes": 0,
+    "no-unused-vars": 0,
+    "no-irregular-whitespace": 0,
+    "camelcase": 0,
+    "new-cap": 0,
+    "comma-dangle": 0
   }
 }

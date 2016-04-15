@@ -37,7 +37,7 @@ const HttpApi = async ((ipfsInstance, events) => {
   });
 
   app.get("/api/cat/:hash", async((req, res, next) => {
-    logger.debug("ipfs.cat:", req.params.hash, req.query);
+    logger.debug("ipfs.cat: " + req.params.hash + " - " + JSON.stringify(req.query));
 
     const hash = req.params.hash;
     try {

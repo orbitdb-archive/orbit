@@ -1,12 +1,12 @@
 'use strict';
 
+import _ from 'lodash';
 import React from 'react';
 import Channel from 'components/Channel';
 import ChannelStore from 'stores/ChannelStore';
 import ChannelActions from 'actions/ChannelActions';
 import UserActions from 'actions/UserActions';
 import SettingsActions from "actions/SettingsActions";
-import NetworkActions from 'actions/NetworkActions';
 import Themes from 'app/Themes';
 import 'styles/ChannelView.scss';
 
@@ -23,7 +23,7 @@ class ChannelView extends React.Component {
 
   componentDidMount() {
     UserActions.getUser((user) => this.setState({ user: user}));
-    SettingsActions.get((settings, descriptions) => this.setState({ appSettings: settings }));
+    SettingsActions.get((settings) => this.setState({ appSettings: settings }));
     this.unsubscribeFromChannelMode = ChannelActions.channelModeUpdated.listen((channel, modes) => {
       var c = _.cloneDeep(this.state.channel);
       c.modes = modes;
@@ -39,7 +39,7 @@ class ChannelView extends React.Component {
 
   componentWillReceiveProps(nextProps) {
     this.setState({ channelName: nextProps.params.channel, channel: {} });
-    SettingsActions.get((settings, descriptions) => this.setState({ appSettings: settings }));
+    SettingsActions.get((settings) => this.setState({ appSettings: settings }));
   }
 
   render() {

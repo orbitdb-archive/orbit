@@ -2,7 +2,7 @@
 
 import _ from 'lodash';
 import React from 'react';
-import TransitionGroup from "react-addons-css-transition-group";
+import TransitionGroup from "react-addons-css-transition-group"; //eslint-disable-line
 import AppStateStore from 'stores/AppStateStore';
 import UIActions from "actions/UIActions";
 import 'styles/Header.scss';

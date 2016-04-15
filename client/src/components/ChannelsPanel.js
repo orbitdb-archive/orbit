@@ -1,14 +1,14 @@
 'use strict';
 
 import React from 'react';
-import TransitionGroup from "react-addons-css-transition-group";
+import TransitionGroup from "react-addons-css-transition-group"; //eslint-disable-line
 import UIActions from "actions/UIActions";
-import JoinChannel from 'components/JoinChannel';
+import JoinChannel from 'components/JoinChannel'; //eslint-disable-line
 import ChannelStore from 'stores/ChannelStore';
 import AppStateStore from 'stores/AppStateStore';
 import NetworkActions from 'actions/NetworkActions';
-import BackgroundAnimation from 'components/BackgroundAnimation';
-import Halogen from 'halogen';
+import BackgroundAnimation from 'components/BackgroundAnimation'; //eslint-disable-line
+import Halogen from 'halogen'; //eslint-disable-line
 import 'styles/ChannelsPanel.scss';
 import 'styles/RecentChannels.scss';
 

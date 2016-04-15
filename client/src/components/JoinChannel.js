@@ -1,8 +1,7 @@
 'use strict';
 
 import React from 'react';
-import TransitionGroup from "react-addons-css-transition-group";
-import Actions from 'actions/UIActions';
+import TransitionGroup from "react-addons-css-transition-group"; //eslint-disable-line
 import 'styles/JoinChannel.scss';
 
 var initialStatusMessage   = "This channel requires a password";
@@ -26,11 +25,11 @@ class JoinChannel extends React.Component {
     });
   }
 
-  componentDidUpdate(prevProps, prevState) {
-    // if(this.state.requirePassword)
-    //   this.refs.password.focus();
-    // Actions.raiseInvalidChannelPassword.listen(() => this.setState({ statusMsg: "Incorrect password" }));
-  }
+  // componentDidUpdate(prevProps, prevState) {
+  //   if(this.state.requirePassword)
+  //     this.refs.password.focus();
+  //   Actions.raiseInvalidChannelPassword.listen(() => this.setState({ statusMsg: "Incorrect password" }));
+  // }
 
   componentDidMount() {
     this.refs.channel.focus();

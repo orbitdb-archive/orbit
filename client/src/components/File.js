@@ -1,9 +1,8 @@
 'use strict';
 
 import React from 'react';
-import TransitionGroup from "react-addons-css-transition-group";
-import ChannelActions from 'actions/ChannelActions';
-import {getHumanReadableBytes} from '../utils/utils.js';
+import TransitionGroup from "react-addons-css-transition-group"; //eslint-disable-line
+import { getHumanReadableBytes } from '../utils/utils.js';
 import apiurl from 'utils/apiurl';
 import 'styles/File.scss';
 

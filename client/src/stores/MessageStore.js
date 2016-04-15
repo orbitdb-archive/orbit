@@ -125,7 +125,7 @@ const MessageStore = Reflux.createStore({
     logger.debug("<-- messages: " + channel + " - " + newMessages.length);
     console.log(newMessages);
     var unique = _.differenceWith(newMessages, this.messages[channel], _.isEqual);
-    logger.debug("Unique new messages:" + unique.length);
+    logger.debug("Unique new messages: " + unique.length);
 
     if(unique.length > 0) {
       // If we received more than 1 message, there are more messages to be loaded
@@ -175,6 +175,9 @@ const MessageStore = Reflux.createStore({
     });
   },
   onLoadPost: function(hash: string, callback) {
+    if(!this.socket)
+      return;
+
     if(!this.posts[hash]) {
       this.socket.emit('post.get', hash, (err, data) => {
         this.posts[hash] = data;
@@ -207,6 +210,9 @@ const MessageStore = Reflux.createStore({
     });
   },
   onLoadDirectoryInfo: function(hash, cb) {
+    if(!this.socket)
+      return;
+
     if(hash) {
       this.socket.emit('directory.get', hash, (result) => {
         logger.debug("<-- received directory:");

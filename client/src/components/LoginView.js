@@ -1,12 +1,12 @@
 'use strict';
 
 import React from 'react';
-import TransitionGroup from "react-addons-css-transition-group";
+import TransitionGroup from "react-addons-css-transition-group"; //eslint-disable-line
 import NetworkStore from 'stores/NetworkStore';
 import NetworkActions from "actions/NetworkActions";
-import BackgroundAnimation from 'components/BackgroundAnimation';
+import BackgroundAnimation from 'components/BackgroundAnimation'; //eslint-disable-line
 import Themes from 'app/Themes';
-import Halogen from 'halogen';
+import Halogen from 'halogen'; //eslint-disable-line
 import 'styles/LoginView.scss';
 
 var maxNicknameLength = 32;
@@ -30,7 +30,7 @@ class LoginView extends React.Component{
       theme: Themes.Default,
       logoSize: Math.min(window.innerWidth, maxLogoSize)
     };
-  };
+  }
 
   componentDidMount() {
     window.addEventListener('resize', this.onResize.bind(this));
@@ -64,7 +64,7 @@ class LoginView extends React.Component{
     if(this.refs.password) this.refs.password.focus();
   }
 
-  onResize(evt) {
+  onResize() {
     var size = Math.min(window.innerWidth, maxLogoSize);
     this.setState({ logoSize: size });
   }

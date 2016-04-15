@@ -2,15 +2,15 @@
 
 import _ from 'lodash';
 import React from 'react';
-import TransitionGroup from "react-addons-css-transition-group";
-import Message from 'components/Message';
-import SendMessage from 'components/SendMessage';
-import Dropzone from 'react-dropzone';
+import TransitionGroup from "react-addons-css-transition-group"; //eslint-disable-line
+import Message from 'components/Message'; //eslint-disable-line
+import SendMessage from 'components/SendMessage'; //eslint-disable-line
+import Dropzone from 'react-dropzone'; //eslint-disable-line
 import MessageStore from 'stores/MessageStore';
 import LoadingStateStore from 'stores/LoadingStateStore';
 import UIActions from 'actions/UIActions';
 import ChannelActions from 'actions/ChannelActions';
-import Halogen from 'halogen';
+import Halogen from 'halogen'; //eslint-disable-line
 import 'styles/Channel.scss';
 
 class Channel extends React.Component {
@@ -102,7 +102,7 @@ class Channel extends React.Component {
     this.setState({ messages: [] });
   }
 
-  onNewMessages(channel: string, messages: array) {
+  onNewMessages(channel: string, messages) {
     if(channel !== this.state.channelName)
       return;
 
@@ -180,7 +180,7 @@ class Channel extends React.Component {
     UIActions.focusOnSendMessage();
   }
 
-  onDragEnter(event) {
+  onDragEnter() {
     this.setState({ dragEnter: true });
   }
 
@@ -188,7 +188,7 @@ class Channel extends React.Component {
     this.setState({ dragEnter: false });
   }
 
-  onScroll(event) {
+  onScroll() {
     if(this.scrollTimer)
       clearTimeout(this.scrollTimer);
 

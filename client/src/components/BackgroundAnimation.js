@@ -1,7 +1,7 @@
 'use strict';
 
 import React  from 'react';
-import TransitionGroup from "react-addons-css-transition-group";
+import TransitionGroup from "react-addons-css-transition-group"; //eslint-disable-line
 import 'styles/BackgroundAnimation.scss';
 
 class BackgroundAnimation extends React.Component {

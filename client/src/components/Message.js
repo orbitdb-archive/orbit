@@ -1,13 +1,14 @@
 'use strict';
 
 import React from "react";
-import TransitionGroup from "react-addons-css-transition-group";
+import TransitionGroup from "react-addons-css-transition-group"; //eslint-disable-line
 import MentionHighlighter from 'components/plugins/mention-highlighter';
-import User from "components/User";
-import File from "components/File";
-import TextMessage from "components/TextMessage";
-import Directory from "components/Directory";
+import User from "components/User"; //eslint-disable-line
+import File from "components/File"; //eslint-disable-line
+import TextMessage from "components/TextMessage"; //eslint-disable-line
+import Directory from "components/Directory"; //eslint-disable-line
 import ChannelActions from 'actions/ChannelActions';
+import NotificationActions from 'actions/NotificationActions';
 import "styles/Message.scss";
 
 class Message extends React.Component {

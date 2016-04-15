@@ -1,9 +1,9 @@
 'use strict';
 
 import React from 'react';
-import TransitionGroup from "react-addons-css-transition-group";
+import TransitionGroup from "react-addons-css-transition-group"; //eslint-disable-line
 import ChannelActions from 'actions/ChannelActions';
-import File from 'components/File';
+import File from 'components/File'; //eslint-disable-line
 import {getHumanReadableBytes} from '../utils/utils.js';
 import 'styles/Directory.scss';
 
@@ -36,7 +36,6 @@ class Directory extends React.Component {
   render() {
     // var downloadLink = apiURL + this.state.link + "?name=" + this.state.name + "&action=download";
     var size     = getHumanReadableBytes(this.state.size);
-    var style    = this.state.loading ? "Directory loading" : "Directory";
     var children = [];
     var name     = (
       <TransitionGroup
