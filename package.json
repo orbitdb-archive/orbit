@@ -12,11 +12,11 @@
     "du": "^0.1.0",
     "express": "^4.13.4",
     "lodash": "^4.8.2",
-    "logplease": "^1.2.2",
+    "logplease": "^1.2.4",
     "method-override": "^2.3.5",
     "mime": "^1.3.4",
     "orbit-common": "^0.2.5",
-    "orbit-db": "^0.6.10",
+    "orbit-db": "^0.7.1",
     "socket.io": "^1.4.5"
   },
   "devDependencies": {
