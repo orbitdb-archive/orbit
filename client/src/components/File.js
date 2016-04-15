@@ -1,13 +1,13 @@
 'use strict';
 
-import React from'react/addons';
+import React from 'react';
+import TransitionGroup from "react-addons-css-transition-group";
 import ChannelActions from 'actions/ChannelActions';
 import {getHumanReadableBytes} from '../utils/utils.js';
 import apiurl from 'utils/apiurl';
 import 'styles/File.scss';
 
-var TransitionGroup = React.addons.CSSTransitionGroup;
-var getFileUrl      = apiurl.getApiUrl() + "/api/cat/";
+var getFileUrl = apiurl.getApiUrl() + "/api/cat/";
 
 class File extends React.Component {
   constructor(props) {
@@ -25,7 +25,13 @@ class File extends React.Component {
     var downloadLink = openLink + "&action=download";
     var size         = getHumanReadableBytes(this.state.size);
     var content      = (
-      <TransitionGroup transitionName="fileAnimation" transitionAppear={true}>
+      <TransitionGroup
+        transitionName="fileAnimation"
+        transitionAppear={true}
+        transitionAppearTimeout={1000}
+        transitionEnterTimeout={0}
+        transitionLeaveTimeout={0}
+        >
         <a href={openLink} target="_blank">{this.state.name}</a>
       </TransitionGroup>
     );

@@ -1,10 +1,10 @@
 'use strict';
 
-import React from 'react/addons';
+import React from 'react';
+import TransitionGroup from "react-addons-css-transition-group";
 import Actions from 'actions/UIActions';
 import 'styles/JoinChannel.scss';
 
-var TransitionGroup        = React.addons.CSSTransitionGroup;
 var initialStatusMessage   = "This channel requires a password";
 
 class JoinChannel extends React.Component {

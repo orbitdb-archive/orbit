@@ -9,7 +9,7 @@
 // Add missing methods to phantom.js
 import './pack/phantomjs-shims';
 
-import React from 'react/addons';
+import React from 'react';
 const TestUtils = React.addons.TestUtils;
 
 /**

@@ -1,14 +1,11 @@
 'use strict';
 
-import React  from 'react/addons';
-import Toggle from 'react-toggle';
+import React from 'react';
+import TransitionGroup from "react-addons-css-transition-group";
 import SettingsStore from 'stores/SettingsStore';
 import SettingsActions from 'actions/SettingsActions';
 import Themes from 'app/Themes';
 import 'styles/SettingsView.scss';
-import 'react-toggle/style.css';
-
-var TransitionGroup = React.addons.CSSTransitionGroup;
 
 class SettingsView extends React.Component {
   constructor(props) {

@@ -31,6 +31,7 @@ module.exports = {
   resolve: {
     extensions: ['', '.js', '.jsx'],
     alias: {
+      fs: require.resolve('./node_modules/logplease/src/fs-mock'),
       'app': __dirname + '/src/app/',
       'styles': __dirname + '/src/styles',
       'mixins': __dirname + '/src/mixins',

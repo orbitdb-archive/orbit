@@ -1,10 +1,9 @@
 'use strict';
 
 import React from 'react';
+import TransitionGroup from "react-addons-css-transition-group";
 import NetworkActions from "actions/NetworkActions";
 import 'styles/SwarmView.scss';
-
-var TransitionGroup = React.addons.CSSTransitionGroup;
 
 class SwarmView extends React.Component {
   constructor(props) {

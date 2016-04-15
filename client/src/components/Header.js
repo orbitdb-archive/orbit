@@ -1,12 +1,11 @@
 'use strict';
 
 import _ from 'lodash';
-import React from 'react/addons';
+import React from 'react';
+import TransitionGroup from "react-addons-css-transition-group";
 import AppStateStore from 'stores/AppStateStore';
 import UIActions from "actions/UIActions";
 import 'styles/Header.scss';
-
-var TransitionGroup = React.addons.CSSTransitionGroup;
 
 class Header extends React.Component {
   constructor(props) {

@@ -1,6 +1,6 @@
 'use strict';
 
-import React from "react/addons";
+import React from 'react';
 import TransitionGroup from "react-addons-css-transition-group";
 import UIActions from "actions/UIActions";
 import JoinChannel from 'components/JoinChannel';

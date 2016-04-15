@@ -6,7 +6,7 @@ import NetworkActions from 'actions/NetworkActions';
 import SocketActions from 'actions/SocketActions';
 import UserActions from 'actions/UserActions';
 import Logger from 'logplease';
-const logger = Logger.create('UserStore', { color: Logger.Colors.Cyan });
+const logger = Logger.create('UsersStore', { color: Logger.Colors.Cyan });
 
 var UsersStore = Reflux.createStore({
   listenables: [NetworkActions, SocketActions, UserActions],

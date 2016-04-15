@@ -1,12 +1,11 @@
 'use strict';
 
-import React from'react/addons';
+import React from 'react';
+import TransitionGroup from "react-addons-css-transition-group";
 import ChannelActions from 'actions/ChannelActions';
 import File from 'components/File';
 import {getHumanReadableBytes} from '../utils/utils.js';
 import 'styles/Directory.scss';
-
-var TransitionGroup = React.addons.CSSTransitionGroup;
 
 class Directory extends React.Component {
   constructor(props) {
@@ -40,7 +39,13 @@ class Directory extends React.Component {
     var style    = this.state.loading ? "Directory loading" : "Directory";
     var children = [];
     var name     = (
-      <TransitionGroup transitionName="directoryAnimation" transitionAppear={true}>
+      <TransitionGroup
+        transitionName="directoryAnimation"
+        transitionAppear={true}
+        transitionAppearTimeout={1000}
+        transitionEnterTimeout={0}
+        transitionLeaveTimeout={0}
+        >
         <a href="" onClick={this.openDirectory.bind(this)}>{this.state.name}</a>
       </TransitionGroup>
     );

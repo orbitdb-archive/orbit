@@ -1,14 +1,13 @@
 'use strict';
 
-import React   from 'react/addons';
+import React from 'react';
+import TransitionGroup from "react-addons-css-transition-group";
 import NetworkStore from 'stores/NetworkStore';
 import NetworkActions from "actions/NetworkActions";
 import BackgroundAnimation from 'components/BackgroundAnimation';
 import Themes from 'app/Themes';
 import Halogen from 'halogen';
 import 'styles/LoginView.scss';
-
-var TransitionGroup = React.addons.CSSTransitionGroup;
 
 var maxNicknameLength = 32;
 var maxLogoSize = 320;

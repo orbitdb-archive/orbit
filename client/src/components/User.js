@@ -1,6 +1,6 @@
 'use strict';
 
-import React  from "react/addons";
+import React from 'react';
 import Please from "pleasejs";
 import NetworkActions from "actions/NetworkActions";
 import SettingsActions from "actions/SettingsActions";

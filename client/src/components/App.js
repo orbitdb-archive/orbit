@@ -2,9 +2,8 @@
 
 import _ from 'lodash';
 import React from 'react';
-import ReactDOM from 'react-dom';
-import Router from 'react-router';
-import { Route, History, IndexRoute } from 'react-router/lib';
+import { render } from 'react-dom';
+import { Router, Route, browserHistory } from 'react-router';
 import Logger from 'logplease';
 
 import AppActions from 'actions/AppActions';
@@ -48,7 +47,7 @@ const views = {
 const logger = Logger.create('App', { color: Logger.Colors.Red });
 
 var App = React.createClass({
-  mixins: [History],
+  // mixins: [History],
   getInitialState: function() {
     return {
       panelOpen: false,
@@ -68,8 +67,6 @@ var App = React.createClass({
     NetworkActions.joinedChannel.listen(this.onJoinedChannel);
     NetworkActions.joinChannelError.listen(this.onJoinChannelError);
     SocketActions.socketDisconnected.listen(this.onDaemonDisconnected);
-    // NotificationActions.newMessage.listen(this._handleNewMessage);
-    // NotificationActions.mention.listen(this._handleMention);
 
     this.unsubscribeFromConnectionStore = ConnectionStore.listen(this.onDaemonConnected);
     this.unsubscribeFromNetworkStore = NetworkStore.listen(this.onNetworkUpdated);
@@ -90,8 +87,6 @@ var App = React.createClass({
     };
   },
   _handleAppStateChange: function(state) {
-    // console.log("STATE CHANGED", state);
-
     let prefix = '', suffix = '';
 
     if(!AppStateStore.state.hasFocus && AppStateStore.state.unreadMessages[AppStateStore.state.currentChannel] > 0)
@@ -103,7 +98,6 @@ var App = React.createClass({
     if(Object.keys(state.mentions).length > 0)
       prefix = '!';
 
-
     if(state.currentChannel) {
       document.title = prefix + ' ' + AppStateStore.state.location + ' ' + suffix;
       this.goToLocation(state.currentChannel, views.Channel + state.currentChannel);
@@ -111,9 +105,6 @@ var App = React.createClass({
       document.title = prefix + ' Orbit';
       this.goToLocation(state.location, views[state.location]);
     }
-
-    if(state.currentChannel || state.location)
-      this.closePanel();
   },
   _reset: function() {
     this.setState(this.getInitialState());
@@ -167,14 +158,17 @@ var App = React.createClass({
     this.showChannel(channelInfo.name);
   },
   showChannel: function(channel) {
+    this.closePanel();
     document.title = `#${channel}`;
-    logger.debug("Set title:" + document.title);
+    logger.debug("Set title: " + document.title);
     AppActions.setCurrentChannel(channel);
   },
   openSettings: function() {
+    this.closePanel();
     AppActions.setLocation("Settings");
   },
   openSwarmView: function() {
+    this.closePanel();
     AppActions.setLocation("Swarm");
   },
   closePanel: function() {
@@ -185,6 +179,7 @@ var App = React.createClass({
     this.setState({ panelOpen: true });
   },
   disconnect: function() {
+    this.closePanel();
     NetworkActions.disconnect();
     this.setState({ user: null });
     AppActions.setLocation("Connect");
@@ -193,7 +188,7 @@ var App = React.createClass({
     AppActions.setLocation("Connect");
   },
   goToLocation: function(name, url) {
-    this.history.pushState(null, url ? url : '/');
+    browserHistory.push(url ? url : '/');
   },
   render: function() {
     const header = AppStateStore.state.location && AppStateStore.state.location !== "Connect" ? (
@@ -231,8 +226,8 @@ var App = React.createClass({
 });
 
 /* MAIN */
-ReactDOM.render((
-  <Router>
+render(
+  <Router history={browserHistory}>
     <Route path="/" component={App}>
       <Route path="channel/:channel" component={ChannelView}/>
       <Route path="settings" component={SettingsView}/>
@@ -240,6 +235,7 @@ ReactDOM.render((
       <Route path="connect" component={LoginView}/>
     </Route>
   </Router>
-), document.getElementById('content')); // jshint ignore:line
+  , document.getElementById('content')
+);
 
 export default ChannelView;

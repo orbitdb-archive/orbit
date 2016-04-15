@@ -1,7 +1,7 @@
 'use strict';
 
 describe('App', () => {
-  let React = require('react/addons');
+  let React = require('react');
   let App, component;
 
   beforeEach(() => {

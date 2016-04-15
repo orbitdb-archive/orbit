@@ -1,10 +1,8 @@
 'use strict';
 
 import React  from 'react';
+import TransitionGroup from "react-addons-css-transition-group";
 import 'styles/BackgroundAnimation.scss';
-
-var TransitionGroup = React.addons.CSSTransitionGroup;
-
 
 class BackgroundAnimation extends React.Component {
   constructor(props) {

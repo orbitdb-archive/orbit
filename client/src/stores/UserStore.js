@@ -5,6 +5,8 @@ import Actions from 'actions/UIActions';
 import UserActions from 'actions/UserActions';
 import NetworkActions from 'actions/NetworkActions';
 import SocketActions from 'actions/SocketActions';
+import Logger from 'logplease';
+const logger = Logger.create('UserStore', { color: Logger.Colors.Green });
 
 var UserStore = Reflux.createStore({
   listenables: [UserActions, NetworkActions, SocketActions],
@@ -12,16 +14,17 @@ var UserStore = Reflux.createStore({
     this.user = null;
   },
   onUpdateUser: function(user) {
-    console.log("--> received user:", user);
+    logger.debug("received user");
+    console.log(user);
     if(user) {
       this.user = user;
     } else {
-      console.log("Not logged in");
+      logger.debug("not logged in");
     }
     this.trigger(this.user);
   },
   onSocketConnected: function(socket) {
-    console.log("UserStore connected");
+    logger.debug("connected");
   },
   onSocketDisconnected: function() {
     this.user = null;
