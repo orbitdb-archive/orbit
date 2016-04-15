@@ -15,7 +15,6 @@ class TextMessage extends React.Component {
       text: props.text,
       useEmojis: props.useEmojis,
       highlightWords: props.highlightWords,
-      key: props.key
     };
   }
 
@@ -78,7 +77,7 @@ class TextMessage extends React.Component {
         transitionEnterTimeout={0}
         transitionLeaveTimeout={0}
         className="content2">
-        <span className="content2" key={this.state.key}>{finalText}</span>
+        <span className="content2" key={"1"}>{finalText}</span>
       </TransitionGroup>
     );
 

@@ -62,7 +62,16 @@ class SettingsView extends React.Component {
       );
 
       return (
-        <TransitionGroup key={"t" + key} transitionName="rowAnimation" transitionAppear={true} component="div" className="row">
+        <TransitionGroup
+          key={"t" + key}
+          transitionName="rowAnimation"
+          transitionAppear={true}
+          transitionAppearTimeout={1000}
+          transitionEnterTimeout={0}
+          transitionLeaveTimeout={0}
+          component="div"
+          className="row"
+          >
           <span className="key">{key}</span>
           <span>{field}</span>
           <span className="description">{description}</span>

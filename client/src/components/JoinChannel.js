@@ -64,7 +64,7 @@ class JoinChannel extends React.Component {
     ) : "";
 
     var channelNameField = this.state.channelNamePlaceholder ?
-      <input type="text" ref="channel" value={this.state.channelNamePlaceholder} onChange={this.handleNameChange.bind(this)}/> :
+      <input type="text" ref="channel" defaultValue={this.state.channelNamePlaceholder} onChange={this.handleNameChange.bind(this)}/> :
       <input type="text" ref="channel" placeholder="channel"/>;
 
     var final = this.state.requirePassword ? (

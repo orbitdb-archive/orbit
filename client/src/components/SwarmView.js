@@ -27,7 +27,16 @@ class SwarmView extends React.Component {
   render() {
     var peers = this.state.peers.map((p) => {
       return (
-        <TransitionGroup key={"t" + p} transitionName="peerAnimation" transitionAppear={true} component="div" className="peer">
+        <TransitionGroup
+          key={"t" + p}
+          transitionName="peerAnimation"
+          transitionAppear={true}
+          transitionAppearTimeout={1000}
+          transitionEnterTimeout={0}
+          transitionLeaveTimeout={0}
+          component="div"
+          className="peer"
+          >
           <svg width="20" height="8" key={"svg" + p}><circle cx="4" cy="4" r="4" fill="rgba(116, 228, 96, 0.8)"/></svg>
           <span key={p}>{p}</span>
         </TransitionGroup>
