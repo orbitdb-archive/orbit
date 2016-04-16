@@ -139,24 +139,31 @@ class Orbit {
   }
 
   addFile(channel, filePath, callback) {
-    const addToIpfs = (ipfs, filePath) => {
+    const addToIpfs = (ipfs, filePath, isDirectory) => {
       return new Promise((resolve, reject) => {
         if(!fs.existsSync(filePath))
           throw "File not found at '" + filePath + "'";
 
-        this.ipfs.add(filePath, { recursive: true }).then((hash) => {
-          // FIXME: ipfs-api returns an empty dir name as the last hash, ignore this
-          if(hash[hash.length-1].Name === '')
-            resolve(hash[hash.length-2].Hash);
+        // this.ipfs.add(filePath, { recursive: recursive }).then((hash) => {
+        this.ipfs.add(filePath, { recursive: isDirectory }).then((hash) => {
+          logger.debug("H, " + JSON.stringify(hash));
 
-          resolve(hash[hash.length-1].Hash);
+          if(isDirectory) {
+            // FIXME: ipfs-api returns an empty dir name as the last hash, ignore this
+            if(hash[hash.length-1].Name === '')
+              resolve(hash[hash.length-2].Hash);
+
+            resolve(hash[hash.length-1].Hash);
+          } else {
+            resolve(hash[0].Hash);
+          }
         });
       });
     }
 
     logger.info("Adding file from path '" + filePath + "'");
     var isDirectory = await (utils.isDirectory(filePath));
-    var hash = await (addToIpfs(this.ipfs, filePath));
+    var hash = await (addToIpfs(this.ipfs, filePath, isDirectory));
     var size = await (utils.getFileSize(filePath));
     logger.info("Added local file '" + filePath + "' as " + hash);
 
