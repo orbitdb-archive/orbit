@@ -1,6 +1,6 @@
 # Orbit
 
-***Warning: Orbit is very much work-in-progress, things might be broken and instructions might be out of date. If something is not working, please let me know and I'll make sure to fix it.***
+***Warning: Orbit is very much work-in-progress. If something is not working, please let me know and I'll make sure to fix it.***
 
 ## Introduction
 
@@ -16,8 +16,8 @@ There's currently a server (https://github.com/haadcode/orbit-server) that track
 ![Screenshot 2](https://raw.githubusercontent.com/haadcode/orbit/master/screenshots/screenshot3%202016-04-14.png)
 
 ## Requirements
-- Node.js >= v4.2.x
-- npm > v3.0.0
+- Node.js v4.x.x
+- npm 3.x.x
 
 For development
 
@@ -27,6 +27,9 @@ For development
 
 ## Run
 ### Browser
+*NOTE: npm version 3.x.x is required to install dependencies. If you're running v2.x.x, you can install npm3 wrapper with `npm install npm3 -g` after which you can user npm v3 with `npm3 install ...`*
+
+Install and run:
 ```
 npm install
 node index.js
@@ -37,34 +40,33 @@ Open `http://localhost:3001` in your browser
 ### App
 Build the native app:
 ```
-grunt
+npm install
+grunt build
 ```
 
 The builds are in `dist/`. Eg. on OSX, open the application from `dist/AnonymousNetworks-darwin-x64`.
 
-Orbit uses Electron to wrap the application in native executable.
+Orbit uses [Electron](http://electron.atom.io/) to wrap the application in a native executable.
 
 ### Run Options
-(Not supported in native builds atm)
-
 #### Autologin
 Create a file called `user.json` and add your wanted credentials:
 ```
 {
-  "username": "bot",
-  "password": "password"
+  "username": "haadcode",
+  "password": "" // Not used atm
 }
 ```
 
 Start the program:
 ```
-node index.js [--bots]
+node index.js
 ```
 
 ## Build
 Build all:
 ```
-grunt
+grunt build
 ```
 
 Build for individual platforms:
@@ -77,15 +79,19 @@ grunt build_native_linux
 
 The builds are in `dist/`
 
-## UI
-Build:
+## UI Development
+Build distributable:
 ```
 cd client/
 npm install
 grunt build
 ```
 
-Dev:
+Development:
+```
+node index
+```
+
 ```
 cd client/
 (npm install)
@@ -103,9 +109,7 @@ grunt serve
 
 Start Electron:
 ```
-npm install electron-prebuilt
-export ENV=dev
-./node_modules/.bin/electron . 
+ENV=dev ./node_modules/.bin/electron . 
 ```
 
 Make sure you don't have the node.js version running and no client open the browser.
