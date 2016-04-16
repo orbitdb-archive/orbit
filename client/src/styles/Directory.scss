@@ -1,3 +1,5 @@
+@import 'Colors';
+
 $directory-hover-color:      rgb(64, 64, 64);
 $directory-link-color:       rgba(128, 196, 255, 0.8);
 $directory-link-color2:       rgba(196, 196, 196, 0.6);
@@ -11,7 +13,7 @@ $directory-link-hover-color2: rgba(240, 240, 240, 0.9);
 .children {
   padding-left: 0.4em;
   margin-left: 0.45em;
-  margin-top: 0.2em;
+  margin-top: 0.25em;
   background-color: rgba(0, 0, 0, 0.075);
   border-left: 1px dotted rgba(255, 255, 255, 0.1);
 }
@@ -21,6 +23,7 @@ $directory-link-hover-color2: rgba(240, 240, 240, 0.9);
 }
 
 .Directory {
+  color: $directory-link-hover-color2;
   padding-left: 0.3em;
   padding-right: 0.3em;
   white-space: nowrap;
@@ -45,7 +48,7 @@ $directory-link-hover-color2: rgba(240, 240, 240, 0.9);
 }
 
 .Directory:hover {
-  background-color: $directory-hover-color;
+  // background-color: $directory-hover-color;
   border: 0px solid transparent;
   border-radius: 4px;
 
@@ -68,7 +71,7 @@ $directory-link-hover-color2: rgba(240, 240, 240, 0.9);
   }
 
   a {
-    color: $directory-link-hover-color;
+    color: $directory-link-hover-color2;
   }
 }
 

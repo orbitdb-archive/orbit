@@ -4,7 +4,7 @@
 
 ## Introduction
 
-Orbit is a  ***distributed, peer-to-peer chat application built on [IPFS](http://ipfs.io)***.
+Orbit is a ***distributed, peer-to-peer chat application built on [IPFS](http://ipfs.io)***.
 
 All content (messages, files, metadata) are saved in IPFS as files or objects.
 
@@ -12,7 +12,8 @@ There's currently a server (https://github.com/haadcode/orbit-server) that track
 
 **Please note that Orbit is not secure at the moment!**
 
-![Screenshot](https://raw.githubusercontent.com/haadcode/orbit/master/screenshots/screenshot3%202016-04-14.png)
+![Screenshot 1](https://raw.githubusercontent.com/haadcode/orbit/master/screenshots/screenshot1%202015-11-17.png)
+![Screenshot 2](https://raw.githubusercontent.com/haadcode/orbit/master/screenshots/screenshot3%202016-04-14.png)
 
 ## Requirements
 - Node.js >= v4.2.x

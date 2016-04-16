@@ -1,3 +1,6 @@
 machine:
   node:
-    version: 4.2.2
+    version: 4.3.1
+dependencies:
+  pre:
+    - npm install -g npm@3.x.x

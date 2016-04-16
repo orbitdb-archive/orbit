@@ -1,23 +1,26 @@
 'use strict';
 
-const electronApp = require('app');
-const Window      = require('browser-window');
-const path        = require('path');
-const Menu        = require('menu');
-const async       = require('asyncawait/async');
-const await       = require('asyncawait/await');
-const logger      = require('logplease').create("Orbit.Index-Native");
-const utils       = require('orbit-common/lib/utils');
-const main        = require('./src/main');
+if(process.env.ENV === 'dev') delete process.versions['electron'];
+
+const app    = require('app');
+const Window = require('browser-window');
+const Menu   = require('menu');
+const path   = require('path');
+const Logger = require('logplease');
+const logger = Logger.create("Orbit.Index-Native");
+const utils  = require('orbit-common/lib/utils');
+const main   = require('./src/main');
 
 require('crash-reporter').start();
+
+Logger.setLogfile(path.resolve(process.env.ENV === 'dev' ? process.cwd() : process.resourcesPath + "/app/", 'debug.log'));
 logger.debug("Run index-native.js");
 
-const connectWindowSize = { width: 500, height: 420, center: true, minWidth: 500, minHeight: 420 };
+const connectWindowSize = { width: 500, height: 420, center: true, minWidth: 500, minHeight: 420, titleBarStyle: 'hidden' };
 const mainWindowSize    = { width: 1200, height: 800, center: true, minWidth: 1200, minHeight: 800 };
 let mainWindow = null;
 
-const template = require('./menu-native')(electronApp);
+const template = require('./menu-native')(app);
 const menu = Menu.buildFromTemplate(template);
 let events;
 
@@ -44,52 +47,55 @@ const shutdown = () => {
   events.emit('shutdown');
   setTimeout(() => {
     logger.info("All done!");
-    electronApp.quit();
+    app.quit();
   }, 1000);
 };
 
-electronApp.on('window-all-closed', shutdown);
+app.on('window-all-closed', shutdown);
 process.on('SIGINT', () => shutdown)
 process.on('SIGTERM', () => shutdown)
 
-electronApp.on('ready', async(() => {
+app.on('ready', () => {
   try {
     logger.info("Starting the systems");
-    events = await(main.start());
-    logger.info("Systems started");
 
-    Menu.setApplicationMenu(menu);
+    main.start().then((res) => {
+      events = res;
+      logger.info("Systems started");
 
-    events.on('network', (orbit) => {
-      if(orbit)
+      Menu.setApplicationMenu(menu);
+
+      events.on('network', (orbit) => {
+        if(orbit)
+          setWindowToNormal();
+        else
+          setWindowToLogin();
+      });
+
+      events.on('connected', () => {
+        logger.error("connected");
         setWindowToNormal();
-      else
+      });
+
+      events.on('disconnect', () => {
+        logger.error("disconnected");
         setWindowToLogin();
-    });
+      });
 
-    events.on('connected', () => {
-      logger.error("connected");
-      setWindowToNormal();
-    });
+      mainWindow = new Window(connectWindowSize);
 
-    events.on('disconnect', () => {
-      logger.error("disconnected");
-      setWindowToLogin();
-    });
+      if(process.env.ENV === 'dev')
+        mainWindow.loadUrl('http://localhost:8000/webpack-dev-server/');
+      else
+        mainWindow.loadUrl('file://' + __dirname + '/client/dist/index.html');
 
-    mainWindow = new Window(connectWindowSize);
+      mainWindow.webContents.session.setDownloadPath(path.resolve(utils.getUserHome() + '/Downloads'))
 
-    if(process.env.ENV === 'dev')
-      mainWindow.loadUrl('http://localhost:8000/webpack-dev-server/');
-    else
-      mainWindow.loadUrl('file://' + __dirname + '/client/dist/index.html');
-
-    mainWindow.webContents.session.setDownloadPath(path.resolve(utils.getUserHome() + '/Downloads'))
-
-    mainWindow.on('closed', () => {
-      mainWindow = null;
+      mainWindow.on('closed', () => {
+        mainWindow = null;
+      });
     });
   } catch(e) {
     logger.error("Error in index-native:", e);
   }
-}));
+});
