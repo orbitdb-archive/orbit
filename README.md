@@ -12,7 +12,7 @@ There's currently a server (https://github.com/haadcode/orbit-server) that track
 
 **Please note that Orbit is not secure at the moment!**
 
-![Screenshot 1](https://raw.githubusercontent.com/haadcode/orbit/master/screenshots/screenshot1%202015-11-17.png)
+![Screenshot 1](https://raw.githubusercontent.com/haadcode/orbit/master/screenshots/screenshot1%202016-04-16.png)
 ![Screenshot 2](https://raw.githubusercontent.com/haadcode/orbit/master/screenshots/screenshot3%202016-04-14.png)
 
 ## Requirements
