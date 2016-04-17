@@ -23,14 +23,16 @@ $directory-link-hover-color2: rgba(240, 240, 240, 0.9);
   }
 
   .preview {
-    margin-top: 0.25em;
+    margin-top: 0.5em;
     // margin-bottom: 0.25em;
     margin-left: 0.25em;
-    // margin-right: 0.3em;
+    margin-right: 0.25em;
+
     padding-left: 0.5em;
     padding-right: 0.5em;
     padding-top: 0.5em;
     padding-bottom: 0.5em;
+
     background-color: rgba(0, 0, 0, 0.075);
     border-left: 1px dotted rgba(255, 255, 255, 0.1);
     overflow: hidden;
@@ -47,6 +49,7 @@ $directory-link-hover-color2: rgba(240, 240, 240, 0.9);
 
   .smallText {
     font-size: 0.8em;
+    padding: 0;
   }
 
   pre {
@@ -68,9 +71,12 @@ $directory-link-hover-color2: rgba(240, 240, 240, 0.9);
   // }
 
   .download {
+    user-select: none;
     visibility: hidden;
     font-weight: 100;
     margin: 0;
+    font-size: 0.9em;
+    cursor: pointer;
     // margin-left: 0.5em;
     // margin-right: 0.5em;
   }
@@ -171,6 +177,32 @@ $directory-link-hover-color2: rgba(240, 240, 240, 0.9);
 
   -webkit-animation-name: fadeIn;
   animation-name: fadeIn;
+  -webkit-animation-duration: $duration;
+  animation-duration: $duration;
+  -webkit-animation-fill-mode: both;
+  animation-fill-mode: both;
+  -webkit-animation-timing-function: ease-in;
+  animation-timing-function: ease-in;
+}
+
+.fileAnimation-enter {
+  $duration: 1.2s;
+
+  -webkit-animation-name: fadeIn;
+  animation-name: fadeIn;
+  -webkit-animation-duration: $duration;
+  animation-duration: $duration;
+  -webkit-animation-fill-mode: both;
+  animation-fill-mode: both;
+  -webkit-animation-timing-function: ease-in;
+  animation-timing-function: ease-in;
+}
+
+.fileAnimation-leave {
+  $duration: 0.9s;
+
+  -webkit-animation-name: fadeOut;
+  animation-name: fadeOut;
   -webkit-animation-duration: $duration;
   animation-duration: $duration;
   -webkit-animation-fill-mode: both;

@@ -417,7 +417,7 @@
 /***/ function(module, exports, __webpack_require__) {
 
 	var store      = __webpack_require__(110)('wks')
-	  , uid        = __webpack_require__(68)
+	  , uid        = __webpack_require__(69)
 	  , Symbol     = __webpack_require__(8).Symbol
 	  , USE_SYMBOL = typeof Symbol == 'function';
 	module.exports = function(name){
@@ -819,17 +819,17 @@
 /* 18 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var Reflux = __webpack_require__(772);
+	var Reflux = __webpack_require__(779);
 
-	Reflux.connect = __webpack_require__(774);
+	Reflux.connect = __webpack_require__(781);
 
-	Reflux.connectFilter = __webpack_require__(775);
+	Reflux.connectFilter = __webpack_require__(782);
 
 	Reflux.ListenerMixin = __webpack_require__(180);
 
-	Reflux.listenTo = __webpack_require__(776);
+	Reflux.listenTo = __webpack_require__(783);
 
-	Reflux.listenToMany = __webpack_require__(777);
+	Reflux.listenToMany = __webpack_require__(784);
 
 	module.exports = Reflux;
 
@@ -850,7 +850,7 @@
 
 	'use strict';
 
-	var getVendorPropertyName = __webpack_require__(494);
+	var getVendorPropertyName = __webpack_require__(498);
 
 	module.exports = function(target, sources) {
 	  var to = Object(target);
@@ -886,8 +886,8 @@
 
 	'use strict';
 
-	var insertRule = __webpack_require__(495);
-	var vendorPrefix = __webpack_require__(493)();
+	var insertRule = __webpack_require__(499);
+	var vendorPrefix = __webpack_require__(497)();
 	var index = 0;
 
 	module.exports = function(keyframes) {
@@ -1843,7 +1843,7 @@
 	var global    = __webpack_require__(8)
 	  , hide      = __webpack_require__(25)
 	  , has       = __webpack_require__(23)
-	  , SRC       = __webpack_require__(68)('src')
+	  , SRC       = __webpack_require__(69)('src')
 	  , TO_STRING = 'toString'
 	  , $toString = Function[TO_STRING]
 	  , TPL       = ('' + $toString).split(TO_STRING);
@@ -2262,7 +2262,7 @@
 /* 33 */
 /***/ function(module, exports, __webpack_require__) {
 
-	module.exports = __webpack_require__(723);
+	module.exports = __webpack_require__(730);
 
 /***/ },
 /* 34 */
@@ -2478,7 +2478,7 @@
 	'use strict';
 
 	var CallbackQueue = __webpack_require__(158);
-	var PooledClass = __webpack_require__(60);
+	var PooledClass = __webpack_require__(61);
 	var ReactPerf = __webpack_require__(34);
 	var ReactReconciler = __webpack_require__(73);
 	var Transaction = __webpack_require__(120);
@@ -2840,7 +2840,7 @@
 	    return typeof value === "function";
 	}
 
-	exports.EventEmitter = __webpack_require__(496);
+	exports.EventEmitter = __webpack_require__(500);
 
 	exports.nextTick = function (callback) {
 	    setTimeout(callback, 0);
@@ -3053,14 +3053,14 @@
 	    , $typed              = __webpack_require__(111)
 	    , $buffer             = __webpack_require__(147)
 	    , ctx                 = __webpack_require__(49)
-	    , anInstance          = __webpack_require__(63)
+	    , anInstance          = __webpack_require__(64)
 	    , propertyDesc        = __webpack_require__(56)
 	    , hide                = __webpack_require__(25)
 	    , redefineAll         = __webpack_require__(80)
 	    , isInteger           = __webpack_require__(135)
 	    , toInteger           = __webpack_require__(57)
 	    , toLength            = __webpack_require__(17)
-	    , toIndex             = __webpack_require__(67)
+	    , toIndex             = __webpack_require__(68)
 	    , toPrimitive         = __webpack_require__(44)
 	    , has                 = __webpack_require__(23)
 	    , same                = __webpack_require__(211)
@@ -3068,18 +3068,18 @@
 	    , isObject            = __webpack_require__(10)
 	    , toObject            = __webpack_require__(19)
 	    , isArrayIter         = __webpack_require__(133)
-	    , create              = __webpack_require__(65)
+	    , create              = __webpack_require__(66)
 	    , getPrototypeOf      = __webpack_require__(31)
-	    , gOPN                = __webpack_require__(66).f
+	    , gOPN                = __webpack_require__(67).f
 	    , isIterable          = __webpack_require__(298)
 	    , getIterFn           = __webpack_require__(148)
-	    , uid                 = __webpack_require__(68)
+	    , uid                 = __webpack_require__(69)
 	    , wks                 = __webpack_require__(11)
 	    , createArrayMethod   = __webpack_require__(41)
 	    , createArrayIncludes = __webpack_require__(100)
 	    , speciesConstructor  = __webpack_require__(141)
 	    , ArrayIterators      = __webpack_require__(149)
-	    , Iterators           = __webpack_require__(64)
+	    , Iterators           = __webpack_require__(65)
 	    , $iterDetect         = __webpack_require__(106)
 	    , setSpecies          = __webpack_require__(81)
 	    , arrayFill           = __webpack_require__(126)
@@ -19558,7 +19558,7 @@
 	  }
 	}.call(this));
 
-	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(800)(module), (function() { return this; }())))
+	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(809)(module), (function() { return this; }())))
 
 /***/ },
 /* 53 */
@@ -19696,7 +19696,7 @@
 /* 55 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var META     = __webpack_require__(68)('meta')
+	var META     = __webpack_require__(69)('meta')
 	  , isObject = __webpack_require__(10)
 	  , has      = __webpack_require__(23)
 	  , setDesc  = __webpack_require__(15).f
@@ -19820,440 +19820,7 @@
 
 	/* WEBPACK VAR INJECTION */(function(process) {'use strict';
 
-	exports.__esModule = true;
-
-	var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
-
-	exports.isReactChildren = isReactChildren;
-	exports.createRouteFromReactElement = createRouteFromReactElement;
-	exports.createRoutesFromReactChildren = createRoutesFromReactChildren;
-	exports.createRoutes = createRoutes;
-
-	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
-
-	var _react = __webpack_require__(3);
-
-	var _react2 = _interopRequireDefault(_react);
-
-	var _routerWarning = __webpack_require__(22);
-
-	var _routerWarning2 = _interopRequireDefault(_routerWarning);
-
-	function isValidChild(object) {
-	  return object == null || _react2['default'].isValidElement(object);
-	}
-
-	function isReactChildren(object) {
-	  return isValidChild(object) || Array.isArray(object) && object.every(isValidChild);
-	}
-
-	function checkPropTypes(componentName, propTypes, props) {
-	  componentName = componentName || 'UnknownComponent';
-
-	  for (var propName in propTypes) {
-	    if (Object.prototype.hasOwnProperty.call(propTypes, propName)) {
-	      var error = propTypes[propName](props, propName, componentName);
-
-	      /* istanbul ignore if: error logging */
-	      if (error instanceof Error) process.env.NODE_ENV !== 'production' ? _routerWarning2['default'](false, error.message) : undefined;
-	    }
-	  }
-	}
-
-	function createRoute(defaultProps, props) {
-	  return _extends({}, defaultProps, props);
-	}
-
-	function createRouteFromReactElement(element) {
-	  var type = element.type;
-	  var route = createRoute(type.defaultProps, element.props);
-
-	  if (type.propTypes) checkPropTypes(type.displayName || type.name, type.propTypes, route);
-
-	  if (route.children) {
-	    var childRoutes = createRoutesFromReactChildren(route.children, route);
-
-	    if (childRoutes.length) route.childRoutes = childRoutes;
-
-	    delete route.children;
-	  }
-
-	  return route;
-	}
-
-	/**
-	 * Creates and returns a routes object from the given ReactChildren. JSX
-	 * provides a convenient way to visualize how routes in the hierarchy are
-	 * nested.
-	 *
-	 *   import { Route, createRoutesFromReactChildren } from 'react-router'
-	 *   
-	 *   const routes = createRoutesFromReactChildren(
-	 *     <Route component={App}>
-	 *       <Route path="home" component={Dashboard}/>
-	 *       <Route path="news" component={NewsFeed}/>
-	 *     </Route>
-	 *   )
-	 *
-	 * Note: This method is automatically used when you provide <Route> children
-	 * to a <Router> component.
-	 */
-
-	function createRoutesFromReactChildren(children, parentRoute) {
-	  var routes = [];
-
-	  _react2['default'].Children.forEach(children, function (element) {
-	    if (_react2['default'].isValidElement(element)) {
-	      // Component classes may have a static create* method.
-	      if (element.type.createRouteFromReactElement) {
-	        var route = element.type.createRouteFromReactElement(element, parentRoute);
-
-	        if (route) routes.push(route);
-	      } else {
-	        routes.push(createRouteFromReactElement(element));
-	      }
-	    }
-	  });
-
-	  return routes;
-	}
-
-	/**
-	 * Creates and returns an array of routes from the given object which
-	 * may be a JSX route, a plain object route, or an array of either.
-	 */
-
-	function createRoutes(routes) {
-	  if (isReactChildren(routes)) {
-	    routes = createRoutesFromReactChildren(routes);
-	  } else if (routes && !Array.isArray(routes)) {
-	    routes = [routes];
-	  }
-
-	  return routes;
-	}
-	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(2)))
-
-/***/ },
-/* 60 */
-/***/ function(module, exports, __webpack_require__) {
-
-	/* WEBPACK VAR INJECTION */(function(process) {/**
-	 * Copyright 2013-2015, Facebook, Inc.
-	 * All rights reserved.
-	 *
-	 * This source code is licensed under the BSD-style license found in the
-	 * LICENSE file in the root directory of this source tree. An additional grant
-	 * of patent rights can be found in the PATENTS file in the same directory.
-	 *
-	 * @providesModule PooledClass
-	 */
-
-	'use strict';
-
-	var invariant = __webpack_require__(4);
-
-	/**
-	 * Static poolers. Several custom versions for each potential number of
-	 * arguments. A completely generic pooler is easy to implement, but would
-	 * require accessing the `arguments` object. In each of these, `this` refers to
-	 * the Class itself, not an instance. If any others are needed, simply add them
-	 * here, or in their own files.
-	 */
-	var oneArgumentPooler = function (copyFieldsFrom) {
-	  var Klass = this;
-	  if (Klass.instancePool.length) {
-	    var instance = Klass.instancePool.pop();
-	    Klass.call(instance, copyFieldsFrom);
-	    return instance;
-	  } else {
-	    return new Klass(copyFieldsFrom);
-	  }
-	};
-
-	var twoArgumentPooler = function (a1, a2) {
-	  var Klass = this;
-	  if (Klass.instancePool.length) {
-	    var instance = Klass.instancePool.pop();
-	    Klass.call(instance, a1, a2);
-	    return instance;
-	  } else {
-	    return new Klass(a1, a2);
-	  }
-	};
-
-	var threeArgumentPooler = function (a1, a2, a3) {
-	  var Klass = this;
-	  if (Klass.instancePool.length) {
-	    var instance = Klass.instancePool.pop();
-	    Klass.call(instance, a1, a2, a3);
-	    return instance;
-	  } else {
-	    return new Klass(a1, a2, a3);
-	  }
-	};
-
-	var fourArgumentPooler = function (a1, a2, a3, a4) {
-	  var Klass = this;
-	  if (Klass.instancePool.length) {
-	    var instance = Klass.instancePool.pop();
-	    Klass.call(instance, a1, a2, a3, a4);
-	    return instance;
-	  } else {
-	    return new Klass(a1, a2, a3, a4);
-	  }
-	};
-
-	var fiveArgumentPooler = function (a1, a2, a3, a4, a5) {
-	  var Klass = this;
-	  if (Klass.instancePool.length) {
-	    var instance = Klass.instancePool.pop();
-	    Klass.call(instance, a1, a2, a3, a4, a5);
-	    return instance;
-	  } else {
-	    return new Klass(a1, a2, a3, a4, a5);
-	  }
-	};
-
-	var standardReleaser = function (instance) {
-	  var Klass = this;
-	  !(instance instanceof Klass) ? process.env.NODE_ENV !== 'production' ? invariant(false, 'Trying to release an instance into a pool of a different type.') : invariant(false) : undefined;
-	  instance.destructor();
-	  if (Klass.instancePool.length < Klass.poolSize) {
-	    Klass.instancePool.push(instance);
-	  }
-	};
-
-	var DEFAULT_POOL_SIZE = 10;
-	var DEFAULT_POOLER = oneArgumentPooler;
-
-	/**
-	 * Augments `CopyConstructor` to be a poolable class, augmenting only the class
-	 * itself (statically) not adding any prototypical fields. Any CopyConstructor
-	 * you give this may have a `poolSize` property, and will look for a
-	 * prototypical `destructor` on instances (optional).
-	 *
-	 * @param {Function} CopyConstructor Constructor that can be used to reset.
-	 * @param {Function} pooler Customizable pooler.
-	 */
-	var addPoolingTo = function (CopyConstructor, pooler) {
-	  var NewKlass = CopyConstructor;
-	  NewKlass.instancePool = [];
-	  NewKlass.getPooled = pooler || DEFAULT_POOLER;
-	  if (!NewKlass.poolSize) {
-	    NewKlass.poolSize = DEFAULT_POOL_SIZE;
-	  }
-	  NewKlass.release = standardReleaser;
-	  return NewKlass;
-	};
-
-	var PooledClass = {
-	  addPoolingTo: addPoolingTo,
-	  oneArgumentPooler: oneArgumentPooler,
-	  twoArgumentPooler: twoArgumentPooler,
-	  threeArgumentPooler: threeArgumentPooler,
-	  fourArgumentPooler: fourArgumentPooler,
-	  fiveArgumentPooler: fiveArgumentPooler
-	};
-
-	module.exports = PooledClass;
-	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(2)))
-
-/***/ },
-/* 61 */
-/***/ function(module, exports, __webpack_require__) {
-
-	'use strict';
-
-	Object.defineProperty(exports, "__esModule", {
-	  value: true
-	});
-
-	var _reflux = __webpack_require__(18);
-
-	var _reflux2 = _interopRequireDefault(_reflux);
-
-	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-	var ChannelActions = _reflux2.default.createActions(["reachedChannelStart", "channelInfoReceived", "loadMoreMessages", "sendMessage", "addFile", "loadPost", "loadFile", "loadDirectoryInfo", "setChannelMode", "channelModeUpdated"]);
-
-	exports.default = ChannelActions;
-
-/***/ },
-/* 62 */
-/***/ function(module, exports, __webpack_require__) {
-
-	'use strict';
-
-	Object.defineProperty(exports, "__esModule", {
-	  value: true
-	});
-
-	var _reflux = __webpack_require__(18);
-
-	var _reflux2 = _interopRequireDefault(_reflux);
-
-	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-	var SocketActions = _reflux2.default.createActions(["socketConnected", "socketDisconnected"]);
-
-	exports.default = SocketActions;
-
-/***/ },
-/* 63 */
-/***/ function(module, exports) {
-
-	module.exports = function(it, Constructor, name, forbiddenField){
-	  if(!(it instanceof Constructor) || (forbiddenField !== undefined && forbiddenField in it)){
-	    throw TypeError(name + ': incorrect invocation!');
-	  } return it;
-	};
-
-/***/ },
-/* 64 */
-/***/ function(module, exports) {
-
-	module.exports = {};
-
-/***/ },
-/* 65 */
-/***/ function(module, exports, __webpack_require__) {
-
-	// 19.1.2.2 / 15.2.3.5 Object.create(O [, Properties])
-	var anObject    = __webpack_require__(5)
-	  , dPs         = __webpack_require__(204)
-	  , enumBugKeys = __webpack_require__(129)
-	  , IE_PROTO    = __webpack_require__(140)('IE_PROTO')
-	  , Empty       = function(){ /* empty */ }
-	  , PROTOTYPE   = 'prototype';
-
-	// Create object with fake `null` prototype: use iframe Object with cleared prototype
-	var createDict = function(){
-	  // Thrash, waste and sodomy: IE GC bug
-	  var iframe = __webpack_require__(128)('iframe')
-	    , i      = enumBugKeys.length
-	    , gt     = '>'
-	    , iframeDocument;
-	  iframe.style.display = 'none';
-	  __webpack_require__(131).appendChild(iframe);
-	  iframe.src = 'javascript:'; // eslint-disable-line no-script-url
-	  // createDict = iframe.contentWindow.Object;
-	  // html.removeChild(iframe);
-	  iframeDocument = iframe.contentWindow.document;
-	  iframeDocument.open();
-	  iframeDocument.write('<script>document.F=Object</script' + gt);
-	  iframeDocument.close();
-	  createDict = iframeDocument.F;
-	  while(i--)delete createDict[PROTOTYPE][enumBugKeys[i]];
-	  return createDict();
-	};
-
-	module.exports = Object.create || function create(O, Properties){
-	  var result;
-	  if(O !== null){
-	    Empty[PROTOTYPE] = anObject(O);
-	    result = new Empty;
-	    Empty[PROTOTYPE] = null;
-	    // add "__proto__" for Object.getPrototypeOf polyfill
-	    result[IE_PROTO] = O;
-	  } else result = createDict();
-	  return Properties === undefined ? result : dPs(result, Properties);
-	};
-
-/***/ },
-/* 66 */
-/***/ function(module, exports, __webpack_require__) {
-
-	// 19.1.2.7 / 15.2.3.4 Object.getOwnPropertyNames(O)
-	var $keys      = __webpack_require__(206)
-	  , hiddenKeys = __webpack_require__(129).concat('length', 'prototype');
-
-	exports.f = Object.getOwnPropertyNames || function getOwnPropertyNames(O){
-	  return $keys(O, hiddenKeys);
-	};
-
-/***/ },
-/* 67 */
-/***/ function(module, exports, __webpack_require__) {
-
-	var toInteger = __webpack_require__(57)
-	  , max       = Math.max
-	  , min       = Math.min;
-	module.exports = function(index, length){
-	  index = toInteger(index);
-	  return index < 0 ? max(index + length, 0) : min(index, length);
-	};
-
-/***/ },
-/* 68 */
-/***/ function(module, exports) {
-
-	var id = 0
-	  , px = Math.random();
-	module.exports = function(key){
-	  return 'Symbol('.concat(key === undefined ? '' : key, ')_', (++id + px).toString(36));
-	};
-
-/***/ },
-/* 69 */
-/***/ function(module, exports, __webpack_require__) {
-
-	/* WEBPACK VAR INJECTION */(function(process) {'use strict';
-
-	exports.__esModule = true;
-	exports.extractPath = extractPath;
-	exports.parsePath = parsePath;
-
-	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
-
-	var _warning = __webpack_require__(46);
-
-	var _warning2 = _interopRequireDefault(_warning);
-
-	function extractPath(string) {
-	  var match = string.match(/^https?:\/\/[^\/]*/);
-
-	  if (match == null) return string;
-
-	  return string.substring(match[0].length);
-	}
-
-	function parsePath(path) {
-	  var pathname = extractPath(path);
-	  var search = '';
-	  var hash = '';
-
-	  process.env.NODE_ENV !== 'production' ? _warning2['default'](path === pathname, 'A path must be pathname + search + hash only, not a fully qualified URL like "%s"', path) : undefined;
-
-	  var hashIndex = pathname.indexOf('#');
-	  if (hashIndex !== -1) {
-	    hash = pathname.substring(hashIndex);
-	    pathname = pathname.substring(0, hashIndex);
-	  }
-
-	  var searchIndex = pathname.indexOf('?');
-	  if (searchIndex !== -1) {
-	    search = pathname.substring(searchIndex);
-	    pathname = pathname.substring(0, searchIndex);
-	  }
-
-	  if (pathname === '') pathname = '/';
-
-	  return {
-	    pathname: pathname,
-	    search: search,
-	    hash: hash
-	  };
-	}
-	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(2)))
-
-/***/ },
-/* 70 */
-/***/ function(module, exports, __webpack_require__) {
-
-	/* WEBPACK VAR INJECTION */(function(process) {'use strict';
-
-	const fs = __webpack_require__(685);
+	const fs = __webpack_require__(691);
 
 	let isNodejs = process.version ? true : false;
 
@@ -20478,6 +20045,439 @@
 	  forceBrowserMode: (force) => isNodejs = !force, // for testing
 	};
 
+	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(2)))
+
+/***/ },
+/* 60 */
+/***/ function(module, exports, __webpack_require__) {
+
+	/* WEBPACK VAR INJECTION */(function(process) {'use strict';
+
+	exports.__esModule = true;
+
+	var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
+
+	exports.isReactChildren = isReactChildren;
+	exports.createRouteFromReactElement = createRouteFromReactElement;
+	exports.createRoutesFromReactChildren = createRoutesFromReactChildren;
+	exports.createRoutes = createRoutes;
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
+
+	var _react = __webpack_require__(3);
+
+	var _react2 = _interopRequireDefault(_react);
+
+	var _routerWarning = __webpack_require__(22);
+
+	var _routerWarning2 = _interopRequireDefault(_routerWarning);
+
+	function isValidChild(object) {
+	  return object == null || _react2['default'].isValidElement(object);
+	}
+
+	function isReactChildren(object) {
+	  return isValidChild(object) || Array.isArray(object) && object.every(isValidChild);
+	}
+
+	function checkPropTypes(componentName, propTypes, props) {
+	  componentName = componentName || 'UnknownComponent';
+
+	  for (var propName in propTypes) {
+	    if (Object.prototype.hasOwnProperty.call(propTypes, propName)) {
+	      var error = propTypes[propName](props, propName, componentName);
+
+	      /* istanbul ignore if: error logging */
+	      if (error instanceof Error) process.env.NODE_ENV !== 'production' ? _routerWarning2['default'](false, error.message) : undefined;
+	    }
+	  }
+	}
+
+	function createRoute(defaultProps, props) {
+	  return _extends({}, defaultProps, props);
+	}
+
+	function createRouteFromReactElement(element) {
+	  var type = element.type;
+	  var route = createRoute(type.defaultProps, element.props);
+
+	  if (type.propTypes) checkPropTypes(type.displayName || type.name, type.propTypes, route);
+
+	  if (route.children) {
+	    var childRoutes = createRoutesFromReactChildren(route.children, route);
+
+	    if (childRoutes.length) route.childRoutes = childRoutes;
+
+	    delete route.children;
+	  }
+
+	  return route;
+	}
+
+	/**
+	 * Creates and returns a routes object from the given ReactChildren. JSX
+	 * provides a convenient way to visualize how routes in the hierarchy are
+	 * nested.
+	 *
+	 *   import { Route, createRoutesFromReactChildren } from 'react-router'
+	 *   
+	 *   const routes = createRoutesFromReactChildren(
+	 *     <Route component={App}>
+	 *       <Route path="home" component={Dashboard}/>
+	 *       <Route path="news" component={NewsFeed}/>
+	 *     </Route>
+	 *   )
+	 *
+	 * Note: This method is automatically used when you provide <Route> children
+	 * to a <Router> component.
+	 */
+
+	function createRoutesFromReactChildren(children, parentRoute) {
+	  var routes = [];
+
+	  _react2['default'].Children.forEach(children, function (element) {
+	    if (_react2['default'].isValidElement(element)) {
+	      // Component classes may have a static create* method.
+	      if (element.type.createRouteFromReactElement) {
+	        var route = element.type.createRouteFromReactElement(element, parentRoute);
+
+	        if (route) routes.push(route);
+	      } else {
+	        routes.push(createRouteFromReactElement(element));
+	      }
+	    }
+	  });
+
+	  return routes;
+	}
+
+	/**
+	 * Creates and returns an array of routes from the given object which
+	 * may be a JSX route, a plain object route, or an array of either.
+	 */
+
+	function createRoutes(routes) {
+	  if (isReactChildren(routes)) {
+	    routes = createRoutesFromReactChildren(routes);
+	  } else if (routes && !Array.isArray(routes)) {
+	    routes = [routes];
+	  }
+
+	  return routes;
+	}
+	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(2)))
+
+/***/ },
+/* 61 */
+/***/ function(module, exports, __webpack_require__) {
+
+	/* WEBPACK VAR INJECTION */(function(process) {/**
+	 * Copyright 2013-2015, Facebook, Inc.
+	 * All rights reserved.
+	 *
+	 * This source code is licensed under the BSD-style license found in the
+	 * LICENSE file in the root directory of this source tree. An additional grant
+	 * of patent rights can be found in the PATENTS file in the same directory.
+	 *
+	 * @providesModule PooledClass
+	 */
+
+	'use strict';
+
+	var invariant = __webpack_require__(4);
+
+	/**
+	 * Static poolers. Several custom versions for each potential number of
+	 * arguments. A completely generic pooler is easy to implement, but would
+	 * require accessing the `arguments` object. In each of these, `this` refers to
+	 * the Class itself, not an instance. If any others are needed, simply add them
+	 * here, or in their own files.
+	 */
+	var oneArgumentPooler = function (copyFieldsFrom) {
+	  var Klass = this;
+	  if (Klass.instancePool.length) {
+	    var instance = Klass.instancePool.pop();
+	    Klass.call(instance, copyFieldsFrom);
+	    return instance;
+	  } else {
+	    return new Klass(copyFieldsFrom);
+	  }
+	};
+
+	var twoArgumentPooler = function (a1, a2) {
+	  var Klass = this;
+	  if (Klass.instancePool.length) {
+	    var instance = Klass.instancePool.pop();
+	    Klass.call(instance, a1, a2);
+	    return instance;
+	  } else {
+	    return new Klass(a1, a2);
+	  }
+	};
+
+	var threeArgumentPooler = function (a1, a2, a3) {
+	  var Klass = this;
+	  if (Klass.instancePool.length) {
+	    var instance = Klass.instancePool.pop();
+	    Klass.call(instance, a1, a2, a3);
+	    return instance;
+	  } else {
+	    return new Klass(a1, a2, a3);
+	  }
+	};
+
+	var fourArgumentPooler = function (a1, a2, a3, a4) {
+	  var Klass = this;
+	  if (Klass.instancePool.length) {
+	    var instance = Klass.instancePool.pop();
+	    Klass.call(instance, a1, a2, a3, a4);
+	    return instance;
+	  } else {
+	    return new Klass(a1, a2, a3, a4);
+	  }
+	};
+
+	var fiveArgumentPooler = function (a1, a2, a3, a4, a5) {
+	  var Klass = this;
+	  if (Klass.instancePool.length) {
+	    var instance = Klass.instancePool.pop();
+	    Klass.call(instance, a1, a2, a3, a4, a5);
+	    return instance;
+	  } else {
+	    return new Klass(a1, a2, a3, a4, a5);
+	  }
+	};
+
+	var standardReleaser = function (instance) {
+	  var Klass = this;
+	  !(instance instanceof Klass) ? process.env.NODE_ENV !== 'production' ? invariant(false, 'Trying to release an instance into a pool of a different type.') : invariant(false) : undefined;
+	  instance.destructor();
+	  if (Klass.instancePool.length < Klass.poolSize) {
+	    Klass.instancePool.push(instance);
+	  }
+	};
+
+	var DEFAULT_POOL_SIZE = 10;
+	var DEFAULT_POOLER = oneArgumentPooler;
+
+	/**
+	 * Augments `CopyConstructor` to be a poolable class, augmenting only the class
+	 * itself (statically) not adding any prototypical fields. Any CopyConstructor
+	 * you give this may have a `poolSize` property, and will look for a
+	 * prototypical `destructor` on instances (optional).
+	 *
+	 * @param {Function} CopyConstructor Constructor that can be used to reset.
+	 * @param {Function} pooler Customizable pooler.
+	 */
+	var addPoolingTo = function (CopyConstructor, pooler) {
+	  var NewKlass = CopyConstructor;
+	  NewKlass.instancePool = [];
+	  NewKlass.getPooled = pooler || DEFAULT_POOLER;
+	  if (!NewKlass.poolSize) {
+	    NewKlass.poolSize = DEFAULT_POOL_SIZE;
+	  }
+	  NewKlass.release = standardReleaser;
+	  return NewKlass;
+	};
+
+	var PooledClass = {
+	  addPoolingTo: addPoolingTo,
+	  oneArgumentPooler: oneArgumentPooler,
+	  twoArgumentPooler: twoArgumentPooler,
+	  threeArgumentPooler: threeArgumentPooler,
+	  fourArgumentPooler: fourArgumentPooler,
+	  fiveArgumentPooler: fiveArgumentPooler
+	};
+
+	module.exports = PooledClass;
+	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(2)))
+
+/***/ },
+/* 62 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+
+	var _reflux = __webpack_require__(18);
+
+	var _reflux2 = _interopRequireDefault(_reflux);
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+	var ChannelActions = _reflux2.default.createActions(["reachedChannelStart", "channelInfoReceived", "loadMoreMessages", "sendMessage", "addFile", "loadPost", "loadFile", "loadDirectoryInfo", "setChannelMode", "channelModeUpdated"]);
+
+	exports.default = ChannelActions;
+
+/***/ },
+/* 63 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+
+	var _reflux = __webpack_require__(18);
+
+	var _reflux2 = _interopRequireDefault(_reflux);
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+	var SocketActions = _reflux2.default.createActions(["socketConnected", "socketDisconnected"]);
+
+	exports.default = SocketActions;
+
+/***/ },
+/* 64 */
+/***/ function(module, exports) {
+
+	module.exports = function(it, Constructor, name, forbiddenField){
+	  if(!(it instanceof Constructor) || (forbiddenField !== undefined && forbiddenField in it)){
+	    throw TypeError(name + ': incorrect invocation!');
+	  } return it;
+	};
+
+/***/ },
+/* 65 */
+/***/ function(module, exports) {
+
+	module.exports = {};
+
+/***/ },
+/* 66 */
+/***/ function(module, exports, __webpack_require__) {
+
+	// 19.1.2.2 / 15.2.3.5 Object.create(O [, Properties])
+	var anObject    = __webpack_require__(5)
+	  , dPs         = __webpack_require__(204)
+	  , enumBugKeys = __webpack_require__(129)
+	  , IE_PROTO    = __webpack_require__(140)('IE_PROTO')
+	  , Empty       = function(){ /* empty */ }
+	  , PROTOTYPE   = 'prototype';
+
+	// Create object with fake `null` prototype: use iframe Object with cleared prototype
+	var createDict = function(){
+	  // Thrash, waste and sodomy: IE GC bug
+	  var iframe = __webpack_require__(128)('iframe')
+	    , i      = enumBugKeys.length
+	    , gt     = '>'
+	    , iframeDocument;
+	  iframe.style.display = 'none';
+	  __webpack_require__(131).appendChild(iframe);
+	  iframe.src = 'javascript:'; // eslint-disable-line no-script-url
+	  // createDict = iframe.contentWindow.Object;
+	  // html.removeChild(iframe);
+	  iframeDocument = iframe.contentWindow.document;
+	  iframeDocument.open();
+	  iframeDocument.write('<script>document.F=Object</script' + gt);
+	  iframeDocument.close();
+	  createDict = iframeDocument.F;
+	  while(i--)delete createDict[PROTOTYPE][enumBugKeys[i]];
+	  return createDict();
+	};
+
+	module.exports = Object.create || function create(O, Properties){
+	  var result;
+	  if(O !== null){
+	    Empty[PROTOTYPE] = anObject(O);
+	    result = new Empty;
+	    Empty[PROTOTYPE] = null;
+	    // add "__proto__" for Object.getPrototypeOf polyfill
+	    result[IE_PROTO] = O;
+	  } else result = createDict();
+	  return Properties === undefined ? result : dPs(result, Properties);
+	};
+
+/***/ },
+/* 67 */
+/***/ function(module, exports, __webpack_require__) {
+
+	// 19.1.2.7 / 15.2.3.4 Object.getOwnPropertyNames(O)
+	var $keys      = __webpack_require__(206)
+	  , hiddenKeys = __webpack_require__(129).concat('length', 'prototype');
+
+	exports.f = Object.getOwnPropertyNames || function getOwnPropertyNames(O){
+	  return $keys(O, hiddenKeys);
+	};
+
+/***/ },
+/* 68 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var toInteger = __webpack_require__(57)
+	  , max       = Math.max
+	  , min       = Math.min;
+	module.exports = function(index, length){
+	  index = toInteger(index);
+	  return index < 0 ? max(index + length, 0) : min(index, length);
+	};
+
+/***/ },
+/* 69 */
+/***/ function(module, exports) {
+
+	var id = 0
+	  , px = Math.random();
+	module.exports = function(key){
+	  return 'Symbol('.concat(key === undefined ? '' : key, ')_', (++id + px).toString(36));
+	};
+
+/***/ },
+/* 70 */
+/***/ function(module, exports, __webpack_require__) {
+
+	/* WEBPACK VAR INJECTION */(function(process) {'use strict';
+
+	exports.__esModule = true;
+	exports.extractPath = extractPath;
+	exports.parsePath = parsePath;
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
+
+	var _warning = __webpack_require__(46);
+
+	var _warning2 = _interopRequireDefault(_warning);
+
+	function extractPath(string) {
+	  var match = string.match(/^https?:\/\/[^\/]*/);
+
+	  if (match == null) return string;
+
+	  return string.substring(match[0].length);
+	}
+
+	function parsePath(path) {
+	  var pathname = extractPath(path);
+	  var search = '';
+	  var hash = '';
+
+	  process.env.NODE_ENV !== 'production' ? _warning2['default'](path === pathname, 'A path must be pathname + search + hash only, not a fully qualified URL like "%s"', path) : undefined;
+
+	  var hashIndex = pathname.indexOf('#');
+	  if (hashIndex !== -1) {
+	    hash = pathname.substring(hashIndex);
+	    pathname = pathname.substring(0, hashIndex);
+	  }
+
+	  var searchIndex = pathname.indexOf('?');
+	  if (searchIndex !== -1) {
+	    search = pathname.substring(searchIndex);
+	    pathname = pathname.substring(0, searchIndex);
+	  }
+
+	  if (pathname === '') pathname = '/';
+
+	  return {
+	    pathname: pathname,
+	    search: search,
+	    hash: hash
+	  };
+	}
 	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(2)))
 
 /***/ },
@@ -20805,7 +20805,7 @@
 
 	'use strict';
 
-	var ReactRef = __webpack_require__(744);
+	var ReactRef = __webpack_require__(751);
 
 	/**
 	 * Helper to call ReactRef.attachRefs with this composite component, split out
@@ -20918,7 +20918,7 @@
 
 	'use strict';
 
-	var PooledClass = __webpack_require__(60);
+	var PooledClass = __webpack_require__(61);
 
 	var assign = __webpack_require__(6);
 	var emptyFunction = __webpack_require__(39);
@@ -22156,7 +22156,7 @@
 	'use strict';
 
 	var EventPluginRegistry = __webpack_require__(239);
-	var EventPluginUtils = __webpack_require__(719);
+	var EventPluginUtils = __webpack_require__(726);
 	var ReactErrorUtils = __webpack_require__(251);
 
 	var accumulateInto = __webpack_require__(260);
@@ -22813,7 +22813,7 @@
 
 	var _UIActions2 = _interopRequireDefault(_UIActions);
 
-	var _SocketActions = __webpack_require__(62);
+	var _SocketActions = __webpack_require__(63);
 
 	var _SocketActions2 = _interopRequireDefault(_SocketActions);
 
@@ -22821,7 +22821,7 @@
 
 	var _NetworkActions2 = _interopRequireDefault(_NetworkActions);
 
-	var _ChannelActions = __webpack_require__(61);
+	var _ChannelActions = __webpack_require__(62);
 
 	var _ChannelActions2 = _interopRequireDefault(_ChannelActions);
 
@@ -22829,7 +22829,7 @@
 
 	var _AppStateStore2 = _interopRequireDefault(_AppStateStore);
 
-	var _logplease = __webpack_require__(70);
+	var _logplease = __webpack_require__(59);
 
 	var _logplease2 = _interopRequireDefault(_logplease);
 
@@ -22899,7 +22899,7 @@
 	// true  -> Array#includes
 	var toIObject = __webpack_require__(28)
 	  , toLength  = __webpack_require__(17)
-	  , toIndex   = __webpack_require__(67);
+	  , toIndex   = __webpack_require__(68);
 	module.exports = function(IS_INCLUDES){
 	  return function($this, el, fromIndex){
 	    var O      = toIObject($this)
@@ -22928,7 +22928,7 @@
 	  , redefineAll       = __webpack_require__(80)
 	  , meta              = __webpack_require__(55)
 	  , forOf             = __webpack_require__(89)
-	  , anInstance        = __webpack_require__(63)
+	  , anInstance        = __webpack_require__(64)
 	  , isObject          = __webpack_require__(10)
 	  , fails             = __webpack_require__(7)
 	  , $iterDetect       = __webpack_require__(106)
@@ -23183,7 +23183,7 @@
 
 	var global = __webpack_require__(8)
 	  , hide   = __webpack_require__(25)
-	  , uid    = __webpack_require__(68)
+	  , uid    = __webpack_require__(69)
 	  , TYPED  = uid('typed_array')
 	  , VIEW   = uid('view')
 	  , ABV    = !!(global.ArrayBuffer && global.DataView)
@@ -23288,13 +23288,13 @@
 
 	var _warning2 = _interopRequireDefault(_warning);
 
-	var _queryString = __webpack_require__(687);
+	var _queryString = __webpack_require__(694);
 
 	var _runTransitionHook = __webpack_require__(153);
 
 	var _runTransitionHook2 = _interopRequireDefault(_runTransitionHook);
 
-	var _PathUtils = __webpack_require__(69);
+	var _PathUtils = __webpack_require__(70);
 
 	var _deprecate = __webpack_require__(152);
 
@@ -23472,11 +23472,11 @@
 	'use strict';
 
 	var ReactDOM = __webpack_require__(163);
-	var ReactDOMServer = __webpack_require__(733);
-	var ReactIsomorphic = __webpack_require__(740);
+	var ReactDOMServer = __webpack_require__(740);
+	var ReactIsomorphic = __webpack_require__(747);
 
 	var assign = __webpack_require__(6);
-	var deprecated = __webpack_require__(765);
+	var deprecated = __webpack_require__(772);
 
 	// `version` will be added here by ReactIsomorphic.
 	var React = {};
@@ -23520,7 +23520,7 @@
 	var EventConstants = __webpack_require__(53);
 	var EventPluginHub = __webpack_require__(93);
 	var EventPluginRegistry = __webpack_require__(239);
-	var ReactEventEmitterMixin = __webpack_require__(737);
+	var ReactEventEmitterMixin = __webpack_require__(744);
 	var ReactPerf = __webpack_require__(34);
 	var ViewportMetrics = __webpack_require__(259);
 
@@ -24414,11 +24414,11 @@
 
 	var _NetworkActions2 = _interopRequireDefault(_NetworkActions);
 
-	var _SocketActions = __webpack_require__(62);
+	var _SocketActions = __webpack_require__(63);
 
 	var _SocketActions2 = _interopRequireDefault(_SocketActions);
 
-	var _logplease = __webpack_require__(70);
+	var _logplease = __webpack_require__(59);
 
 	var _logplease2 = _interopRequireDefault(_logplease);
 
@@ -24466,7 +24466,7 @@
 	// 22.1.3.6 Array.prototype.fill(value, start = 0, end = this.length)
 	'use strict';
 	var toObject = __webpack_require__(19)
-	  , toIndex  = __webpack_require__(67)
+	  , toIndex  = __webpack_require__(68)
 	  , toLength = __webpack_require__(17);
 	module.exports = function fill(value /*, start = 0, end = @length */){
 	  var O      = toObject(this)
@@ -24554,7 +24554,7 @@
 /***/ function(module, exports, __webpack_require__) {
 
 	// check on default Array iterator
-	var Iterators  = __webpack_require__(64)
+	var Iterators  = __webpack_require__(65)
 	  , ITERATOR   = __webpack_require__(11)('iterator')
 	  , ArrayProto = Array.prototype;
 
@@ -24588,7 +24588,7 @@
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
-	var create         = __webpack_require__(65)
+	var create         = __webpack_require__(66)
 	  , descriptor     = __webpack_require__(56)
 	  , setToStringTag = __webpack_require__(82)
 	  , IteratorPrototype = {};
@@ -24611,7 +24611,7 @@
 	  , redefine       = __webpack_require__(26)
 	  , hide           = __webpack_require__(25)
 	  , has            = __webpack_require__(23)
-	  , Iterators      = __webpack_require__(64)
+	  , Iterators      = __webpack_require__(65)
 	  , $iterCreate    = __webpack_require__(136)
 	  , setToStringTag = __webpack_require__(82)
 	  , getPrototypeOf = __webpack_require__(31)
@@ -24705,7 +24705,7 @@
 /***/ function(module, exports, __webpack_require__) {
 
 	var shared = __webpack_require__(110)('keys')
-	  , uid    = __webpack_require__(68);
+	  , uid    = __webpack_require__(69);
 	module.exports = function(key){
 	  return shared[key] || (shared[key] = uid(key));
 	};
@@ -24874,10 +24874,10 @@
 	  , hide           = __webpack_require__(25)
 	  , redefineAll    = __webpack_require__(80)
 	  , fails          = __webpack_require__(7)
-	  , anInstance     = __webpack_require__(63)
+	  , anInstance     = __webpack_require__(64)
 	  , toInteger      = __webpack_require__(57)
 	  , toLength       = __webpack_require__(17)
-	  , gOPN           = __webpack_require__(66).f
+	  , gOPN           = __webpack_require__(67).f
 	  , dP             = __webpack_require__(15).f
 	  , arrayFill      = __webpack_require__(126)
 	  , setToStringTag = __webpack_require__(82)
@@ -25148,7 +25148,7 @@
 
 	var classof   = __webpack_require__(77)
 	  , ITERATOR  = __webpack_require__(11)('iterator')
-	  , Iterators = __webpack_require__(64);
+	  , Iterators = __webpack_require__(65);
 	module.exports = __webpack_require__(48).getIteratorMethod = function(it){
 	  if(it != undefined)return it[ITERATOR]
 	    || it['@@iterator']
@@ -25162,7 +25162,7 @@
 	'use strict';
 	var addToUnscopables = __webpack_require__(76)
 	  , step             = __webpack_require__(201)
-	  , Iterators        = __webpack_require__(64)
+	  , Iterators        = __webpack_require__(65)
 	  , toIObject        = __webpack_require__(28);
 
 	// 22.1.3.4 Array.prototype.entries()
@@ -25201,22 +25201,22 @@
 	'use strict';
 
 	module.exports = {
-	    PulseLoader: __webpack_require__(520),
-	    RotateLoader: __webpack_require__(523),
-	    BeatLoader: __webpack_require__(512),
-	    RiseLoader: __webpack_require__(522),
-	    SyncLoader: __webpack_require__(527),
-	    GridLoader: __webpack_require__(517),
-	    ClipLoader: __webpack_require__(514),
-	    SquareLoader: __webpack_require__(526),
-	    DotLoader: __webpack_require__(515),
-	    PacmanLoader: __webpack_require__(519),
-	    MoonLoader: __webpack_require__(518),
-	    RingLoader: __webpack_require__(521),
-	    BounceLoader: __webpack_require__(513),
-	    SkewLoader: __webpack_require__(525),
-	    FadeLoader: __webpack_require__(516),
-	    ScaleLoader: __webpack_require__(524)
+	    PulseLoader: __webpack_require__(526),
+	    RotateLoader: __webpack_require__(529),
+	    BeatLoader: __webpack_require__(518),
+	    RiseLoader: __webpack_require__(528),
+	    SyncLoader: __webpack_require__(533),
+	    GridLoader: __webpack_require__(523),
+	    ClipLoader: __webpack_require__(520),
+	    SquareLoader: __webpack_require__(532),
+	    DotLoader: __webpack_require__(521),
+	    PacmanLoader: __webpack_require__(525),
+	    MoonLoader: __webpack_require__(524),
+	    RingLoader: __webpack_require__(527),
+	    BounceLoader: __webpack_require__(519),
+	    SkewLoader: __webpack_require__(531),
+	    FadeLoader: __webpack_require__(522),
+	    ScaleLoader: __webpack_require__(530)
 	};
 
 /***/ },
@@ -25473,11 +25473,11 @@
 
 	var _deprecateObjectProperties2 = _interopRequireDefault(_deprecateObjectProperties);
 
-	var _getRouteParams = __webpack_require__(704);
+	var _getRouteParams = __webpack_require__(711);
 
 	var _getRouteParams2 = _interopRequireDefault(_getRouteParams);
 
-	var _RouteUtils = __webpack_require__(59);
+	var _RouteUtils = __webpack_require__(60);
 
 	var _routerWarning = __webpack_require__(22);
 
@@ -25629,21 +25629,21 @@
 
 	var _historyLibActions = __webpack_require__(84);
 
-	var _computeChangedRoutes2 = __webpack_require__(702);
+	var _computeChangedRoutes2 = __webpack_require__(709);
 
 	var _computeChangedRoutes3 = _interopRequireDefault(_computeChangedRoutes2);
 
-	var _TransitionUtils = __webpack_require__(700);
+	var _TransitionUtils = __webpack_require__(707);
 
-	var _isActive2 = __webpack_require__(707);
+	var _isActive2 = __webpack_require__(714);
 
 	var _isActive3 = _interopRequireDefault(_isActive2);
 
-	var _getComponents = __webpack_require__(703);
+	var _getComponents = __webpack_require__(710);
 
 	var _getComponents2 = _interopRequireDefault(_getComponents);
 
-	var _matchRoutes = __webpack_require__(709);
+	var _matchRoutes = __webpack_require__(716);
 
 	var _matchRoutes2 = _interopRequireDefault(_matchRoutes);
 
@@ -26017,7 +26017,7 @@
 
 	'use strict';
 
-	var PooledClass = __webpack_require__(60);
+	var PooledClass = __webpack_require__(61);
 
 	var assign = __webpack_require__(6);
 	var invariant = __webpack_require__(4);
@@ -26120,7 +26120,7 @@
 	var DOMProperty = __webpack_require__(72);
 	var ReactPerf = __webpack_require__(34);
 
-	var quoteAttributeValueForBrowser = __webpack_require__(768);
+	var quoteAttributeValueForBrowser = __webpack_require__(775);
 	var warning = __webpack_require__(9);
 
 	// Simplified subset
@@ -26603,7 +26603,7 @@
 	var ReactVersion = __webpack_require__(166);
 
 	var findDOMNode = __webpack_require__(167);
-	var renderSubtreeIntoContainer = __webpack_require__(769);
+	var renderSubtreeIntoContainer = __webpack_require__(776);
 	var warning = __webpack_require__(9);
 
 	ReactDefaultInjection.inject();
@@ -27309,7 +27309,7 @@
 
 	'use strict';
 
-	var ReactCompositeComponent = __webpack_require__(726);
+	var ReactCompositeComponent = __webpack_require__(733);
 	var ReactEmptyComponent = __webpack_require__(249);
 	var ReactNativeComponent = __webpack_require__(255);
 
@@ -28318,7 +28318,7 @@
 
 	var _reactAddonsCssTransitionGroup2 = _interopRequireDefault(_reactAddonsCssTransitionGroup);
 
-	__webpack_require__(782);
+	__webpack_require__(790);
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -28426,7 +28426,7 @@
 
 	var _apiurl2 = _interopRequireDefault(_apiurl);
 
-	__webpack_require__(787);
+	__webpack_require__(795);
 
 	var _highlight = __webpack_require__(284);
 
@@ -28436,9 +28436,17 @@
 
 	var _highlight4 = _interopRequireDefault(_highlight3);
 
-	var _ChannelActions = __webpack_require__(61);
+	var _ChannelActions = __webpack_require__(62);
 
 	var _ChannelActions2 = _interopRequireDefault(_ChannelActions);
+
+	var _clipboard = __webpack_require__(469);
+
+	var _clipboard2 = _interopRequireDefault(_clipboard);
+
+	var _logplease = __webpack_require__(59);
+
+	var _logplease2 = _interopRequireDefault(_logplease);
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -28447,6 +28455,8 @@
 	function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
 
 	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+	var logger = _logplease2.default.create('Clipboard', { color: _logplease2.default.Colors.Magenta });
 
 	var getFileUrl = _apiurl2.default.getApiUrl() + "/api/cat/";
 
@@ -28465,6 +28475,13 @@
 	      showPreview: false,
 	      previewContent: "Loading..."
 	    };
+	    var self = _this;
+	    _this.clipboard = new _clipboard2.default('.clipboard-' + _this.state.file, {
+	      text: function text(trigger) {
+	        logger.info(self.state.file + " copied to clipboard!");
+	        return self.state.file;
+	      }
+	    });
 	    return _this;
 	  }
 
@@ -28520,7 +28537,7 @@
 	      if (isAudio) audio = this.state.showPreview ? _react2.default.createElement(
 	        'div',
 	        { className: 'preview' },
-	        _react2.default.createElement('audio', { height: 200, ref: 'audio_tag', src: openLink, controls: true, autoPlay: false })
+	        _react2.default.createElement('audio', { height: 200, ref: 'audio_tag', src: openLink, controls: true, autoPlay: true })
 	      ) : _react2.default.createElement('span', null);
 	      if (isCode) code = this.state.showPreview ? _react2.default.createElement(
 	        'div',
@@ -28536,6 +28553,8 @@
 	          _react2.default.createElement('img', { height: 200, src: openLink })
 	        )
 	      ) : _react2.default.createElement('span', null);
+
+	      var className = "clipboard-" + this.state.file + " download";
 
 	      var content = _react2.default.createElement('span', null);
 	      if (isVideo) {
@@ -28562,8 +28581,13 @@
 	          ),
 	          _react2.default.createElement(
 	            'a',
-	            { className: 'download', href: downloadLink, target: '_blank' },
+	            { className: 'download', href: downloadLink },
 	            'Download'
+	          ),
+	          _react2.default.createElement(
+	            'span',
+	            { className: className },
+	            'Hash'
 	          ),
 	          _react2.default.createElement(
 	            'span',
@@ -28596,8 +28620,13 @@
 	          ),
 	          _react2.default.createElement(
 	            'a',
-	            { className: 'download', href: downloadLink, target: '_blank' },
+	            { className: 'download', href: downloadLink },
 	            'Download'
+	          ),
+	          _react2.default.createElement(
+	            'span',
+	            { className: className },
+	            'Hash'
 	          ),
 	          _react2.default.createElement(
 	            'span',
@@ -28611,10 +28640,11 @@
 	          _reactAddonsCssTransitionGroup2.default,
 	          {
 	            transitionName: 'fileAnimation',
-	            transitionAppear: true,
-	            transitionAppearTimeout: 1000,
-	            transitionEnterTimeout: 0,
-	            transitionLeaveTimeout: 0,
+	            transitionEnter: true,
+	            transitionLeave: true,
+	            transitionAppearTimeout: 0,
+	            transitionEnterTimeout: 2000,
+	            transitionLeaveTimeout: 1000,
 	            component: 'div',
 	            className: 'content'
 	          },
@@ -28630,8 +28660,13 @@
 	          ),
 	          _react2.default.createElement(
 	            'a',
-	            { className: 'download', href: downloadLink, target: '_blank' },
+	            { className: 'download', href: downloadLink },
 	            'Download'
+	          ),
+	          _react2.default.createElement(
+	            'span',
+	            { className: className },
+	            'Hash'
 	          ),
 	          _react2.default.createElement(
 	            'span',
@@ -28664,8 +28699,13 @@
 	          ),
 	          _react2.default.createElement(
 	            'a',
-	            { className: 'download', href: downloadLink, target: '_blank' },
+	            { className: 'download', href: downloadLink },
 	            'Download'
+	          ),
+	          _react2.default.createElement(
+	            'span',
+	            { className: className },
+	            'Hash'
 	          ),
 	          _react2.default.createElement(
 	            'span',
@@ -28698,8 +28738,13 @@
 	          ),
 	          _react2.default.createElement(
 	            'a',
-	            { className: 'download', href: downloadLink, target: '_blank' },
+	            { className: 'download', href: downloadLink },
 	            'Download'
+	          ),
+	          _react2.default.createElement(
+	            'span',
+	            { className: className },
+	            'Hash'
 	          ),
 	          _react2.default.createElement(
 	            'span',
@@ -28862,11 +28907,11 @@
 
 	var _NetworkActions2 = _interopRequireDefault(_NetworkActions);
 
-	var _ChannelActions = __webpack_require__(61);
+	var _ChannelActions = __webpack_require__(62);
 
 	var _ChannelActions2 = _interopRequireDefault(_ChannelActions);
 
-	var _SocketActions = __webpack_require__(62);
+	var _SocketActions = __webpack_require__(63);
 
 	var _SocketActions2 = _interopRequireDefault(_SocketActions);
 
@@ -28886,7 +28931,7 @@
 
 	var _UserStore2 = _interopRequireDefault(_UserStore);
 
-	var _logplease = __webpack_require__(70);
+	var _logplease = __webpack_require__(59);
 
 	var _logplease2 = _interopRequireDefault(_logplease);
 
@@ -29144,7 +29189,7 @@
 
 	var _reflux2 = _interopRequireDefault(_reflux);
 
-	var _SocketActions = __webpack_require__(62);
+	var _SocketActions = __webpack_require__(63);
 
 	var _SocketActions2 = _interopRequireDefault(_SocketActions);
 
@@ -29152,7 +29197,7 @@
 
 	var _NetworkActions2 = _interopRequireDefault(_NetworkActions);
 
-	var _logplease = __webpack_require__(70);
+	var _logplease = __webpack_require__(59);
 
 	var _logplease2 = _interopRequireDefault(_logplease);
 
@@ -29354,7 +29399,7 @@
 	// 22.1.3.3 Array.prototype.copyWithin(target, start, end = this.length)
 	'use strict';
 	var toObject = __webpack_require__(19)
-	  , toIndex  = __webpack_require__(67)
+	  , toIndex  = __webpack_require__(68)
 	  , toLength = __webpack_require__(17);
 
 	module.exports = [].copyWithin || function copyWithin(target/*= 0*/, start/*= 0, end = @length*/){
@@ -29459,11 +29504,11 @@
 
 	'use strict';
 	var dP          = __webpack_require__(15).f
-	  , create      = __webpack_require__(65)
+	  , create      = __webpack_require__(66)
 	  , hide        = __webpack_require__(25)
 	  , redefineAll = __webpack_require__(80)
 	  , ctx         = __webpack_require__(49)
-	  , anInstance  = __webpack_require__(63)
+	  , anInstance  = __webpack_require__(64)
 	  , defined     = __webpack_require__(37)
 	  , forOf       = __webpack_require__(89)
 	  , $iterDefine = __webpack_require__(137)
@@ -29624,7 +29669,7 @@
 	  , getWeak           = __webpack_require__(55).getWeak
 	  , anObject          = __webpack_require__(5)
 	  , isObject          = __webpack_require__(10)
-	  , anInstance        = __webpack_require__(63)
+	  , anInstance        = __webpack_require__(64)
 	  , forOf             = __webpack_require__(89)
 	  , createArrayMethod = __webpack_require__(41)
 	  , $has              = __webpack_require__(23)
@@ -29807,7 +29852,7 @@
 
 	// fallback for IE11 buggy Object.getOwnPropertyNames with iframe and window
 	var toIObject = __webpack_require__(28)
-	  , gOPN      = __webpack_require__(66).f
+	  , gOPN      = __webpack_require__(67).f
 	  , toString  = {}.toString;
 
 	var windowNames = typeof window == 'object' && window && Object.getOwnPropertyNames
@@ -29874,7 +29919,7 @@
 /***/ function(module, exports, __webpack_require__) {
 
 	// all object keys, includes non-enumerable and symbols
-	var gOPN     = __webpack_require__(66)
+	var gOPN     = __webpack_require__(67)
 	  , gOPS     = __webpack_require__(108)
 	  , anObject = __webpack_require__(5)
 	  , Reflect  = __webpack_require__(8).Reflect;
@@ -30162,7 +30207,7 @@
 
 	'use strict';
 
-	var isTextNode = __webpack_require__(506);
+	var isTextNode = __webpack_require__(510);
 
 	/*eslint-disable no-bitwise */
 
@@ -30435,160 +30480,160 @@
 /* 223 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var hljs = __webpack_require__(528);
+	var hljs = __webpack_require__(534);
 
-	hljs.registerLanguage('1c', __webpack_require__(529));
-	hljs.registerLanguage('accesslog', __webpack_require__(530));
-	hljs.registerLanguage('actionscript', __webpack_require__(531));
-	hljs.registerLanguage('apache', __webpack_require__(532));
-	hljs.registerLanguage('applescript', __webpack_require__(533));
-	hljs.registerLanguage('arduino', __webpack_require__(534));
-	hljs.registerLanguage('armasm', __webpack_require__(535));
-	hljs.registerLanguage('xml', __webpack_require__(677));
-	hljs.registerLanguage('asciidoc', __webpack_require__(536));
-	hljs.registerLanguage('aspectj', __webpack_require__(537));
-	hljs.registerLanguage('autohotkey', __webpack_require__(538));
-	hljs.registerLanguage('autoit', __webpack_require__(539));
-	hljs.registerLanguage('avrasm', __webpack_require__(540));
-	hljs.registerLanguage('axapta', __webpack_require__(541));
-	hljs.registerLanguage('bash', __webpack_require__(542));
-	hljs.registerLanguage('basic', __webpack_require__(543));
-	hljs.registerLanguage('brainfuck', __webpack_require__(544));
-	hljs.registerLanguage('cal', __webpack_require__(545));
-	hljs.registerLanguage('capnproto', __webpack_require__(546));
-	hljs.registerLanguage('ceylon', __webpack_require__(547));
-	hljs.registerLanguage('clojure', __webpack_require__(549));
-	hljs.registerLanguage('clojure-repl', __webpack_require__(548));
-	hljs.registerLanguage('cmake', __webpack_require__(550));
-	hljs.registerLanguage('coffeescript', __webpack_require__(551));
-	hljs.registerLanguage('cos', __webpack_require__(552));
-	hljs.registerLanguage('cpp', __webpack_require__(553));
-	hljs.registerLanguage('crmsh', __webpack_require__(554));
-	hljs.registerLanguage('crystal', __webpack_require__(555));
-	hljs.registerLanguage('cs', __webpack_require__(556));
-	hljs.registerLanguage('csp', __webpack_require__(557));
-	hljs.registerLanguage('css', __webpack_require__(558));
-	hljs.registerLanguage('d', __webpack_require__(559));
-	hljs.registerLanguage('markdown', __webpack_require__(608));
-	hljs.registerLanguage('dart', __webpack_require__(560));
-	hljs.registerLanguage('delphi', __webpack_require__(561));
-	hljs.registerLanguage('diff', __webpack_require__(562));
-	hljs.registerLanguage('django', __webpack_require__(563));
-	hljs.registerLanguage('dns', __webpack_require__(564));
-	hljs.registerLanguage('dockerfile', __webpack_require__(565));
-	hljs.registerLanguage('dos', __webpack_require__(566));
-	hljs.registerLanguage('dts', __webpack_require__(567));
-	hljs.registerLanguage('dust', __webpack_require__(568));
-	hljs.registerLanguage('elixir', __webpack_require__(569));
-	hljs.registerLanguage('elm', __webpack_require__(570));
-	hljs.registerLanguage('ruby', __webpack_require__(644));
-	hljs.registerLanguage('erb', __webpack_require__(571));
-	hljs.registerLanguage('erlang-repl', __webpack_require__(572));
-	hljs.registerLanguage('erlang', __webpack_require__(573));
-	hljs.registerLanguage('fix', __webpack_require__(574));
-	hljs.registerLanguage('fortran', __webpack_require__(575));
-	hljs.registerLanguage('fsharp', __webpack_require__(576));
-	hljs.registerLanguage('gams', __webpack_require__(577));
-	hljs.registerLanguage('gauss', __webpack_require__(578));
-	hljs.registerLanguage('gcode', __webpack_require__(579));
-	hljs.registerLanguage('gherkin', __webpack_require__(580));
-	hljs.registerLanguage('glsl', __webpack_require__(581));
-	hljs.registerLanguage('go', __webpack_require__(582));
-	hljs.registerLanguage('golo', __webpack_require__(583));
-	hljs.registerLanguage('gradle', __webpack_require__(584));
-	hljs.registerLanguage('groovy', __webpack_require__(585));
-	hljs.registerLanguage('haml', __webpack_require__(586));
-	hljs.registerLanguage('handlebars', __webpack_require__(587));
-	hljs.registerLanguage('haskell', __webpack_require__(588));
-	hljs.registerLanguage('haxe', __webpack_require__(589));
-	hljs.registerLanguage('hsp', __webpack_require__(590));
-	hljs.registerLanguage('htmlbars', __webpack_require__(591));
-	hljs.registerLanguage('http', __webpack_require__(592));
-	hljs.registerLanguage('inform7', __webpack_require__(593));
-	hljs.registerLanguage('ini', __webpack_require__(594));
-	hljs.registerLanguage('irpf90', __webpack_require__(595));
-	hljs.registerLanguage('java', __webpack_require__(596));
-	hljs.registerLanguage('javascript', __webpack_require__(597));
-	hljs.registerLanguage('json', __webpack_require__(598));
-	hljs.registerLanguage('julia', __webpack_require__(599));
-	hljs.registerLanguage('kotlin', __webpack_require__(600));
-	hljs.registerLanguage('lasso', __webpack_require__(601));
-	hljs.registerLanguage('less', __webpack_require__(602));
-	hljs.registerLanguage('lisp', __webpack_require__(603));
-	hljs.registerLanguage('livecodeserver', __webpack_require__(604));
-	hljs.registerLanguage('livescript', __webpack_require__(605));
-	hljs.registerLanguage('lua', __webpack_require__(606));
-	hljs.registerLanguage('makefile', __webpack_require__(607));
-	hljs.registerLanguage('mathematica', __webpack_require__(609));
-	hljs.registerLanguage('matlab', __webpack_require__(610));
-	hljs.registerLanguage('maxima', __webpack_require__(611));
-	hljs.registerLanguage('mel', __webpack_require__(612));
-	hljs.registerLanguage('mercury', __webpack_require__(613));
-	hljs.registerLanguage('mipsasm', __webpack_require__(614));
-	hljs.registerLanguage('mizar', __webpack_require__(615));
-	hljs.registerLanguage('perl', __webpack_require__(628));
-	hljs.registerLanguage('mojolicious', __webpack_require__(616));
-	hljs.registerLanguage('monkey', __webpack_require__(617));
-	hljs.registerLanguage('moonscript', __webpack_require__(618));
-	hljs.registerLanguage('nginx', __webpack_require__(619));
-	hljs.registerLanguage('nimrod', __webpack_require__(620));
-	hljs.registerLanguage('nix', __webpack_require__(621));
-	hljs.registerLanguage('nsis', __webpack_require__(622));
-	hljs.registerLanguage('objectivec', __webpack_require__(623));
-	hljs.registerLanguage('ocaml', __webpack_require__(624));
-	hljs.registerLanguage('openscad', __webpack_require__(625));
-	hljs.registerLanguage('oxygene', __webpack_require__(626));
-	hljs.registerLanguage('parser3', __webpack_require__(627));
-	hljs.registerLanguage('pf', __webpack_require__(629));
-	hljs.registerLanguage('php', __webpack_require__(630));
-	hljs.registerLanguage('powershell', __webpack_require__(631));
-	hljs.registerLanguage('processing', __webpack_require__(632));
-	hljs.registerLanguage('profile', __webpack_require__(633));
-	hljs.registerLanguage('prolog', __webpack_require__(634));
-	hljs.registerLanguage('protobuf', __webpack_require__(635));
-	hljs.registerLanguage('puppet', __webpack_require__(636));
-	hljs.registerLanguage('python', __webpack_require__(637));
-	hljs.registerLanguage('q', __webpack_require__(638));
-	hljs.registerLanguage('qml', __webpack_require__(639));
-	hljs.registerLanguage('r', __webpack_require__(640));
-	hljs.registerLanguage('rib', __webpack_require__(641));
-	hljs.registerLanguage('roboconf', __webpack_require__(642));
-	hljs.registerLanguage('rsl', __webpack_require__(643));
-	hljs.registerLanguage('ruleslanguage', __webpack_require__(645));
-	hljs.registerLanguage('rust', __webpack_require__(646));
-	hljs.registerLanguage('scala', __webpack_require__(647));
-	hljs.registerLanguage('scheme', __webpack_require__(648));
-	hljs.registerLanguage('scilab', __webpack_require__(649));
-	hljs.registerLanguage('scss', __webpack_require__(650));
-	hljs.registerLanguage('smali', __webpack_require__(651));
-	hljs.registerLanguage('smalltalk', __webpack_require__(652));
-	hljs.registerLanguage('sml', __webpack_require__(653));
-	hljs.registerLanguage('sqf', __webpack_require__(654));
-	hljs.registerLanguage('sql', __webpack_require__(655));
-	hljs.registerLanguage('stan', __webpack_require__(656));
-	hljs.registerLanguage('stata', __webpack_require__(657));
-	hljs.registerLanguage('step21', __webpack_require__(658));
-	hljs.registerLanguage('stylus', __webpack_require__(659));
-	hljs.registerLanguage('swift', __webpack_require__(660));
-	hljs.registerLanguage('taggerscript', __webpack_require__(661));
-	hljs.registerLanguage('tcl', __webpack_require__(662));
-	hljs.registerLanguage('tex', __webpack_require__(663));
-	hljs.registerLanguage('thrift', __webpack_require__(664));
-	hljs.registerLanguage('tp', __webpack_require__(665));
-	hljs.registerLanguage('twig', __webpack_require__(666));
-	hljs.registerLanguage('typescript', __webpack_require__(667));
-	hljs.registerLanguage('vala', __webpack_require__(668));
-	hljs.registerLanguage('vbnet', __webpack_require__(669));
-	hljs.registerLanguage('vbscript', __webpack_require__(671));
-	hljs.registerLanguage('vbscript-html', __webpack_require__(670));
-	hljs.registerLanguage('verilog', __webpack_require__(672));
-	hljs.registerLanguage('vhdl', __webpack_require__(673));
-	hljs.registerLanguage('vim', __webpack_require__(674));
-	hljs.registerLanguage('x86asm', __webpack_require__(675));
-	hljs.registerLanguage('xl', __webpack_require__(676));
-	hljs.registerLanguage('xquery', __webpack_require__(678));
-	hljs.registerLanguage('yaml', __webpack_require__(679));
-	hljs.registerLanguage('zephir', __webpack_require__(680));
+	hljs.registerLanguage('1c', __webpack_require__(535));
+	hljs.registerLanguage('accesslog', __webpack_require__(536));
+	hljs.registerLanguage('actionscript', __webpack_require__(537));
+	hljs.registerLanguage('apache', __webpack_require__(538));
+	hljs.registerLanguage('applescript', __webpack_require__(539));
+	hljs.registerLanguage('arduino', __webpack_require__(540));
+	hljs.registerLanguage('armasm', __webpack_require__(541));
+	hljs.registerLanguage('xml', __webpack_require__(683));
+	hljs.registerLanguage('asciidoc', __webpack_require__(542));
+	hljs.registerLanguage('aspectj', __webpack_require__(543));
+	hljs.registerLanguage('autohotkey', __webpack_require__(544));
+	hljs.registerLanguage('autoit', __webpack_require__(545));
+	hljs.registerLanguage('avrasm', __webpack_require__(546));
+	hljs.registerLanguage('axapta', __webpack_require__(547));
+	hljs.registerLanguage('bash', __webpack_require__(548));
+	hljs.registerLanguage('basic', __webpack_require__(549));
+	hljs.registerLanguage('brainfuck', __webpack_require__(550));
+	hljs.registerLanguage('cal', __webpack_require__(551));
+	hljs.registerLanguage('capnproto', __webpack_require__(552));
+	hljs.registerLanguage('ceylon', __webpack_require__(553));
+	hljs.registerLanguage('clojure', __webpack_require__(555));
+	hljs.registerLanguage('clojure-repl', __webpack_require__(554));
+	hljs.registerLanguage('cmake', __webpack_require__(556));
+	hljs.registerLanguage('coffeescript', __webpack_require__(557));
+	hljs.registerLanguage('cos', __webpack_require__(558));
+	hljs.registerLanguage('cpp', __webpack_require__(559));
+	hljs.registerLanguage('crmsh', __webpack_require__(560));
+	hljs.registerLanguage('crystal', __webpack_require__(561));
+	hljs.registerLanguage('cs', __webpack_require__(562));
+	hljs.registerLanguage('csp', __webpack_require__(563));
+	hljs.registerLanguage('css', __webpack_require__(564));
+	hljs.registerLanguage('d', __webpack_require__(565));
+	hljs.registerLanguage('markdown', __webpack_require__(614));
+	hljs.registerLanguage('dart', __webpack_require__(566));
+	hljs.registerLanguage('delphi', __webpack_require__(567));
+	hljs.registerLanguage('diff', __webpack_require__(568));
+	hljs.registerLanguage('django', __webpack_require__(569));
+	hljs.registerLanguage('dns', __webpack_require__(570));
+	hljs.registerLanguage('dockerfile', __webpack_require__(571));
+	hljs.registerLanguage('dos', __webpack_require__(572));
+	hljs.registerLanguage('dts', __webpack_require__(573));
+	hljs.registerLanguage('dust', __webpack_require__(574));
+	hljs.registerLanguage('elixir', __webpack_require__(575));
+	hljs.registerLanguage('elm', __webpack_require__(576));
+	hljs.registerLanguage('ruby', __webpack_require__(650));
+	hljs.registerLanguage('erb', __webpack_require__(577));
+	hljs.registerLanguage('erlang-repl', __webpack_require__(578));
+	hljs.registerLanguage('erlang', __webpack_require__(579));
+	hljs.registerLanguage('fix', __webpack_require__(580));
+	hljs.registerLanguage('fortran', __webpack_require__(581));
+	hljs.registerLanguage('fsharp', __webpack_require__(582));
+	hljs.registerLanguage('gams', __webpack_require__(583));
+	hljs.registerLanguage('gauss', __webpack_require__(584));
+	hljs.registerLanguage('gcode', __webpack_require__(585));
+	hljs.registerLanguage('gherkin', __webpack_require__(586));
+	hljs.registerLanguage('glsl', __webpack_require__(587));
+	hljs.registerLanguage('go', __webpack_require__(588));
+	hljs.registerLanguage('golo', __webpack_require__(589));
+	hljs.registerLanguage('gradle', __webpack_require__(590));
+	hljs.registerLanguage('groovy', __webpack_require__(591));
+	hljs.registerLanguage('haml', __webpack_require__(592));
+	hljs.registerLanguage('handlebars', __webpack_require__(593));
+	hljs.registerLanguage('haskell', __webpack_require__(594));
+	hljs.registerLanguage('haxe', __webpack_require__(595));
+	hljs.registerLanguage('hsp', __webpack_require__(596));
+	hljs.registerLanguage('htmlbars', __webpack_require__(597));
+	hljs.registerLanguage('http', __webpack_require__(598));
+	hljs.registerLanguage('inform7', __webpack_require__(599));
+	hljs.registerLanguage('ini', __webpack_require__(600));
+	hljs.registerLanguage('irpf90', __webpack_require__(601));
+	hljs.registerLanguage('java', __webpack_require__(602));
+	hljs.registerLanguage('javascript', __webpack_require__(603));
+	hljs.registerLanguage('json', __webpack_require__(604));
+	hljs.registerLanguage('julia', __webpack_require__(605));
+	hljs.registerLanguage('kotlin', __webpack_require__(606));
+	hljs.registerLanguage('lasso', __webpack_require__(607));
+	hljs.registerLanguage('less', __webpack_require__(608));
+	hljs.registerLanguage('lisp', __webpack_require__(609));
+	hljs.registerLanguage('livecodeserver', __webpack_require__(610));
+	hljs.registerLanguage('livescript', __webpack_require__(611));
+	hljs.registerLanguage('lua', __webpack_require__(612));
+	hljs.registerLanguage('makefile', __webpack_require__(613));
+	hljs.registerLanguage('mathematica', __webpack_require__(615));
+	hljs.registerLanguage('matlab', __webpack_require__(616));
+	hljs.registerLanguage('maxima', __webpack_require__(617));
+	hljs.registerLanguage('mel', __webpack_require__(618));
+	hljs.registerLanguage('mercury', __webpack_require__(619));
+	hljs.registerLanguage('mipsasm', __webpack_require__(620));
+	hljs.registerLanguage('mizar', __webpack_require__(621));
+	hljs.registerLanguage('perl', __webpack_require__(634));
+	hljs.registerLanguage('mojolicious', __webpack_require__(622));
+	hljs.registerLanguage('monkey', __webpack_require__(623));
+	hljs.registerLanguage('moonscript', __webpack_require__(624));
+	hljs.registerLanguage('nginx', __webpack_require__(625));
+	hljs.registerLanguage('nimrod', __webpack_require__(626));
+	hljs.registerLanguage('nix', __webpack_require__(627));
+	hljs.registerLanguage('nsis', __webpack_require__(628));
+	hljs.registerLanguage('objectivec', __webpack_require__(629));
+	hljs.registerLanguage('ocaml', __webpack_require__(630));
+	hljs.registerLanguage('openscad', __webpack_require__(631));
+	hljs.registerLanguage('oxygene', __webpack_require__(632));
+	hljs.registerLanguage('parser3', __webpack_require__(633));
+	hljs.registerLanguage('pf', __webpack_require__(635));
+	hljs.registerLanguage('php', __webpack_require__(636));
+	hljs.registerLanguage('powershell', __webpack_require__(637));
+	hljs.registerLanguage('processing', __webpack_require__(638));
+	hljs.registerLanguage('profile', __webpack_require__(639));
+	hljs.registerLanguage('prolog', __webpack_require__(640));
+	hljs.registerLanguage('protobuf', __webpack_require__(641));
+	hljs.registerLanguage('puppet', __webpack_require__(642));
+	hljs.registerLanguage('python', __webpack_require__(643));
+	hljs.registerLanguage('q', __webpack_require__(644));
+	hljs.registerLanguage('qml', __webpack_require__(645));
+	hljs.registerLanguage('r', __webpack_require__(646));
+	hljs.registerLanguage('rib', __webpack_require__(647));
+	hljs.registerLanguage('roboconf', __webpack_require__(648));
+	hljs.registerLanguage('rsl', __webpack_require__(649));
+	hljs.registerLanguage('ruleslanguage', __webpack_require__(651));
+	hljs.registerLanguage('rust', __webpack_require__(652));
+	hljs.registerLanguage('scala', __webpack_require__(653));
+	hljs.registerLanguage('scheme', __webpack_require__(654));
+	hljs.registerLanguage('scilab', __webpack_require__(655));
+	hljs.registerLanguage('scss', __webpack_require__(656));
+	hljs.registerLanguage('smali', __webpack_require__(657));
+	hljs.registerLanguage('smalltalk', __webpack_require__(658));
+	hljs.registerLanguage('sml', __webpack_require__(659));
+	hljs.registerLanguage('sqf', __webpack_require__(660));
+	hljs.registerLanguage('sql', __webpack_require__(661));
+	hljs.registerLanguage('stan', __webpack_require__(662));
+	hljs.registerLanguage('stata', __webpack_require__(663));
+	hljs.registerLanguage('step21', __webpack_require__(664));
+	hljs.registerLanguage('stylus', __webpack_require__(665));
+	hljs.registerLanguage('swift', __webpack_require__(666));
+	hljs.registerLanguage('taggerscript', __webpack_require__(667));
+	hljs.registerLanguage('tcl', __webpack_require__(668));
+	hljs.registerLanguage('tex', __webpack_require__(669));
+	hljs.registerLanguage('thrift', __webpack_require__(670));
+	hljs.registerLanguage('tp', __webpack_require__(671));
+	hljs.registerLanguage('twig', __webpack_require__(672));
+	hljs.registerLanguage('typescript', __webpack_require__(673));
+	hljs.registerLanguage('vala', __webpack_require__(674));
+	hljs.registerLanguage('vbnet', __webpack_require__(675));
+	hljs.registerLanguage('vbscript', __webpack_require__(677));
+	hljs.registerLanguage('vbscript-html', __webpack_require__(676));
+	hljs.registerLanguage('verilog', __webpack_require__(678));
+	hljs.registerLanguage('vhdl', __webpack_require__(679));
+	hljs.registerLanguage('vim', __webpack_require__(680));
+	hljs.registerLanguage('x86asm', __webpack_require__(681));
+	hljs.registerLanguage('xl', __webpack_require__(682));
+	hljs.registerLanguage('xquery', __webpack_require__(684));
+	hljs.registerLanguage('yaml', __webpack_require__(685));
+	hljs.registerLanguage('zephir', __webpack_require__(686));
 
 	module.exports = hljs;
 
@@ -30739,7 +30784,7 @@
 
 	var _Actions = __webpack_require__(84);
 
-	var _PathUtils = __webpack_require__(69);
+	var _PathUtils = __webpack_require__(70);
 
 	var _ExecutionEnvironment = __webpack_require__(113);
 
@@ -30985,17 +31030,17 @@
 
 	var _warning2 = _interopRequireDefault(_warning);
 
-	var _deepEqual = __webpack_require__(489);
+	var _deepEqual = __webpack_require__(492);
 
 	var _deepEqual2 = _interopRequireDefault(_deepEqual);
 
-	var _PathUtils = __webpack_require__(69);
+	var _PathUtils = __webpack_require__(70);
 
-	var _AsyncUtils = __webpack_require__(681);
+	var _AsyncUtils = __webpack_require__(687);
 
 	var _Actions = __webpack_require__(84);
 
-	var _createLocation2 = __webpack_require__(683);
+	var _createLocation2 = __webpack_require__(689);
 
 	var _createLocation3 = _interopRequireDefault(_createLocation2);
 
@@ -31277,7 +31322,7 @@
 
 	var _ExecutionEnvironment = __webpack_require__(113);
 
-	var _PathUtils = __webpack_require__(69);
+	var _PathUtils = __webpack_require__(70);
 
 	var _runTransitionHook = __webpack_require__(153);
 
@@ -31651,7 +31696,7 @@
 
 	var _invariant2 = _interopRequireDefault(_invariant);
 
-	var _RouteUtils = __webpack_require__(59);
+	var _RouteUtils = __webpack_require__(60);
 
 	var _PatternUtils = __webpack_require__(85);
 
@@ -31800,7 +31845,7 @@
 
 	var _historyLibUseBasename2 = _interopRequireDefault(_historyLibUseBasename);
 
-	var _historyLibCreateMemoryHistory = __webpack_require__(684);
+	var _historyLibCreateMemoryHistory = __webpack_require__(690);
 
 	var _historyLibCreateMemoryHistory2 = _interopRequireDefault(_historyLibCreateMemoryHistory);
 
@@ -32034,7 +32079,7 @@
 
 	'use strict';
 
-	var Danger = __webpack_require__(716);
+	var Danger = __webpack_require__(723);
 	var ReactMultiChildUpdateTypes = __webpack_require__(254);
 	var ReactPerf = __webpack_require__(34);
 
@@ -32394,7 +32439,7 @@
 
 	'use strict';
 
-	var PooledClass = __webpack_require__(60);
+	var PooledClass = __webpack_require__(61);
 	var ReactElement = __webpack_require__(29);
 
 	var emptyFunction = __webpack_require__(39);
@@ -33908,27 +33953,27 @@
 
 	'use strict';
 
-	var BeforeInputEventPlugin = __webpack_require__(712);
-	var ChangeEventPlugin = __webpack_require__(714);
-	var ClientReactRootIndex = __webpack_require__(715);
-	var DefaultEventPluginOrder = __webpack_require__(717);
-	var EnterLeaveEventPlugin = __webpack_require__(718);
+	var BeforeInputEventPlugin = __webpack_require__(719);
+	var ChangeEventPlugin = __webpack_require__(721);
+	var ClientReactRootIndex = __webpack_require__(722);
+	var DefaultEventPluginOrder = __webpack_require__(724);
+	var EnterLeaveEventPlugin = __webpack_require__(725);
 	var ExecutionEnvironment = __webpack_require__(16);
-	var HTMLDOMPropertyConfig = __webpack_require__(721);
-	var ReactBrowserComponentMixin = __webpack_require__(722);
+	var HTMLDOMPropertyConfig = __webpack_require__(728);
+	var ReactBrowserComponentMixin = __webpack_require__(729);
 	var ReactComponentBrowserEnvironment = __webpack_require__(161);
 	var ReactDefaultBatchingStrategy = __webpack_require__(246);
-	var ReactDOMComponent = __webpack_require__(728);
+	var ReactDOMComponent = __webpack_require__(735);
 	var ReactDOMTextComponent = __webpack_require__(245);
-	var ReactEventListener = __webpack_require__(738);
-	var ReactInjection = __webpack_require__(739);
+	var ReactEventListener = __webpack_require__(745);
+	var ReactInjection = __webpack_require__(746);
 	var ReactInstanceHandles = __webpack_require__(86);
 	var ReactMount = __webpack_require__(24);
-	var ReactReconcileTransaction = __webpack_require__(743);
-	var SelectEventPlugin = __webpack_require__(752);
-	var ServerReactRootIndex = __webpack_require__(753);
-	var SimpleEventPlugin = __webpack_require__(754);
-	var SVGDOMPropertyConfig = __webpack_require__(751);
+	var ReactReconcileTransaction = __webpack_require__(750);
+	var SelectEventPlugin = __webpack_require__(759);
+	var ServerReactRootIndex = __webpack_require__(760);
+	var SimpleEventPlugin = __webpack_require__(761);
+	var SVGDOMPropertyConfig = __webpack_require__(758);
 
 	var alreadyInjected = false;
 
@@ -33983,7 +34028,7 @@
 	  if (process.env.NODE_ENV !== 'production') {
 	    var url = ExecutionEnvironment.canUseDOM && window.location.href || '';
 	    if (/[?&]react_perf\b/.test(url)) {
-	      var ReactDefaultPerf = __webpack_require__(735);
+	      var ReactDefaultPerf = __webpack_require__(742);
 	      ReactDefaultPerf.start();
 	    }
 	  }
@@ -34494,7 +34539,7 @@
 
 	'use strict';
 
-	var ReactDOMSelection = __webpack_require__(732);
+	var ReactDOMSelection = __webpack_require__(739);
 
 	var containsNode = __webpack_require__(218);
 	var focusNode = __webpack_require__(219);
@@ -34623,7 +34668,7 @@
 
 	'use strict';
 
-	var adler32 = __webpack_require__(763);
+	var adler32 = __webpack_require__(770);
 
 	var TAG_END = /\/?>/;
 
@@ -35651,8 +35696,8 @@
 
 	var _ = __webpack_require__(45),
 	    Keep = __webpack_require__(178),
-	    mixer = __webpack_require__(773),
-	    bindMethods = __webpack_require__(770);
+	    mixer = __webpack_require__(780),
+	    bindMethods = __webpack_require__(777);
 
 	var allowed = { preEmit: 1, shouldEmit: 1 };
 
@@ -35853,9 +35898,9 @@
 
 	var _reactDom = __webpack_require__(230);
 
-	var _reactRouter = __webpack_require__(706);
+	var _reactRouter = __webpack_require__(713);
 
-	var _logplease = __webpack_require__(70);
+	var _logplease = __webpack_require__(59);
 
 	var _logplease2 = _interopRequireDefault(_logplease);
 
@@ -35867,7 +35912,7 @@
 
 	var _UIActions2 = _interopRequireDefault(_UIActions);
 
-	var _SocketActions = __webpack_require__(62);
+	var _SocketActions = __webpack_require__(63);
 
 	var _SocketActions2 = _interopRequireDefault(_SocketActions);
 
@@ -35947,15 +35992,15 @@
 
 	var _Themes2 = _interopRequireDefault(_Themes);
 
-	__webpack_require__(780);
+	__webpack_require__(788);
 
-	__webpack_require__(799);
+	__webpack_require__(807);
 
-	__webpack_require__(781);
+	__webpack_require__(789);
 
-	__webpack_require__(793);
+	__webpack_require__(801);
 
-	__webpack_require__(779);
+	__webpack_require__(787);
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -36192,7 +36237,7 @@
 
 	var _SendMessage2 = _interopRequireDefault(_SendMessage);
 
-	var _reactDropzone = __webpack_require__(689);
+	var _reactDropzone = __webpack_require__(696);
 
 	var _reactDropzone2 = _interopRequireDefault(_reactDropzone);
 
@@ -36208,7 +36253,7 @@
 
 	var _UIActions2 = _interopRequireDefault(_UIActions);
 
-	var _ChannelActions = __webpack_require__(61);
+	var _ChannelActions = __webpack_require__(62);
 
 	var _ChannelActions2 = _interopRequireDefault(_ChannelActions);
 
@@ -36216,7 +36261,7 @@
 
 	var _halogen2 = _interopRequireDefault(_halogen);
 
-	__webpack_require__(783);
+	__webpack_require__(791);
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -36586,7 +36631,7 @@
 
 	var _ChannelStore2 = _interopRequireDefault(_ChannelStore);
 
-	var _ChannelActions = __webpack_require__(61);
+	var _ChannelActions = __webpack_require__(62);
 
 	var _ChannelActions2 = _interopRequireDefault(_ChannelActions);
 
@@ -36602,7 +36647,7 @@
 
 	var _Themes2 = _interopRequireDefault(_Themes);
 
-	__webpack_require__(784);
+	__webpack_require__(792);
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -36735,9 +36780,9 @@
 
 	var _halogen2 = _interopRequireDefault(_halogen);
 
-	__webpack_require__(785);
+	__webpack_require__(793);
 
-	__webpack_require__(792);
+	__webpack_require__(800);
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -37012,7 +37057,7 @@
 
 	var _reactAddonsCssTransitionGroup2 = _interopRequireDefault(_reactAddonsCssTransitionGroup);
 
-	var _ChannelActions = __webpack_require__(61);
+	var _ChannelActions = __webpack_require__(62);
 
 	var _ChannelActions2 = _interopRequireDefault(_ChannelActions);
 
@@ -37022,7 +37067,7 @@
 
 	var _utils = __webpack_require__(190);
 
-	__webpack_require__(786);
+	__webpack_require__(794);
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -37156,7 +37201,7 @@
 
 	var _UIActions2 = _interopRequireDefault(_UIActions);
 
-	__webpack_require__(788);
+	__webpack_require__(796);
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -37302,7 +37347,7 @@
 
 	var _reactAddonsCssTransitionGroup2 = _interopRequireDefault(_reactAddonsCssTransitionGroup);
 
-	__webpack_require__(789);
+	__webpack_require__(797);
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -37500,7 +37545,7 @@
 
 	var _halogen2 = _interopRequireDefault(_halogen);
 
-	__webpack_require__(790);
+	__webpack_require__(798);
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -37748,7 +37793,7 @@
 
 	var _Directory2 = _interopRequireDefault(_Directory);
 
-	var _ChannelActions = __webpack_require__(61);
+	var _ChannelActions = __webpack_require__(62);
 
 	var _ChannelActions2 = _interopRequireDefault(_ChannelActions);
 
@@ -37756,7 +37801,7 @@
 
 	var _NotificationActions2 = _interopRequireDefault(_NotificationActions);
 
-	__webpack_require__(791);
+	__webpack_require__(799);
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -37764,12 +37809,7 @@
 
 	function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
 
-	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; } //eslint-disable-line
-	//eslint-disable-line
-	//eslint-disable-line
-	//eslint-disable-line
-	//eslint-disable-line
-
+	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
 	var Message = function (_React$Component) {
 	  _inherits(Message, _React$Component);
@@ -37884,7 +37924,7 @@
 
 	var _UIActions2 = _interopRequireDefault(_UIActions);
 
-	__webpack_require__(794);
+	__webpack_require__(802);
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -38015,7 +38055,7 @@
 
 	var _Themes2 = _interopRequireDefault(_Themes);
 
-	__webpack_require__(795);
+	__webpack_require__(803);
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -38161,7 +38201,7 @@
 
 	var _NetworkActions2 = _interopRequireDefault(_NetworkActions);
 
-	__webpack_require__(796);
+	__webpack_require__(804);
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -38285,11 +38325,11 @@
 
 	var _reactAddonsCssTransitionGroup2 = _interopRequireDefault(_reactAddonsCssTransitionGroup);
 
-	var _reactEmoji = __webpack_require__(690);
+	var _reactEmoji = __webpack_require__(697);
 
 	var _reactEmoji2 = _interopRequireDefault(_reactEmoji);
 
-	var _reactAutolink = __webpack_require__(688);
+	var _reactAutolink = __webpack_require__(695);
 
 	var _reactAutolink2 = _interopRequireDefault(_reactAutolink);
 
@@ -38301,7 +38341,7 @@
 
 	var _mentionHighlighter2 = _interopRequireDefault(_mentionHighlighter);
 
-	__webpack_require__(797);
+	__webpack_require__(805);
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -38439,11 +38479,11 @@
 
 	var _react2 = _interopRequireDefault(_react);
 
-	var _pleasejs = __webpack_require__(686);
+	var _pleasejs = __webpack_require__(693);
 
 	var _pleasejs2 = _interopRequireDefault(_pleasejs);
 
-	__webpack_require__(798);
+	__webpack_require__(806);
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -38544,21 +38584,9 @@
 
 	  _createClass(Highlight, [{
 	    key: 'componentDidMount',
-
-	    // static propTypes = {
-	    //   children: PropTypes.node.isRequired,
-	    //   language: PropTypes.string.isRequired
-	    // }
-
 	    value: function componentDidMount() {
 	      _highlight2.default.initHighlightingOnLoad();
 	      _highlight2.default.highlightBlock((0, _reactDom.findDOMNode)(this));
-	    }
-	  }, {
-	    key: 'componentDidUpdate',
-	    value: function componentDidUpdate() {
-	      // highlight.initHighlighting.called = false
-	      // highlight.initHighlighting()
 	    }
 	  }, {
 	    key: 'onScroll',
@@ -38657,7 +38685,7 @@
 
 	var _reflux2 = _interopRequireDefault(_reflux);
 
-	var _SocketActions = __webpack_require__(62);
+	var _SocketActions = __webpack_require__(63);
 
 	var _SocketActions2 = _interopRequireDefault(_SocketActions);
 
@@ -38669,7 +38697,7 @@
 
 	var _apiurl2 = _interopRequireDefault(_apiurl);
 
-	var _logplease = __webpack_require__(70);
+	var _logplease = __webpack_require__(59);
 
 	var _logplease2 = _interopRequireDefault(_logplease);
 
@@ -38730,7 +38758,7 @@
 
 	var _NetworkActions2 = _interopRequireDefault(_NetworkActions);
 
-	var _SocketActions = __webpack_require__(62);
+	var _SocketActions = __webpack_require__(63);
 
 	var _SocketActions2 = _interopRequireDefault(_SocketActions);
 
@@ -38738,7 +38766,7 @@
 
 	var _UserActions2 = _interopRequireDefault(_UserActions);
 
-	var _logplease = __webpack_require__(70);
+	var _logplease = __webpack_require__(59);
 
 	var _logplease2 = _interopRequireDefault(_logplease);
 
@@ -39015,7 +39043,7 @@
 
 	var classof   = __webpack_require__(77)
 	  , ITERATOR  = __webpack_require__(11)('iterator')
-	  , Iterators = __webpack_require__(64);
+	  , Iterators = __webpack_require__(65);
 	module.exports = __webpack_require__(48).isIterable = function(it){
 	  var O = Object(it);
 	  return O[ITERATOR] !== undefined
@@ -39333,7 +39361,7 @@
 	var $export    = __webpack_require__(1)
 	  , html       = __webpack_require__(131)
 	  , cof        = __webpack_require__(42)
-	  , toIndex    = __webpack_require__(67)
+	  , toIndex    = __webpack_require__(68)
 	  , toLength   = __webpack_require__(17)
 	  , arraySlice = [].slice;
 
@@ -39833,7 +39861,7 @@
 	  , inheritIfRequired = __webpack_require__(132)
 	  , toPrimitive       = __webpack_require__(44)
 	  , fails             = __webpack_require__(7)
-	  , gOPN              = __webpack_require__(66).f
+	  , gOPN              = __webpack_require__(67).f
 	  , gOPD              = __webpack_require__(30).f
 	  , dP                = __webpack_require__(15).f
 	  , $trim             = __webpack_require__(83).trim
@@ -39842,7 +39870,7 @@
 	  , Base              = $Number
 	  , proto             = $Number.prototype
 	  // Opera ~12 has broken Object#toString
-	  , BROKEN_COF        = cof(__webpack_require__(65)(proto)) == NUMBER
+	  , BROKEN_COF        = cof(__webpack_require__(66)(proto)) == NUMBER
 	  , TRIM              = 'trim' in String.prototype;
 
 	// 7.1.3 ToNumber(argument)
@@ -39998,7 +40026,7 @@
 
 	'use strict';
 	var $export      = __webpack_require__(1)
-	  , anInstance   = __webpack_require__(63)
+	  , anInstance   = __webpack_require__(64)
 	  , toInteger    = __webpack_require__(57)
 	  , aNumberValue = __webpack_require__(191)
 	  , repeat       = __webpack_require__(144)
@@ -40149,7 +40177,7 @@
 
 	var $export = __webpack_require__(1)
 	// 19.1.2.2 / 15.2.3.5 Object.create(O [, Properties])
-	$export($export.S, 'Object', {create: __webpack_require__(65)});
+	$export($export.S, 'Object', {create: __webpack_require__(66)});
 
 /***/ },
 /* 359 */
@@ -40361,7 +40389,7 @@
 	  , isObject           = __webpack_require__(10)
 	  , anObject           = __webpack_require__(5)
 	  , aFunction          = __webpack_require__(36)
-	  , anInstance         = __webpack_require__(63)
+	  , anInstance         = __webpack_require__(64)
 	  , forOf              = __webpack_require__(89)
 	  , setProto           = __webpack_require__(109).set
 	  , speciesConstructor = __webpack_require__(141)
@@ -40674,7 +40702,7 @@
 
 	// 26.1.2 Reflect.construct(target, argumentsList [, newTarget])
 	var $export   = __webpack_require__(1)
-	  , create    = __webpack_require__(65)
+	  , create    = __webpack_require__(66)
 	  , aFunction = __webpack_require__(36)
 	  , anObject  = __webpack_require__(5)
 	  , isObject  = __webpack_require__(10)
@@ -40963,7 +40991,7 @@
 	var global            = __webpack_require__(8)
 	  , inheritIfRequired = __webpack_require__(132)
 	  , dP                = __webpack_require__(15).f
-	  , gOPN              = __webpack_require__(66).f
+	  , gOPN              = __webpack_require__(67).f
 	  , isRegExp          = __webpack_require__(105)
 	  , $flags            = __webpack_require__(103)
 	  , $RegExp           = global.RegExp
@@ -41284,7 +41312,7 @@
 /***/ function(module, exports, __webpack_require__) {
 
 	var $export        = __webpack_require__(1)
-	  , toIndex        = __webpack_require__(67)
+	  , toIndex        = __webpack_require__(68)
 	  , fromCharCode   = String.fromCharCode
 	  , $fromCodePoint = String.fromCodePoint;
 
@@ -41503,7 +41531,7 @@
 	  , $fails         = __webpack_require__(7)
 	  , shared         = __webpack_require__(110)
 	  , setToStringTag = __webpack_require__(82)
-	  , uid            = __webpack_require__(68)
+	  , uid            = __webpack_require__(69)
 	  , wks            = __webpack_require__(11)
 	  , keyOf          = __webpack_require__(293)
 	  , enumKeys       = __webpack_require__(292)
@@ -41512,7 +41540,7 @@
 	  , toIObject      = __webpack_require__(28)
 	  , toPrimitive    = __webpack_require__(44)
 	  , createDesc     = __webpack_require__(56)
-	  , _create        = __webpack_require__(65)
+	  , _create        = __webpack_require__(66)
 	  , gOPNExt        = __webpack_require__(205)
 	  , $GOPD          = __webpack_require__(30)
 	  , $DP            = __webpack_require__(15)
@@ -41650,7 +41678,7 @@
 
 	  $GOPD.f = $getOwnPropertyDescriptor;
 	  $DP.f   = $defineProperty;
-	  __webpack_require__(66).f = gOPNExt.f = $getOwnPropertyNames;
+	  __webpack_require__(67).f = gOPNExt.f = $getOwnPropertyNames;
 	  __webpack_require__(91).f  = $propertyIsEnumerable
 	  __webpack_require__(108).f = $getOwnPropertySymbols;
 
@@ -41736,7 +41764,7 @@
 	  , $typed       = __webpack_require__(111)
 	  , buffer       = __webpack_require__(147)
 	  , anObject     = __webpack_require__(5)
-	  , toIndex      = __webpack_require__(67)
+	  , toIndex      = __webpack_require__(68)
 	  , toLength     = __webpack_require__(17)
 	  , isObject     = __webpack_require__(10)
 	  , TYPED_ARRAY  = __webpack_require__(11)('typed_array')
@@ -42432,7 +42460,7 @@
 	  , redefine      = __webpack_require__(26)
 	  , global        = __webpack_require__(8)
 	  , hide          = __webpack_require__(25)
-	  , Iterators     = __webpack_require__(64)
+	  , Iterators     = __webpack_require__(65)
 	  , wks           = __webpack_require__(11)
 	  , ITERATOR      = wks('iterator')
 	  , TO_STRING_TAG = wks('toStringTag')
@@ -43332,42 +43360,409 @@
 /* 468 */
 /***/ function(module, exports, __webpack_require__) {
 
-	exports = module.exports = __webpack_require__(13)();
-	// imports
+	var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;(function (global, factory) {
+	    if (true) {
+	        !(__WEBPACK_AMD_DEFINE_ARRAY__ = [module, __webpack_require__(785)], __WEBPACK_AMD_DEFINE_FACTORY__ = (factory), __WEBPACK_AMD_DEFINE_RESULT__ = (typeof __WEBPACK_AMD_DEFINE_FACTORY__ === 'function' ? (__WEBPACK_AMD_DEFINE_FACTORY__.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__)) : __WEBPACK_AMD_DEFINE_FACTORY__), __WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
+	    } else if (typeof exports !== "undefined") {
+	        factory(module, require('select'));
+	    } else {
+	        var mod = {
+	            exports: {}
+	        };
+	        factory(mod, global.select);
+	        global.clipboardAction = mod.exports;
+	    }
+	})(this, function (module, _select) {
+	    'use strict';
+
+	    var _select2 = _interopRequireDefault(_select);
+
+	    function _interopRequireDefault(obj) {
+	        return obj && obj.__esModule ? obj : {
+	            default: obj
+	        };
+	    }
+
+	    var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) {
+	        return typeof obj;
+	    } : function (obj) {
+	        return obj && typeof Symbol === "function" && obj.constructor === Symbol ? "symbol" : typeof obj;
+	    };
+
+	    function _classCallCheck(instance, Constructor) {
+	        if (!(instance instanceof Constructor)) {
+	            throw new TypeError("Cannot call a class as a function");
+	        }
+	    }
+
+	    var _createClass = function () {
+	        function defineProperties(target, props) {
+	            for (var i = 0; i < props.length; i++) {
+	                var descriptor = props[i];
+	                descriptor.enumerable = descriptor.enumerable || false;
+	                descriptor.configurable = true;
+	                if ("value" in descriptor) descriptor.writable = true;
+	                Object.defineProperty(target, descriptor.key, descriptor);
+	            }
+	        }
+
+	        return function (Constructor, protoProps, staticProps) {
+	            if (protoProps) defineProperties(Constructor.prototype, protoProps);
+	            if (staticProps) defineProperties(Constructor, staticProps);
+	            return Constructor;
+	        };
+	    }();
+
+	    var ClipboardAction = function () {
+	        /**
+	         * @param {Object} options
+	         */
+
+	        function ClipboardAction(options) {
+	            _classCallCheck(this, ClipboardAction);
+
+	            this.resolveOptions(options);
+	            this.initSelection();
+	        }
+
+	        /**
+	         * Defines base properties passed from constructor.
+	         * @param {Object} options
+	         */
 
 
-	// module
-	exports.push([module.id, "/*\n\nvim-hybrid theme by w0ng (https://github.com/w0ng/vim-hybrid)\n\n*/\n\n/*background color*/\n.hljs {\n  display: block;\n  overflow-x: auto;\n  padding: 0.5em;\n  background: #1d1f21;\n}\n\n/*selection color*/\n.hljs::selection,\n.hljs span::selection {\n  background: #373b41;\n}\n\n.hljs::-moz-selection,\n.hljs span::-moz-selection {\n  background: #373b41;\n}\n\n/*foreground color*/\n.hljs {\n  color: #c5c8c6;\n}\n\n/*color: fg_yellow*/\n.hljs-title,\n.hljs-name {\n  color: #f0c674;\n}\n\n/*color: fg_comment*/\n.hljs-comment,\n.hljs-meta,\n.hljs-meta .hljs-keyword {\n  color: #707880;\n}\n\n/*color: fg_red*/\n.hljs-number,\n.hljs-symbol,\n.hljs-literal,\n.hljs-deletion,\n.hljs-link {\n color: #cc6666\n}\n\n/*color: fg_green*/\n.hljs-string,\n.hljs-doctag,\n.hljs-addition,\n.hljs-regexp,\n.hljs-selector-attr,\n.hljs-selector-pseudo {\n  color: #b5bd68;\n}\n\n/*color: fg_purple*/\n.hljs-attribute,\n.hljs-code,\n.hljs-selector-id {\n color: #b294bb;\n}\n\n/*color: fg_blue*/\n.hljs-keyword,\n.hljs-selector-tag,\n.hljs-bullet,\n.hljs-tag {\n color: #81a2be;\n}\n\n/*color: fg_aqua*/\n.hljs-subst,\n.hljs-variable,\n.hljs-template-tag,\n.hljs-template-variable {\n  color: #8abeb7;\n}\n\n/*color: fg_orange*/\n.hljs-type,\n.hljs-built_in,\n.hljs-builtin-name,\n.hljs-quote,\n.hljs-section,\n.hljs-selector-class {\n  color: #de935f;\n}\n\n.hljs-emphasis {\n  font-style: italic;\n}\n\n.hljs-strong {\n  font-weight: bold;\n}\n", ""]);
+	        ClipboardAction.prototype.resolveOptions = function resolveOptions() {
+	            var options = arguments.length <= 0 || arguments[0] === undefined ? {} : arguments[0];
 
-	// exports
+	            this.action = options.action;
+	            this.emitter = options.emitter;
+	            this.target = options.target;
+	            this.text = options.text;
+	            this.trigger = options.trigger;
 
+	            this.selectedText = '';
+	        };
+
+	        ClipboardAction.prototype.initSelection = function initSelection() {
+	            if (this.text) {
+	                this.selectFake();
+	            } else if (this.target) {
+	                this.selectTarget();
+	            }
+	        };
+
+	        ClipboardAction.prototype.selectFake = function selectFake() {
+	            var _this = this;
+
+	            var isRTL = document.documentElement.getAttribute('dir') == 'rtl';
+
+	            this.removeFake();
+
+	            this.fakeHandler = document.body.addEventListener('click', function () {
+	                return _this.removeFake();
+	            });
+
+	            this.fakeElem = document.createElement('textarea');
+	            // Prevent zooming on iOS
+	            this.fakeElem.style.fontSize = '12pt';
+	            // Reset box model
+	            this.fakeElem.style.border = '0';
+	            this.fakeElem.style.padding = '0';
+	            this.fakeElem.style.margin = '0';
+	            // Move element out of screen horizontally
+	            this.fakeElem.style.position = 'fixed';
+	            this.fakeElem.style[isRTL ? 'right' : 'left'] = '-9999px';
+	            // Move element to the same position vertically
+	            this.fakeElem.style.top = (window.pageYOffset || document.documentElement.scrollTop) + 'px';
+	            this.fakeElem.setAttribute('readonly', '');
+	            this.fakeElem.value = this.text;
+
+	            document.body.appendChild(this.fakeElem);
+
+	            this.selectedText = (0, _select2.default)(this.fakeElem);
+	            this.copyText();
+	        };
+
+	        ClipboardAction.prototype.removeFake = function removeFake() {
+	            if (this.fakeHandler) {
+	                document.body.removeEventListener('click');
+	                this.fakeHandler = null;
+	            }
+
+	            if (this.fakeElem) {
+	                document.body.removeChild(this.fakeElem);
+	                this.fakeElem = null;
+	            }
+	        };
+
+	        ClipboardAction.prototype.selectTarget = function selectTarget() {
+	            this.selectedText = (0, _select2.default)(this.target);
+	            this.copyText();
+	        };
+
+	        ClipboardAction.prototype.copyText = function copyText() {
+	            var succeeded = undefined;
+
+	            try {
+	                succeeded = document.execCommand(this.action);
+	            } catch (err) {
+	                succeeded = false;
+	            }
+
+	            this.handleResult(succeeded);
+	        };
+
+	        ClipboardAction.prototype.handleResult = function handleResult(succeeded) {
+	            if (succeeded) {
+	                this.emitter.emit('success', {
+	                    action: this.action,
+	                    text: this.selectedText,
+	                    trigger: this.trigger,
+	                    clearSelection: this.clearSelection.bind(this)
+	                });
+	            } else {
+	                this.emitter.emit('error', {
+	                    action: this.action,
+	                    trigger: this.trigger,
+	                    clearSelection: this.clearSelection.bind(this)
+	                });
+	            }
+	        };
+
+	        ClipboardAction.prototype.clearSelection = function clearSelection() {
+	            if (this.target) {
+	                this.target.blur();
+	            }
+
+	            window.getSelection().removeAllRanges();
+	        };
+
+	        ClipboardAction.prototype.destroy = function destroy() {
+	            this.removeFake();
+	        };
+
+	        _createClass(ClipboardAction, [{
+	            key: 'action',
+	            set: function set() {
+	                var action = arguments.length <= 0 || arguments[0] === undefined ? 'copy' : arguments[0];
+
+	                this._action = action;
+
+	                if (this._action !== 'copy' && this._action !== 'cut') {
+	                    throw new Error('Invalid "action" value, use either "copy" or "cut"');
+	                }
+	            },
+	            get: function get() {
+	                return this._action;
+	            }
+	        }, {
+	            key: 'target',
+	            set: function set(target) {
+	                if (target !== undefined) {
+	                    if (target && (typeof target === 'undefined' ? 'undefined' : _typeof(target)) === 'object' && target.nodeType === 1) {
+	                        if (this.action === 'copy' && target.hasAttribute('disabled')) {
+	                            throw new Error('Invalid "target" attribute. Please use "readonly" instead of "disabled" attribute');
+	                        }
+
+	                        if (this.action === 'cut' && (target.hasAttribute('readonly') || target.hasAttribute('disabled'))) {
+	                            throw new Error('Invalid "target" attribute. You can\'t cut text from elements with "readonly" or "disabled" attributes');
+	                        }
+
+	                        this._target = target;
+	                    } else {
+	                        throw new Error('Invalid "target" value, use a valid Element');
+	                    }
+	                }
+	            },
+	            get: function get() {
+	                return this._target;
+	            }
+	        }]);
+
+	        return ClipboardAction;
+	    }();
+
+	    module.exports = ClipboardAction;
+	});
 
 /***/ },
 /* 469 */
 /***/ function(module, exports, __webpack_require__) {
 
-	exports = module.exports = __webpack_require__(13)();
-	// imports
+	var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;(function (global, factory) {
+	    if (true) {
+	        !(__WEBPACK_AMD_DEFINE_ARRAY__ = [module, __webpack_require__(468), __webpack_require__(808), __webpack_require__(517)], __WEBPACK_AMD_DEFINE_FACTORY__ = (factory), __WEBPACK_AMD_DEFINE_RESULT__ = (typeof __WEBPACK_AMD_DEFINE_FACTORY__ === 'function' ? (__WEBPACK_AMD_DEFINE_FACTORY__.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__)) : __WEBPACK_AMD_DEFINE_FACTORY__), __WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
+	    } else if (typeof exports !== "undefined") {
+	        factory(module, require('./clipboard-action'), require('tiny-emitter'), require('good-listener'));
+	    } else {
+	        var mod = {
+	            exports: {}
+	        };
+	        factory(mod, global.clipboardAction, global.tinyEmitter, global.goodListener);
+	        global.clipboard = mod.exports;
+	    }
+	})(this, function (module, _clipboardAction, _tinyEmitter, _goodListener) {
+	    'use strict';
+
+	    var _clipboardAction2 = _interopRequireDefault(_clipboardAction);
+
+	    var _tinyEmitter2 = _interopRequireDefault(_tinyEmitter);
+
+	    var _goodListener2 = _interopRequireDefault(_goodListener);
+
+	    function _interopRequireDefault(obj) {
+	        return obj && obj.__esModule ? obj : {
+	            default: obj
+	        };
+	    }
+
+	    function _classCallCheck(instance, Constructor) {
+	        if (!(instance instanceof Constructor)) {
+	            throw new TypeError("Cannot call a class as a function");
+	        }
+	    }
+
+	    function _possibleConstructorReturn(self, call) {
+	        if (!self) {
+	            throw new ReferenceError("this hasn't been initialised - super() hasn't been called");
+	        }
+
+	        return call && (typeof call === "object" || typeof call === "function") ? call : self;
+	    }
+
+	    function _inherits(subClass, superClass) {
+	        if (typeof superClass !== "function" && superClass !== null) {
+	            throw new TypeError("Super expression must either be null or a function, not " + typeof superClass);
+	        }
+
+	        subClass.prototype = Object.create(superClass && superClass.prototype, {
+	            constructor: {
+	                value: subClass,
+	                enumerable: false,
+	                writable: true,
+	                configurable: true
+	            }
+	        });
+	        if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass;
+	    }
+
+	    var Clipboard = function (_Emitter) {
+	        _inherits(Clipboard, _Emitter);
+
+	        /**
+	         * @param {String|HTMLElement|HTMLCollection|NodeList} trigger
+	         * @param {Object} options
+	         */
+
+	        function Clipboard(trigger, options) {
+	            _classCallCheck(this, Clipboard);
+
+	            var _this = _possibleConstructorReturn(this, _Emitter.call(this));
+
+	            _this.resolveOptions(options);
+	            _this.listenClick(trigger);
+	            return _this;
+	        }
+
+	        /**
+	         * Defines if attributes would be resolved using internal setter functions
+	         * or custom functions that were passed in the constructor.
+	         * @param {Object} options
+	         */
 
 
-	// module
-	exports.push([module.id, "/*! normalize.css v4.1.1 | MIT License | github.com/necolas/normalize.css */\n\n/**\n * 1. Change the default font family in all browsers (opinionated).\n * 2. Prevent adjustments of font size after orientation changes in IE and iOS.\n */\n\nhtml {\n  font-family: sans-serif; /* 1 */\n  -ms-text-size-adjust: 100%; /* 2 */\n  -webkit-text-size-adjust: 100%; /* 2 */\n}\n\n/**\n * Remove the margin in all browsers (opinionated).\n */\n\nbody {\n  margin: 0;\n}\n\n/* HTML5 display definitions\n   ========================================================================== */\n\n/**\n * Add the correct display in IE 9-.\n * 1. Add the correct display in Edge, IE, and Firefox.\n * 2. Add the correct display in IE.\n */\n\narticle,\naside,\ndetails, /* 1 */\nfigcaption,\nfigure,\nfooter,\nheader,\nmain, /* 2 */\nmenu,\nnav,\nsection,\nsummary { /* 1 */\n  display: block;\n}\n\n/**\n * Add the correct display in IE 9-.\n */\n\naudio,\ncanvas,\nprogress,\nvideo {\n  display: inline-block;\n}\n\n/**\n * Add the correct display in iOS 4-7.\n */\n\naudio:not([controls]) {\n  display: none;\n  height: 0;\n}\n\n/**\n * Add the correct vertical alignment in Chrome, Firefox, and Opera.\n */\n\nprogress {\n  vertical-align: baseline;\n}\n\n/**\n * Add the correct display in IE 10-.\n * 1. Add the correct display in IE.\n */\n\ntemplate, /* 1 */\n[hidden] {\n  display: none;\n}\n\n/* Links\n   ========================================================================== */\n\n/**\n * 1. Remove the gray background on active links in IE 10.\n * 2. Remove gaps in links underline in iOS 8+ and Safari 8+.\n */\n\na {\n  background-color: transparent; /* 1 */\n  -webkit-text-decoration-skip: objects; /* 2 */\n}\n\n/**\n * Remove the outline on focused links when they are also active or hovered\n * in all browsers (opinionated).\n */\n\na:active,\na:hover {\n  outline-width: 0;\n}\n\n/* Text-level semantics\n   ========================================================================== */\n\n/**\n * 1. Remove the bottom border in Firefox 39-.\n * 2. Add the correct text decoration in Chrome, Edge, IE, Opera, and Safari.\n */\n\nabbr[title] {\n  border-bottom: none; /* 1 */\n  text-decoration: underline; /* 2 */\n  text-decoration: underline dotted; /* 2 */\n}\n\n/**\n * Prevent the duplicate application of `bolder` by the next rule in Safari 6.\n */\n\nb,\nstrong {\n  font-weight: inherit;\n}\n\n/**\n * Add the correct font weight in Chrome, Edge, and Safari.\n */\n\nb,\nstrong {\n  font-weight: bolder;\n}\n\n/**\n * Add the correct font style in Android 4.3-.\n */\n\ndfn {\n  font-style: italic;\n}\n\n/**\n * Correct the font size and margin on `h1` elements within `section` and\n * `article` contexts in Chrome, Firefox, and Safari.\n */\n\nh1 {\n  font-size: 2em;\n  margin: 0.67em 0;\n}\n\n/**\n * Add the correct background and color in IE 9-.\n */\n\nmark {\n  background-color: #ff0;\n  color: #000;\n}\n\n/**\n * Add the correct font size in all browsers.\n */\n\nsmall {\n  font-size: 80%;\n}\n\n/**\n * Prevent `sub` and `sup` elements from affecting the line height in\n * all browsers.\n */\n\nsub,\nsup {\n  font-size: 75%;\n  line-height: 0;\n  position: relative;\n  vertical-align: baseline;\n}\n\nsub {\n  bottom: -0.25em;\n}\n\nsup {\n  top: -0.5em;\n}\n\n/* Embedded content\n   ========================================================================== */\n\n/**\n * Remove the border on images inside links in IE 10-.\n */\n\nimg {\n  border-style: none;\n}\n\n/**\n * Hide the overflow in IE.\n */\n\nsvg:not(:root) {\n  overflow: hidden;\n}\n\n/* Grouping content\n   ========================================================================== */\n\n/**\n * 1. Correct the inheritance and scaling of font size in all browsers.\n * 2. Correct the odd `em` font sizing in all browsers.\n */\n\ncode,\nkbd,\npre,\nsamp {\n  font-family: monospace, monospace; /* 1 */\n  font-size: 1em; /* 2 */\n}\n\n/**\n * Add the correct margin in IE 8.\n */\n\nfigure {\n  margin: 1em 40px;\n}\n\n/**\n * 1. Add the correct box sizing in Firefox.\n * 2. Show the overflow in Edge and IE.\n */\n\nhr {\n  box-sizing: content-box; /* 1 */\n  height: 0; /* 1 */\n  overflow: visible; /* 2 */\n}\n\n/* Forms\n   ========================================================================== */\n\n/**\n * 1. Change font properties to `inherit` in all browsers (opinionated).\n * 2. Remove the margin in Firefox and Safari.\n */\n\nbutton,\ninput,\nselect,\ntextarea {\n  font: inherit; /* 1 */\n  margin: 0; /* 2 */\n}\n\n/**\n * Restore the font weight unset by the previous rule.\n */\n\noptgroup {\n  font-weight: bold;\n}\n\n/**\n * Show the overflow in IE.\n * 1. Show the overflow in Edge.\n */\n\nbutton,\ninput { /* 1 */\n  overflow: visible;\n}\n\n/**\n * Remove the inheritance of text transform in Edge, Firefox, and IE.\n * 1. Remove the inheritance of text transform in Firefox.\n */\n\nbutton,\nselect { /* 1 */\n  text-transform: none;\n}\n\n/**\n * 1. Prevent a WebKit bug where (2) destroys native `audio` and `video`\n *    controls in Android 4.\n * 2. Correct the inability to style clickable types in iOS and Safari.\n */\n\nbutton,\nhtml [type=\"button\"], /* 1 */\n[type=\"reset\"],\n[type=\"submit\"] {\n  -webkit-appearance: button; /* 2 */\n}\n\n/**\n * Remove the inner border and padding in Firefox.\n */\n\nbutton::-moz-focus-inner,\n[type=\"button\"]::-moz-focus-inner,\n[type=\"reset\"]::-moz-focus-inner,\n[type=\"submit\"]::-moz-focus-inner {\n  border-style: none;\n  padding: 0;\n}\n\n/**\n * Restore the focus styles unset by the previous rule.\n */\n\nbutton:-moz-focusring,\n[type=\"button\"]:-moz-focusring,\n[type=\"reset\"]:-moz-focusring,\n[type=\"submit\"]:-moz-focusring {\n  outline: 1px dotted ButtonText;\n}\n\n/**\n * Change the border, margin, and padding in all browsers (opinionated).\n */\n\nfieldset {\n  border: 1px solid #c0c0c0;\n  margin: 0 2px;\n  padding: 0.35em 0.625em 0.75em;\n}\n\n/**\n * 1. Correct the text wrapping in Edge and IE.\n * 2. Correct the color inheritance from `fieldset` elements in IE.\n * 3. Remove the padding so developers are not caught out when they zero out\n *    `fieldset` elements in all browsers.\n */\n\nlegend {\n  box-sizing: border-box; /* 1 */\n  color: inherit; /* 2 */\n  display: table; /* 1 */\n  max-width: 100%; /* 1 */\n  padding: 0; /* 3 */\n  white-space: normal; /* 1 */\n}\n\n/**\n * Remove the default vertical scrollbar in IE.\n */\n\ntextarea {\n  overflow: auto;\n}\n\n/**\n * 1. Add the correct box sizing in IE 10-.\n * 2. Remove the padding in IE 10-.\n */\n\n[type=\"checkbox\"],\n[type=\"radio\"] {\n  box-sizing: border-box; /* 1 */\n  padding: 0; /* 2 */\n}\n\n/**\n * Correct the cursor style of increment and decrement buttons in Chrome.\n */\n\n[type=\"number\"]::-webkit-inner-spin-button,\n[type=\"number\"]::-webkit-outer-spin-button {\n  height: auto;\n}\n\n/**\n * 1. Correct the odd appearance in Chrome and Safari.\n * 2. Correct the outline style in Safari.\n */\n\n[type=\"search\"] {\n  -webkit-appearance: textfield; /* 1 */\n  outline-offset: -2px; /* 2 */\n}\n\n/**\n * Remove the inner padding and cancel buttons in Chrome and Safari on OS X.\n */\n\n[type=\"search\"]::-webkit-search-cancel-button,\n[type=\"search\"]::-webkit-search-decoration {\n  -webkit-appearance: none;\n}\n\n/**\n * Correct the text style of placeholders in Chrome, Edge, and Safari.\n */\n\n::-webkit-input-placeholder {\n  color: inherit;\n  opacity: 0.54;\n}\n\n/**\n * 1. Correct the inability to style clickable types in iOS and Safari.\n * 2. Change font properties to `inherit` in Safari.\n */\n\n::-webkit-file-upload-button {\n  -webkit-appearance: button; /* 1 */\n  font: inherit; /* 2 */\n}\n", ""]);
+	        Clipboard.prototype.resolveOptions = function resolveOptions() {
+	            var options = arguments.length <= 0 || arguments[0] === undefined ? {} : arguments[0];
 
-	// exports
+	            this.action = typeof options.action === 'function' ? options.action : this.defaultAction;
+	            this.target = typeof options.target === 'function' ? options.target : this.defaultTarget;
+	            this.text = typeof options.text === 'function' ? options.text : this.defaultText;
+	        };
 
+	        Clipboard.prototype.listenClick = function listenClick(trigger) {
+	            var _this2 = this;
+
+	            this.listener = (0, _goodListener2.default)(trigger, 'click', function (e) {
+	                return _this2.onClick(e);
+	            });
+	        };
+
+	        Clipboard.prototype.onClick = function onClick(e) {
+	            var trigger = e.delegateTarget || e.currentTarget;
+
+	            if (this.clipboardAction) {
+	                this.clipboardAction = null;
+	            }
+
+	            this.clipboardAction = new _clipboardAction2.default({
+	                action: this.action(trigger),
+	                target: this.target(trigger),
+	                text: this.text(trigger),
+	                trigger: trigger,
+	                emitter: this
+	            });
+	        };
+
+	        Clipboard.prototype.defaultAction = function defaultAction(trigger) {
+	            return getAttributeValue('action', trigger);
+	        };
+
+	        Clipboard.prototype.defaultTarget = function defaultTarget(trigger) {
+	            var selector = getAttributeValue('target', trigger);
+
+	            if (selector) {
+	                return document.querySelector(selector);
+	            }
+	        };
+
+	        Clipboard.prototype.defaultText = function defaultText(trigger) {
+	            return getAttributeValue('text', trigger);
+	        };
+
+	        Clipboard.prototype.destroy = function destroy() {
+	            this.listener.destroy();
+
+	            if (this.clipboardAction) {
+	                this.clipboardAction.destroy();
+	                this.clipboardAction = null;
+	            }
+	        };
+
+	        return Clipboard;
+	    }(_tinyEmitter2.default);
+
+	    /**
+	     * Helper function to retrieve attribute value.
+	     * @param {String} suffix
+	     * @param {Element} element
+	     */
+	    function getAttributeValue(suffix, element) {
+	        var attribute = 'data-clipboard-' + suffix;
+
+	        if (!element.hasAttribute(attribute)) {
+	            return;
+	        }
+
+	        return element.getAttribute(attribute);
+	    }
+
+	    module.exports = Clipboard;
+	});
 
 /***/ },
 /* 470 */
 /***/ function(module, exports, __webpack_require__) {
 
-	exports = module.exports = __webpack_require__(13)();
-	// imports
+	var matches = __webpack_require__(692)
 
+	module.exports = function (element, selector, checkYoSelf) {
+	  var parent = checkYoSelf ? element : element.parentNode
 
-	// module
-	exports.push([module.id, "@keyframes fadeIn {\n  0% {\n    opacity: 0;\n  }\n  100% {\n    opacity: 1;\n  }\n}\n\n@keyframes fadeInFromBottom {\n  0% {\n    opacity: 0;\n    transform: translateY(-5px);\n  }\n  100% {\n    opacity: 1;\n    transform: translateY(0);\n  }\n}\n\n@keyframes fadeInCircles {\n  0% {\n    opacity: 0.2;\n    transform: translate(-20px, 0);\n  }\n  10% {\n    opacity: 1;\n  }\n  90% {\n    opacity: 1;\n  }\n  100% {\n    opacity: 0.2;\n    transform: translate(20px, 0);\n  }\n}\n\n@keyframes fadeInCirclesLoop {\n  0% {\n    opacity: 0.2;\n  }\n  40% {\n    opacity: 0.4;\n  }\n  50% {\n    opacity: 1;\n  }\n  80% {\n    opacity: 0.4;\n  }\n  100% {\n    opacity: 0.2;\n  }\n}\n\n@keyframes pulse1 {\n  0% {\n    opacity: 0.3;\n  }\n  50% {\n    opacity: 0.5;\n  }\n  100% {\n    opacity: 0.3;\n  }\n}\n\n@keyframes fadeOut {\n  0% {\n    opacity: 1;\n  }\n  100% {\n    opacity: 0;\n  }\n}\n\n@keyframes darken {\n  0% {\n    opacity: 0;\n  }\n  100% {\n    opacity: 1;\n  }\n}\n\n@keyframes fadeOutUp {\n  0% {\n    opacity: 1;\n  }\n  100% {\n    opacity: 0;\n    height: 0;\n  }\n}\n\n@keyframes fadeOutDown {\n  0% {\n    opacity: 1;\n    transform: translateY(0);\n  }\n  100% {\n    opacity: 0;\n    transform: translateY(20px);\n  }\n}\n\n@keyframes fadeInDown {\n  0% {\n    opacity: 0;\n    transform: translateY(-20px);\n  }\n  100% {\n    opacity: 1;\n    transform: translateY(0);\n  }\n}\n\n@keyframes fadeInUp {\n  0% {\n    opacity: 0;\n    transform: translateY(20px);\n  }\n  100% {\n    opacity: 1;\n    transform: translateY(0);\n  }\n}\n\n@keyframes bounceInLeft {\n  0% {\n    opacity: 0;\n    transform: translateX(-200px);\n  }\n  60% {\n    transform: translateX(2px);\n  }\n  80% {\n    transform: translateX(-2px);\n  }\n  100% {\n    opacity: 1;\n    transform: translateX(0);\n  }\n}\n\n@keyframes bounceInDown {\n  0% {\n    opacity: 0;\n    transform: translateY(-200px);\n  }\n  60% {\n    transform: translateY(2px);\n  }\n  80% {\n    transform: translateY(-2px);\n  }\n  100% {\n    opacity: 1;\n    transform: translateY(0);\n  }\n}\n\n@keyframes slideFromLeft {\n  0% {\n    opacity: 0;\n    transform: translateX(-200px);\n  }\n  100% {\n    opacity: 1;\n    transform: translateX(0);\n  }\n}\n\n@keyframes appearFromTop {\n  0% {\n    opacity: 0;\n    transform: translateY(-10px);\n  }\n  100% {\n    opacity: 1;\n    transform: translateY(0);\n  }\n}\n\n@keyframes fadeOutRight {\n  0% {\n    opacity: 1;\n  }\n  100% {\n    opacity: 0;\n  }\n}\n\ntextarea, input {\n  outline: none;\n}\n\n::-webkit-input-placeholder {\n  color: rgba(228, 228, 228, 0.15);\n  font-style: italic;\n}\n\n:-moz-placeholder {\n  /* Firefox 18- */\n  color: rgba(228, 228, 228, 0.15);\n  font-style: italic;\n}\n\n::-moz-placeholder {\n  /* Firefox 19+ */\n  color: rgba(228, 228, 228, 0.15);\n  font-style: italic;\n}\n\n.App {\n  width: 100%;\n  height: 100%;\n  position: absolute;\n  overflow: hidden;\n  display: flex;\n  flex-direction: column;\n  transform-style: preserve-3d;\n}\n\n.no-close {\n  cursor: default;\n  -webkit-user-select: none;\n  -moz-user-select: none;\n}\n\n.view {\n  background: #222222;\n  width: 100%;\n  padding: 0;\n  margin: 0;\n}\n\n.headerAnimation-appear {\n  -webkit-animation: fadeInDown;\n  animation: fadeInDown;\n  -webkit-animation-duration: 0.2s;\n  animation-duration: 0.2s;\n  -webkit-animation-fill-mode: both;\n  animation-fill-mode: both;\n  -webkit-animation-timing-function: ease-out;\n  animation-timing-function: ease-out;\n}\n\n.joinChannelAnimation-appear {\n  -webkit-animation: fadeIn;\n  animation: fadeIn;\n  -webkit-animation-duration: 0.5s;\n  animation-duration: 0.5s;\n  -webkit-animation-fill-mode: both;\n  animation-fill-mode: both;\n  -webkit-animation-timing-function: ease-in;\n  animation-timing-function: ease-in;\n}\n", ""]);
-
-	// exports
+	  while (parent && parent !== document) {
+	    if (matches(parent, selector)) return parent;
+	    parent = parent.parentNode
+	  }
+	}
 
 
 /***/ },
@@ -43379,7 +43774,7 @@
 
 
 	// module
-	exports.push([module.id, "@keyframes fadeIn {\n  0% {\n    opacity: 0;\n  }\n  100% {\n    opacity: 1;\n  }\n}\n\n@keyframes fadeInFromBottom {\n  0% {\n    opacity: 0;\n    transform: translateY(-5px);\n  }\n  100% {\n    opacity: 1;\n    transform: translateY(0);\n  }\n}\n\n@keyframes fadeInCircles {\n  0% {\n    opacity: 0.2;\n    transform: translate(-20px, 0);\n  }\n  10% {\n    opacity: 1;\n  }\n  90% {\n    opacity: 1;\n  }\n  100% {\n    opacity: 0.2;\n    transform: translate(20px, 0);\n  }\n}\n\n@keyframes fadeInCirclesLoop {\n  0% {\n    opacity: 0.2;\n  }\n  40% {\n    opacity: 0.4;\n  }\n  50% {\n    opacity: 1;\n  }\n  80% {\n    opacity: 0.4;\n  }\n  100% {\n    opacity: 0.2;\n  }\n}\n\n@keyframes pulse1 {\n  0% {\n    opacity: 0.3;\n  }\n  50% {\n    opacity: 0.5;\n  }\n  100% {\n    opacity: 0.3;\n  }\n}\n\n@keyframes fadeOut {\n  0% {\n    opacity: 1;\n  }\n  100% {\n    opacity: 0;\n  }\n}\n\n@keyframes darken {\n  0% {\n    opacity: 0;\n  }\n  100% {\n    opacity: 1;\n  }\n}\n\n@keyframes fadeOutUp {\n  0% {\n    opacity: 1;\n  }\n  100% {\n    opacity: 0;\n    height: 0;\n  }\n}\n\n@keyframes fadeOutDown {\n  0% {\n    opacity: 1;\n    transform: translateY(0);\n  }\n  100% {\n    opacity: 0;\n    transform: translateY(20px);\n  }\n}\n\n@keyframes fadeInDown {\n  0% {\n    opacity: 0;\n    transform: translateY(-20px);\n  }\n  100% {\n    opacity: 1;\n    transform: translateY(0);\n  }\n}\n\n@keyframes fadeInUp {\n  0% {\n    opacity: 0;\n    transform: translateY(20px);\n  }\n  100% {\n    opacity: 1;\n    transform: translateY(0);\n  }\n}\n\n@keyframes bounceInLeft {\n  0% {\n    opacity: 0;\n    transform: translateX(-200px);\n  }\n  60% {\n    transform: translateX(2px);\n  }\n  80% {\n    transform: translateX(-2px);\n  }\n  100% {\n    opacity: 1;\n    transform: translateX(0);\n  }\n}\n\n@keyframes bounceInDown {\n  0% {\n    opacity: 0;\n    transform: translateY(-200px);\n  }\n  60% {\n    transform: translateY(2px);\n  }\n  80% {\n    transform: translateY(-2px);\n  }\n  100% {\n    opacity: 1;\n    transform: translateY(0);\n  }\n}\n\n@keyframes slideFromLeft {\n  0% {\n    opacity: 0;\n    transform: translateX(-200px);\n  }\n  100% {\n    opacity: 1;\n    transform: translateX(0);\n  }\n}\n\n@keyframes appearFromTop {\n  0% {\n    opacity: 0;\n    transform: translateY(-10px);\n  }\n  100% {\n    opacity: 1;\n    transform: translateY(0);\n  }\n}\n\n@keyframes fadeOutRight {\n  0% {\n    opacity: 1;\n  }\n  100% {\n    opacity: 0;\n  }\n}\n\n.BackgroundAnimation {\n  position: absolute;\n  top: 0;\n  left: 0;\n  width: 100%;\n  display: flex;\n  justify-content: center;\n  z-index: -1;\n  opacity: 0.3;\n  -webkit-transform-style: preserve-3d;\n  transform-style: preserve-3d;\n  -webkit-backface-visibility: hidden;\n  backface-visibility: hidden;\n}\n\n.BackgroundAnimation .circles {\n  position: absolute;\n  -webkit-transform: translate3D(0, 0, 0);\n  transform: translate3D(0, 0, 0);\n  -webkit-backface-visibility: hidden;\n  backface-visibility: hidden;\n  -webkit-transform-style: preserve-3d;\n  transform-style: preserve-3d;\n}\n\n.BackgroundAnimation circle {\n  -webkit-transform-style: preserve-3d;\n  transform-style: preserve-3d;\n  -webkit-transform: translate3D(0, 0, 0);\n  transform: translate3D(0, 0, 0);\n  -webkit-backface-visibility: hidden;\n  backface-visibility: hidden;\n  -webkit-animation: fadeIn;\n  animation: fadeIn;\n  -webkit-animation-duration: 0.2s;\n  animation-duration: 0.2s;\n  -webkit-animation-fill-mode: both;\n  animation-fill-mode: both;\n  -webkit-animation-timing-function: linear;\n  animation-timing-function: linear;\n}\n", ""]);
+	exports.push([module.id, "/*\n\nvim-hybrid theme by w0ng (https://github.com/w0ng/vim-hybrid)\n\n*/\n\n/*background color*/\n.hljs {\n  display: block;\n  overflow-x: auto;\n  padding: 0.5em;\n  background: #1d1f21;\n}\n\n/*selection color*/\n.hljs::selection,\n.hljs span::selection {\n  background: #373b41;\n}\n\n.hljs::-moz-selection,\n.hljs span::-moz-selection {\n  background: #373b41;\n}\n\n/*foreground color*/\n.hljs {\n  color: #c5c8c6;\n}\n\n/*color: fg_yellow*/\n.hljs-title,\n.hljs-name {\n  color: #f0c674;\n}\n\n/*color: fg_comment*/\n.hljs-comment,\n.hljs-meta,\n.hljs-meta .hljs-keyword {\n  color: #707880;\n}\n\n/*color: fg_red*/\n.hljs-number,\n.hljs-symbol,\n.hljs-literal,\n.hljs-deletion,\n.hljs-link {\n color: #cc6666\n}\n\n/*color: fg_green*/\n.hljs-string,\n.hljs-doctag,\n.hljs-addition,\n.hljs-regexp,\n.hljs-selector-attr,\n.hljs-selector-pseudo {\n  color: #b5bd68;\n}\n\n/*color: fg_purple*/\n.hljs-attribute,\n.hljs-code,\n.hljs-selector-id {\n color: #b294bb;\n}\n\n/*color: fg_blue*/\n.hljs-keyword,\n.hljs-selector-tag,\n.hljs-bullet,\n.hljs-tag {\n color: #81a2be;\n}\n\n/*color: fg_aqua*/\n.hljs-subst,\n.hljs-variable,\n.hljs-template-tag,\n.hljs-template-variable {\n  color: #8abeb7;\n}\n\n/*color: fg_orange*/\n.hljs-type,\n.hljs-built_in,\n.hljs-builtin-name,\n.hljs-quote,\n.hljs-section,\n.hljs-selector-class {\n  color: #de935f;\n}\n\n.hljs-emphasis {\n  font-style: italic;\n}\n\n.hljs-strong {\n  font-weight: bold;\n}\n", ""]);
 
 	// exports
 
@@ -43393,7 +43788,7 @@
 
 
 	// module
-	exports.push([module.id, "@keyframes fadeIn {\n  0% {\n    opacity: 0;\n  }\n  100% {\n    opacity: 1;\n  }\n}\n\n@keyframes fadeInFromBottom {\n  0% {\n    opacity: 0;\n    transform: translateY(-5px);\n  }\n  100% {\n    opacity: 1;\n    transform: translateY(0);\n  }\n}\n\n@keyframes fadeInCircles {\n  0% {\n    opacity: 0.2;\n    transform: translate(-20px, 0);\n  }\n  10% {\n    opacity: 1;\n  }\n  90% {\n    opacity: 1;\n  }\n  100% {\n    opacity: 0.2;\n    transform: translate(20px, 0);\n  }\n}\n\n@keyframes fadeInCirclesLoop {\n  0% {\n    opacity: 0.2;\n  }\n  40% {\n    opacity: 0.4;\n  }\n  50% {\n    opacity: 1;\n  }\n  80% {\n    opacity: 0.4;\n  }\n  100% {\n    opacity: 0.2;\n  }\n}\n\n@keyframes pulse1 {\n  0% {\n    opacity: 0.3;\n  }\n  50% {\n    opacity: 0.5;\n  }\n  100% {\n    opacity: 0.3;\n  }\n}\n\n@keyframes fadeOut {\n  0% {\n    opacity: 1;\n  }\n  100% {\n    opacity: 0;\n  }\n}\n\n@keyframes darken {\n  0% {\n    opacity: 0;\n  }\n  100% {\n    opacity: 1;\n  }\n}\n\n@keyframes fadeOutUp {\n  0% {\n    opacity: 1;\n  }\n  100% {\n    opacity: 0;\n    height: 0;\n  }\n}\n\n@keyframes fadeOutDown {\n  0% {\n    opacity: 1;\n    transform: translateY(0);\n  }\n  100% {\n    opacity: 0;\n    transform: translateY(20px);\n  }\n}\n\n@keyframes fadeInDown {\n  0% {\n    opacity: 0;\n    transform: translateY(-20px);\n  }\n  100% {\n    opacity: 1;\n    transform: translateY(0);\n  }\n}\n\n@keyframes fadeInUp {\n  0% {\n    opacity: 0;\n    transform: translateY(20px);\n  }\n  100% {\n    opacity: 1;\n    transform: translateY(0);\n  }\n}\n\n@keyframes bounceInLeft {\n  0% {\n    opacity: 0;\n    transform: translateX(-200px);\n  }\n  60% {\n    transform: translateX(2px);\n  }\n  80% {\n    transform: translateX(-2px);\n  }\n  100% {\n    opacity: 1;\n    transform: translateX(0);\n  }\n}\n\n@keyframes bounceInDown {\n  0% {\n    opacity: 0;\n    transform: translateY(-200px);\n  }\n  60% {\n    transform: translateY(2px);\n  }\n  80% {\n    transform: translateY(-2px);\n  }\n  100% {\n    opacity: 1;\n    transform: translateY(0);\n  }\n}\n\n@keyframes slideFromLeft {\n  0% {\n    opacity: 0;\n    transform: translateX(-200px);\n  }\n  100% {\n    opacity: 1;\n    transform: translateX(0);\n  }\n}\n\n@keyframes appearFromTop {\n  0% {\n    opacity: 0;\n    transform: translateY(-10px);\n  }\n  100% {\n    opacity: 1;\n    transform: translateY(0);\n  }\n}\n\n@keyframes fadeOutRight {\n  0% {\n    opacity: 1;\n  }\n  100% {\n    opacity: 0;\n  }\n}\n\n.Channel {\n  width: 100%;\n  display: flex;\n  flex-direction: column;\n  overflow: hidden;\n  transform-style: preserve-3d;\n  background-color: #202020;\n}\n\n.Channel .center {\n  display: flex;\n  justify-content: center;\n  width: 100%;\n}\n\n.Channel .loadingIcon {\n  position: absolute;\n  bottom: 0.75em;\n  left: 0.75em;\n}\n\n.Channel .active {\n  background-color: #783c8c;\n}\n\n.Channel .active:hover {\n  background-color: #8c50dc;\n}\n\n.newMessagesBar {\n  position: absolute;\n  bottom: 2.75em;\n  width: 100%;\n  background-color: rgba(32, 32, 32, 0.8);\n  display: flex;\n  justify-content: center;\n  padding: 0.2em;\n  font-family: \"Lato\";\n  font-weight: 300;\n  cursor: s-resize;\n}\n\n.newMessagesBar .newMessagesNumber {\n  color: rgba(160, 220, 90, 0.6);\n  padding: 0em 0.5em;\n}\n\n.ChannelView {\n  width: 100%;\n  height: 100%;\n  padding: 0;\n  margin: 0;\n  color: #fff;\n  display: flex;\n  overflow: auto;\n}\n\n.flipped {\n  justify-content: flex-end;\n}\n\n.dimmed {\n  opacity: 0.5;\n}\n\n.hide {\n  display: none;\n}\n\n.none {\n  display: none;\n}\n\n.icon {\n  width: 1.0em;\n  height: 1.0em;\n  font-size: 1.2em;\n  display: flex;\n  align-items: center;\n  justify-content: center;\n  padding: 0.5em;\n  margin-left: 0.2em;\n  margin-right: 0.2em;\n  color: #e4e4e4;\n}\n\n.icon-active {\n  width: 1.0em;\n  height: 1.0em;\n  font-size: 1.2em;\n  display: flex;\n  align-items: center;\n  justify-content: center;\n  padding: 0.5em;\n  margin-left: 0.2em;\n  margin-right: 0.2em;\n  color: #e4e4e4;\n  background-color: #783c8c;\n  border-radius: 32px;\n}\n\n.icon-active:hover {\n  background-color: #783c8c;\n  border-radius: 32px;\n}\n\n.icon:hover {\n  background-color: #303030;\n  border-radius: 32px;\n}\n\n.icon:active {\n  background-color: #783c8c;\n  border-radius: 32px;\n}\n\n.blurred {\n  -webkit-filter: blur(2px);\n  -moz-filter: blur(2px);\n  -o-filter: blur(2px);\n  -ms-filter: blur(2px);\n  filter: blur(2px);\n}\n\n.ChannelOptions {\n  position: absolute;\n  bottom: 2.75em;\n  right: 0;\n  padding: 1.2em 1.2em;\n  margin: 0.5em 0.5em;\n  margin-right: 1em;\n  max-width: 30em;\n  font-weight: 300;\n  color: #e4e4e4;\n  background-color: #1a1a1a;\n  display: flex;\n  flex-direction: row;\n}\n\n.ChannelOptions .row {\n  display: flex;\n  flex-direction: column;\n  flex: 1 1 55%;\n  max-width: 55%;\n  margin-right: 1em;\n}\n\n.ChannelOptions form {\n  display: flex;\n  flex-direction: column;\n  justify-content: flex-end;\n  align-items: flex-end;\n  flex: 1;\n  margin-left: 1vw;\n}\n\n.ChannelOptions input[type=text] {\n  font-size: 0.8em;\n  width: 100%;\n}\n\n.ChannelOptions input[type=submit] {\n  margin-top: 0.2em;\n  font-size: 0.8em;\n  align-self: flex-end;\n}\n\n.ChannelOptions .headerText {\n  font-size: 0.8em;\n  margin-bottom: 0.5em;\n  color: #e4e4e4;\n}\n\n.ChannelOptions .instructionText {\n  font-size: 0.8em;\n  display: flex;\n  color: rgba(228, 228, 228, 0.15);\n  font-style: italic;\n}\n\ninput[type=button], .channelOptionsButton {\n  border-top: 1px solid rgba(28, 28, 28, 0);\n  border-bottom: 1px solid rgba(28, 28, 28, 0);\n  min-width: 2em;\n  margin-left: 0em;\n  margin-right: 0em;\n  height: 100%;\n  margin-top: 0em;\n  margin-bottom: 0.5em;\n  padding-left: 0.75em;\n  padding-right: 0.75em;\n  font-size: 1.0em;\n}\n\ninput[type=button], .addFilesButton {\n  display: block;\n  border-top: 1px solid rgba(28, 28, 28, 0);\n  border-bottom: 1px solid rgba(28, 28, 28, 0);\n  min-width: 2em;\n  height: 100%;\n  margin-left: 0em;\n  margin-right: 0em;\n  margin-top: 0em;\n  margin-bottom: 0em;\n  padding-left: 0.75em;\n  padding-right: 0.75em;\n  font-size: 1.1em;\n  font-weight: 400;\n}\n\n.Controls {\n  background-color: #1e1e1e;\n  box-sizing: border-box;\n  display: flex;\n  justify-content: center;\n  align-items: center;\n  max-height: 2.8em;\n  min-height: 2.8em;\n  border-top: 1px solid rgba(28, 28, 28, 0);\n  border-bottom: 1px solid rgba(28, 28, 28, 0);\n}\n\n.statusMessage {\n  position: absolute;\n  bottom: 1.2em;\n  right: 1em;\n  margin-right: 0.5em;\n  margin-left: 0.5em;\n  color: rgba(228, 228, 228, 0.8);\n  font-size: 0.6em;\n  font-weight: 300;\n  font-family: \"Lato\";\n  display: flex;\n  justify-content: center;\n  -webkit-user-select: none;\n  user-select: none;\n  cursor: default;\n  display: flex;\n  align-items: center;\n  text-transform: uppercase;\n  padding: 0.5em 1em;\n  border-radius: 16px;\n  letter-spacing: 1px;\n  background-color: rgba(48, 48, 48, 0.5);\n}\n\n.statusMessage:hover {\n  background-color: #303030;\n}\n\n.statusMessage:active {\n  background-color: #783c8c;\n}\n\n.Messages {\n  display: block;\n  position: relative;\n  box-sizing: border-box;\n  width: 100%;\n  height: 100%;\n  overflow: auto;\n  -webkit-transform-style: preserve-3d;\n  transform-style: preserve-3d;\n}\n\n.Messages .firstMessage {\n  display: flex;\n  justify-content: center;\n  background-color: #242424;\n  color: rgba(228, 228, 228, 0.6);\n  font-weight: 300;\n  font-size: 0.8em;\n  padding: 0.2em;\n  user-select: none;\n  -webkit-user-select: none;\n}\n\n.flopped {\n  flex: 1 1 100%;\n}\n\n.controlsAnimation-appear {\n  -webkit-animation: fadeInUp;\n  animation: fadeInUp;\n  -webkit-animation-duration: 0.3s;\n  animation-duration: 0.3s;\n  -webkit-animation-fill-mode: both;\n  animation-fill-mode: both;\n  -webkit-animation-timing-function: ease-out;\n  animation-timing-function: ease-out;\n}\n\n.dropzone {\n  top: 0;\n  left: 0;\n  position: absolute;\n  width: 100%;\n  height: 100%;\n  box-sizing: border-box;\n  overflow: hidden;\n  display: flex;\n  align-self: flex-end;\n  align-items: center;\n  flex-direction: row;\n  justify-content: center;\n  white-space: nowrap;\n  padding: 0.5em;\n  font-family: \"Lato\";\n  font-weight: 300;\n  font-size: 4em;\n  color: #e4e4e4;\n  background-color: rgba(0, 0, 0, 0.6);\n  border: 2px dotted #783c8c;\n}\n\n.dropzoneActive {\n  color: #e4e4e4;\n  background-color: rgba(0, 0, 0, 0.6);\n  border: 2px dotted #783c8c;\n}\n\n.messagesAnimation-enter {\n  -webkit-animation-name: fadeIn;\n  animation-name: fadeIn;\n  -webkit-animation-duration: 0.3s;\n  animation-duration: 0.3s;\n  -webkit-animation-fill-mode: both;\n  animation-fill-mode: both;\n  -webkit-animation-timing-function: ease-in;\n  animation-timing-function: ease-in;\n}\n", ""]);
+	exports.push([module.id, "/*! normalize.css v4.1.1 | MIT License | github.com/necolas/normalize.css */\n\n/**\n * 1. Change the default font family in all browsers (opinionated).\n * 2. Prevent adjustments of font size after orientation changes in IE and iOS.\n */\n\nhtml {\n  font-family: sans-serif; /* 1 */\n  -ms-text-size-adjust: 100%; /* 2 */\n  -webkit-text-size-adjust: 100%; /* 2 */\n}\n\n/**\n * Remove the margin in all browsers (opinionated).\n */\n\nbody {\n  margin: 0;\n}\n\n/* HTML5 display definitions\n   ========================================================================== */\n\n/**\n * Add the correct display in IE 9-.\n * 1. Add the correct display in Edge, IE, and Firefox.\n * 2. Add the correct display in IE.\n */\n\narticle,\naside,\ndetails, /* 1 */\nfigcaption,\nfigure,\nfooter,\nheader,\nmain, /* 2 */\nmenu,\nnav,\nsection,\nsummary { /* 1 */\n  display: block;\n}\n\n/**\n * Add the correct display in IE 9-.\n */\n\naudio,\ncanvas,\nprogress,\nvideo {\n  display: inline-block;\n}\n\n/**\n * Add the correct display in iOS 4-7.\n */\n\naudio:not([controls]) {\n  display: none;\n  height: 0;\n}\n\n/**\n * Add the correct vertical alignment in Chrome, Firefox, and Opera.\n */\n\nprogress {\n  vertical-align: baseline;\n}\n\n/**\n * Add the correct display in IE 10-.\n * 1. Add the correct display in IE.\n */\n\ntemplate, /* 1 */\n[hidden] {\n  display: none;\n}\n\n/* Links\n   ========================================================================== */\n\n/**\n * 1. Remove the gray background on active links in IE 10.\n * 2. Remove gaps in links underline in iOS 8+ and Safari 8+.\n */\n\na {\n  background-color: transparent; /* 1 */\n  -webkit-text-decoration-skip: objects; /* 2 */\n}\n\n/**\n * Remove the outline on focused links when they are also active or hovered\n * in all browsers (opinionated).\n */\n\na:active,\na:hover {\n  outline-width: 0;\n}\n\n/* Text-level semantics\n   ========================================================================== */\n\n/**\n * 1. Remove the bottom border in Firefox 39-.\n * 2. Add the correct text decoration in Chrome, Edge, IE, Opera, and Safari.\n */\n\nabbr[title] {\n  border-bottom: none; /* 1 */\n  text-decoration: underline; /* 2 */\n  text-decoration: underline dotted; /* 2 */\n}\n\n/**\n * Prevent the duplicate application of `bolder` by the next rule in Safari 6.\n */\n\nb,\nstrong {\n  font-weight: inherit;\n}\n\n/**\n * Add the correct font weight in Chrome, Edge, and Safari.\n */\n\nb,\nstrong {\n  font-weight: bolder;\n}\n\n/**\n * Add the correct font style in Android 4.3-.\n */\n\ndfn {\n  font-style: italic;\n}\n\n/**\n * Correct the font size and margin on `h1` elements within `section` and\n * `article` contexts in Chrome, Firefox, and Safari.\n */\n\nh1 {\n  font-size: 2em;\n  margin: 0.67em 0;\n}\n\n/**\n * Add the correct background and color in IE 9-.\n */\n\nmark {\n  background-color: #ff0;\n  color: #000;\n}\n\n/**\n * Add the correct font size in all browsers.\n */\n\nsmall {\n  font-size: 80%;\n}\n\n/**\n * Prevent `sub` and `sup` elements from affecting the line height in\n * all browsers.\n */\n\nsub,\nsup {\n  font-size: 75%;\n  line-height: 0;\n  position: relative;\n  vertical-align: baseline;\n}\n\nsub {\n  bottom: -0.25em;\n}\n\nsup {\n  top: -0.5em;\n}\n\n/* Embedded content\n   ========================================================================== */\n\n/**\n * Remove the border on images inside links in IE 10-.\n */\n\nimg {\n  border-style: none;\n}\n\n/**\n * Hide the overflow in IE.\n */\n\nsvg:not(:root) {\n  overflow: hidden;\n}\n\n/* Grouping content\n   ========================================================================== */\n\n/**\n * 1. Correct the inheritance and scaling of font size in all browsers.\n * 2. Correct the odd `em` font sizing in all browsers.\n */\n\ncode,\nkbd,\npre,\nsamp {\n  font-family: monospace, monospace; /* 1 */\n  font-size: 1em; /* 2 */\n}\n\n/**\n * Add the correct margin in IE 8.\n */\n\nfigure {\n  margin: 1em 40px;\n}\n\n/**\n * 1. Add the correct box sizing in Firefox.\n * 2. Show the overflow in Edge and IE.\n */\n\nhr {\n  box-sizing: content-box; /* 1 */\n  height: 0; /* 1 */\n  overflow: visible; /* 2 */\n}\n\n/* Forms\n   ========================================================================== */\n\n/**\n * 1. Change font properties to `inherit` in all browsers (opinionated).\n * 2. Remove the margin in Firefox and Safari.\n */\n\nbutton,\ninput,\nselect,\ntextarea {\n  font: inherit; /* 1 */\n  margin: 0; /* 2 */\n}\n\n/**\n * Restore the font weight unset by the previous rule.\n */\n\noptgroup {\n  font-weight: bold;\n}\n\n/**\n * Show the overflow in IE.\n * 1. Show the overflow in Edge.\n */\n\nbutton,\ninput { /* 1 */\n  overflow: visible;\n}\n\n/**\n * Remove the inheritance of text transform in Edge, Firefox, and IE.\n * 1. Remove the inheritance of text transform in Firefox.\n */\n\nbutton,\nselect { /* 1 */\n  text-transform: none;\n}\n\n/**\n * 1. Prevent a WebKit bug where (2) destroys native `audio` and `video`\n *    controls in Android 4.\n * 2. Correct the inability to style clickable types in iOS and Safari.\n */\n\nbutton,\nhtml [type=\"button\"], /* 1 */\n[type=\"reset\"],\n[type=\"submit\"] {\n  -webkit-appearance: button; /* 2 */\n}\n\n/**\n * Remove the inner border and padding in Firefox.\n */\n\nbutton::-moz-focus-inner,\n[type=\"button\"]::-moz-focus-inner,\n[type=\"reset\"]::-moz-focus-inner,\n[type=\"submit\"]::-moz-focus-inner {\n  border-style: none;\n  padding: 0;\n}\n\n/**\n * Restore the focus styles unset by the previous rule.\n */\n\nbutton:-moz-focusring,\n[type=\"button\"]:-moz-focusring,\n[type=\"reset\"]:-moz-focusring,\n[type=\"submit\"]:-moz-focusring {\n  outline: 1px dotted ButtonText;\n}\n\n/**\n * Change the border, margin, and padding in all browsers (opinionated).\n */\n\nfieldset {\n  border: 1px solid #c0c0c0;\n  margin: 0 2px;\n  padding: 0.35em 0.625em 0.75em;\n}\n\n/**\n * 1. Correct the text wrapping in Edge and IE.\n * 2. Correct the color inheritance from `fieldset` elements in IE.\n * 3. Remove the padding so developers are not caught out when they zero out\n *    `fieldset` elements in all browsers.\n */\n\nlegend {\n  box-sizing: border-box; /* 1 */\n  color: inherit; /* 2 */\n  display: table; /* 1 */\n  max-width: 100%; /* 1 */\n  padding: 0; /* 3 */\n  white-space: normal; /* 1 */\n}\n\n/**\n * Remove the default vertical scrollbar in IE.\n */\n\ntextarea {\n  overflow: auto;\n}\n\n/**\n * 1. Add the correct box sizing in IE 10-.\n * 2. Remove the padding in IE 10-.\n */\n\n[type=\"checkbox\"],\n[type=\"radio\"] {\n  box-sizing: border-box; /* 1 */\n  padding: 0; /* 2 */\n}\n\n/**\n * Correct the cursor style of increment and decrement buttons in Chrome.\n */\n\n[type=\"number\"]::-webkit-inner-spin-button,\n[type=\"number\"]::-webkit-outer-spin-button {\n  height: auto;\n}\n\n/**\n * 1. Correct the odd appearance in Chrome and Safari.\n * 2. Correct the outline style in Safari.\n */\n\n[type=\"search\"] {\n  -webkit-appearance: textfield; /* 1 */\n  outline-offset: -2px; /* 2 */\n}\n\n/**\n * Remove the inner padding and cancel buttons in Chrome and Safari on OS X.\n */\n\n[type=\"search\"]::-webkit-search-cancel-button,\n[type=\"search\"]::-webkit-search-decoration {\n  -webkit-appearance: none;\n}\n\n/**\n * Correct the text style of placeholders in Chrome, Edge, and Safari.\n */\n\n::-webkit-input-placeholder {\n  color: inherit;\n  opacity: 0.54;\n}\n\n/**\n * 1. Correct the inability to style clickable types in iOS and Safari.\n * 2. Change font properties to `inherit` in Safari.\n */\n\n::-webkit-file-upload-button {\n  -webkit-appearance: button; /* 1 */\n  font: inherit; /* 2 */\n}\n", ""]);
 
 	// exports
 
@@ -43407,7 +43802,7 @@
 
 
 	// module
-	exports.push([module.id, "", ""]);
+	exports.push([module.id, "@keyframes fadeIn {\n  0% {\n    opacity: 0;\n  }\n  100% {\n    opacity: 1;\n  }\n}\n\n@keyframes fadeInFromBottom {\n  0% {\n    opacity: 0;\n    transform: translateY(-5px);\n  }\n  100% {\n    opacity: 1;\n    transform: translateY(0);\n  }\n}\n\n@keyframes fadeInCircles {\n  0% {\n    opacity: 0.2;\n    transform: translate(-20px, 0);\n  }\n  10% {\n    opacity: 1;\n  }\n  90% {\n    opacity: 1;\n  }\n  100% {\n    opacity: 0.2;\n    transform: translate(20px, 0);\n  }\n}\n\n@keyframes fadeInCirclesLoop {\n  0% {\n    opacity: 0.2;\n  }\n  40% {\n    opacity: 0.4;\n  }\n  50% {\n    opacity: 1;\n  }\n  80% {\n    opacity: 0.4;\n  }\n  100% {\n    opacity: 0.2;\n  }\n}\n\n@keyframes pulse1 {\n  0% {\n    opacity: 0.3;\n  }\n  50% {\n    opacity: 0.5;\n  }\n  100% {\n    opacity: 0.3;\n  }\n}\n\n@keyframes fadeOut {\n  0% {\n    opacity: 1;\n  }\n  100% {\n    opacity: 0;\n  }\n}\n\n@keyframes darken {\n  0% {\n    opacity: 0;\n  }\n  100% {\n    opacity: 1;\n  }\n}\n\n@keyframes fadeOutUp {\n  0% {\n    opacity: 1;\n  }\n  100% {\n    opacity: 0;\n    height: 0;\n  }\n}\n\n@keyframes fadeOutDown {\n  0% {\n    opacity: 1;\n    transform: translateY(0);\n  }\n  100% {\n    opacity: 0;\n    transform: translateY(20px);\n  }\n}\n\n@keyframes fadeInDown {\n  0% {\n    opacity: 0;\n    transform: translateY(-20px);\n  }\n  100% {\n    opacity: 1;\n    transform: translateY(0);\n  }\n}\n\n@keyframes fadeInUp {\n  0% {\n    opacity: 0;\n    transform: translateY(20px);\n  }\n  100% {\n    opacity: 1;\n    transform: translateY(0);\n  }\n}\n\n@keyframes bounceInLeft {\n  0% {\n    opacity: 0;\n    transform: translateX(-200px);\n  }\n  60% {\n    transform: translateX(2px);\n  }\n  80% {\n    transform: translateX(-2px);\n  }\n  100% {\n    opacity: 1;\n    transform: translateX(0);\n  }\n}\n\n@keyframes bounceInDown {\n  0% {\n    opacity: 0;\n    transform: translateY(-200px);\n  }\n  60% {\n    transform: translateY(2px);\n  }\n  80% {\n    transform: translateY(-2px);\n  }\n  100% {\n    opacity: 1;\n    transform: translateY(0);\n  }\n}\n\n@keyframes slideFromLeft {\n  0% {\n    opacity: 0;\n    transform: translateX(-200px);\n  }\n  100% {\n    opacity: 1;\n    transform: translateX(0);\n  }\n}\n\n@keyframes appearFromTop {\n  0% {\n    opacity: 0;\n    transform: translateY(-10px);\n  }\n  100% {\n    opacity: 1;\n    transform: translateY(0);\n  }\n}\n\n@keyframes fadeOutRight {\n  0% {\n    opacity: 1;\n  }\n  100% {\n    opacity: 0;\n  }\n}\n\ntextarea, input {\n  outline: none;\n}\n\n::-webkit-input-placeholder {\n  color: rgba(228, 228, 228, 0.15);\n  font-style: italic;\n}\n\n:-moz-placeholder {\n  /* Firefox 18- */\n  color: rgba(228, 228, 228, 0.15);\n  font-style: italic;\n}\n\n::-moz-placeholder {\n  /* Firefox 19+ */\n  color: rgba(228, 228, 228, 0.15);\n  font-style: italic;\n}\n\n.App {\n  width: 100%;\n  height: 100%;\n  position: absolute;\n  overflow: hidden;\n  display: flex;\n  flex-direction: column;\n  transform-style: preserve-3d;\n}\n\n.no-close {\n  cursor: default;\n  -webkit-user-select: none;\n  -moz-user-select: none;\n}\n\n.view {\n  background: #222222;\n  width: 100%;\n  padding: 0;\n  margin: 0;\n}\n\n.headerAnimation-appear {\n  -webkit-animation: fadeInDown;\n  animation: fadeInDown;\n  -webkit-animation-duration: 0.2s;\n  animation-duration: 0.2s;\n  -webkit-animation-fill-mode: both;\n  animation-fill-mode: both;\n  -webkit-animation-timing-function: ease-out;\n  animation-timing-function: ease-out;\n}\n\n.joinChannelAnimation-appear {\n  -webkit-animation: fadeIn;\n  animation: fadeIn;\n  -webkit-animation-duration: 0.5s;\n  animation-duration: 0.5s;\n  -webkit-animation-fill-mode: both;\n  animation-fill-mode: both;\n  -webkit-animation-timing-function: ease-in;\n  animation-timing-function: ease-in;\n}\n", ""]);
 
 	// exports
 
@@ -43421,7 +43816,7 @@
 
 
 	// module
-	exports.push([module.id, "@keyframes fadeIn {\n  0% {\n    opacity: 0;\n  }\n  100% {\n    opacity: 1;\n  }\n}\n\n@keyframes fadeInFromBottom {\n  0% {\n    opacity: 0;\n    transform: translateY(-5px);\n  }\n  100% {\n    opacity: 1;\n    transform: translateY(0);\n  }\n}\n\n@keyframes fadeInCircles {\n  0% {\n    opacity: 0.2;\n    transform: translate(-20px, 0);\n  }\n  10% {\n    opacity: 1;\n  }\n  90% {\n    opacity: 1;\n  }\n  100% {\n    opacity: 0.2;\n    transform: translate(20px, 0);\n  }\n}\n\n@keyframes fadeInCirclesLoop {\n  0% {\n    opacity: 0.2;\n  }\n  40% {\n    opacity: 0.4;\n  }\n  50% {\n    opacity: 1;\n  }\n  80% {\n    opacity: 0.4;\n  }\n  100% {\n    opacity: 0.2;\n  }\n}\n\n@keyframes pulse1 {\n  0% {\n    opacity: 0.3;\n  }\n  50% {\n    opacity: 0.5;\n  }\n  100% {\n    opacity: 0.3;\n  }\n}\n\n@keyframes fadeOut {\n  0% {\n    opacity: 1;\n  }\n  100% {\n    opacity: 0;\n  }\n}\n\n@keyframes darken {\n  0% {\n    opacity: 0;\n  }\n  100% {\n    opacity: 1;\n  }\n}\n\n@keyframes fadeOutUp {\n  0% {\n    opacity: 1;\n  }\n  100% {\n    opacity: 0;\n    height: 0;\n  }\n}\n\n@keyframes fadeOutDown {\n  0% {\n    opacity: 1;\n    transform: translateY(0);\n  }\n  100% {\n    opacity: 0;\n    transform: translateY(20px);\n  }\n}\n\n@keyframes fadeInDown {\n  0% {\n    opacity: 0;\n    transform: translateY(-20px);\n  }\n  100% {\n    opacity: 1;\n    transform: translateY(0);\n  }\n}\n\n@keyframes fadeInUp {\n  0% {\n    opacity: 0;\n    transform: translateY(20px);\n  }\n  100% {\n    opacity: 1;\n    transform: translateY(0);\n  }\n}\n\n@keyframes bounceInLeft {\n  0% {\n    opacity: 0;\n    transform: translateX(-200px);\n  }\n  60% {\n    transform: translateX(2px);\n  }\n  80% {\n    transform: translateX(-2px);\n  }\n  100% {\n    opacity: 1;\n    transform: translateX(0);\n  }\n}\n\n@keyframes bounceInDown {\n  0% {\n    opacity: 0;\n    transform: translateY(-200px);\n  }\n  60% {\n    transform: translateY(2px);\n  }\n  80% {\n    transform: translateY(-2px);\n  }\n  100% {\n    opacity: 1;\n    transform: translateY(0);\n  }\n}\n\n@keyframes slideFromLeft {\n  0% {\n    opacity: 0;\n    transform: translateX(-200px);\n  }\n  100% {\n    opacity: 1;\n    transform: translateX(0);\n  }\n}\n\n@keyframes appearFromTop {\n  0% {\n    opacity: 0;\n    transform: translateY(-10px);\n  }\n  100% {\n    opacity: 1;\n    transform: translateY(0);\n  }\n}\n\n@keyframes fadeOutRight {\n  0% {\n    opacity: 1;\n  }\n  100% {\n    opacity: 0;\n  }\n}\n\n.invisible {\n  visibility: hidden;\n}\n\n.hidden {\n  visibility: hidden;\n}\n\n.ChannelsPanel {\n  color: #f0f0f0;\n  border-right: 1px solid rgba(40, 40, 40, 0.4);\n  position: absolute;\n  z-index: 100;\n  background: #202020;\n  max-width: 20em;\n  height: 100%;\n  box-sizing: border-box;\n  display: flex;\n  flex-direction: column;\n  justify-content: flex-start;\n  flex: 1 1 100%;\n  box-shadow: 8px 0px 12px 0px rgba(0, 0, 0, 0.2);\n}\n\n.ChannelsPanel .panelHeader {\n  display: flex;\n  flex-direction: column;\n  height: 2em;\n  margin: 0em 1.25em;\n  margin-bottom: 0.5em;\n  color: rgba(228, 228, 228, 0.15);\n  font-size: 0.8em;\n  font-weight: 300;\n  font-family: \"Lato\";\n  text-transform: uppercase;\n}\n\n.ChannelsPanel .link {\n  width: 100%;\n  display: flex;\n  align-items: stretch;\n  flex: 1;\n}\n\n.ChannelsPanel .openChannels {\n  display: flex;\n  flex: 1 1 100%;\n  overflow: auto;\n}\n\n.ChannelsPanel .row {\n  box-sizing: border-box;\n  display: flex;\n  flex-direction: row;\n  flex: 1;\n  justify-content: space-between;\n  align-items: stretch;\n}\n\n.ChannelsPanel .row .channelName {\n  display: flex;\n  flex: 1 1 80%;\n  padding: 0.2em;\n  align-items: stretch;\n}\n\n.ChannelsPanel .row .closeChannelButton {\n  font-size: 0.8em;\n  padding: 0em 1em;\n  box-sizing: border-box;\n  flex: 1 1 20%;\n  align-items: center;\n  display: flex;\n}\n\n.ChannelsPanel .row .closeChannelButton:hover {\n  background-color: #404040;\n  cursor: pointer;\n}\n\n.ChannelsPanel .row .unreadMessages {\n  color: #e4e4e4;\n  font-size: 0.5em;\n  border-radius: 32px;\n  background-color: rgba(240, 240, 240, 0.1);\n  display: flex;\n  flex-direction: column;\n  justify-content: center;\n  align-items: center;\n  height: 16px;\n  width: 16px;\n  flex: 1 0 6%;\n  margin: 0em 1em;\n  margin-top: 2px;\n  margin-bottom: 1px;\n  align-self: center;\n}\n\n.ChannelsPanel .row .hasMentions {\n  background: #783c8c;\n}\n\n.ChannelsPanel .joinChannelInput {\n  display: flex;\n  flex: 1 1 8%;\n  justify-content: stretch;\n  box-sizing: border-box;\n  margin: 2em 0em;\n  margin-bottom: 1.0em;\n}\n\n.ChannelsPanel .loadingIcon {\n  position: absolute;\n  box-sizing: border-box;\n  display: flex;\n  justify-content: center;\n  align-items: center;\n  width: 100%;\n  margin: 2em 0em;\n  margin-bottom: 1.5em;\n}\n\n.ChannelsPanel .header {\n  display: flex;\n  flex: 1 1 100%;\n  justify-content: center;\n  box-sizing: border-box;\n  font-family: \"Lato\";\n  font-weight: 100;\n  font-size: 2.6em;\n  color: rgba(228, 228, 228, 0.6);\n  padding: 0em 0.2em;\n  cursor: pointer;\n  -webkit-user-select: none;\n  -moz-user-select: none;\n}\n\n.ChannelsPanel .header .logo {\n  margin-top: 0.75em;\n  text-transform: uppercase;\n}\n\n.ChannelsPanel .networkName {\n  display: flex;\n  flex: 1 1 100%;\n  justify-content: center;\n  box-sizing: border-box;\n  padding: 0em 0.2em;\n  font-family: \"Lato\";\n  font-weight: 100;\n  color: rgba(228, 228, 228, 0.6);\n}\n\n.ChannelsPanel .networkName .text {\n  font-weight: 300;\n  color: rgba(228, 228, 228, 0.3);\n}\n\n.ChannelsPanel .userProfile {\n  display: flex;\n  align-items: center;\n  justify-content: center;\n  flex-direction: column;\n  margin-top: 2em;\n  margin-bottom: 0.5em;\n}\n\n.ChannelsPanel .username {\n  display: flex;\n  justify-content: center;\n  box-sizing: border-box;\n  font-family: \"Lato\";\n  font-weight: 100;\n  font-size: 1.2em;\n  color: rgba(220, 220, 220, 0.8);\n  margin-top: 1.5em;\n}\n\n.ChannelsPanel .bottomRow {\n  box-sizing: border-box;\n  display: flex;\n  flex-direction: row;\n  justify-content: space-between;\n  align-items: flex-end;\n  color: 000;\n  color: rgba(220, 220, 220, 0.2);\n  -webkit-user-select: none;\n  -moz-user-select: none;\n}\n\n.ChannelsPanel .submitButton, .ChannelsPanel input[type=submit] {\n  display: flex;\n  align-self: flex-end;\n  margin: 0.75em;\n  padding-top: 0.5em;\n  padding-bottom: 0.5em;\n}\n\n.ChannelsPanel .no-close {\n  cursor: default;\n  -webkit-user-select: none;\n  -moz-user-select: none;\n}\n\n.darkener {\n  position: absolute;\n  top: 0;\n  left: 0;\n  width: 100%;\n  height: 100%;\n  z-index: 1;\n  background-color: rgba(0, 0, 0, 0.25);\n  cursor: pointer;\n}\n\n.darkener .darkenerAnimation {\n  -webkit-animation: darken;\n  animation: darken;\n  -webkit-animation-duration: 1.5s;\n  animation-duration: 1.5s;\n  -webkit-animation-fill-mode: both;\n  animation-fill-mode: both;\n  -webkit-animation-timing-function: ease-out;\n  animation-timing-function: ease-out;\n}\n\n.openPanelAnimation-appear {\n  -webkit-animation: slideFromLeft;\n  animation: slideFromLeft;\n  -webkit-animation-duration: 0.3s;\n  animation-duration: 0.3s;\n  -webkit-animation-fill-mode: both;\n  animation-fill-mode: both;\n  -webkit-animation-timing-function: ease-out;\n  animation-timing-function: ease-out;\n}\n\n.panelHeaderAnimation-appear {\n  -webkit-animation: bounceInLeft;\n  animation: bounceInLeft;\n  -webkit-animation-duration: 0.6s;\n  animation-duration: 0.6s;\n  -webkit-animation-fill-mode: both;\n  animation-fill-mode: both;\n  -webkit-animation-timing-function: ease-out;\n  animation-timing-function: ease-out;\n}\n\n.networkNameAnimation-appear {\n  -webkit-animation: fadeIn;\n  animation: fadeIn;\n  -webkit-animation-duration: 1s;\n  animation-duration: 1s;\n  -webkit-animation-fill-mode: both;\n  animation-fill-mode: both;\n  -webkit-animation-timing-function: ease-in;\n  animation-timing-function: ease-in;\n}\n", ""]);
+	exports.push([module.id, "@keyframes fadeIn {\n  0% {\n    opacity: 0;\n  }\n  100% {\n    opacity: 1;\n  }\n}\n\n@keyframes fadeInFromBottom {\n  0% {\n    opacity: 0;\n    transform: translateY(-5px);\n  }\n  100% {\n    opacity: 1;\n    transform: translateY(0);\n  }\n}\n\n@keyframes fadeInCircles {\n  0% {\n    opacity: 0.2;\n    transform: translate(-20px, 0);\n  }\n  10% {\n    opacity: 1;\n  }\n  90% {\n    opacity: 1;\n  }\n  100% {\n    opacity: 0.2;\n    transform: translate(20px, 0);\n  }\n}\n\n@keyframes fadeInCirclesLoop {\n  0% {\n    opacity: 0.2;\n  }\n  40% {\n    opacity: 0.4;\n  }\n  50% {\n    opacity: 1;\n  }\n  80% {\n    opacity: 0.4;\n  }\n  100% {\n    opacity: 0.2;\n  }\n}\n\n@keyframes pulse1 {\n  0% {\n    opacity: 0.3;\n  }\n  50% {\n    opacity: 0.5;\n  }\n  100% {\n    opacity: 0.3;\n  }\n}\n\n@keyframes fadeOut {\n  0% {\n    opacity: 1;\n  }\n  100% {\n    opacity: 0;\n  }\n}\n\n@keyframes darken {\n  0% {\n    opacity: 0;\n  }\n  100% {\n    opacity: 1;\n  }\n}\n\n@keyframes fadeOutUp {\n  0% {\n    opacity: 1;\n  }\n  100% {\n    opacity: 0;\n    height: 0;\n  }\n}\n\n@keyframes fadeOutDown {\n  0% {\n    opacity: 1;\n    transform: translateY(0);\n  }\n  100% {\n    opacity: 0;\n    transform: translateY(20px);\n  }\n}\n\n@keyframes fadeInDown {\n  0% {\n    opacity: 0;\n    transform: translateY(-20px);\n  }\n  100% {\n    opacity: 1;\n    transform: translateY(0);\n  }\n}\n\n@keyframes fadeInUp {\n  0% {\n    opacity: 0;\n    transform: translateY(20px);\n  }\n  100% {\n    opacity: 1;\n    transform: translateY(0);\n  }\n}\n\n@keyframes bounceInLeft {\n  0% {\n    opacity: 0;\n    transform: translateX(-200px);\n  }\n  60% {\n    transform: translateX(2px);\n  }\n  80% {\n    transform: translateX(-2px);\n  }\n  100% {\n    opacity: 1;\n    transform: translateX(0);\n  }\n}\n\n@keyframes bounceInDown {\n  0% {\n    opacity: 0;\n    transform: translateY(-200px);\n  }\n  60% {\n    transform: translateY(2px);\n  }\n  80% {\n    transform: translateY(-2px);\n  }\n  100% {\n    opacity: 1;\n    transform: translateY(0);\n  }\n}\n\n@keyframes slideFromLeft {\n  0% {\n    opacity: 0;\n    transform: translateX(-200px);\n  }\n  100% {\n    opacity: 1;\n    transform: translateX(0);\n  }\n}\n\n@keyframes appearFromTop {\n  0% {\n    opacity: 0;\n    transform: translateY(-10px);\n  }\n  100% {\n    opacity: 1;\n    transform: translateY(0);\n  }\n}\n\n@keyframes fadeOutRight {\n  0% {\n    opacity: 1;\n  }\n  100% {\n    opacity: 0;\n  }\n}\n\n.BackgroundAnimation {\n  position: absolute;\n  top: 0;\n  left: 0;\n  width: 100%;\n  display: flex;\n  justify-content: center;\n  z-index: -1;\n  opacity: 0.3;\n  -webkit-transform-style: preserve-3d;\n  transform-style: preserve-3d;\n  -webkit-backface-visibility: hidden;\n  backface-visibility: hidden;\n}\n\n.BackgroundAnimation .circles {\n  position: absolute;\n  -webkit-transform: translate3D(0, 0, 0);\n  transform: translate3D(0, 0, 0);\n  -webkit-backface-visibility: hidden;\n  backface-visibility: hidden;\n  -webkit-transform-style: preserve-3d;\n  transform-style: preserve-3d;\n}\n\n.BackgroundAnimation circle {\n  -webkit-transform-style: preserve-3d;\n  transform-style: preserve-3d;\n  -webkit-transform: translate3D(0, 0, 0);\n  transform: translate3D(0, 0, 0);\n  -webkit-backface-visibility: hidden;\n  backface-visibility: hidden;\n  -webkit-animation: fadeIn;\n  animation: fadeIn;\n  -webkit-animation-duration: 0.2s;\n  animation-duration: 0.2s;\n  -webkit-animation-fill-mode: both;\n  animation-fill-mode: both;\n  -webkit-animation-timing-function: linear;\n  animation-timing-function: linear;\n}\n", ""]);
 
 	// exports
 
@@ -43435,7 +43830,7 @@
 
 
 	// module
-	exports.push([module.id, ".DirectoryView {\n  width: 100%;\n}\n\n.children {\n  padding-left: 0.4em;\n  margin-left: 0.45em;\n  margin-top: 0.25em;\n  background-color: rgba(0, 0, 0, 0.075);\n  border-left: 1px dotted rgba(255, 255, 255, 0.1);\n}\n\n.children:hover {\n  border-left: 1px dotted rgba(255, 255, 255, 0.2);\n}\n\n.Directory {\n  color: rgba(240, 240, 240, 0.9);\n  padding-left: 0.3em;\n  padding-right: 0.3em;\n  white-space: nowrap;\n  width: 100%;\n}\n\n.Directory .download {\n  visibility: hidden;\n  font-weight: 100;\n  margin-left: 0.5em;\n  margin-right: 0.5em;\n}\n\n.Directory .size {\n  visibility: hidden;\n  margin-left: 0.5em;\n}\n\n.Directory a {\n  color: rgba(128, 196, 255, 0.8);\n  text-decoration: none;\n  font-weight: 400;\n}\n\n.Directory:hover {\n  border: 0px solid transparent;\n  border-radius: 4px;\n}\n\n.Directory:hover .download {\n  visibility: visible;\n  color: rgba(196, 196, 196, 0.6);\n}\n\n.Directory:hover .download:hover {\n  background-color: rgba(128, 128, 128, 0.4);\n  color: rgba(240, 240, 240, 0.9);\n}\n\n.Directory:hover .size {\n  visibility: visible;\n  font-size: 0.8em;\n  font-weight: 100;\n  color: rgba(128, 196, 128, 0.8);\n  cursor: default;\n}\n\n.Directory:hover a {\n  color: rgba(240, 240, 240, 0.9);\n}\n\n.loading a {\n  color: rgba(240, 244, 240, 0.1);\n}\n\n.directoryAnimation-appear {\n  -webkit-animation-name: fadeIn;\n  animation-name: fadeIn;\n  -webkit-animation-duration: 0.2s;\n  animation-duration: 0.2s;\n  -webkit-animation-fill-mode: both;\n  animation-fill-mode: both;\n  -webkit-animation-timing-function: ease-in;\n  animation-timing-function: ease-in;\n}\n", ""]);
+	exports.push([module.id, "@keyframes fadeIn {\n  0% {\n    opacity: 0;\n  }\n  100% {\n    opacity: 1;\n  }\n}\n\n@keyframes fadeInFromBottom {\n  0% {\n    opacity: 0;\n    transform: translateY(-5px);\n  }\n  100% {\n    opacity: 1;\n    transform: translateY(0);\n  }\n}\n\n@keyframes fadeInCircles {\n  0% {\n    opacity: 0.2;\n    transform: translate(-20px, 0);\n  }\n  10% {\n    opacity: 1;\n  }\n  90% {\n    opacity: 1;\n  }\n  100% {\n    opacity: 0.2;\n    transform: translate(20px, 0);\n  }\n}\n\n@keyframes fadeInCirclesLoop {\n  0% {\n    opacity: 0.2;\n  }\n  40% {\n    opacity: 0.4;\n  }\n  50% {\n    opacity: 1;\n  }\n  80% {\n    opacity: 0.4;\n  }\n  100% {\n    opacity: 0.2;\n  }\n}\n\n@keyframes pulse1 {\n  0% {\n    opacity: 0.3;\n  }\n  50% {\n    opacity: 0.5;\n  }\n  100% {\n    opacity: 0.3;\n  }\n}\n\n@keyframes fadeOut {\n  0% {\n    opacity: 1;\n  }\n  100% {\n    opacity: 0;\n  }\n}\n\n@keyframes darken {\n  0% {\n    opacity: 0;\n  }\n  100% {\n    opacity: 1;\n  }\n}\n\n@keyframes fadeOutUp {\n  0% {\n    opacity: 1;\n  }\n  100% {\n    opacity: 0;\n    height: 0;\n  }\n}\n\n@keyframes fadeOutDown {\n  0% {\n    opacity: 1;\n    transform: translateY(0);\n  }\n  100% {\n    opacity: 0;\n    transform: translateY(20px);\n  }\n}\n\n@keyframes fadeInDown {\n  0% {\n    opacity: 0;\n    transform: translateY(-20px);\n  }\n  100% {\n    opacity: 1;\n    transform: translateY(0);\n  }\n}\n\n@keyframes fadeInUp {\n  0% {\n    opacity: 0;\n    transform: translateY(20px);\n  }\n  100% {\n    opacity: 1;\n    transform: translateY(0);\n  }\n}\n\n@keyframes bounceInLeft {\n  0% {\n    opacity: 0;\n    transform: translateX(-200px);\n  }\n  60% {\n    transform: translateX(2px);\n  }\n  80% {\n    transform: translateX(-2px);\n  }\n  100% {\n    opacity: 1;\n    transform: translateX(0);\n  }\n}\n\n@keyframes bounceInDown {\n  0% {\n    opacity: 0;\n    transform: translateY(-200px);\n  }\n  60% {\n    transform: translateY(2px);\n  }\n  80% {\n    transform: translateY(-2px);\n  }\n  100% {\n    opacity: 1;\n    transform: translateY(0);\n  }\n}\n\n@keyframes slideFromLeft {\n  0% {\n    opacity: 0;\n    transform: translateX(-200px);\n  }\n  100% {\n    opacity: 1;\n    transform: translateX(0);\n  }\n}\n\n@keyframes appearFromTop {\n  0% {\n    opacity: 0;\n    transform: translateY(-10px);\n  }\n  100% {\n    opacity: 1;\n    transform: translateY(0);\n  }\n}\n\n@keyframes fadeOutRight {\n  0% {\n    opacity: 1;\n  }\n  100% {\n    opacity: 0;\n  }\n}\n\n.Channel {\n  width: 100%;\n  display: flex;\n  flex-direction: column;\n  overflow: hidden;\n  transform-style: preserve-3d;\n  background-color: #202020;\n}\n\n.Channel .center {\n  display: flex;\n  justify-content: center;\n  width: 100%;\n}\n\n.Channel .loadingIcon {\n  position: absolute;\n  bottom: 0.75em;\n  left: 0.75em;\n}\n\n.Channel .active {\n  background-color: #783c8c;\n}\n\n.Channel .active:hover {\n  background-color: #8c50dc;\n}\n\n.newMessagesBar {\n  position: absolute;\n  bottom: 2.75em;\n  width: 100%;\n  background-color: rgba(32, 32, 32, 0.8);\n  display: flex;\n  justify-content: center;\n  padding: 0.2em;\n  font-family: \"Lato\";\n  font-weight: 300;\n  cursor: s-resize;\n}\n\n.newMessagesBar .newMessagesNumber {\n  color: rgba(160, 220, 90, 0.6);\n  padding: 0em 0.5em;\n}\n\n.ChannelView {\n  width: 100%;\n  height: 100%;\n  padding: 0;\n  margin: 0;\n  color: #fff;\n  display: flex;\n  overflow: auto;\n}\n\n.flipped {\n  justify-content: flex-end;\n}\n\n.dimmed {\n  opacity: 0.5;\n}\n\n.hide {\n  display: none;\n}\n\n.none {\n  display: none;\n}\n\n.icon {\n  width: 1.0em;\n  height: 1.0em;\n  font-size: 1.2em;\n  display: flex;\n  align-items: center;\n  justify-content: center;\n  padding: 0.5em;\n  margin-left: 0.2em;\n  margin-right: 0.2em;\n  color: #e4e4e4;\n}\n\n.icon-active {\n  width: 1.0em;\n  height: 1.0em;\n  font-size: 1.2em;\n  display: flex;\n  align-items: center;\n  justify-content: center;\n  padding: 0.5em;\n  margin-left: 0.2em;\n  margin-right: 0.2em;\n  color: #e4e4e4;\n  background-color: #783c8c;\n  border-radius: 32px;\n}\n\n.icon-active:hover {\n  background-color: #783c8c;\n  border-radius: 32px;\n}\n\n.icon:hover {\n  background-color: #303030;\n  border-radius: 32px;\n}\n\n.icon:active {\n  background-color: #783c8c;\n  border-radius: 32px;\n}\n\n.blurred {\n  -webkit-filter: blur(2px);\n  -moz-filter: blur(2px);\n  -o-filter: blur(2px);\n  -ms-filter: blur(2px);\n  filter: blur(2px);\n}\n\n.ChannelOptions {\n  position: absolute;\n  bottom: 2.75em;\n  right: 0;\n  padding: 1.2em 1.2em;\n  margin: 0.5em 0.5em;\n  margin-right: 1em;\n  max-width: 30em;\n  font-weight: 300;\n  color: #e4e4e4;\n  background-color: #1a1a1a;\n  display: flex;\n  flex-direction: row;\n}\n\n.ChannelOptions .row {\n  display: flex;\n  flex-direction: column;\n  flex: 1 1 55%;\n  max-width: 55%;\n  margin-right: 1em;\n}\n\n.ChannelOptions form {\n  display: flex;\n  flex-direction: column;\n  justify-content: flex-end;\n  align-items: flex-end;\n  flex: 1;\n  margin-left: 1vw;\n}\n\n.ChannelOptions input[type=text] {\n  font-size: 0.8em;\n  width: 100%;\n}\n\n.ChannelOptions input[type=submit] {\n  margin-top: 0.2em;\n  font-size: 0.8em;\n  align-self: flex-end;\n}\n\n.ChannelOptions .headerText {\n  font-size: 0.8em;\n  margin-bottom: 0.5em;\n  color: #e4e4e4;\n}\n\n.ChannelOptions .instructionText {\n  font-size: 0.8em;\n  display: flex;\n  color: rgba(228, 228, 228, 0.15);\n  font-style: italic;\n}\n\ninput[type=button], .channelOptionsButton {\n  border-top: 1px solid rgba(28, 28, 28, 0);\n  border-bottom: 1px solid rgba(28, 28, 28, 0);\n  min-width: 2em;\n  margin-left: 0em;\n  margin-right: 0em;\n  height: 100%;\n  margin-top: 0em;\n  margin-bottom: 0.5em;\n  padding-left: 0.75em;\n  padding-right: 0.75em;\n  font-size: 1.0em;\n}\n\ninput[type=button], .addFilesButton {\n  display: block;\n  border-top: 1px solid rgba(28, 28, 28, 0);\n  border-bottom: 1px solid rgba(28, 28, 28, 0);\n  min-width: 2em;\n  height: 100%;\n  margin-left: 0em;\n  margin-right: 0em;\n  margin-top: 0em;\n  margin-bottom: 0em;\n  padding-left: 0.75em;\n  padding-right: 0.75em;\n  font-size: 1.1em;\n  font-weight: 400;\n}\n\n.Controls {\n  background-color: #1e1e1e;\n  box-sizing: border-box;\n  display: flex;\n  justify-content: center;\n  align-items: center;\n  max-height: 2.8em;\n  min-height: 2.8em;\n  border-top: 1px solid rgba(28, 28, 28, 0);\n  border-bottom: 1px solid rgba(28, 28, 28, 0);\n}\n\n.statusMessage {\n  position: absolute;\n  bottom: 1.2em;\n  right: 1em;\n  margin-right: 0.5em;\n  margin-left: 0.5em;\n  color: rgba(228, 228, 228, 0.8);\n  font-size: 0.6em;\n  font-weight: 300;\n  font-family: \"Lato\";\n  display: flex;\n  justify-content: center;\n  -webkit-user-select: none;\n  user-select: none;\n  cursor: default;\n  display: flex;\n  align-items: center;\n  text-transform: uppercase;\n  padding: 0.5em 1em;\n  border-radius: 16px;\n  letter-spacing: 1px;\n  background-color: rgba(48, 48, 48, 0.5);\n}\n\n.statusMessage:hover {\n  background-color: #303030;\n}\n\n.statusMessage:active {\n  background-color: #783c8c;\n}\n\n.Messages {\n  display: block;\n  position: relative;\n  box-sizing: border-box;\n  width: 100%;\n  height: 100%;\n  overflow: auto;\n  -webkit-transform-style: preserve-3d;\n  transform-style: preserve-3d;\n}\n\n.Messages .firstMessage {\n  display: flex;\n  justify-content: center;\n  background-color: #242424;\n  color: rgba(228, 228, 228, 0.6);\n  font-weight: 300;\n  font-size: 0.8em;\n  padding: 0.2em;\n  user-select: none;\n  -webkit-user-select: none;\n}\n\n.flopped {\n  flex: 1 1 100%;\n}\n\n.controlsAnimation-appear {\n  -webkit-animation: fadeInUp;\n  animation: fadeInUp;\n  -webkit-animation-duration: 0.3s;\n  animation-duration: 0.3s;\n  -webkit-animation-fill-mode: both;\n  animation-fill-mode: both;\n  -webkit-animation-timing-function: ease-out;\n  animation-timing-function: ease-out;\n}\n\n.dropzone {\n  top: 0;\n  left: 0;\n  position: absolute;\n  width: 100%;\n  height: 100%;\n  box-sizing: border-box;\n  overflow: hidden;\n  display: flex;\n  align-self: flex-end;\n  align-items: center;\n  flex-direction: row;\n  justify-content: center;\n  white-space: nowrap;\n  padding: 0.5em;\n  font-family: \"Lato\";\n  font-weight: 300;\n  font-size: 4em;\n  color: #e4e4e4;\n  background-color: rgba(0, 0, 0, 0.6);\n  border: 2px dotted #783c8c;\n}\n\n.dropzoneActive {\n  color: #e4e4e4;\n  background-color: rgba(0, 0, 0, 0.6);\n  border: 2px dotted #783c8c;\n}\n\n.messagesAnimation-enter {\n  -webkit-animation-name: fadeIn;\n  animation-name: fadeIn;\n  -webkit-animation-duration: 0.3s;\n  animation-duration: 0.3s;\n  -webkit-animation-fill-mode: both;\n  animation-fill-mode: both;\n  -webkit-animation-timing-function: ease-in;\n  animation-timing-function: ease-in;\n}\n", ""]);
 
 	// exports
 
@@ -43449,7 +43844,7 @@
 
 
 	// module
-	exports.push([module.id, ".File {\n  padding-left: 0.3em;\n  padding-right: 0.3em;\n  display: inline-block;\n  white-space: nowrap;\n  font-weight: 300;\n  width: 100%;\n  overflow: hidden;\n  box-sizing: content-box;\n}\n\n.File .content {\n  box-sizing: content-box;\n}\n\n.File .preview {\n  margin-top: 0.25em;\n  margin-left: 0.25em;\n  padding-left: 0.5em;\n  padding-right: 0.5em;\n  padding-top: 0.5em;\n  padding-bottom: 0.5em;\n  background-color: rgba(0, 0, 0, 0.075);\n  border-left: 1px dotted rgba(255, 255, 255, 0.1);\n  overflow: hidden;\n  display: flex;\n  max-height: 30em;\n  box-sizing: content-box;\n}\n\n.File .preview:hover {\n  border-left: 1px dotted rgba(224, 224, 224, 0.5);\n}\n\n.File .smallText {\n  font-size: 0.8em;\n}\n\n.File pre {\n  margin: 0;\n  box-sizing: content-box;\n  overflow-x: auto;\n  overflow-y: auto;\n  width: 100%;\n}\n\n.File .download {\n  visibility: hidden;\n  font-weight: 100;\n  margin: 0;\n}\n\n.File .pin {\n  visibility: hidden;\n  font-weight: 100;\n}\n\n.File .size {\n  visibility: hidden;\n  margin-left: 0.25em;\n  margin-right: 0.5em;\n}\n\n.File .text {\n  color: rgba(128, 196, 255, 0.8);\n  text-decoration: none;\n  cursor: pointer;\n}\n\n.File a {\n  user-select: none;\n  color: rgba(128, 196, 255, 0.8);\n  text-decoration: none;\n  margin-right: 0.1em;\n  margin-left: 0.1em;\n}\n\n.File a:hover {\n  color: rgba(240, 240, 240, 0.9);\n  text-decoration: none;\n}\n\n.File:hover {\n  color: rgba(240, 240, 240, 0.9);\n}\n\n.File:hover .download {\n  visibility: visible;\n  color: rgba(196, 196, 196, 0.6);\n  padding-left: 0.2em;\n  padding-right: 0.2em;\n}\n\n.File:hover .download:hover {\n  background-color: rgba(128, 128, 128, 0.2);\n  color: rgba(240, 240, 240, 0.9);\n}\n\n.File:hover .pin {\n  visibility: visible;\n  color: rgba(196, 196, 196, 0.6);\n  margin-right: 0.5em;\n  cursor: pointer;\n}\n\n.File:hover .pin:hover {\n  background-color: rgba(128, 128, 128, 0.4);\n  color: rgba(240, 240, 240, 0.9);\n}\n\n.File:hover .text {\n  margin-right: 0.5em;\n  color: rgba(240, 240, 240, 0.9);\n  text-decoration: none;\n  cursor: pointer;\n}\n\n.File:hover .size {\n  visibility: visible;\n  font-size: 0.8em;\n  font-weight: 100;\n  color: rgba(128, 196, 128, 0.8);\n  cursor: default;\n}\n\n.File:hover a {\n  color: rgba(240, 240, 240, 0.9);\n}\n\n.loading a {\n  color: rgba(240, 244, 240, 0.1);\n}\n\n.fileAnimation-appear {\n  -webkit-animation-name: fadeIn;\n  animation-name: fadeIn;\n  -webkit-animation-duration: 0.2s;\n  animation-duration: 0.2s;\n  -webkit-animation-fill-mode: both;\n  animation-fill-mode: both;\n  -webkit-animation-timing-function: ease-in;\n  animation-timing-function: ease-in;\n}\n", ""]);
+	exports.push([module.id, "", ""]);
 
 	// exports
 
@@ -43463,7 +43858,7 @@
 
 
 	// module
-	exports.push([module.id, ".Header {\n  cursor: pointer;\n  -webkit-user-select: none;\n  -moz-user-select: none;\n  border-bottom: 1px solid rgba(28, 28, 28, 0);\n  background-color: #1e1e1e;\n}\n\n.Header .notificationsIcon {\n  position: absolute;\n  font-size: 0.8em;\n  top: 1.1em;\n  right: 1.1em;\n  padding-top: -0.2em;\n}\n\n.Header:hover {\n  background-color: #1c1c1c;\n}\n\n.ChannelName {\n  display: flex;\n  box-sizing: border-box;\n  flex: 1 1 100%;\n  flex-direction: row;\n  align-items: center;\n  max-height: 5vmin;\n  min-height: 1.6em;\n  font-family: \"Lato\";\n  font-weight: 100;\n  font-size: 2em;\n  color: #f0f0f0;\n  padding-left: 0.2em;\n  padding-right: 0.6em;\n}\n\n.ChannelName .currentChannel {\n  display: flex;\n  flex: 1 0 33%;\n  justify-content: flex-start;\n  font-family: \"Lato\";\n  font-weight: 100;\n  font-size: 1em;\n  color: #f0f0f0;\n}\n\n.ChannelName .channel {\n  display: flex;\n  padding-left: 0.2em;\n  padding-right: 0.2em;\n  font-family: \"Lato\";\n  font-weight: 100;\n  font-size: 0.5em;\n  color: rgba(240, 240, 240, 0.6);\n}\n\n.ChannelName .channel:hover {\n  font-weight: 100;\n  color: rgba(240, 240, 240, 0.9);\n}\n\n.ChannelName .unreadMessages {\n  display: flex;\n  margin-left: 0.3em;\n  margin-right: 0em;\n  padding: 0.1em;\n  height: 1.1em;\n  width: 1.2em;\n  justify-content: center;\n  font-family: \"Lato\";\n  font-weight: 300;\n  font-size: 0.6em;\n  color: rgba(240, 240, 240, 0.9);\n  background-color: rgba(240, 240, 240, 0.1);\n  border-radius: 32px;\n}\n\n.ChannelName .hasMentions {\n  background-color: #783c8c;\n}\n\n.channelHeaderAnimation-enter {\n  -webkit-animation: slideFromLeft;\n  animation: slideFromLeft;\n  -webkit-animation-duration: 0.3s;\n  animation-duration: 0.3s;\n  -webkit-animation-fill-mode: both;\n  animation-fill-mode: both;\n  -webkit-animation-timing-function: ease-out;\n  animation-timing-function: ease-out;\n}\n\n.channelHeaderAnimation-leave {\n  -webkit-animation: fadeOutRight;\n  animation: fadeOutRight;\n  -webkit-animation-duration: 0.3s;\n  animation-duration: 0.3s;\n  -webkit-animation-fill-mode: both;\n  animation-fill-mode: both;\n  -webkit-animation-timing-function: ease-out;\n  animation-timing-function: ease-out;\n}\n", ""]);
+	exports.push([module.id, "@keyframes fadeIn {\n  0% {\n    opacity: 0;\n  }\n  100% {\n    opacity: 1;\n  }\n}\n\n@keyframes fadeInFromBottom {\n  0% {\n    opacity: 0;\n    transform: translateY(-5px);\n  }\n  100% {\n    opacity: 1;\n    transform: translateY(0);\n  }\n}\n\n@keyframes fadeInCircles {\n  0% {\n    opacity: 0.2;\n    transform: translate(-20px, 0);\n  }\n  10% {\n    opacity: 1;\n  }\n  90% {\n    opacity: 1;\n  }\n  100% {\n    opacity: 0.2;\n    transform: translate(20px, 0);\n  }\n}\n\n@keyframes fadeInCirclesLoop {\n  0% {\n    opacity: 0.2;\n  }\n  40% {\n    opacity: 0.4;\n  }\n  50% {\n    opacity: 1;\n  }\n  80% {\n    opacity: 0.4;\n  }\n  100% {\n    opacity: 0.2;\n  }\n}\n\n@keyframes pulse1 {\n  0% {\n    opacity: 0.3;\n  }\n  50% {\n    opacity: 0.5;\n  }\n  100% {\n    opacity: 0.3;\n  }\n}\n\n@keyframes fadeOut {\n  0% {\n    opacity: 1;\n  }\n  100% {\n    opacity: 0;\n  }\n}\n\n@keyframes darken {\n  0% {\n    opacity: 0;\n  }\n  100% {\n    opacity: 1;\n  }\n}\n\n@keyframes fadeOutUp {\n  0% {\n    opacity: 1;\n  }\n  100% {\n    opacity: 0;\n    height: 0;\n  }\n}\n\n@keyframes fadeOutDown {\n  0% {\n    opacity: 1;\n    transform: translateY(0);\n  }\n  100% {\n    opacity: 0;\n    transform: translateY(20px);\n  }\n}\n\n@keyframes fadeInDown {\n  0% {\n    opacity: 0;\n    transform: translateY(-20px);\n  }\n  100% {\n    opacity: 1;\n    transform: translateY(0);\n  }\n}\n\n@keyframes fadeInUp {\n  0% {\n    opacity: 0;\n    transform: translateY(20px);\n  }\n  100% {\n    opacity: 1;\n    transform: translateY(0);\n  }\n}\n\n@keyframes bounceInLeft {\n  0% {\n    opacity: 0;\n    transform: translateX(-200px);\n  }\n  60% {\n    transform: translateX(2px);\n  }\n  80% {\n    transform: translateX(-2px);\n  }\n  100% {\n    opacity: 1;\n    transform: translateX(0);\n  }\n}\n\n@keyframes bounceInDown {\n  0% {\n    opacity: 0;\n    transform: translateY(-200px);\n  }\n  60% {\n    transform: translateY(2px);\n  }\n  80% {\n    transform: translateY(-2px);\n  }\n  100% {\n    opacity: 1;\n    transform: translateY(0);\n  }\n}\n\n@keyframes slideFromLeft {\n  0% {\n    opacity: 0;\n    transform: translateX(-200px);\n  }\n  100% {\n    opacity: 1;\n    transform: translateX(0);\n  }\n}\n\n@keyframes appearFromTop {\n  0% {\n    opacity: 0;\n    transform: translateY(-10px);\n  }\n  100% {\n    opacity: 1;\n    transform: translateY(0);\n  }\n}\n\n@keyframes fadeOutRight {\n  0% {\n    opacity: 1;\n  }\n  100% {\n    opacity: 0;\n  }\n}\n\n.invisible {\n  visibility: hidden;\n}\n\n.hidden {\n  visibility: hidden;\n}\n\n.ChannelsPanel {\n  color: #f0f0f0;\n  border-right: 1px solid rgba(40, 40, 40, 0.4);\n  position: absolute;\n  z-index: 100;\n  background: #202020;\n  max-width: 20em;\n  height: 100%;\n  box-sizing: border-box;\n  display: flex;\n  flex-direction: column;\n  justify-content: flex-start;\n  flex: 1 1 100%;\n  box-shadow: 8px 0px 12px 0px rgba(0, 0, 0, 0.2);\n}\n\n.ChannelsPanel .panelHeader {\n  display: flex;\n  flex-direction: column;\n  height: 2em;\n  margin: 0em 1.25em;\n  margin-bottom: 0.5em;\n  color: rgba(228, 228, 228, 0.15);\n  font-size: 0.8em;\n  font-weight: 300;\n  font-family: \"Lato\";\n  text-transform: uppercase;\n}\n\n.ChannelsPanel .link {\n  width: 100%;\n  display: flex;\n  align-items: stretch;\n  flex: 1;\n}\n\n.ChannelsPanel .openChannels {\n  display: flex;\n  flex: 1 1 100%;\n  overflow: auto;\n}\n\n.ChannelsPanel .row {\n  box-sizing: border-box;\n  display: flex;\n  flex-direction: row;\n  flex: 1;\n  justify-content: space-between;\n  align-items: stretch;\n}\n\n.ChannelsPanel .row .channelName {\n  display: flex;\n  flex: 1 1 80%;\n  padding: 0.2em;\n  align-items: stretch;\n}\n\n.ChannelsPanel .row .closeChannelButton {\n  font-size: 0.8em;\n  padding: 0em 1em;\n  box-sizing: border-box;\n  flex: 1 1 20%;\n  align-items: center;\n  display: flex;\n}\n\n.ChannelsPanel .row .closeChannelButton:hover {\n  background-color: #404040;\n  cursor: pointer;\n}\n\n.ChannelsPanel .row .unreadMessages {\n  color: #e4e4e4;\n  font-size: 0.5em;\n  border-radius: 32px;\n  background-color: rgba(240, 240, 240, 0.1);\n  display: flex;\n  flex-direction: column;\n  justify-content: center;\n  align-items: center;\n  height: 16px;\n  width: 16px;\n  flex: 1 0 6%;\n  margin: 0em 1em;\n  margin-top: 2px;\n  margin-bottom: 1px;\n  align-self: center;\n}\n\n.ChannelsPanel .row .hasMentions {\n  background: #783c8c;\n}\n\n.ChannelsPanel .joinChannelInput {\n  display: flex;\n  flex: 1 1 8%;\n  justify-content: stretch;\n  box-sizing: border-box;\n  margin: 2em 0em;\n  margin-bottom: 1.0em;\n}\n\n.ChannelsPanel .loadingIcon {\n  position: absolute;\n  box-sizing: border-box;\n  display: flex;\n  justify-content: center;\n  align-items: center;\n  width: 100%;\n  margin: 2em 0em;\n  margin-bottom: 1.5em;\n}\n\n.ChannelsPanel .header {\n  display: flex;\n  flex: 1 1 100%;\n  justify-content: center;\n  box-sizing: border-box;\n  font-family: \"Lato\";\n  font-weight: 100;\n  font-size: 2.6em;\n  color: rgba(228, 228, 228, 0.6);\n  padding: 0em 0.2em;\n  cursor: pointer;\n  -webkit-user-select: none;\n  -moz-user-select: none;\n}\n\n.ChannelsPanel .header .logo {\n  margin-top: 0.75em;\n  text-transform: uppercase;\n}\n\n.ChannelsPanel .networkName {\n  display: flex;\n  flex: 1 1 100%;\n  justify-content: center;\n  box-sizing: border-box;\n  padding: 0em 0.2em;\n  font-family: \"Lato\";\n  font-weight: 100;\n  color: rgba(228, 228, 228, 0.6);\n}\n\n.ChannelsPanel .networkName .text {\n  font-weight: 300;\n  color: rgba(228, 228, 228, 0.3);\n}\n\n.ChannelsPanel .userProfile {\n  display: flex;\n  align-items: center;\n  justify-content: center;\n  flex-direction: column;\n  margin-top: 2em;\n  margin-bottom: 0.5em;\n}\n\n.ChannelsPanel .username {\n  display: flex;\n  justify-content: center;\n  box-sizing: border-box;\n  font-family: \"Lato\";\n  font-weight: 100;\n  font-size: 1.2em;\n  color: rgba(220, 220, 220, 0.8);\n  margin-top: 1.5em;\n}\n\n.ChannelsPanel .bottomRow {\n  box-sizing: border-box;\n  display: flex;\n  flex-direction: row;\n  justify-content: space-between;\n  align-items: flex-end;\n  color: 000;\n  color: rgba(220, 220, 220, 0.2);\n  -webkit-user-select: none;\n  -moz-user-select: none;\n}\n\n.ChannelsPanel .submitButton, .ChannelsPanel input[type=submit] {\n  display: flex;\n  align-self: flex-end;\n  margin: 0.75em;\n  padding-top: 0.5em;\n  padding-bottom: 0.5em;\n}\n\n.ChannelsPanel .no-close {\n  cursor: default;\n  -webkit-user-select: none;\n  -moz-user-select: none;\n}\n\n.darkener {\n  position: absolute;\n  top: 0;\n  left: 0;\n  width: 100%;\n  height: 100%;\n  z-index: 1;\n  background-color: rgba(0, 0, 0, 0.25);\n  cursor: pointer;\n}\n\n.darkener .darkenerAnimation {\n  -webkit-animation: darken;\n  animation: darken;\n  -webkit-animation-duration: 1.5s;\n  animation-duration: 1.5s;\n  -webkit-animation-fill-mode: both;\n  animation-fill-mode: both;\n  -webkit-animation-timing-function: ease-out;\n  animation-timing-function: ease-out;\n}\n\n.openPanelAnimation-appear {\n  -webkit-animation: slideFromLeft;\n  animation: slideFromLeft;\n  -webkit-animation-duration: 0.3s;\n  animation-duration: 0.3s;\n  -webkit-animation-fill-mode: both;\n  animation-fill-mode: both;\n  -webkit-animation-timing-function: ease-out;\n  animation-timing-function: ease-out;\n}\n\n.panelHeaderAnimation-appear {\n  -webkit-animation: bounceInLeft;\n  animation: bounceInLeft;\n  -webkit-animation-duration: 0.6s;\n  animation-duration: 0.6s;\n  -webkit-animation-fill-mode: both;\n  animation-fill-mode: both;\n  -webkit-animation-timing-function: ease-out;\n  animation-timing-function: ease-out;\n}\n\n.networkNameAnimation-appear {\n  -webkit-animation: fadeIn;\n  animation: fadeIn;\n  -webkit-animation-duration: 1s;\n  animation-duration: 1s;\n  -webkit-animation-fill-mode: both;\n  animation-fill-mode: both;\n  -webkit-animation-timing-function: ease-in;\n  animation-timing-function: ease-in;\n}\n", ""]);
 
 	// exports
 
@@ -43477,7 +43872,7 @@
 
 
 	// module
-	exports.push([module.id, "@keyframes fadeIn {\n  0% {\n    opacity: 0;\n  }\n  100% {\n    opacity: 1;\n  }\n}\n\n@keyframes fadeInFromBottom {\n  0% {\n    opacity: 0;\n    transform: translateY(-5px);\n  }\n  100% {\n    opacity: 1;\n    transform: translateY(0);\n  }\n}\n\n@keyframes fadeInCircles {\n  0% {\n    opacity: 0.2;\n    transform: translate(-20px, 0);\n  }\n  10% {\n    opacity: 1;\n  }\n  90% {\n    opacity: 1;\n  }\n  100% {\n    opacity: 0.2;\n    transform: translate(20px, 0);\n  }\n}\n\n@keyframes fadeInCirclesLoop {\n  0% {\n    opacity: 0.2;\n  }\n  40% {\n    opacity: 0.4;\n  }\n  50% {\n    opacity: 1;\n  }\n  80% {\n    opacity: 0.4;\n  }\n  100% {\n    opacity: 0.2;\n  }\n}\n\n@keyframes pulse1 {\n  0% {\n    opacity: 0.3;\n  }\n  50% {\n    opacity: 0.5;\n  }\n  100% {\n    opacity: 0.3;\n  }\n}\n\n@keyframes fadeOut {\n  0% {\n    opacity: 1;\n  }\n  100% {\n    opacity: 0;\n  }\n}\n\n@keyframes darken {\n  0% {\n    opacity: 0;\n  }\n  100% {\n    opacity: 1;\n  }\n}\n\n@keyframes fadeOutUp {\n  0% {\n    opacity: 1;\n  }\n  100% {\n    opacity: 0;\n    height: 0;\n  }\n}\n\n@keyframes fadeOutDown {\n  0% {\n    opacity: 1;\n    transform: translateY(0);\n  }\n  100% {\n    opacity: 0;\n    transform: translateY(20px);\n  }\n}\n\n@keyframes fadeInDown {\n  0% {\n    opacity: 0;\n    transform: translateY(-20px);\n  }\n  100% {\n    opacity: 1;\n    transform: translateY(0);\n  }\n}\n\n@keyframes fadeInUp {\n  0% {\n    opacity: 0;\n    transform: translateY(20px);\n  }\n  100% {\n    opacity: 1;\n    transform: translateY(0);\n  }\n}\n\n@keyframes bounceInLeft {\n  0% {\n    opacity: 0;\n    transform: translateX(-200px);\n  }\n  60% {\n    transform: translateX(2px);\n  }\n  80% {\n    transform: translateX(-2px);\n  }\n  100% {\n    opacity: 1;\n    transform: translateX(0);\n  }\n}\n\n@keyframes bounceInDown {\n  0% {\n    opacity: 0;\n    transform: translateY(-200px);\n  }\n  60% {\n    transform: translateY(2px);\n  }\n  80% {\n    transform: translateY(-2px);\n  }\n  100% {\n    opacity: 1;\n    transform: translateY(0);\n  }\n}\n\n@keyframes slideFromLeft {\n  0% {\n    opacity: 0;\n    transform: translateX(-200px);\n  }\n  100% {\n    opacity: 1;\n    transform: translateX(0);\n  }\n}\n\n@keyframes appearFromTop {\n  0% {\n    opacity: 0;\n    transform: translateY(-10px);\n  }\n  100% {\n    opacity: 1;\n    transform: translateY(0);\n  }\n}\n\n@keyframes fadeOutRight {\n  0% {\n    opacity: 1;\n  }\n  100% {\n    opacity: 0;\n  }\n}\n\ntextarea, input {\n  outline: none;\n}\n\n::-webkit-input-placeholder {\n  color: rgba(228, 228, 228, 0.15);\n  font-style: italic;\n}\n\n:-moz-placeholder {\n  /* Firefox 18- */\n  color: rgba(228, 228, 228, 0.15);\n  font-style: italic;\n}\n\n::-moz-placeholder {\n  /* Firefox 19+ */\n  color: rgba(228, 228, 228, 0.15);\n  font-style: italic;\n}\n\n.App {\n  width: 100%;\n  height: 100%;\n  position: absolute;\n  overflow: hidden;\n  display: flex;\n  flex-direction: column;\n  transform-style: preserve-3d;\n}\n\n.no-close {\n  cursor: default;\n  -webkit-user-select: none;\n  -moz-user-select: none;\n}\n\n.view {\n  background: #222222;\n  width: 100%;\n  padding: 0;\n  margin: 0;\n}\n\n.headerAnimation-appear {\n  -webkit-animation: fadeInDown;\n  animation: fadeInDown;\n  -webkit-animation-duration: 0.2s;\n  animation-duration: 0.2s;\n  -webkit-animation-fill-mode: both;\n  animation-fill-mode: both;\n  -webkit-animation-timing-function: ease-out;\n  animation-timing-function: ease-out;\n}\n\n.joinChannelAnimation-appear {\n  -webkit-animation: fadeIn;\n  animation: fadeIn;\n  -webkit-animation-duration: 0.5s;\n  animation-duration: 0.5s;\n  -webkit-animation-fill-mode: both;\n  animation-fill-mode: both;\n  -webkit-animation-timing-function: ease-in;\n  animation-timing-function: ease-in;\n}\n\n@keyframes fadeIn {\n  0% {\n    opacity: 0;\n  }\n  100% {\n    opacity: 1;\n  }\n}\n\n@keyframes fadeInFromBottom {\n  0% {\n    opacity: 0;\n    transform: translateY(-5px);\n  }\n  100% {\n    opacity: 1;\n    transform: translateY(0);\n  }\n}\n\n@keyframes fadeInCircles {\n  0% {\n    opacity: 0.2;\n    transform: translate(-20px, 0);\n  }\n  10% {\n    opacity: 1;\n  }\n  90% {\n    opacity: 1;\n  }\n  100% {\n    opacity: 0.2;\n    transform: translate(20px, 0);\n  }\n}\n\n@keyframes fadeInCirclesLoop {\n  0% {\n    opacity: 0.2;\n  }\n  40% {\n    opacity: 0.4;\n  }\n  50% {\n    opacity: 1;\n  }\n  80% {\n    opacity: 0.4;\n  }\n  100% {\n    opacity: 0.2;\n  }\n}\n\n@keyframes pulse1 {\n  0% {\n    opacity: 0.3;\n  }\n  50% {\n    opacity: 0.5;\n  }\n  100% {\n    opacity: 0.3;\n  }\n}\n\n@keyframes fadeOut {\n  0% {\n    opacity: 1;\n  }\n  100% {\n    opacity: 0;\n  }\n}\n\n@keyframes darken {\n  0% {\n    opacity: 0;\n  }\n  100% {\n    opacity: 1;\n  }\n}\n\n@keyframes fadeOutUp {\n  0% {\n    opacity: 1;\n  }\n  100% {\n    opacity: 0;\n    height: 0;\n  }\n}\n\n@keyframes fadeOutDown {\n  0% {\n    opacity: 1;\n    transform: translateY(0);\n  }\n  100% {\n    opacity: 0;\n    transform: translateY(20px);\n  }\n}\n\n@keyframes fadeInDown {\n  0% {\n    opacity: 0;\n    transform: translateY(-20px);\n  }\n  100% {\n    opacity: 1;\n    transform: translateY(0);\n  }\n}\n\n@keyframes fadeInUp {\n  0% {\n    opacity: 0;\n    transform: translateY(20px);\n  }\n  100% {\n    opacity: 1;\n    transform: translateY(0);\n  }\n}\n\n@keyframes bounceInLeft {\n  0% {\n    opacity: 0;\n    transform: translateX(-200px);\n  }\n  60% {\n    transform: translateX(2px);\n  }\n  80% {\n    transform: translateX(-2px);\n  }\n  100% {\n    opacity: 1;\n    transform: translateX(0);\n  }\n}\n\n@keyframes bounceInDown {\n  0% {\n    opacity: 0;\n    transform: translateY(-200px);\n  }\n  60% {\n    transform: translateY(2px);\n  }\n  80% {\n    transform: translateY(-2px);\n  }\n  100% {\n    opacity: 1;\n    transform: translateY(0);\n  }\n}\n\n@keyframes slideFromLeft {\n  0% {\n    opacity: 0;\n    transform: translateX(-200px);\n  }\n  100% {\n    opacity: 1;\n    transform: translateX(0);\n  }\n}\n\n@keyframes appearFromTop {\n  0% {\n    opacity: 0;\n    transform: translateY(-10px);\n  }\n  100% {\n    opacity: 1;\n    transform: translateY(0);\n  }\n}\n\n@keyframes fadeOutRight {\n  0% {\n    opacity: 1;\n  }\n  100% {\n    opacity: 0;\n  }\n}\n\ntextarea, input {\n  outline: none;\n}\n\n::-webkit-input-placeholder {\n  color: rgba(228, 228, 228, 0.15);\n  font-style: italic;\n}\n\n:-moz-placeholder {\n  /* Firefox 18- */\n  color: rgba(228, 228, 228, 0.15);\n  font-style: italic;\n}\n\n::-moz-placeholder {\n  /* Firefox 19+ */\n  color: rgba(228, 228, 228, 0.15);\n  font-style: italic;\n}\n\n.App {\n  width: 100%;\n  height: 100%;\n  position: absolute;\n  overflow: hidden;\n  display: flex;\n  flex-direction: column;\n  transform-style: preserve-3d;\n}\n\n.no-close {\n  cursor: default;\n  -webkit-user-select: none;\n  -moz-user-select: none;\n}\n\n.view {\n  background: #222222;\n  width: 100%;\n  padding: 0;\n  margin: 0;\n}\n\n.headerAnimation-appear {\n  -webkit-animation: fadeInDown;\n  animation: fadeInDown;\n  -webkit-animation-duration: 0.2s;\n  animation-duration: 0.2s;\n  -webkit-animation-fill-mode: both;\n  animation-fill-mode: both;\n  -webkit-animation-timing-function: ease-out;\n  animation-timing-function: ease-out;\n}\n\n.joinChannelAnimation-appear {\n  -webkit-animation: fadeIn;\n  animation: fadeIn;\n  -webkit-animation-duration: 0.5s;\n  animation-duration: 0.5s;\n  -webkit-animation-fill-mode: both;\n  animation-fill-mode: both;\n  -webkit-animation-timing-function: ease-in;\n  animation-timing-function: ease-in;\n}\n\ninput[type=text], input[type=password], input[type=checkbox] {\n  color: #e4e4e4;\n  background-color: transparent;\n  border: 0;\n  border-bottom: 1px solid #404040;\n  padding: 0.5em;\n  padding-left: 0.25em;\n  padding-right: 0.25em;\n  margin-left: 0.25em;\n  margin-right: 0.25em;\n}\n\ninput[type=text]:focus, input[type=password]:focus {\n  border-bottom: 1px solid #783c8c;\n}\n\ninput[type=checkbox] {\n  -webkit-filter: hue-rotate(50deg) saturate(80%) brightness(80%) !important;\n}\n\n@keyframes fadeIn {\n  0% {\n    opacity: 0;\n  }\n  100% {\n    opacity: 1;\n  }\n}\n\n@keyframes fadeInFromBottom {\n  0% {\n    opacity: 0;\n    transform: translateY(-5px);\n  }\n  100% {\n    opacity: 1;\n    transform: translateY(0);\n  }\n}\n\n@keyframes fadeInCircles {\n  0% {\n    opacity: 0.2;\n    transform: translate(-20px, 0);\n  }\n  10% {\n    opacity: 1;\n  }\n  90% {\n    opacity: 1;\n  }\n  100% {\n    opacity: 0.2;\n    transform: translate(20px, 0);\n  }\n}\n\n@keyframes fadeInCirclesLoop {\n  0% {\n    opacity: 0.2;\n  }\n  40% {\n    opacity: 0.4;\n  }\n  50% {\n    opacity: 1;\n  }\n  80% {\n    opacity: 0.4;\n  }\n  100% {\n    opacity: 0.2;\n  }\n}\n\n@keyframes pulse1 {\n  0% {\n    opacity: 0.3;\n  }\n  50% {\n    opacity: 0.5;\n  }\n  100% {\n    opacity: 0.3;\n  }\n}\n\n@keyframes fadeOut {\n  0% {\n    opacity: 1;\n  }\n  100% {\n    opacity: 0;\n  }\n}\n\n@keyframes darken {\n  0% {\n    opacity: 0;\n  }\n  100% {\n    opacity: 1;\n  }\n}\n\n@keyframes fadeOutUp {\n  0% {\n    opacity: 1;\n  }\n  100% {\n    opacity: 0;\n    height: 0;\n  }\n}\n\n@keyframes fadeOutDown {\n  0% {\n    opacity: 1;\n    transform: translateY(0);\n  }\n  100% {\n    opacity: 0;\n    transform: translateY(20px);\n  }\n}\n\n@keyframes fadeInDown {\n  0% {\n    opacity: 0;\n    transform: translateY(-20px);\n  }\n  100% {\n    opacity: 1;\n    transform: translateY(0);\n  }\n}\n\n@keyframes fadeInUp {\n  0% {\n    opacity: 0;\n    transform: translateY(20px);\n  }\n  100% {\n    opacity: 1;\n    transform: translateY(0);\n  }\n}\n\n@keyframes bounceInLeft {\n  0% {\n    opacity: 0;\n    transform: translateX(-200px);\n  }\n  60% {\n    transform: translateX(2px);\n  }\n  80% {\n    transform: translateX(-2px);\n  }\n  100% {\n    opacity: 1;\n    transform: translateX(0);\n  }\n}\n\n@keyframes bounceInDown {\n  0% {\n    opacity: 0;\n    transform: translateY(-200px);\n  }\n  60% {\n    transform: translateY(2px);\n  }\n  80% {\n    transform: translateY(-2px);\n  }\n  100% {\n    opacity: 1;\n    transform: translateY(0);\n  }\n}\n\n@keyframes slideFromLeft {\n  0% {\n    opacity: 0;\n    transform: translateX(-200px);\n  }\n  100% {\n    opacity: 1;\n    transform: translateX(0);\n  }\n}\n\n@keyframes appearFromTop {\n  0% {\n    opacity: 0;\n    transform: translateY(-10px);\n  }\n  100% {\n    opacity: 1;\n    transform: translateY(0);\n  }\n}\n\n@keyframes fadeOutRight {\n  0% {\n    opacity: 1;\n  }\n  100% {\n    opacity: 0;\n  }\n}\n\ntextarea, input {\n  outline: none;\n}\n\n::-webkit-input-placeholder {\n  color: rgba(228, 228, 228, 0.15);\n  font-style: italic;\n}\n\n:-moz-placeholder {\n  /* Firefox 18- */\n  color: rgba(228, 228, 228, 0.15);\n  font-style: italic;\n}\n\n::-moz-placeholder {\n  /* Firefox 19+ */\n  color: rgba(228, 228, 228, 0.15);\n  font-style: italic;\n}\n\n.App {\n  width: 100%;\n  height: 100%;\n  position: absolute;\n  overflow: hidden;\n  display: flex;\n  flex-direction: column;\n  transform-style: preserve-3d;\n}\n\n.no-close {\n  cursor: default;\n  -webkit-user-select: none;\n  -moz-user-select: none;\n}\n\n.view {\n  background: #222222;\n  width: 100%;\n  padding: 0;\n  margin: 0;\n}\n\n.headerAnimation-appear {\n  -webkit-animation: fadeInDown;\n  animation: fadeInDown;\n  -webkit-animation-duration: 0.2s;\n  animation-duration: 0.2s;\n  -webkit-animation-fill-mode: both;\n  animation-fill-mode: both;\n  -webkit-animation-timing-function: ease-out;\n  animation-timing-function: ease-out;\n}\n\n.joinChannelAnimation-appear {\n  -webkit-animation: fadeIn;\n  animation: fadeIn;\n  -webkit-animation-duration: 0.5s;\n  animation-duration: 0.5s;\n  -webkit-animation-fill-mode: both;\n  animation-fill-mode: both;\n  -webkit-animation-timing-function: ease-in;\n  animation-timing-function: ease-in;\n}\n\ninput[type=submit], input[type=button], .submitButton {\n  display: flex;\n  justify-content: center;\n  align-self: center;\n  box-sizing: border-box;\n  font-family: \"Lato\";\n  font-weight: 300;\n  font-size: 0.8em;\n  color: rgba(220, 220, 220, 0.2);\n  background-color: transparent;\n  border: 0;\n  min-width: 5em;\n  padding: 0.56em;\n  padding-left: 1.5em;\n  padding-right: 1.5em;\n  cursor: pointer;\n}\n\ninput[type=submit]:hover, input[type=button]:hover, .submitButton:hover {\n  animation: fadeInButton;\n  animation-duration: .4s;\n  animation-fill-mode: both;\n  animation-timing-function: ease-out;\n}\n\ninput[type=submit]:focus, input[type=button]:focus, .submitButton:focus {\n  color: #e4e4e4;\n  border: 0;\n  animation: clickButtonPrimary;\n  animation-duration: 0s;\n  animation-fill-mode: both;\n  animation-timing-function: ease-out;\n}\n\n@keyframes fadeInButton {\n  0% {\n    color: rgba(220, 220, 220, 0.2);\n    background-color: transparent;\n  }\n  100% {\n    color: #e4e4e4;\n    background-color: #303030;\n  }\n}\n\n@keyframes clickButtonSecondary {\n  0% {\n    background-color: rgba(160, 220, 90, 0.6);\n  }\n  100% {\n    background-color: rgba(160, 220, 90, 0.6);\n  }\n}\n\n@keyframes clickButtonPrimary {\n  0% {\n    background-color: #783c8c;\n  }\n  100% {\n    color: #e4e4e4;\n    background-color: #783c8c;\n  }\n}\n\n.JoinChannel {\n  display: flex;\n  justify-content: center;\n  flex-wrap: wrap;\n  flex: 1;\n  font-family: \"Source Sans Pro\";\n  font-weight: 100;\n  box-sizing: border-box;\n  margin: 0em 1em;\n}\n\n.JoinChannel .text {\n  color: rgba(240, 240, 240, 0.2);\n  font-size: 0.8em;\n  display: flex;\n  justify-content: center;\n  margin-top: 1em;\n}\n\n.JoinChannel span {\n  align-self: center;\n}\n\n.JoinChannel form {\n  display: flex;\n  flex-direction: column;\n  width: 80%;\n  justify-content: center;\n  margin-top: 0em;\n}\n\n.JoinChannel .row {\n  display: flex;\n  flex-direction: row;\n}\n\n.JoinChannel .label {\n  flex: 0 1 5%;\n  font-size: 1.25em;\n  color: rgba(228, 228, 228, 0.2);\n}\n\n.JoinChannel .field {\n  flex: 1 0 70%;\n}\n\n.JoinChannel .action {\n  display: flex;\n  flex: 1 0 20%;\n  justify-content: center;\n}\n\n.JoinChannel input[type=text], .JoinChannel input[type=password] {\n  margin-top: 0em;\n  margin-bottom: 0em;\n  width: 90%;\n}\n\n.JoinChannel .submitButton, .JoinChannel input[type=submit] {\n  display: flex;\n  align-self: center;\n  padding-top: 0.5em;\n  padding-bottom: 0.5em;\n}\n\n.passwordFieldAnimation-appear {\n  -webkit-animation: appearFromTop;\n  animation: appearFromTop;\n  -webkit-animation-duration: 0.2s;\n  animation-duration: 0.2s;\n  -webkit-animation-fill-mode: both;\n  animation-fill-mode: both;\n  -webkit-animation-timing-function: ease-out;\n  animation-timing-function: ease-out;\n}\n", ""]);
+	exports.push([module.id, ".DirectoryView {\n  width: 100%;\n}\n\n.children {\n  padding-left: 0.4em;\n  margin-left: 0.45em;\n  margin-top: 0.25em;\n  background-color: rgba(0, 0, 0, 0.075);\n  border-left: 1px dotted rgba(255, 255, 255, 0.1);\n}\n\n.children:hover {\n  border-left: 1px dotted rgba(255, 255, 255, 0.2);\n}\n\n.Directory {\n  color: rgba(240, 240, 240, 0.9);\n  padding-left: 0.3em;\n  padding-right: 0.3em;\n  white-space: nowrap;\n  width: 100%;\n}\n\n.Directory .download {\n  visibility: hidden;\n  font-weight: 100;\n  margin-left: 0.5em;\n  margin-right: 0.5em;\n}\n\n.Directory .size {\n  visibility: hidden;\n  margin-left: 0.5em;\n}\n\n.Directory a {\n  color: rgba(128, 196, 255, 0.8);\n  text-decoration: none;\n  font-weight: 400;\n}\n\n.Directory:hover {\n  border: 0px solid transparent;\n  border-radius: 4px;\n}\n\n.Directory:hover .download {\n  visibility: visible;\n  color: rgba(196, 196, 196, 0.6);\n}\n\n.Directory:hover .download:hover {\n  background-color: rgba(128, 128, 128, 0.4);\n  color: rgba(240, 240, 240, 0.9);\n}\n\n.Directory:hover .size {\n  visibility: visible;\n  font-size: 0.8em;\n  font-weight: 100;\n  color: rgba(128, 196, 128, 0.8);\n  cursor: default;\n}\n\n.Directory:hover a {\n  color: rgba(240, 240, 240, 0.9);\n}\n\n.loading a {\n  color: rgba(240, 244, 240, 0.1);\n}\n\n.directoryAnimation-appear {\n  -webkit-animation-name: fadeIn;\n  animation-name: fadeIn;\n  -webkit-animation-duration: 0.2s;\n  animation-duration: 0.2s;\n  -webkit-animation-fill-mode: both;\n  animation-fill-mode: both;\n  -webkit-animation-timing-function: ease-in;\n  animation-timing-function: ease-in;\n}\n", ""]);
 
 	// exports
 
@@ -43491,7 +43886,7 @@
 
 
 	// module
-	exports.push([module.id, ".LoginView {\n  font-family: \"Source Sans Pro\";\n  font-weight: 100;\n  font-size: 0.9em;\n  padding: 0.1em;\n  color: gray;\n  display: flex;\n  justify-content: center;\n  width: 100%;\n  height: 100%;\n  margin-top: 0;\n  border-top: 1px solid #1e1e1e;\n  box-sizing: border-box;\n}\n\n.LoginView .inputs {\n  margin: 1.5em;\n  margin-top: 0;\n}\n\n.LoginView h1 {\n  margin-top: 0.6em;\n  font-family: \"Lato\";\n  font-size: 2.5em;\n  font-weight: 100;\n  padding: 1.0em;\n  text-transform: uppercase;\n  color: rgba(240, 240, 240, 0.7);\n}\n\n.LoginView form {\n  display: flex;\n  align-self: flex-start;\n  width: 100%;\n  flex-direction: column;\n  justify-content: center;\n  margin-left: 0.5em;\n  margin-right: 0.5em;\n  max-width: 30em;\n}\n\n.LoginView form .hidden {\n  visibility: hidden;\n  display: none;\n}\n\n.LoginView form .centerrow {\n  display: flex;\n  flex-direction: row;\n  margin-bottom: 0.5em;\n  justify-content: center;\n  width: 100%;\n}\n\n.LoginView form .row {\n  display: flex;\n  flex-direction: row;\n  margin-bottom: 0.5em;\n  justify-content: flex-end;\n  width: 100%;\n}\n\n.LoginView form .label {\n  display: flex;\n  flex: 1 1 8%;\n  min-width: 5em;\n  align-self: center;\n  justify-content: flex-start;\n}\n\n.LoginView form .nicknameLength {\n  margin-top: 0.5em;\n  padding: 0em 0.5em;\n  font-size: 0.8em;\n  display: flex;\n  align-self: center;\n}\n\n.LoginView form .error {\n  color: rgba(240, 96, 96, 0.8);\n  margin-top: 1em;\n  flex: 1 1 auto;\n  text-align: center;\n}\n\n.LoginView form input[type=submit] {\n  margin-top: 1em;\n}\n\n.LoginView form input[type=text], .LoginView form input[type=password] {\n  margin-bottom: 0;\n  width: 90%;\n}\n\n.LoginView form input[type=text]:disabled {\n  color: rgba(228, 228, 228, 0.25);\n  font-style: italic;\n  cursor: not-allowed;\n  width: 90%;\n}\n\n.loginHeaderAnimation-appear {\n  -webkit-animation: bounceInDown;\n  animation: bounceInDown;\n  -webkit-animation-duration: 0.5s;\n  animation-duration: 0.5s;\n  -webkit-animation-fill-mode: both;\n  animation-fill-mode: both;\n  -webkit-animation-timing-function: ease-out;\n  animation-timing-function: ease-out;\n}\n\n.loginScreenAnimation-appear {\n  -webkit-animation: fadeIn;\n  animation: fadeIn;\n  -webkit-animation-duration: 0.5s;\n  animation-duration: 0.5s;\n  -webkit-animation-fill-mode: both;\n  animation-fill-mode: both;\n  -webkit-animation-timing-function: ease-out;\n  animation-timing-function: ease-out;\n}\n", ""]);
+	exports.push([module.id, ".File {\n  padding-left: 0.3em;\n  padding-right: 0.3em;\n  display: inline-block;\n  white-space: nowrap;\n  font-weight: 300;\n  width: 100%;\n  overflow: hidden;\n  box-sizing: content-box;\n}\n\n.File .content {\n  box-sizing: content-box;\n}\n\n.File .preview {\n  margin-top: 0.5em;\n  margin-left: 0.25em;\n  margin-right: 0.25em;\n  padding-left: 0.5em;\n  padding-right: 0.5em;\n  padding-top: 0.5em;\n  padding-bottom: 0.5em;\n  background-color: rgba(0, 0, 0, 0.075);\n  border-left: 1px dotted rgba(255, 255, 255, 0.1);\n  overflow: hidden;\n  display: flex;\n  max-height: 30em;\n  box-sizing: content-box;\n}\n\n.File .preview:hover {\n  border-left: 1px dotted rgba(224, 224, 224, 0.5);\n}\n\n.File .smallText {\n  font-size: 0.8em;\n  padding: 0;\n}\n\n.File pre {\n  margin: 0;\n  box-sizing: content-box;\n  overflow-x: auto;\n  overflow-y: auto;\n  width: 100%;\n}\n\n.File .download {\n  user-select: none;\n  visibility: hidden;\n  font-weight: 100;\n  margin: 0;\n  font-size: 0.9em;\n  cursor: pointer;\n}\n\n.File .pin {\n  visibility: hidden;\n  font-weight: 100;\n}\n\n.File .size {\n  visibility: hidden;\n  margin-left: 0.25em;\n  margin-right: 0.5em;\n}\n\n.File .text {\n  color: rgba(128, 196, 255, 0.8);\n  text-decoration: none;\n  cursor: pointer;\n}\n\n.File a {\n  user-select: none;\n  color: rgba(128, 196, 255, 0.8);\n  text-decoration: none;\n  margin-right: 0.1em;\n  margin-left: 0.1em;\n}\n\n.File a:hover {\n  color: rgba(240, 240, 240, 0.9);\n  text-decoration: none;\n}\n\n.File:hover {\n  color: rgba(240, 240, 240, 0.9);\n}\n\n.File:hover .download {\n  visibility: visible;\n  color: rgba(196, 196, 196, 0.6);\n  padding-left: 0.2em;\n  padding-right: 0.2em;\n}\n\n.File:hover .download:hover {\n  background-color: rgba(128, 128, 128, 0.2);\n  color: rgba(240, 240, 240, 0.9);\n}\n\n.File:hover .pin {\n  visibility: visible;\n  color: rgba(196, 196, 196, 0.6);\n  margin-right: 0.5em;\n  cursor: pointer;\n}\n\n.File:hover .pin:hover {\n  background-color: rgba(128, 128, 128, 0.4);\n  color: rgba(240, 240, 240, 0.9);\n}\n\n.File:hover .text {\n  margin-right: 0.5em;\n  color: rgba(240, 240, 240, 0.9);\n  text-decoration: none;\n  cursor: pointer;\n}\n\n.File:hover .size {\n  visibility: visible;\n  font-size: 0.8em;\n  font-weight: 100;\n  color: rgba(128, 196, 128, 0.8);\n  cursor: default;\n}\n\n.File:hover a {\n  color: rgba(240, 240, 240, 0.9);\n}\n\n.loading a {\n  color: rgba(240, 244, 240, 0.1);\n}\n\n.fileAnimation-appear {\n  -webkit-animation-name: fadeIn;\n  animation-name: fadeIn;\n  -webkit-animation-duration: 0.2s;\n  animation-duration: 0.2s;\n  -webkit-animation-fill-mode: both;\n  animation-fill-mode: both;\n  -webkit-animation-timing-function: ease-in;\n  animation-timing-function: ease-in;\n}\n\n.fileAnimation-enter {\n  -webkit-animation-name: fadeIn;\n  animation-name: fadeIn;\n  -webkit-animation-duration: 1.2s;\n  animation-duration: 1.2s;\n  -webkit-animation-fill-mode: both;\n  animation-fill-mode: both;\n  -webkit-animation-timing-function: ease-in;\n  animation-timing-function: ease-in;\n}\n\n.fileAnimation-leave {\n  -webkit-animation-name: fadeOut;\n  animation-name: fadeOut;\n  -webkit-animation-duration: 0.9s;\n  animation-duration: 0.9s;\n  -webkit-animation-fill-mode: both;\n  animation-fill-mode: both;\n  -webkit-animation-timing-function: ease-in;\n  animation-timing-function: ease-in;\n}\n", ""]);
 
 	// exports
 
@@ -43505,7 +43900,7 @@
 
 
 	// module
-	exports.push([module.id, "@keyframes fadeIn {\n  0% {\n    opacity: 0;\n  }\n  100% {\n    opacity: 1;\n  }\n}\n\n@keyframes fadeInFromBottom {\n  0% {\n    opacity: 0;\n    transform: translateY(-5px);\n  }\n  100% {\n    opacity: 1;\n    transform: translateY(0);\n  }\n}\n\n@keyframes fadeInCircles {\n  0% {\n    opacity: 0.2;\n    transform: translate(-20px, 0);\n  }\n  10% {\n    opacity: 1;\n  }\n  90% {\n    opacity: 1;\n  }\n  100% {\n    opacity: 0.2;\n    transform: translate(20px, 0);\n  }\n}\n\n@keyframes fadeInCirclesLoop {\n  0% {\n    opacity: 0.2;\n  }\n  40% {\n    opacity: 0.4;\n  }\n  50% {\n    opacity: 1;\n  }\n  80% {\n    opacity: 0.4;\n  }\n  100% {\n    opacity: 0.2;\n  }\n}\n\n@keyframes pulse1 {\n  0% {\n    opacity: 0.3;\n  }\n  50% {\n    opacity: 0.5;\n  }\n  100% {\n    opacity: 0.3;\n  }\n}\n\n@keyframes fadeOut {\n  0% {\n    opacity: 1;\n  }\n  100% {\n    opacity: 0;\n  }\n}\n\n@keyframes darken {\n  0% {\n    opacity: 0;\n  }\n  100% {\n    opacity: 1;\n  }\n}\n\n@keyframes fadeOutUp {\n  0% {\n    opacity: 1;\n  }\n  100% {\n    opacity: 0;\n    height: 0;\n  }\n}\n\n@keyframes fadeOutDown {\n  0% {\n    opacity: 1;\n    transform: translateY(0);\n  }\n  100% {\n    opacity: 0;\n    transform: translateY(20px);\n  }\n}\n\n@keyframes fadeInDown {\n  0% {\n    opacity: 0;\n    transform: translateY(-20px);\n  }\n  100% {\n    opacity: 1;\n    transform: translateY(0);\n  }\n}\n\n@keyframes fadeInUp {\n  0% {\n    opacity: 0;\n    transform: translateY(20px);\n  }\n  100% {\n    opacity: 1;\n    transform: translateY(0);\n  }\n}\n\n@keyframes bounceInLeft {\n  0% {\n    opacity: 0;\n    transform: translateX(-200px);\n  }\n  60% {\n    transform: translateX(2px);\n  }\n  80% {\n    transform: translateX(-2px);\n  }\n  100% {\n    opacity: 1;\n    transform: translateX(0);\n  }\n}\n\n@keyframes bounceInDown {\n  0% {\n    opacity: 0;\n    transform: translateY(-200px);\n  }\n  60% {\n    transform: translateY(2px);\n  }\n  80% {\n    transform: translateY(-2px);\n  }\n  100% {\n    opacity: 1;\n    transform: translateY(0);\n  }\n}\n\n@keyframes slideFromLeft {\n  0% {\n    opacity: 0;\n    transform: translateX(-200px);\n  }\n  100% {\n    opacity: 1;\n    transform: translateX(0);\n  }\n}\n\n@keyframes appearFromTop {\n  0% {\n    opacity: 0;\n    transform: translateY(-10px);\n  }\n  100% {\n    opacity: 1;\n    transform: translateY(0);\n  }\n}\n\n@keyframes fadeOutRight {\n  0% {\n    opacity: 1;\n  }\n  100% {\n    opacity: 0;\n  }\n}\n\n.highlighted {\n  background-color: #252525 !important;\n}\n\n.command {\n  font-style: italic;\n  color: #f0f0f0 !important;\n  margin-left: 0em !important;\n}\n\n.Message {\n  display: flex;\n  flex: 1 1 100%;\n  flex-direction: row;\n  justify-content: flex-start;\n  align-items: flex-start;\n  background-color: #232323;\n  font-weight: 100;\n  border-bottom: 1px solid rgba(34, 34, 34, 0);\n  padding: 0.2em;\n  color: rgba(255, 255, 255, 0.6);\n  overflow: hidden;\n}\n\n.Message .Timestamp {\n  display: flex;\n  color: rgba(240, 240, 240, 0.6);\n  font-weight: 300;\n  font-size: 0.8em;\n  padding-left: 0.2em;\n  padding-right: 0.5em;\n  border-right: 1px solid rgba(255, 255, 255, 0.2);\n  padding-top: 0.25em;\n}\n\n.Message .Content {\n  margin-left: 0.2em;\n  margin-right: 0.5em;\n  display: flex;\n  flex: 1;\n  overflow: hidden;\n}\n", ""]);
+	exports.push([module.id, ".Header {\n  cursor: pointer;\n  -webkit-user-select: none;\n  -moz-user-select: none;\n  border-bottom: 1px solid rgba(28, 28, 28, 0);\n  background-color: #1e1e1e;\n}\n\n.Header .notificationsIcon {\n  position: absolute;\n  font-size: 0.8em;\n  top: 1.1em;\n  right: 1.1em;\n  padding-top: -0.2em;\n}\n\n.Header:hover {\n  background-color: #1c1c1c;\n}\n\n.ChannelName {\n  display: flex;\n  box-sizing: border-box;\n  flex: 1 1 100%;\n  flex-direction: row;\n  align-items: center;\n  max-height: 5vmin;\n  min-height: 1.6em;\n  font-family: \"Lato\";\n  font-weight: 100;\n  font-size: 2em;\n  color: #f0f0f0;\n  padding-left: 0.2em;\n  padding-right: 0.6em;\n}\n\n.ChannelName .currentChannel {\n  display: flex;\n  flex: 1 0 33%;\n  justify-content: flex-start;\n  font-family: \"Lato\";\n  font-weight: 100;\n  font-size: 1em;\n  color: #f0f0f0;\n}\n\n.ChannelName .channel {\n  display: flex;\n  padding-left: 0.2em;\n  padding-right: 0.2em;\n  font-family: \"Lato\";\n  font-weight: 100;\n  font-size: 0.5em;\n  color: rgba(240, 240, 240, 0.6);\n}\n\n.ChannelName .channel:hover {\n  font-weight: 100;\n  color: rgba(240, 240, 240, 0.9);\n}\n\n.ChannelName .unreadMessages {\n  display: flex;\n  margin-left: 0.3em;\n  margin-right: 0em;\n  padding: 0.1em;\n  height: 1.1em;\n  width: 1.2em;\n  justify-content: center;\n  font-family: \"Lato\";\n  font-weight: 300;\n  font-size: 0.6em;\n  color: rgba(240, 240, 240, 0.9);\n  background-color: rgba(240, 240, 240, 0.1);\n  border-radius: 32px;\n}\n\n.ChannelName .hasMentions {\n  background-color: #783c8c;\n}\n\n.channelHeaderAnimation-enter {\n  -webkit-animation: slideFromLeft;\n  animation: slideFromLeft;\n  -webkit-animation-duration: 0.3s;\n  animation-duration: 0.3s;\n  -webkit-animation-fill-mode: both;\n  animation-fill-mode: both;\n  -webkit-animation-timing-function: ease-out;\n  animation-timing-function: ease-out;\n}\n\n.channelHeaderAnimation-leave {\n  -webkit-animation: fadeOutRight;\n  animation: fadeOutRight;\n  -webkit-animation-duration: 0.3s;\n  animation-duration: 0.3s;\n  -webkit-animation-fill-mode: both;\n  animation-fill-mode: both;\n  -webkit-animation-timing-function: ease-out;\n  animation-timing-function: ease-out;\n}\n", ""]);
 
 	// exports
 
@@ -43519,7 +43914,7 @@
 
 
 	// module
-	exports.push([module.id, "@keyframes fadeIn {\n  0% {\n    opacity: 0;\n  }\n  100% {\n    opacity: 1;\n  }\n}\n\n@keyframes fadeInFromBottom {\n  0% {\n    opacity: 0;\n    transform: translateY(-5px);\n  }\n  100% {\n    opacity: 1;\n    transform: translateY(0);\n  }\n}\n\n@keyframes fadeInCircles {\n  0% {\n    opacity: 0.2;\n    transform: translate(-20px, 0);\n  }\n  10% {\n    opacity: 1;\n  }\n  90% {\n    opacity: 1;\n  }\n  100% {\n    opacity: 0.2;\n    transform: translate(20px, 0);\n  }\n}\n\n@keyframes fadeInCirclesLoop {\n  0% {\n    opacity: 0.2;\n  }\n  40% {\n    opacity: 0.4;\n  }\n  50% {\n    opacity: 1;\n  }\n  80% {\n    opacity: 0.4;\n  }\n  100% {\n    opacity: 0.2;\n  }\n}\n\n@keyframes pulse1 {\n  0% {\n    opacity: 0.3;\n  }\n  50% {\n    opacity: 0.5;\n  }\n  100% {\n    opacity: 0.3;\n  }\n}\n\n@keyframes fadeOut {\n  0% {\n    opacity: 1;\n  }\n  100% {\n    opacity: 0;\n  }\n}\n\n@keyframes darken {\n  0% {\n    opacity: 0;\n  }\n  100% {\n    opacity: 1;\n  }\n}\n\n@keyframes fadeOutUp {\n  0% {\n    opacity: 1;\n  }\n  100% {\n    opacity: 0;\n    height: 0;\n  }\n}\n\n@keyframes fadeOutDown {\n  0% {\n    opacity: 1;\n    transform: translateY(0);\n  }\n  100% {\n    opacity: 0;\n    transform: translateY(20px);\n  }\n}\n\n@keyframes fadeInDown {\n  0% {\n    opacity: 0;\n    transform: translateY(-20px);\n  }\n  100% {\n    opacity: 1;\n    transform: translateY(0);\n  }\n}\n\n@keyframes fadeInUp {\n  0% {\n    opacity: 0;\n    transform: translateY(20px);\n  }\n  100% {\n    opacity: 1;\n    transform: translateY(0);\n  }\n}\n\n@keyframes bounceInLeft {\n  0% {\n    opacity: 0;\n    transform: translateX(-200px);\n  }\n  60% {\n    transform: translateX(2px);\n  }\n  80% {\n    transform: translateX(-2px);\n  }\n  100% {\n    opacity: 1;\n    transform: translateX(0);\n  }\n}\n\n@keyframes bounceInDown {\n  0% {\n    opacity: 0;\n    transform: translateY(-200px);\n  }\n  60% {\n    transform: translateY(2px);\n  }\n  80% {\n    transform: translateY(-2px);\n  }\n  100% {\n    opacity: 1;\n    transform: translateY(0);\n  }\n}\n\n@keyframes slideFromLeft {\n  0% {\n    opacity: 0;\n    transform: translateX(-200px);\n  }\n  100% {\n    opacity: 1;\n    transform: translateX(0);\n  }\n}\n\n@keyframes appearFromTop {\n  0% {\n    opacity: 0;\n    transform: translateY(-10px);\n  }\n  100% {\n    opacity: 1;\n    transform: translateY(0);\n  }\n}\n\n@keyframes fadeOutRight {\n  0% {\n    opacity: 1;\n  }\n  100% {\n    opacity: 0;\n  }\n}\n\n.RecentChannelsView {\n  display: flex;\n  flex-direction: column;\n  flex: 1;\n}\n\n.RecentChannelsView .RecentChannels {\n  overflow: auto;\n  margin: 1em;\n  margin-top: 0;\n  margin-bottom: 0;\n  font-weight: 100;\n  box-sizing: border-box;\n}\n\n.RecentChannelsView .RecentChannels .link {\n  box-sizing: border-box;\n  vertical-align: middle;\n  cursor: pointer;\n  color: rgba(228, 228, 228, 0.3);\n  font-weight: 100;\n  margin-right: 0.2em;\n  margin-bottom: 0.1em;\n}\n\n.RecentChannelsView .RecentChannels .link:hover {\n  background-color: #303030;\n  color: #e4e4e4;\n  border: 0px solid transparent;\n}\n\n.RecentChannelsView .submitButton {\n  display: flex;\n  align-self: flex-end;\n}\n", ""]);
+	exports.push([module.id, "@keyframes fadeIn {\n  0% {\n    opacity: 0;\n  }\n  100% {\n    opacity: 1;\n  }\n}\n\n@keyframes fadeInFromBottom {\n  0% {\n    opacity: 0;\n    transform: translateY(-5px);\n  }\n  100% {\n    opacity: 1;\n    transform: translateY(0);\n  }\n}\n\n@keyframes fadeInCircles {\n  0% {\n    opacity: 0.2;\n    transform: translate(-20px, 0);\n  }\n  10% {\n    opacity: 1;\n  }\n  90% {\n    opacity: 1;\n  }\n  100% {\n    opacity: 0.2;\n    transform: translate(20px, 0);\n  }\n}\n\n@keyframes fadeInCirclesLoop {\n  0% {\n    opacity: 0.2;\n  }\n  40% {\n    opacity: 0.4;\n  }\n  50% {\n    opacity: 1;\n  }\n  80% {\n    opacity: 0.4;\n  }\n  100% {\n    opacity: 0.2;\n  }\n}\n\n@keyframes pulse1 {\n  0% {\n    opacity: 0.3;\n  }\n  50% {\n    opacity: 0.5;\n  }\n  100% {\n    opacity: 0.3;\n  }\n}\n\n@keyframes fadeOut {\n  0% {\n    opacity: 1;\n  }\n  100% {\n    opacity: 0;\n  }\n}\n\n@keyframes darken {\n  0% {\n    opacity: 0;\n  }\n  100% {\n    opacity: 1;\n  }\n}\n\n@keyframes fadeOutUp {\n  0% {\n    opacity: 1;\n  }\n  100% {\n    opacity: 0;\n    height: 0;\n  }\n}\n\n@keyframes fadeOutDown {\n  0% {\n    opacity: 1;\n    transform: translateY(0);\n  }\n  100% {\n    opacity: 0;\n    transform: translateY(20px);\n  }\n}\n\n@keyframes fadeInDown {\n  0% {\n    opacity: 0;\n    transform: translateY(-20px);\n  }\n  100% {\n    opacity: 1;\n    transform: translateY(0);\n  }\n}\n\n@keyframes fadeInUp {\n  0% {\n    opacity: 0;\n    transform: translateY(20px);\n  }\n  100% {\n    opacity: 1;\n    transform: translateY(0);\n  }\n}\n\n@keyframes bounceInLeft {\n  0% {\n    opacity: 0;\n    transform: translateX(-200px);\n  }\n  60% {\n    transform: translateX(2px);\n  }\n  80% {\n    transform: translateX(-2px);\n  }\n  100% {\n    opacity: 1;\n    transform: translateX(0);\n  }\n}\n\n@keyframes bounceInDown {\n  0% {\n    opacity: 0;\n    transform: translateY(-200px);\n  }\n  60% {\n    transform: translateY(2px);\n  }\n  80% {\n    transform: translateY(-2px);\n  }\n  100% {\n    opacity: 1;\n    transform: translateY(0);\n  }\n}\n\n@keyframes slideFromLeft {\n  0% {\n    opacity: 0;\n    transform: translateX(-200px);\n  }\n  100% {\n    opacity: 1;\n    transform: translateX(0);\n  }\n}\n\n@keyframes appearFromTop {\n  0% {\n    opacity: 0;\n    transform: translateY(-10px);\n  }\n  100% {\n    opacity: 1;\n    transform: translateY(0);\n  }\n}\n\n@keyframes fadeOutRight {\n  0% {\n    opacity: 1;\n  }\n  100% {\n    opacity: 0;\n  }\n}\n\ntextarea, input {\n  outline: none;\n}\n\n::-webkit-input-placeholder {\n  color: rgba(228, 228, 228, 0.15);\n  font-style: italic;\n}\n\n:-moz-placeholder {\n  /* Firefox 18- */\n  color: rgba(228, 228, 228, 0.15);\n  font-style: italic;\n}\n\n::-moz-placeholder {\n  /* Firefox 19+ */\n  color: rgba(228, 228, 228, 0.15);\n  font-style: italic;\n}\n\n.App {\n  width: 100%;\n  height: 100%;\n  position: absolute;\n  overflow: hidden;\n  display: flex;\n  flex-direction: column;\n  transform-style: preserve-3d;\n}\n\n.no-close {\n  cursor: default;\n  -webkit-user-select: none;\n  -moz-user-select: none;\n}\n\n.view {\n  background: #222222;\n  width: 100%;\n  padding: 0;\n  margin: 0;\n}\n\n.headerAnimation-appear {\n  -webkit-animation: fadeInDown;\n  animation: fadeInDown;\n  -webkit-animation-duration: 0.2s;\n  animation-duration: 0.2s;\n  -webkit-animation-fill-mode: both;\n  animation-fill-mode: both;\n  -webkit-animation-timing-function: ease-out;\n  animation-timing-function: ease-out;\n}\n\n.joinChannelAnimation-appear {\n  -webkit-animation: fadeIn;\n  animation: fadeIn;\n  -webkit-animation-duration: 0.5s;\n  animation-duration: 0.5s;\n  -webkit-animation-fill-mode: both;\n  animation-fill-mode: both;\n  -webkit-animation-timing-function: ease-in;\n  animation-timing-function: ease-in;\n}\n\n@keyframes fadeIn {\n  0% {\n    opacity: 0;\n  }\n  100% {\n    opacity: 1;\n  }\n}\n\n@keyframes fadeInFromBottom {\n  0% {\n    opacity: 0;\n    transform: translateY(-5px);\n  }\n  100% {\n    opacity: 1;\n    transform: translateY(0);\n  }\n}\n\n@keyframes fadeInCircles {\n  0% {\n    opacity: 0.2;\n    transform: translate(-20px, 0);\n  }\n  10% {\n    opacity: 1;\n  }\n  90% {\n    opacity: 1;\n  }\n  100% {\n    opacity: 0.2;\n    transform: translate(20px, 0);\n  }\n}\n\n@keyframes fadeInCirclesLoop {\n  0% {\n    opacity: 0.2;\n  }\n  40% {\n    opacity: 0.4;\n  }\n  50% {\n    opacity: 1;\n  }\n  80% {\n    opacity: 0.4;\n  }\n  100% {\n    opacity: 0.2;\n  }\n}\n\n@keyframes pulse1 {\n  0% {\n    opacity: 0.3;\n  }\n  50% {\n    opacity: 0.5;\n  }\n  100% {\n    opacity: 0.3;\n  }\n}\n\n@keyframes fadeOut {\n  0% {\n    opacity: 1;\n  }\n  100% {\n    opacity: 0;\n  }\n}\n\n@keyframes darken {\n  0% {\n    opacity: 0;\n  }\n  100% {\n    opacity: 1;\n  }\n}\n\n@keyframes fadeOutUp {\n  0% {\n    opacity: 1;\n  }\n  100% {\n    opacity: 0;\n    height: 0;\n  }\n}\n\n@keyframes fadeOutDown {\n  0% {\n    opacity: 1;\n    transform: translateY(0);\n  }\n  100% {\n    opacity: 0;\n    transform: translateY(20px);\n  }\n}\n\n@keyframes fadeInDown {\n  0% {\n    opacity: 0;\n    transform: translateY(-20px);\n  }\n  100% {\n    opacity: 1;\n    transform: translateY(0);\n  }\n}\n\n@keyframes fadeInUp {\n  0% {\n    opacity: 0;\n    transform: translateY(20px);\n  }\n  100% {\n    opacity: 1;\n    transform: translateY(0);\n  }\n}\n\n@keyframes bounceInLeft {\n  0% {\n    opacity: 0;\n    transform: translateX(-200px);\n  }\n  60% {\n    transform: translateX(2px);\n  }\n  80% {\n    transform: translateX(-2px);\n  }\n  100% {\n    opacity: 1;\n    transform: translateX(0);\n  }\n}\n\n@keyframes bounceInDown {\n  0% {\n    opacity: 0;\n    transform: translateY(-200px);\n  }\n  60% {\n    transform: translateY(2px);\n  }\n  80% {\n    transform: translateY(-2px);\n  }\n  100% {\n    opacity: 1;\n    transform: translateY(0);\n  }\n}\n\n@keyframes slideFromLeft {\n  0% {\n    opacity: 0;\n    transform: translateX(-200px);\n  }\n  100% {\n    opacity: 1;\n    transform: translateX(0);\n  }\n}\n\n@keyframes appearFromTop {\n  0% {\n    opacity: 0;\n    transform: translateY(-10px);\n  }\n  100% {\n    opacity: 1;\n    transform: translateY(0);\n  }\n}\n\n@keyframes fadeOutRight {\n  0% {\n    opacity: 1;\n  }\n  100% {\n    opacity: 0;\n  }\n}\n\ntextarea, input {\n  outline: none;\n}\n\n::-webkit-input-placeholder {\n  color: rgba(228, 228, 228, 0.15);\n  font-style: italic;\n}\n\n:-moz-placeholder {\n  /* Firefox 18- */\n  color: rgba(228, 228, 228, 0.15);\n  font-style: italic;\n}\n\n::-moz-placeholder {\n  /* Firefox 19+ */\n  color: rgba(228, 228, 228, 0.15);\n  font-style: italic;\n}\n\n.App {\n  width: 100%;\n  height: 100%;\n  position: absolute;\n  overflow: hidden;\n  display: flex;\n  flex-direction: column;\n  transform-style: preserve-3d;\n}\n\n.no-close {\n  cursor: default;\n  -webkit-user-select: none;\n  -moz-user-select: none;\n}\n\n.view {\n  background: #222222;\n  width: 100%;\n  padding: 0;\n  margin: 0;\n}\n\n.headerAnimation-appear {\n  -webkit-animation: fadeInDown;\n  animation: fadeInDown;\n  -webkit-animation-duration: 0.2s;\n  animation-duration: 0.2s;\n  -webkit-animation-fill-mode: both;\n  animation-fill-mode: both;\n  -webkit-animation-timing-function: ease-out;\n  animation-timing-function: ease-out;\n}\n\n.joinChannelAnimation-appear {\n  -webkit-animation: fadeIn;\n  animation: fadeIn;\n  -webkit-animation-duration: 0.5s;\n  animation-duration: 0.5s;\n  -webkit-animation-fill-mode: both;\n  animation-fill-mode: both;\n  -webkit-animation-timing-function: ease-in;\n  animation-timing-function: ease-in;\n}\n\ninput[type=text], input[type=password], input[type=checkbox] {\n  color: #e4e4e4;\n  background-color: transparent;\n  border: 0;\n  border-bottom: 1px solid #404040;\n  padding: 0.5em;\n  padding-left: 0.25em;\n  padding-right: 0.25em;\n  margin-left: 0.25em;\n  margin-right: 0.25em;\n}\n\ninput[type=text]:focus, input[type=password]:focus {\n  border-bottom: 1px solid #783c8c;\n}\n\ninput[type=checkbox] {\n  -webkit-filter: hue-rotate(50deg) saturate(80%) brightness(80%) !important;\n}\n\n@keyframes fadeIn {\n  0% {\n    opacity: 0;\n  }\n  100% {\n    opacity: 1;\n  }\n}\n\n@keyframes fadeInFromBottom {\n  0% {\n    opacity: 0;\n    transform: translateY(-5px);\n  }\n  100% {\n    opacity: 1;\n    transform: translateY(0);\n  }\n}\n\n@keyframes fadeInCircles {\n  0% {\n    opacity: 0.2;\n    transform: translate(-20px, 0);\n  }\n  10% {\n    opacity: 1;\n  }\n  90% {\n    opacity: 1;\n  }\n  100% {\n    opacity: 0.2;\n    transform: translate(20px, 0);\n  }\n}\n\n@keyframes fadeInCirclesLoop {\n  0% {\n    opacity: 0.2;\n  }\n  40% {\n    opacity: 0.4;\n  }\n  50% {\n    opacity: 1;\n  }\n  80% {\n    opacity: 0.4;\n  }\n  100% {\n    opacity: 0.2;\n  }\n}\n\n@keyframes pulse1 {\n  0% {\n    opacity: 0.3;\n  }\n  50% {\n    opacity: 0.5;\n  }\n  100% {\n    opacity: 0.3;\n  }\n}\n\n@keyframes fadeOut {\n  0% {\n    opacity: 1;\n  }\n  100% {\n    opacity: 0;\n  }\n}\n\n@keyframes darken {\n  0% {\n    opacity: 0;\n  }\n  100% {\n    opacity: 1;\n  }\n}\n\n@keyframes fadeOutUp {\n  0% {\n    opacity: 1;\n  }\n  100% {\n    opacity: 0;\n    height: 0;\n  }\n}\n\n@keyframes fadeOutDown {\n  0% {\n    opacity: 1;\n    transform: translateY(0);\n  }\n  100% {\n    opacity: 0;\n    transform: translateY(20px);\n  }\n}\n\n@keyframes fadeInDown {\n  0% {\n    opacity: 0;\n    transform: translateY(-20px);\n  }\n  100% {\n    opacity: 1;\n    transform: translateY(0);\n  }\n}\n\n@keyframes fadeInUp {\n  0% {\n    opacity: 0;\n    transform: translateY(20px);\n  }\n  100% {\n    opacity: 1;\n    transform: translateY(0);\n  }\n}\n\n@keyframes bounceInLeft {\n  0% {\n    opacity: 0;\n    transform: translateX(-200px);\n  }\n  60% {\n    transform: translateX(2px);\n  }\n  80% {\n    transform: translateX(-2px);\n  }\n  100% {\n    opacity: 1;\n    transform: translateX(0);\n  }\n}\n\n@keyframes bounceInDown {\n  0% {\n    opacity: 0;\n    transform: translateY(-200px);\n  }\n  60% {\n    transform: translateY(2px);\n  }\n  80% {\n    transform: translateY(-2px);\n  }\n  100% {\n    opacity: 1;\n    transform: translateY(0);\n  }\n}\n\n@keyframes slideFromLeft {\n  0% {\n    opacity: 0;\n    transform: translateX(-200px);\n  }\n  100% {\n    opacity: 1;\n    transform: translateX(0);\n  }\n}\n\n@keyframes appearFromTop {\n  0% {\n    opacity: 0;\n    transform: translateY(-10px);\n  }\n  100% {\n    opacity: 1;\n    transform: translateY(0);\n  }\n}\n\n@keyframes fadeOutRight {\n  0% {\n    opacity: 1;\n  }\n  100% {\n    opacity: 0;\n  }\n}\n\ntextarea, input {\n  outline: none;\n}\n\n::-webkit-input-placeholder {\n  color: rgba(228, 228, 228, 0.15);\n  font-style: italic;\n}\n\n:-moz-placeholder {\n  /* Firefox 18- */\n  color: rgba(228, 228, 228, 0.15);\n  font-style: italic;\n}\n\n::-moz-placeholder {\n  /* Firefox 19+ */\n  color: rgba(228, 228, 228, 0.15);\n  font-style: italic;\n}\n\n.App {\n  width: 100%;\n  height: 100%;\n  position: absolute;\n  overflow: hidden;\n  display: flex;\n  flex-direction: column;\n  transform-style: preserve-3d;\n}\n\n.no-close {\n  cursor: default;\n  -webkit-user-select: none;\n  -moz-user-select: none;\n}\n\n.view {\n  background: #222222;\n  width: 100%;\n  padding: 0;\n  margin: 0;\n}\n\n.headerAnimation-appear {\n  -webkit-animation: fadeInDown;\n  animation: fadeInDown;\n  -webkit-animation-duration: 0.2s;\n  animation-duration: 0.2s;\n  -webkit-animation-fill-mode: both;\n  animation-fill-mode: both;\n  -webkit-animation-timing-function: ease-out;\n  animation-timing-function: ease-out;\n}\n\n.joinChannelAnimation-appear {\n  -webkit-animation: fadeIn;\n  animation: fadeIn;\n  -webkit-animation-duration: 0.5s;\n  animation-duration: 0.5s;\n  -webkit-animation-fill-mode: both;\n  animation-fill-mode: both;\n  -webkit-animation-timing-function: ease-in;\n  animation-timing-function: ease-in;\n}\n\ninput[type=submit], input[type=button], .submitButton {\n  display: flex;\n  justify-content: center;\n  align-self: center;\n  box-sizing: border-box;\n  font-family: \"Lato\";\n  font-weight: 300;\n  font-size: 0.8em;\n  color: rgba(220, 220, 220, 0.2);\n  background-color: transparent;\n  border: 0;\n  min-width: 5em;\n  padding: 0.56em;\n  padding-left: 1.5em;\n  padding-right: 1.5em;\n  cursor: pointer;\n}\n\ninput[type=submit]:hover, input[type=button]:hover, .submitButton:hover {\n  animation: fadeInButton;\n  animation-duration: .4s;\n  animation-fill-mode: both;\n  animation-timing-function: ease-out;\n}\n\ninput[type=submit]:focus, input[type=button]:focus, .submitButton:focus {\n  color: #e4e4e4;\n  border: 0;\n  animation: clickButtonPrimary;\n  animation-duration: 0s;\n  animation-fill-mode: both;\n  animation-timing-function: ease-out;\n}\n\n@keyframes fadeInButton {\n  0% {\n    color: rgba(220, 220, 220, 0.2);\n    background-color: transparent;\n  }\n  100% {\n    color: #e4e4e4;\n    background-color: #303030;\n  }\n}\n\n@keyframes clickButtonSecondary {\n  0% {\n    background-color: rgba(160, 220, 90, 0.6);\n  }\n  100% {\n    background-color: rgba(160, 220, 90, 0.6);\n  }\n}\n\n@keyframes clickButtonPrimary {\n  0% {\n    background-color: #783c8c;\n  }\n  100% {\n    color: #e4e4e4;\n    background-color: #783c8c;\n  }\n}\n\n.JoinChannel {\n  display: flex;\n  justify-content: center;\n  flex-wrap: wrap;\n  flex: 1;\n  font-family: \"Source Sans Pro\";\n  font-weight: 100;\n  box-sizing: border-box;\n  margin: 0em 1em;\n}\n\n.JoinChannel .text {\n  color: rgba(240, 240, 240, 0.2);\n  font-size: 0.8em;\n  display: flex;\n  justify-content: center;\n  margin-top: 1em;\n}\n\n.JoinChannel span {\n  align-self: center;\n}\n\n.JoinChannel form {\n  display: flex;\n  flex-direction: column;\n  width: 80%;\n  justify-content: center;\n  margin-top: 0em;\n}\n\n.JoinChannel .row {\n  display: flex;\n  flex-direction: row;\n}\n\n.JoinChannel .label {\n  flex: 0 1 5%;\n  font-size: 1.25em;\n  color: rgba(228, 228, 228, 0.2);\n}\n\n.JoinChannel .field {\n  flex: 1 0 70%;\n}\n\n.JoinChannel .action {\n  display: flex;\n  flex: 1 0 20%;\n  justify-content: center;\n}\n\n.JoinChannel input[type=text], .JoinChannel input[type=password] {\n  margin-top: 0em;\n  margin-bottom: 0em;\n  width: 90%;\n}\n\n.JoinChannel .submitButton, .JoinChannel input[type=submit] {\n  display: flex;\n  align-self: center;\n  padding-top: 0.5em;\n  padding-bottom: 0.5em;\n}\n\n.passwordFieldAnimation-appear {\n  -webkit-animation: appearFromTop;\n  animation: appearFromTop;\n  -webkit-animation-duration: 0.2s;\n  animation-duration: 0.2s;\n  -webkit-animation-fill-mode: both;\n  animation-fill-mode: both;\n  -webkit-animation-timing-function: ease-out;\n  animation-timing-function: ease-out;\n}\n", ""]);
 
 	// exports
 
@@ -43533,7 +43928,7 @@
 
 
 	// module
-	exports.push([module.id, "::-webkit-scrollbar {\n  width: 6px;\n  height: 6px;\n}\n\n/* Track */\n::-webkit-scrollbar-track {\n  -webkit-box-shadow: none;\n  -webkit-border-radius: 0;\n  border-radius: 0;\n  background: #181818;\n}\n\n/* Handle */\n::-webkit-scrollbar-thumb {\n  -webkit-border-radius: 0px;\n  border-radius: 0px;\n  background: rgba(64, 64, 64, 0.8);\n  -webkit-box-shadow: none;\n}\n\n::-webkit-scrollbar-thumb:window-inactive {\n  background: rgba(128, 128, 128, 0.4);\n}\n", ""]);
+	exports.push([module.id, ".LoginView {\n  font-family: \"Source Sans Pro\";\n  font-weight: 100;\n  font-size: 0.9em;\n  padding: 0.1em;\n  color: gray;\n  display: flex;\n  justify-content: center;\n  width: 100%;\n  height: 100%;\n  margin-top: 0;\n  border-top: 1px solid #1e1e1e;\n  box-sizing: border-box;\n}\n\n.LoginView .inputs {\n  margin: 1.5em;\n  margin-top: 0;\n}\n\n.LoginView h1 {\n  margin-top: 0.6em;\n  font-family: \"Lato\";\n  font-size: 2.5em;\n  font-weight: 100;\n  padding: 1.0em;\n  text-transform: uppercase;\n  color: rgba(240, 240, 240, 0.7);\n}\n\n.LoginView form {\n  display: flex;\n  align-self: flex-start;\n  width: 100%;\n  flex-direction: column;\n  justify-content: center;\n  margin-left: 0.5em;\n  margin-right: 0.5em;\n  max-width: 30em;\n}\n\n.LoginView form .hidden {\n  visibility: hidden;\n  display: none;\n}\n\n.LoginView form .centerrow {\n  display: flex;\n  flex-direction: row;\n  margin-bottom: 0.5em;\n  justify-content: center;\n  width: 100%;\n}\n\n.LoginView form .row {\n  display: flex;\n  flex-direction: row;\n  margin-bottom: 0.5em;\n  justify-content: flex-end;\n  width: 100%;\n}\n\n.LoginView form .label {\n  display: flex;\n  flex: 1 1 8%;\n  min-width: 5em;\n  align-self: center;\n  justify-content: flex-start;\n}\n\n.LoginView form .nicknameLength {\n  margin-top: 0.5em;\n  padding: 0em 0.5em;\n  font-size: 0.8em;\n  display: flex;\n  align-self: center;\n}\n\n.LoginView form .error {\n  color: rgba(240, 96, 96, 0.8);\n  margin-top: 1em;\n  flex: 1 1 auto;\n  text-align: center;\n}\n\n.LoginView form input[type=submit] {\n  margin-top: 1em;\n}\n\n.LoginView form input[type=text], .LoginView form input[type=password] {\n  margin-bottom: 0;\n  width: 90%;\n}\n\n.LoginView form input[type=text]:disabled {\n  color: rgba(228, 228, 228, 0.25);\n  font-style: italic;\n  cursor: not-allowed;\n  width: 90%;\n}\n\n.loginHeaderAnimation-appear {\n  -webkit-animation: bounceInDown;\n  animation: bounceInDown;\n  -webkit-animation-duration: 0.5s;\n  animation-duration: 0.5s;\n  -webkit-animation-fill-mode: both;\n  animation-fill-mode: both;\n  -webkit-animation-timing-function: ease-out;\n  animation-timing-function: ease-out;\n}\n\n.loginScreenAnimation-appear {\n  -webkit-animation: fadeIn;\n  animation: fadeIn;\n  -webkit-animation-duration: 0.5s;\n  animation-duration: 0.5s;\n  -webkit-animation-fill-mode: both;\n  animation-fill-mode: both;\n  -webkit-animation-timing-function: ease-out;\n  animation-timing-function: ease-out;\n}\n", ""]);
 
 	// exports
 
@@ -43547,7 +43942,7 @@
 
 
 	// module
-	exports.push([module.id, "@keyframes fadeIn {\n  0% {\n    opacity: 0;\n  }\n  100% {\n    opacity: 1;\n  }\n}\n\n@keyframes fadeInFromBottom {\n  0% {\n    opacity: 0;\n    transform: translateY(-5px);\n  }\n  100% {\n    opacity: 1;\n    transform: translateY(0);\n  }\n}\n\n@keyframes fadeInCircles {\n  0% {\n    opacity: 0.2;\n    transform: translate(-20px, 0);\n  }\n  10% {\n    opacity: 1;\n  }\n  90% {\n    opacity: 1;\n  }\n  100% {\n    opacity: 0.2;\n    transform: translate(20px, 0);\n  }\n}\n\n@keyframes fadeInCirclesLoop {\n  0% {\n    opacity: 0.2;\n  }\n  40% {\n    opacity: 0.4;\n  }\n  50% {\n    opacity: 1;\n  }\n  80% {\n    opacity: 0.4;\n  }\n  100% {\n    opacity: 0.2;\n  }\n}\n\n@keyframes pulse1 {\n  0% {\n    opacity: 0.3;\n  }\n  50% {\n    opacity: 0.5;\n  }\n  100% {\n    opacity: 0.3;\n  }\n}\n\n@keyframes fadeOut {\n  0% {\n    opacity: 1;\n  }\n  100% {\n    opacity: 0;\n  }\n}\n\n@keyframes darken {\n  0% {\n    opacity: 0;\n  }\n  100% {\n    opacity: 1;\n  }\n}\n\n@keyframes fadeOutUp {\n  0% {\n    opacity: 1;\n  }\n  100% {\n    opacity: 0;\n    height: 0;\n  }\n}\n\n@keyframes fadeOutDown {\n  0% {\n    opacity: 1;\n    transform: translateY(0);\n  }\n  100% {\n    opacity: 0;\n    transform: translateY(20px);\n  }\n}\n\n@keyframes fadeInDown {\n  0% {\n    opacity: 0;\n    transform: translateY(-20px);\n  }\n  100% {\n    opacity: 1;\n    transform: translateY(0);\n  }\n}\n\n@keyframes fadeInUp {\n  0% {\n    opacity: 0;\n    transform: translateY(20px);\n  }\n  100% {\n    opacity: 1;\n    transform: translateY(0);\n  }\n}\n\n@keyframes bounceInLeft {\n  0% {\n    opacity: 0;\n    transform: translateX(-200px);\n  }\n  60% {\n    transform: translateX(2px);\n  }\n  80% {\n    transform: translateX(-2px);\n  }\n  100% {\n    opacity: 1;\n    transform: translateX(0);\n  }\n}\n\n@keyframes bounceInDown {\n  0% {\n    opacity: 0;\n    transform: translateY(-200px);\n  }\n  60% {\n    transform: translateY(2px);\n  }\n  80% {\n    transform: translateY(-2px);\n  }\n  100% {\n    opacity: 1;\n    transform: translateY(0);\n  }\n}\n\n@keyframes slideFromLeft {\n  0% {\n    opacity: 0;\n    transform: translateX(-200px);\n  }\n  100% {\n    opacity: 1;\n    transform: translateX(0);\n  }\n}\n\n@keyframes appearFromTop {\n  0% {\n    opacity: 0;\n    transform: translateY(-10px);\n  }\n  100% {\n    opacity: 1;\n    transform: translateY(0);\n  }\n}\n\n@keyframes fadeOutRight {\n  0% {\n    opacity: 1;\n  }\n  100% {\n    opacity: 0;\n  }\n}\n\ntextarea, input {\n  outline: none;\n}\n\n::-webkit-input-placeholder {\n  color: rgba(228, 228, 228, 0.15);\n  font-style: italic;\n}\n\n:-moz-placeholder {\n  /* Firefox 18- */\n  color: rgba(228, 228, 228, 0.15);\n  font-style: italic;\n}\n\n::-moz-placeholder {\n  /* Firefox 19+ */\n  color: rgba(228, 228, 228, 0.15);\n  font-style: italic;\n}\n\n.App {\n  width: 100%;\n  height: 100%;\n  position: absolute;\n  overflow: hidden;\n  display: flex;\n  flex-direction: column;\n  transform-style: preserve-3d;\n}\n\n.no-close {\n  cursor: default;\n  -webkit-user-select: none;\n  -moz-user-select: none;\n}\n\n.view {\n  background: #222222;\n  width: 100%;\n  padding: 0;\n  margin: 0;\n}\n\n.headerAnimation-appear {\n  -webkit-animation: fadeInDown;\n  animation: fadeInDown;\n  -webkit-animation-duration: 0.2s;\n  animation-duration: 0.2s;\n  -webkit-animation-fill-mode: both;\n  animation-fill-mode: both;\n  -webkit-animation-timing-function: ease-out;\n  animation-timing-function: ease-out;\n}\n\n.joinChannelAnimation-appear {\n  -webkit-animation: fadeIn;\n  animation: fadeIn;\n  -webkit-animation-duration: 0.5s;\n  animation-duration: 0.5s;\n  -webkit-animation-fill-mode: both;\n  animation-fill-mode: both;\n  -webkit-animation-timing-function: ease-in;\n  animation-timing-function: ease-in;\n}\n\n.SendMessage {\n  box-sizing: border-box;\n  font-family: \"Source Sans Pro\";\n  font-weight: 100;\n  font-size: 0.9em;\n  padding: 0.1em;\n  color: gray;\n  display: flex;\n  flex: 1 1 auto;\n  max-width: 60vmax;\n  margin-top: 0;\n}\n\n.SendMessage form {\n  display: flex;\n  flex: 1 1 auto;\n  margin-right: 0.5em;\n}\n\n.SendMessage input[type=text] {\n  margin: 0.25em;\n  margin-top: 0.5em;\n  margin-bottom: 0.5em;\n  flex: 1 1 100%;\n}\n\n.SendMessage .username {\n  display: flex;\n  align-items: center;\n  color: #e4e4e4;\n  margin-right: 0.5em;\n  padding: 0em 0.25em;\n}\n", ""]);
+	exports.push([module.id, "@keyframes fadeIn {\n  0% {\n    opacity: 0;\n  }\n  100% {\n    opacity: 1;\n  }\n}\n\n@keyframes fadeInFromBottom {\n  0% {\n    opacity: 0;\n    transform: translateY(-5px);\n  }\n  100% {\n    opacity: 1;\n    transform: translateY(0);\n  }\n}\n\n@keyframes fadeInCircles {\n  0% {\n    opacity: 0.2;\n    transform: translate(-20px, 0);\n  }\n  10% {\n    opacity: 1;\n  }\n  90% {\n    opacity: 1;\n  }\n  100% {\n    opacity: 0.2;\n    transform: translate(20px, 0);\n  }\n}\n\n@keyframes fadeInCirclesLoop {\n  0% {\n    opacity: 0.2;\n  }\n  40% {\n    opacity: 0.4;\n  }\n  50% {\n    opacity: 1;\n  }\n  80% {\n    opacity: 0.4;\n  }\n  100% {\n    opacity: 0.2;\n  }\n}\n\n@keyframes pulse1 {\n  0% {\n    opacity: 0.3;\n  }\n  50% {\n    opacity: 0.5;\n  }\n  100% {\n    opacity: 0.3;\n  }\n}\n\n@keyframes fadeOut {\n  0% {\n    opacity: 1;\n  }\n  100% {\n    opacity: 0;\n  }\n}\n\n@keyframes darken {\n  0% {\n    opacity: 0;\n  }\n  100% {\n    opacity: 1;\n  }\n}\n\n@keyframes fadeOutUp {\n  0% {\n    opacity: 1;\n  }\n  100% {\n    opacity: 0;\n    height: 0;\n  }\n}\n\n@keyframes fadeOutDown {\n  0% {\n    opacity: 1;\n    transform: translateY(0);\n  }\n  100% {\n    opacity: 0;\n    transform: translateY(20px);\n  }\n}\n\n@keyframes fadeInDown {\n  0% {\n    opacity: 0;\n    transform: translateY(-20px);\n  }\n  100% {\n    opacity: 1;\n    transform: translateY(0);\n  }\n}\n\n@keyframes fadeInUp {\n  0% {\n    opacity: 0;\n    transform: translateY(20px);\n  }\n  100% {\n    opacity: 1;\n    transform: translateY(0);\n  }\n}\n\n@keyframes bounceInLeft {\n  0% {\n    opacity: 0;\n    transform: translateX(-200px);\n  }\n  60% {\n    transform: translateX(2px);\n  }\n  80% {\n    transform: translateX(-2px);\n  }\n  100% {\n    opacity: 1;\n    transform: translateX(0);\n  }\n}\n\n@keyframes bounceInDown {\n  0% {\n    opacity: 0;\n    transform: translateY(-200px);\n  }\n  60% {\n    transform: translateY(2px);\n  }\n  80% {\n    transform: translateY(-2px);\n  }\n  100% {\n    opacity: 1;\n    transform: translateY(0);\n  }\n}\n\n@keyframes slideFromLeft {\n  0% {\n    opacity: 0;\n    transform: translateX(-200px);\n  }\n  100% {\n    opacity: 1;\n    transform: translateX(0);\n  }\n}\n\n@keyframes appearFromTop {\n  0% {\n    opacity: 0;\n    transform: translateY(-10px);\n  }\n  100% {\n    opacity: 1;\n    transform: translateY(0);\n  }\n}\n\n@keyframes fadeOutRight {\n  0% {\n    opacity: 1;\n  }\n  100% {\n    opacity: 0;\n  }\n}\n\n.highlighted {\n  background-color: #252525 !important;\n}\n\n.command {\n  font-style: italic;\n  color: #f0f0f0 !important;\n  margin-left: 0em !important;\n}\n\n.Message {\n  display: flex;\n  flex: 1 1 100%;\n  flex-direction: row;\n  justify-content: flex-start;\n  align-items: flex-start;\n  background-color: #232323;\n  font-weight: 100;\n  border-bottom: 1px solid rgba(34, 34, 34, 0);\n  padding: 0.2em;\n  padding-bottom: 0;\n  color: rgba(255, 255, 255, 0.6);\n  overflow: hidden;\n}\n\n.Message .Timestamp {\n  display: flex;\n  color: rgba(240, 240, 240, 0.6);\n  font-weight: 300;\n  font-size: 0.8em;\n  padding-left: 0.2em;\n  padding-right: 0.5em;\n  border-right: 1px solid rgba(255, 255, 255, 0.2);\n  padding-top: 0.25em;\n}\n\n.Message .Content {\n  margin-left: 0.2em;\n  margin-right: 0.5em;\n  display: flex;\n  flex: 1;\n  overflow: hidden;\n}\n", ""]);
 
 	// exports
 
@@ -43561,7 +43956,7 @@
 
 
 	// module
-	exports.push([module.id, ".SettingsView {\n  color: #fff;\n  background: #282828;\n  width: 100%;\n  height: 100%;\n  margin: 0;\n  font-family: \"Source Sans Pro\";\n  font-weight: 300;\n  font-size: 1.0em;\n  color: rgba(240, 240, 240, 0.9);\n}\n\n.SettingsView .row {\n  display: flex;\n  align-items: center;\n  padding: 0.2em;\n  padding-left: 1.2em;\n  text-transform: capitalize;\n  background-color: #262626;\n  border-bottom: 1px solid #222222;\n}\n\n.SettingsView .key {\n  display: inline-block;\n  vertical-align: top;\n  min-width: 12em;\n}\n\n.SettingsView .description {\n  font-style: italic;\n  color: rgba(228, 228, 228, 0.3);\n}\n\n.SettingsView .rowAnimation-appear {\n  -webkit-animation-name: fadeIn;\n  animation-name: fadeIn;\n  -webkit-animation-duration: 0.3s;\n  animation-duration: 0.3s;\n  -webkit-animation-fill-mode: both;\n  animation-fill-mode: both;\n  -webkit-animation-timing-function: ease-in;\n  animation-timing-function: ease-in;\n}\n", ""]);
+	exports.push([module.id, "@keyframes fadeIn {\n  0% {\n    opacity: 0;\n  }\n  100% {\n    opacity: 1;\n  }\n}\n\n@keyframes fadeInFromBottom {\n  0% {\n    opacity: 0;\n    transform: translateY(-5px);\n  }\n  100% {\n    opacity: 1;\n    transform: translateY(0);\n  }\n}\n\n@keyframes fadeInCircles {\n  0% {\n    opacity: 0.2;\n    transform: translate(-20px, 0);\n  }\n  10% {\n    opacity: 1;\n  }\n  90% {\n    opacity: 1;\n  }\n  100% {\n    opacity: 0.2;\n    transform: translate(20px, 0);\n  }\n}\n\n@keyframes fadeInCirclesLoop {\n  0% {\n    opacity: 0.2;\n  }\n  40% {\n    opacity: 0.4;\n  }\n  50% {\n    opacity: 1;\n  }\n  80% {\n    opacity: 0.4;\n  }\n  100% {\n    opacity: 0.2;\n  }\n}\n\n@keyframes pulse1 {\n  0% {\n    opacity: 0.3;\n  }\n  50% {\n    opacity: 0.5;\n  }\n  100% {\n    opacity: 0.3;\n  }\n}\n\n@keyframes fadeOut {\n  0% {\n    opacity: 1;\n  }\n  100% {\n    opacity: 0;\n  }\n}\n\n@keyframes darken {\n  0% {\n    opacity: 0;\n  }\n  100% {\n    opacity: 1;\n  }\n}\n\n@keyframes fadeOutUp {\n  0% {\n    opacity: 1;\n  }\n  100% {\n    opacity: 0;\n    height: 0;\n  }\n}\n\n@keyframes fadeOutDown {\n  0% {\n    opacity: 1;\n    transform: translateY(0);\n  }\n  100% {\n    opacity: 0;\n    transform: translateY(20px);\n  }\n}\n\n@keyframes fadeInDown {\n  0% {\n    opacity: 0;\n    transform: translateY(-20px);\n  }\n  100% {\n    opacity: 1;\n    transform: translateY(0);\n  }\n}\n\n@keyframes fadeInUp {\n  0% {\n    opacity: 0;\n    transform: translateY(20px);\n  }\n  100% {\n    opacity: 1;\n    transform: translateY(0);\n  }\n}\n\n@keyframes bounceInLeft {\n  0% {\n    opacity: 0;\n    transform: translateX(-200px);\n  }\n  60% {\n    transform: translateX(2px);\n  }\n  80% {\n    transform: translateX(-2px);\n  }\n  100% {\n    opacity: 1;\n    transform: translateX(0);\n  }\n}\n\n@keyframes bounceInDown {\n  0% {\n    opacity: 0;\n    transform: translateY(-200px);\n  }\n  60% {\n    transform: translateY(2px);\n  }\n  80% {\n    transform: translateY(-2px);\n  }\n  100% {\n    opacity: 1;\n    transform: translateY(0);\n  }\n}\n\n@keyframes slideFromLeft {\n  0% {\n    opacity: 0;\n    transform: translateX(-200px);\n  }\n  100% {\n    opacity: 1;\n    transform: translateX(0);\n  }\n}\n\n@keyframes appearFromTop {\n  0% {\n    opacity: 0;\n    transform: translateY(-10px);\n  }\n  100% {\n    opacity: 1;\n    transform: translateY(0);\n  }\n}\n\n@keyframes fadeOutRight {\n  0% {\n    opacity: 1;\n  }\n  100% {\n    opacity: 0;\n  }\n}\n\n.RecentChannelsView {\n  display: flex;\n  flex-direction: column;\n  flex: 1;\n}\n\n.RecentChannelsView .RecentChannels {\n  overflow: auto;\n  margin: 1em;\n  margin-top: 0;\n  margin-bottom: 0;\n  font-weight: 100;\n  box-sizing: border-box;\n}\n\n.RecentChannelsView .RecentChannels .link {\n  box-sizing: border-box;\n  vertical-align: middle;\n  cursor: pointer;\n  color: rgba(228, 228, 228, 0.3);\n  font-weight: 100;\n  margin-right: 0.2em;\n  margin-bottom: 0.1em;\n}\n\n.RecentChannelsView .RecentChannels .link:hover {\n  background-color: #303030;\n  color: #e4e4e4;\n  border: 0px solid transparent;\n}\n\n.RecentChannelsView .submitButton {\n  display: flex;\n  align-self: flex-end;\n}\n", ""]);
 
 	// exports
 
@@ -43575,7 +43970,7 @@
 
 
 	// module
-	exports.push([module.id, ".SwarmView {\n  color: #fff;\n  background: #282828;\n  width: 100%;\n  height: 100%;\n  margin: 0;\n  font-family: \"Source Sans Pro\";\n  font-weight: 300;\n  font-size: 1.0em;\n  color: rgba(240, 240, 240, 0.9);\n}\n\n.SwarmView .peers {\n  overflow: auto;\n  width: 100%;\n  height: 100%;\n}\n\n.SwarmView .green {\n  color: rgba(160, 220, 90, 0.6);\n  font-size: 1.25em;\n  font-weight: 400;\n  margin: 0em 0.25em;\n}\n\n.SwarmView .summary {\n  font-size: 1.0em;\n  color: #e4e4e4;\n  padding: 0.5em;\n  border-bottom: 1px solid #222222;\n  display: flex;\n  align-items: center;\n  justify-content: flex-start;\n}\n\n.SwarmView .peer {\n  padding: 0.3em;\n  padding-left: 1.2em;\n  background-color: #262626;\n  border-bottom: 1px solid #222222;\n}\n\n.SwarmView .peerAnimation-appear {\n  -webkit-animation-name: fadeIn;\n  animation-name: fadeIn;\n  -webkit-animation-duration: 0.3s;\n  animation-duration: 0.3s;\n  -webkit-animation-fill-mode: both;\n  animation-fill-mode: both;\n  -webkit-animation-timing-function: ease-in;\n  animation-timing-function: ease-in;\n}\n", ""]);
+	exports.push([module.id, "::-webkit-scrollbar {\n  width: 6px;\n  height: 6px;\n}\n\n/* Track */\n::-webkit-scrollbar-track {\n  -webkit-box-shadow: none;\n  -webkit-border-radius: 0;\n  border-radius: 0;\n  background: #181818;\n}\n\n/* Handle */\n::-webkit-scrollbar-thumb {\n  -webkit-border-radius: 0px;\n  border-radius: 0px;\n  background: rgba(64, 64, 64, 0.8);\n  -webkit-box-shadow: none;\n}\n\n::-webkit-scrollbar-thumb:window-inactive {\n  background: rgba(128, 128, 128, 0.4);\n}\n", ""]);
 
 	// exports
 
@@ -43589,7 +43984,7 @@
 
 
 	// module
-	exports.push([module.id, ".TextMessage {\n  padding-left: 0.3em;\n  padding-right: 0.3em;\n  display: flex;\n  flex: 1 0;\n  align-items: center;\n  font-weight: 300;\n  overflow-wrap: break-word;\n  word-wrap: break-word;\n  -webkit-hyphens: auto;\n  -ms-hyphens: auto;\n  -moz-hyphens: auto;\n  hyphens: auto;\n}\n\n.TextMessage a {\n  color: rgba(128, 196, 255, 0.8);\n  text-decoration: none;\n}\n\n.TextMessage a:hover {\n  color: #80c4ff;\n  text-decoration: none;\n}\n\n.TextMessage img {\n  vertical-align: bottom;\n}\n\n.TextMessage .content2 {\n  width: 100%;\n}\n\n.TextMessage .highlight {\n  color: rgba(240, 100, 100, 0.8);\n  font-weight: 400;\n}\n\n.TextMessage:hover {\n  color: rgba(240, 244, 240, 0.9);\n}\n\n.loading {\n  color: rgba(240, 244, 240, 0.1);\n}\n\n.textAnimation-appear {\n  -webkit-animation-name: fadeIn;\n  animation-name: fadeIn;\n  -webkit-animation-duration: 0.4s;\n  animation-duration: 0.4s;\n  -webkit-animation-fill-mode: both;\n  animation-fill-mode: both;\n  -webkit-animation-timing-function: ease-in;\n  animation-timing-function: ease-in;\n}\n", ""]);
+	exports.push([module.id, "@keyframes fadeIn {\n  0% {\n    opacity: 0;\n  }\n  100% {\n    opacity: 1;\n  }\n}\n\n@keyframes fadeInFromBottom {\n  0% {\n    opacity: 0;\n    transform: translateY(-5px);\n  }\n  100% {\n    opacity: 1;\n    transform: translateY(0);\n  }\n}\n\n@keyframes fadeInCircles {\n  0% {\n    opacity: 0.2;\n    transform: translate(-20px, 0);\n  }\n  10% {\n    opacity: 1;\n  }\n  90% {\n    opacity: 1;\n  }\n  100% {\n    opacity: 0.2;\n    transform: translate(20px, 0);\n  }\n}\n\n@keyframes fadeInCirclesLoop {\n  0% {\n    opacity: 0.2;\n  }\n  40% {\n    opacity: 0.4;\n  }\n  50% {\n    opacity: 1;\n  }\n  80% {\n    opacity: 0.4;\n  }\n  100% {\n    opacity: 0.2;\n  }\n}\n\n@keyframes pulse1 {\n  0% {\n    opacity: 0.3;\n  }\n  50% {\n    opacity: 0.5;\n  }\n  100% {\n    opacity: 0.3;\n  }\n}\n\n@keyframes fadeOut {\n  0% {\n    opacity: 1;\n  }\n  100% {\n    opacity: 0;\n  }\n}\n\n@keyframes darken {\n  0% {\n    opacity: 0;\n  }\n  100% {\n    opacity: 1;\n  }\n}\n\n@keyframes fadeOutUp {\n  0% {\n    opacity: 1;\n  }\n  100% {\n    opacity: 0;\n    height: 0;\n  }\n}\n\n@keyframes fadeOutDown {\n  0% {\n    opacity: 1;\n    transform: translateY(0);\n  }\n  100% {\n    opacity: 0;\n    transform: translateY(20px);\n  }\n}\n\n@keyframes fadeInDown {\n  0% {\n    opacity: 0;\n    transform: translateY(-20px);\n  }\n  100% {\n    opacity: 1;\n    transform: translateY(0);\n  }\n}\n\n@keyframes fadeInUp {\n  0% {\n    opacity: 0;\n    transform: translateY(20px);\n  }\n  100% {\n    opacity: 1;\n    transform: translateY(0);\n  }\n}\n\n@keyframes bounceInLeft {\n  0% {\n    opacity: 0;\n    transform: translateX(-200px);\n  }\n  60% {\n    transform: translateX(2px);\n  }\n  80% {\n    transform: translateX(-2px);\n  }\n  100% {\n    opacity: 1;\n    transform: translateX(0);\n  }\n}\n\n@keyframes bounceInDown {\n  0% {\n    opacity: 0;\n    transform: translateY(-200px);\n  }\n  60% {\n    transform: translateY(2px);\n  }\n  80% {\n    transform: translateY(-2px);\n  }\n  100% {\n    opacity: 1;\n    transform: translateY(0);\n  }\n}\n\n@keyframes slideFromLeft {\n  0% {\n    opacity: 0;\n    transform: translateX(-200px);\n  }\n  100% {\n    opacity: 1;\n    transform: translateX(0);\n  }\n}\n\n@keyframes appearFromTop {\n  0% {\n    opacity: 0;\n    transform: translateY(-10px);\n  }\n  100% {\n    opacity: 1;\n    transform: translateY(0);\n  }\n}\n\n@keyframes fadeOutRight {\n  0% {\n    opacity: 1;\n  }\n  100% {\n    opacity: 0;\n  }\n}\n\ntextarea, input {\n  outline: none;\n}\n\n::-webkit-input-placeholder {\n  color: rgba(228, 228, 228, 0.15);\n  font-style: italic;\n}\n\n:-moz-placeholder {\n  /* Firefox 18- */\n  color: rgba(228, 228, 228, 0.15);\n  font-style: italic;\n}\n\n::-moz-placeholder {\n  /* Firefox 19+ */\n  color: rgba(228, 228, 228, 0.15);\n  font-style: italic;\n}\n\n.App {\n  width: 100%;\n  height: 100%;\n  position: absolute;\n  overflow: hidden;\n  display: flex;\n  flex-direction: column;\n  transform-style: preserve-3d;\n}\n\n.no-close {\n  cursor: default;\n  -webkit-user-select: none;\n  -moz-user-select: none;\n}\n\n.view {\n  background: #222222;\n  width: 100%;\n  padding: 0;\n  margin: 0;\n}\n\n.headerAnimation-appear {\n  -webkit-animation: fadeInDown;\n  animation: fadeInDown;\n  -webkit-animation-duration: 0.2s;\n  animation-duration: 0.2s;\n  -webkit-animation-fill-mode: both;\n  animation-fill-mode: both;\n  -webkit-animation-timing-function: ease-out;\n  animation-timing-function: ease-out;\n}\n\n.joinChannelAnimation-appear {\n  -webkit-animation: fadeIn;\n  animation: fadeIn;\n  -webkit-animation-duration: 0.5s;\n  animation-duration: 0.5s;\n  -webkit-animation-fill-mode: both;\n  animation-fill-mode: both;\n  -webkit-animation-timing-function: ease-in;\n  animation-timing-function: ease-in;\n}\n\n.SendMessage {\n  box-sizing: border-box;\n  font-family: \"Source Sans Pro\";\n  font-weight: 100;\n  font-size: 0.9em;\n  padding: 0.1em;\n  color: gray;\n  display: flex;\n  flex: 1 1 auto;\n  max-width: 60vmax;\n  margin-top: 0;\n}\n\n.SendMessage form {\n  display: flex;\n  flex: 1 1 auto;\n  margin-right: 0.5em;\n}\n\n.SendMessage input[type=text] {\n  margin: 0.25em;\n  margin-top: 0.5em;\n  margin-bottom: 0.5em;\n  flex: 1 1 100%;\n}\n\n.SendMessage .username {\n  display: flex;\n  align-items: center;\n  color: #e4e4e4;\n  margin-right: 0.5em;\n  padding: 0em 0.25em;\n}\n", ""]);
 
 	// exports
 
@@ -43603,13 +43998,55 @@
 
 
 	// module
-	exports.push([module.id, ".User {\n  color: rgba(255, 255, 255, 0.95);\n  font-weight: 300;\n  padding-left: 0.5em;\n}\n", ""]);
+	exports.push([module.id, ".SettingsView {\n  color: #fff;\n  background: #282828;\n  width: 100%;\n  height: 100%;\n  margin: 0;\n  font-family: \"Source Sans Pro\";\n  font-weight: 300;\n  font-size: 1.0em;\n  color: rgba(240, 240, 240, 0.9);\n}\n\n.SettingsView .row {\n  display: flex;\n  align-items: center;\n  padding: 0.2em;\n  padding-left: 1.2em;\n  text-transform: capitalize;\n  background-color: #262626;\n  border-bottom: 1px solid #222222;\n}\n\n.SettingsView .key {\n  display: inline-block;\n  vertical-align: top;\n  min-width: 12em;\n}\n\n.SettingsView .description {\n  font-style: italic;\n  color: rgba(228, 228, 228, 0.3);\n}\n\n.SettingsView .rowAnimation-appear {\n  -webkit-animation-name: fadeIn;\n  animation-name: fadeIn;\n  -webkit-animation-duration: 0.3s;\n  animation-duration: 0.3s;\n  -webkit-animation-fill-mode: both;\n  animation-fill-mode: both;\n  -webkit-animation-timing-function: ease-in;\n  animation-timing-function: ease-in;\n}\n", ""]);
 
 	// exports
 
 
 /***/ },
 /* 488 */
+/***/ function(module, exports, __webpack_require__) {
+
+	exports = module.exports = __webpack_require__(13)();
+	// imports
+
+
+	// module
+	exports.push([module.id, ".SwarmView {\n  color: #fff;\n  background: #282828;\n  width: 100%;\n  height: 100%;\n  margin: 0;\n  font-family: \"Source Sans Pro\";\n  font-weight: 300;\n  font-size: 1.0em;\n  color: rgba(240, 240, 240, 0.9);\n}\n\n.SwarmView .peers {\n  overflow: auto;\n  width: 100%;\n  height: 100%;\n}\n\n.SwarmView .green {\n  color: rgba(160, 220, 90, 0.6);\n  font-size: 1.25em;\n  font-weight: 400;\n  margin: 0em 0.25em;\n}\n\n.SwarmView .summary {\n  font-size: 1.0em;\n  color: #e4e4e4;\n  padding: 0.5em;\n  border-bottom: 1px solid #222222;\n  display: flex;\n  align-items: center;\n  justify-content: flex-start;\n}\n\n.SwarmView .peer {\n  padding: 0.3em;\n  padding-left: 1.2em;\n  background-color: #262626;\n  border-bottom: 1px solid #222222;\n}\n\n.SwarmView .peerAnimation-appear {\n  -webkit-animation-name: fadeIn;\n  animation-name: fadeIn;\n  -webkit-animation-duration: 0.3s;\n  animation-duration: 0.3s;\n  -webkit-animation-fill-mode: both;\n  animation-fill-mode: both;\n  -webkit-animation-timing-function: ease-in;\n  animation-timing-function: ease-in;\n}\n", ""]);
+
+	// exports
+
+
+/***/ },
+/* 489 */
+/***/ function(module, exports, __webpack_require__) {
+
+	exports = module.exports = __webpack_require__(13)();
+	// imports
+
+
+	// module
+	exports.push([module.id, ".TextMessage {\n  padding-left: 0.3em;\n  padding-right: 0.3em;\n  display: flex;\n  flex: 1 0;\n  align-items: center;\n  font-weight: 300;\n  overflow-wrap: break-word;\n  word-wrap: break-word;\n  -webkit-hyphens: auto;\n  -ms-hyphens: auto;\n  -moz-hyphens: auto;\n  hyphens: auto;\n}\n\n.TextMessage a {\n  color: rgba(128, 196, 255, 0.8);\n  text-decoration: none;\n}\n\n.TextMessage a:hover {\n  color: #80c4ff;\n  text-decoration: none;\n}\n\n.TextMessage img {\n  vertical-align: bottom;\n}\n\n.TextMessage .content2 {\n  width: 100%;\n}\n\n.TextMessage .highlight {\n  color: rgba(240, 100, 100, 0.8);\n  font-weight: 400;\n}\n\n.TextMessage:hover {\n  color: rgba(240, 244, 240, 0.9);\n}\n\n.loading {\n  color: rgba(240, 244, 240, 0.1);\n}\n\n.textAnimation-appear {\n  -webkit-animation-name: fadeIn;\n  animation-name: fadeIn;\n  -webkit-animation-duration: 0.4s;\n  animation-duration: 0.4s;\n  -webkit-animation-fill-mode: both;\n  animation-fill-mode: both;\n  -webkit-animation-timing-function: ease-in;\n  animation-timing-function: ease-in;\n}\n", ""]);
+
+	// exports
+
+
+/***/ },
+/* 490 */
+/***/ function(module, exports, __webpack_require__) {
+
+	exports = module.exports = __webpack_require__(13)();
+	// imports
+
+
+	// module
+	exports.push([module.id, ".User {\n  color: rgba(255, 255, 255, 0.95);\n  font-weight: 300;\n  padding-left: 0.5em;\n}\n", ""]);
+
+	// exports
+
+
+/***/ },
+/* 491 */
 /***/ function(module, exports, __webpack_require__) {
 
 	exports = module.exports = __webpack_require__(13)();
@@ -43623,12 +44060,12 @@
 
 
 /***/ },
-/* 489 */
+/* 492 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var pSlice = Array.prototype.slice;
-	var objectKeys = __webpack_require__(491);
-	var isArguments = __webpack_require__(490);
+	var objectKeys = __webpack_require__(494);
+	var isArguments = __webpack_require__(493);
 
 	var deepEqual = module.exports = function (actual, expected, opts) {
 	  if (!opts) opts = {};
@@ -43723,7 +44160,7 @@
 
 
 /***/ },
-/* 490 */
+/* 493 */
 /***/ function(module, exports) {
 
 	var supportsArgumentsClass = (function(){
@@ -43749,7 +44186,7 @@
 
 
 /***/ },
-/* 491 */
+/* 494 */
 /***/ function(module, exports) {
 
 	exports = module.exports = typeof Object.keys === 'function'
@@ -43764,7 +44201,57 @@
 
 
 /***/ },
-/* 492 */
+/* 495 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var closest = __webpack_require__(470);
+
+	/**
+	 * Delegates event to a selector.
+	 *
+	 * @param {Element} element
+	 * @param {String} selector
+	 * @param {String} type
+	 * @param {Function} callback
+	 * @param {Boolean} useCapture
+	 * @return {Object}
+	 */
+	function delegate(element, selector, type, callback, useCapture) {
+	    var listenerFn = listener.apply(this, arguments);
+
+	    element.addEventListener(type, listenerFn, useCapture);
+
+	    return {
+	        destroy: function() {
+	            element.removeEventListener(type, listenerFn, useCapture);
+	        }
+	    }
+	}
+
+	/**
+	 * Finds closest match and invokes callback.
+	 *
+	 * @param {Element} element
+	 * @param {String} selector
+	 * @param {String} type
+	 * @param {Function} callback
+	 * @return {Function}
+	 */
+	function listener(element, selector, type, callback) {
+	    return function(e) {
+	        e.delegateTarget = closest(e.target, selector, true);
+
+	        if (e.delegateTarget) {
+	            callback.call(element, e);
+	        }
+	    }
+	}
+
+	module.exports = delegate;
+
+
+/***/ },
+/* 496 */
 /***/ function(module, exports) {
 
 	'use strict';
@@ -43773,7 +44260,7 @@
 
 
 /***/ },
-/* 493 */
+/* 497 */
 /***/ function(module, exports) {
 
 	'use strict';
@@ -43792,12 +44279,12 @@
 
 
 /***/ },
-/* 494 */
+/* 498 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
 
-	var builtinStyle = __webpack_require__(492);
+	var builtinStyle = __webpack_require__(496);
 	var prefixes = ['Moz', 'Webkit', 'O', 'ms'];
 	var domVendorPrefix;
 
@@ -43835,7 +44322,7 @@
 
 
 /***/ },
-/* 495 */
+/* 499 */
 /***/ function(module, exports) {
 
 	'use strict';
@@ -43860,7 +44347,7 @@
 
 
 /***/ },
-/* 496 */
+/* 500 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -44155,7 +44642,7 @@
 
 
 /***/ },
-/* 497 */
+/* 501 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(process) {/**
@@ -44258,7 +44745,7 @@
 	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(2)))
 
 /***/ },
-/* 498 */
+/* 502 */
 /***/ function(module, exports) {
 
 	/**
@@ -44295,7 +44782,7 @@
 	module.exports = camelize;
 
 /***/ },
-/* 499 */
+/* 503 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/**
@@ -44312,7 +44799,7 @@
 
 	'use strict';
 
-	var camelize = __webpack_require__(498);
+	var camelize = __webpack_require__(502);
 
 	var msPattern = /^-ms-/;
 
@@ -44340,7 +44827,7 @@
 	module.exports = camelizeStyleName;
 
 /***/ },
-/* 500 */
+/* 504 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/**
@@ -44357,7 +44844,7 @@
 
 	'use strict';
 
-	var toArray = __webpack_require__(511);
+	var toArray = __webpack_require__(515);
 
 	/**
 	 * Perform a heuristic test to determine if an object is "array-like".
@@ -44430,7 +44917,7 @@
 	module.exports = createArrayFromMixed;
 
 /***/ },
-/* 501 */
+/* 505 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(process) {/**
@@ -44451,7 +44938,7 @@
 
 	var ExecutionEnvironment = __webpack_require__(16);
 
-	var createArrayFromMixed = __webpack_require__(500);
+	var createArrayFromMixed = __webpack_require__(504);
 	var getMarkupWrap = __webpack_require__(221);
 	var invariant = __webpack_require__(4);
 
@@ -44520,7 +45007,7 @@
 	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(2)))
 
 /***/ },
-/* 502 */
+/* 506 */
 /***/ function(module, exports) {
 
 	/**
@@ -44563,7 +45050,7 @@
 	module.exports = getUnboundedScrollPosition;
 
 /***/ },
-/* 503 */
+/* 507 */
 /***/ function(module, exports) {
 
 	/**
@@ -44601,7 +45088,7 @@
 	module.exports = hyphenate;
 
 /***/ },
-/* 504 */
+/* 508 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/**
@@ -44618,7 +45105,7 @@
 
 	'use strict';
 
-	var hyphenate = __webpack_require__(503);
+	var hyphenate = __webpack_require__(507);
 
 	var msPattern = /^ms-/;
 
@@ -44645,7 +45132,7 @@
 	module.exports = hyphenateStyleName;
 
 /***/ },
-/* 505 */
+/* 509 */
 /***/ function(module, exports) {
 
 	/**
@@ -44673,7 +45160,7 @@
 	module.exports = isNode;
 
 /***/ },
-/* 506 */
+/* 510 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/**
@@ -44690,7 +45177,7 @@
 
 	'use strict';
 
-	var isNode = __webpack_require__(505);
+	var isNode = __webpack_require__(509);
 
 	/**
 	 * @param {*} object The object to check.
@@ -44703,7 +45190,7 @@
 	module.exports = isTextNode;
 
 /***/ },
-/* 507 */
+/* 511 */
 /***/ function(module, exports) {
 
 	/**
@@ -44759,7 +45246,7 @@
 	module.exports = mapObject;
 
 /***/ },
-/* 508 */
+/* 512 */
 /***/ function(module, exports) {
 
 	/**
@@ -44795,7 +45282,7 @@
 	module.exports = memoizeStringOnly;
 
 /***/ },
-/* 509 */
+/* 513 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/**
@@ -44823,7 +45310,7 @@
 	module.exports = performance || {};
 
 /***/ },
-/* 510 */
+/* 514 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/**
@@ -44840,7 +45327,7 @@
 
 	'use strict';
 
-	var performance = __webpack_require__(509);
+	var performance = __webpack_require__(513);
 
 	var performanceNow;
 
@@ -44862,7 +45349,7 @@
 	module.exports = performanceNow;
 
 /***/ },
-/* 511 */
+/* 515 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(process) {/**
@@ -44925,7 +45412,163 @@
 	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(2)))
 
 /***/ },
-/* 512 */
+/* 516 */
+/***/ function(module, exports) {
+
+	/**
+	 * Check if argument is a HTML element.
+	 *
+	 * @param {Object} value
+	 * @return {Boolean}
+	 */
+	exports.node = function(value) {
+	    return value !== undefined
+	        && value instanceof HTMLElement
+	        && value.nodeType === 1;
+	};
+
+	/**
+	 * Check if argument is a list of HTML elements.
+	 *
+	 * @param {Object} value
+	 * @return {Boolean}
+	 */
+	exports.nodeList = function(value) {
+	    var type = Object.prototype.toString.call(value);
+
+	    return value !== undefined
+	        && (type === '[object NodeList]' || type === '[object HTMLCollection]')
+	        && ('length' in value)
+	        && (value.length === 0 || exports.node(value[0]));
+	};
+
+	/**
+	 * Check if argument is a string.
+	 *
+	 * @param {Object} value
+	 * @return {Boolean}
+	 */
+	exports.string = function(value) {
+	    return typeof value === 'string'
+	        || value instanceof String;
+	};
+
+	/**
+	 * Check if argument is a function.
+	 *
+	 * @param {Object} value
+	 * @return {Boolean}
+	 */
+	exports.fn = function(value) {
+	    var type = Object.prototype.toString.call(value);
+
+	    return type === '[object Function]';
+	};
+
+
+/***/ },
+/* 517 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var is = __webpack_require__(516);
+	var delegate = __webpack_require__(495);
+
+	/**
+	 * Validates all params and calls the right
+	 * listener function based on its target type.
+	 *
+	 * @param {String|HTMLElement|HTMLCollection|NodeList} target
+	 * @param {String} type
+	 * @param {Function} callback
+	 * @return {Object}
+	 */
+	function listen(target, type, callback) {
+	    if (!target && !type && !callback) {
+	        throw new Error('Missing required arguments');
+	    }
+
+	    if (!is.string(type)) {
+	        throw new TypeError('Second argument must be a String');
+	    }
+
+	    if (!is.fn(callback)) {
+	        throw new TypeError('Third argument must be a Function');
+	    }
+
+	    if (is.node(target)) {
+	        return listenNode(target, type, callback);
+	    }
+	    else if (is.nodeList(target)) {
+	        return listenNodeList(target, type, callback);
+	    }
+	    else if (is.string(target)) {
+	        return listenSelector(target, type, callback);
+	    }
+	    else {
+	        throw new TypeError('First argument must be a String, HTMLElement, HTMLCollection, or NodeList');
+	    }
+	}
+
+	/**
+	 * Adds an event listener to a HTML element
+	 * and returns a remove listener function.
+	 *
+	 * @param {HTMLElement} node
+	 * @param {String} type
+	 * @param {Function} callback
+	 * @return {Object}
+	 */
+	function listenNode(node, type, callback) {
+	    node.addEventListener(type, callback);
+
+	    return {
+	        destroy: function() {
+	            node.removeEventListener(type, callback);
+	        }
+	    }
+	}
+
+	/**
+	 * Add an event listener to a list of HTML elements
+	 * and returns a remove listener function.
+	 *
+	 * @param {NodeList|HTMLCollection} nodeList
+	 * @param {String} type
+	 * @param {Function} callback
+	 * @return {Object}
+	 */
+	function listenNodeList(nodeList, type, callback) {
+	    Array.prototype.forEach.call(nodeList, function(node) {
+	        node.addEventListener(type, callback);
+	    });
+
+	    return {
+	        destroy: function() {
+	            Array.prototype.forEach.call(nodeList, function(node) {
+	                node.removeEventListener(type, callback);
+	            });
+	        }
+	    }
+	}
+
+	/**
+	 * Add an event listener to a selector
+	 * and returns a remove listener function.
+	 *
+	 * @param {String} selector
+	 * @param {String} type
+	 * @param {Function} callback
+	 * @return {Object}
+	 */
+	function listenSelector(selector, type, callback) {
+	    return delegate(document.body, selector, type, callback);
+	}
+
+	module.exports = listen;
+
+
+/***/ },
+/* 518 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -45039,7 +45682,7 @@
 	module.exports = Loader;
 
 /***/ },
-/* 513 */
+/* 519 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -45164,7 +45807,7 @@
 	module.exports = Loader;
 
 /***/ },
-/* 514 */
+/* 520 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -45280,7 +45923,7 @@
 	module.exports = Loader;
 
 /***/ },
-/* 515 */
+/* 521 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -45424,7 +46067,7 @@
 	module.exports = Loader;
 
 /***/ },
-/* 516 */
+/* 522 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -45610,7 +46253,7 @@
 	module.exports = Loader;
 
 /***/ },
-/* 517 */
+/* 523 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -45756,7 +46399,7 @@
 	module.exports = Loader;
 
 /***/ },
-/* 518 */
+/* 524 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -45886,7 +46529,7 @@
 	module.exports = Loader;
 
 /***/ },
-/* 519 */
+/* 525 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -46035,7 +46678,7 @@
 	module.exports = Loader;
 
 /***/ },
-/* 520 */
+/* 526 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -46156,7 +46799,7 @@
 	module.exports = Loader;
 
 /***/ },
-/* 521 */
+/* 527 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -46306,7 +46949,7 @@
 	module.exports = Loader;
 
 /***/ },
-/* 522 */
+/* 528 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -46463,7 +47106,7 @@
 	module.exports = Loader;
 
 /***/ },
-/* 523 */
+/* 529 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -46594,7 +47237,7 @@
 	module.exports = Loader;
 
 /***/ },
-/* 524 */
+/* 530 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -46718,7 +47361,7 @@
 	module.exports = Loader;
 
 /***/ },
-/* 525 */
+/* 531 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -46835,7 +47478,7 @@
 	module.exports = Loader;
 
 /***/ },
-/* 526 */
+/* 532 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -46953,7 +47596,7 @@
 	module.exports = Loader;
 
 /***/ },
-/* 527 */
+/* 533 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -47071,7 +47714,7 @@
 	module.exports = Loader;
 
 /***/ },
-/* 528 */
+/* 534 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/*
@@ -47861,7 +48504,7 @@
 
 
 /***/ },
-/* 529 */
+/* 535 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs){
@@ -47944,7 +48587,7 @@
 	};
 
 /***/ },
-/* 530 */
+/* 536 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -47986,7 +48629,7 @@
 	};
 
 /***/ },
-/* 531 */
+/* 537 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -48064,7 +48707,7 @@
 	};
 
 /***/ },
-/* 532 */
+/* 538 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -48114,7 +48757,7 @@
 	};
 
 /***/ },
-/* 533 */
+/* 539 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -48204,7 +48847,7 @@
 	};
 
 /***/ },
-/* 534 */
+/* 540 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -48362,7 +49005,7 @@
 	};
 
 /***/ },
-/* 535 */
+/* 541 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -48458,7 +49101,7 @@
 	};
 
 /***/ },
-/* 536 */
+/* 542 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -48650,7 +49293,7 @@
 	};
 
 /***/ },
-/* 537 */
+/* 543 */
 /***/ function(module, exports) {
 
 	module.exports = function (hljs) {
@@ -48798,7 +49441,7 @@
 	};
 
 /***/ },
-/* 538 */
+/* 544 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -48850,7 +49493,7 @@
 	};
 
 /***/ },
-/* 539 */
+/* 545 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -50608,7 +51251,7 @@
 	};
 
 /***/ },
-/* 540 */
+/* 546 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -50674,7 +51317,7 @@
 	};
 
 /***/ },
-/* 541 */
+/* 547 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -50709,7 +51352,7 @@
 	};
 
 /***/ },
-/* 542 */
+/* 548 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -50788,7 +51431,7 @@
 	};
 
 /***/ },
-/* 543 */
+/* 549 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -50843,7 +51486,7 @@
 	};
 
 /***/ },
-/* 544 */
+/* 550 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs){
@@ -50884,7 +51527,7 @@
 	};
 
 /***/ },
-/* 545 */
+/* 551 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -50968,7 +51611,7 @@
 	};
 
 /***/ },
-/* 546 */
+/* 552 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -51021,7 +51664,7 @@
 	};
 
 /***/ },
-/* 547 */
+/* 553 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -51092,7 +51735,7 @@
 	};
 
 /***/ },
-/* 548 */
+/* 554 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -51111,7 +51754,7 @@
 	};
 
 /***/ },
-/* 549 */
+/* 555 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -51210,7 +51853,7 @@
 	};
 
 /***/ },
-/* 550 */
+/* 556 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -51252,7 +51895,7 @@
 	};
 
 /***/ },
-/* 551 */
+/* 557 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -51395,7 +52038,7 @@
 	};
 
 /***/ },
-/* 552 */
+/* 558 */
 /***/ function(module, exports) {
 
 	module.exports = function cos (hljs) {
@@ -51531,7 +52174,7 @@
 	};
 
 /***/ },
-/* 553 */
+/* 559 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -51693,7 +52336,7 @@
 	};
 
 /***/ },
-/* 554 */
+/* 560 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -51791,7 +52434,7 @@
 	};
 
 /***/ },
-/* 555 */
+/* 561 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -51973,7 +52616,7 @@
 	};
 
 /***/ },
-/* 556 */
+/* 562 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -52095,7 +52738,7 @@
 	};
 
 /***/ },
-/* 557 */
+/* 563 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -52121,7 +52764,7 @@
 	};
 
 /***/ },
-/* 558 */
+/* 564 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -52230,7 +52873,7 @@
 	};
 
 /***/ },
-/* 559 */
+/* 565 */
 /***/ function(module, exports) {
 
 	module.exports = /**
@@ -52492,7 +53135,7 @@
 	};
 
 /***/ },
-/* 560 */
+/* 566 */
 /***/ function(module, exports) {
 
 	module.exports = function (hljs) {
@@ -52597,7 +53240,7 @@
 	};
 
 /***/ },
-/* 561 */
+/* 567 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -52669,7 +53312,7 @@
 	};
 
 /***/ },
-/* 562 */
+/* 568 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -52713,7 +53356,7 @@
 	};
 
 /***/ },
-/* 563 */
+/* 569 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -52781,7 +53424,7 @@
 	};
 
 /***/ },
-/* 564 */
+/* 570 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -52814,7 +53457,7 @@
 	};
 
 /***/ },
-/* 565 */
+/* 571 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -52847,7 +53490,7 @@
 	};
 
 /***/ },
-/* 566 */
+/* 572 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -52903,7 +53546,7 @@
 	};
 
 /***/ },
-/* 567 */
+/* 573 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -53031,7 +53674,7 @@
 	};
 
 /***/ },
-/* 568 */
+/* 574 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -53067,7 +53710,7 @@
 	};
 
 /***/ },
-/* 569 */
+/* 575 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -53168,7 +53811,7 @@
 	};
 
 /***/ },
-/* 570 */
+/* 576 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -53255,7 +53898,7 @@
 	};
 
 /***/ },
-/* 571 */
+/* 577 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -53274,7 +53917,7 @@
 	};
 
 /***/ },
-/* 572 */
+/* 578 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -53324,7 +53967,7 @@
 	};
 
 /***/ },
-/* 573 */
+/* 579 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -53474,7 +54117,7 @@
 	};
 
 /***/ },
-/* 574 */
+/* 580 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -53507,7 +54150,7 @@
 	};
 
 /***/ },
-/* 575 */
+/* 581 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -53582,7 +54225,7 @@
 	};
 
 /***/ },
-/* 576 */
+/* 582 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -53645,7 +54288,7 @@
 	};
 
 /***/ },
-/* 577 */
+/* 583 */
 /***/ function(module, exports) {
 
 	module.exports = function (hljs) {
@@ -53802,7 +54445,7 @@
 	};
 
 /***/ },
-/* 578 */
+/* 584 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -54028,7 +54671,7 @@
 	};
 
 /***/ },
-/* 579 */
+/* 585 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -54099,7 +54742,7 @@
 	};
 
 /***/ },
-/* 580 */
+/* 586 */
 /***/ function(module, exports) {
 
 	module.exports = function (hljs) {
@@ -54140,7 +54783,7 @@
 	};
 
 /***/ },
-/* 581 */
+/* 587 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -54261,7 +54904,7 @@
 	};
 
 /***/ },
-/* 582 */
+/* 588 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -54303,7 +54946,7 @@
 	};
 
 /***/ },
-/* 583 */
+/* 589 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -54330,7 +54973,7 @@
 	};
 
 /***/ },
-/* 584 */
+/* 590 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -54369,7 +55012,7 @@
 	};
 
 /***/ },
-/* 585 */
+/* 591 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -54467,7 +55110,7 @@
 	};
 
 /***/ },
-/* 586 */
+/* 592 */
 /***/ function(module, exports) {
 
 	module.exports = // TODO support filter tags like :javascript, support inline HTML
@@ -54578,7 +55221,7 @@
 	};
 
 /***/ },
-/* 587 */
+/* 593 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -54616,7 +55259,7 @@
 	};
 
 /***/ },
-/* 588 */
+/* 594 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -54742,7 +55385,7 @@
 	};
 
 /***/ },
-/* 589 */
+/* 595 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -54804,7 +55447,7 @@
 	};
 
 /***/ },
-/* 590 */
+/* 596 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -54854,7 +55497,7 @@
 	};
 
 /***/ },
-/* 591 */
+/* 597 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -54929,7 +55572,7 @@
 	};
 
 /***/ },
-/* 592 */
+/* 598 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -54974,7 +55617,7 @@
 	};
 
 /***/ },
-/* 593 */
+/* 599 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -55035,7 +55678,7 @@
 	};
 
 /***/ },
-/* 594 */
+/* 600 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -55105,7 +55748,7 @@
 	};
 
 /***/ },
-/* 595 */
+/* 601 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -55185,7 +55828,7 @@
 	};
 
 /***/ },
-/* 596 */
+/* 602 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -55296,7 +55939,7 @@
 	};
 
 /***/ },
-/* 597 */
+/* 603 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -55414,7 +56057,7 @@
 	};
 
 /***/ },
-/* 598 */
+/* 604 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -55455,7 +56098,7 @@
 	};
 
 /***/ },
-/* 599 */
+/* 605 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -55637,7 +56280,7 @@
 	};
 
 /***/ },
-/* 600 */
+/* 606 */
 /***/ function(module, exports) {
 
 	module.exports = function (hljs) {
@@ -55815,7 +56458,7 @@
 	};
 
 /***/ },
-/* 601 */
+/* 607 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -55987,7 +56630,7 @@
 	};
 
 /***/ },
-/* 602 */
+/* 608 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -56131,7 +56774,7 @@
 	};
 
 /***/ },
-/* 603 */
+/* 609 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -56238,7 +56881,7 @@
 	};
 
 /***/ },
-/* 604 */
+/* 610 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -56399,7 +57042,7 @@
 	};
 
 /***/ },
-/* 605 */
+/* 611 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -56552,7 +57195,7 @@
 	};
 
 /***/ },
-/* 606 */
+/* 612 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -56612,7 +57255,7 @@
 	};
 
 /***/ },
-/* 607 */
+/* 613 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -56661,7 +57304,7 @@
 	};
 
 /***/ },
-/* 608 */
+/* 614 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -56772,7 +57415,7 @@
 	};
 
 /***/ },
-/* 609 */
+/* 615 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -56834,7 +57477,7 @@
 	};
 
 /***/ },
-/* 610 */
+/* 616 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -56926,7 +57569,7 @@
 	};
 
 /***/ },
-/* 611 */
+/* 617 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -57335,7 +57978,7 @@
 	};
 
 /***/ },
-/* 612 */
+/* 618 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -57564,7 +58207,7 @@
 	};
 
 /***/ },
-/* 613 */
+/* 619 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -57650,7 +58293,7 @@
 	};
 
 /***/ },
-/* 614 */
+/* 620 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -57740,7 +58383,7 @@
 	};
 
 /***/ },
-/* 615 */
+/* 621 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -57763,7 +58406,7 @@
 	};
 
 /***/ },
-/* 616 */
+/* 622 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -57792,7 +58435,7 @@
 	};
 
 /***/ },
-/* 617 */
+/* 623 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -57871,7 +58514,7 @@
 	};
 
 /***/ },
-/* 618 */
+/* 624 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -57987,7 +58630,7 @@
 	};
 
 /***/ },
-/* 619 */
+/* 625 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -58084,7 +58727,7 @@
 	};
 
 /***/ },
-/* 620 */
+/* 626 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -58143,7 +58786,7 @@
 	};
 
 /***/ },
-/* 621 */
+/* 627 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -58196,7 +58839,7 @@
 	};
 
 /***/ },
-/* 622 */
+/* 628 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -58286,7 +58929,7 @@
 	};
 
 /***/ },
-/* 623 */
+/* 629 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -58368,7 +59011,7 @@
 	};
 
 /***/ },
-/* 624 */
+/* 630 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -58443,7 +59086,7 @@
 	};
 
 /***/ },
-/* 625 */
+/* 631 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -58504,7 +59147,7 @@
 	};
 
 /***/ },
-/* 626 */
+/* 632 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -58578,7 +59221,7 @@
 	};
 
 /***/ },
-/* 627 */
+/* 633 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -58630,7 +59273,7 @@
 	};
 
 /***/ },
-/* 628 */
+/* 634 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -58791,7 +59434,7 @@
 	};
 
 /***/ },
-/* 629 */
+/* 635 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -58847,7 +59490,7 @@
 	};
 
 /***/ },
-/* 630 */
+/* 636 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -58975,7 +59618,7 @@
 	};
 
 /***/ },
-/* 631 */
+/* 637 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -59031,7 +59674,7 @@
 	};
 
 /***/ },
-/* 632 */
+/* 638 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -59083,7 +59726,7 @@
 	};
 
 /***/ },
-/* 633 */
+/* 639 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -59117,7 +59760,7 @@
 	};
 
 /***/ },
-/* 634 */
+/* 640 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -59209,7 +59852,7 @@
 	};
 
 /***/ },
-/* 635 */
+/* 641 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -59249,7 +59892,7 @@
 	};
 
 /***/ },
-/* 636 */
+/* 642 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -59368,7 +60011,7 @@
 	};
 
 /***/ },
-/* 637 */
+/* 643 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -59464,7 +60107,7 @@
 	};
 
 /***/ },
-/* 638 */
+/* 644 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -59491,7 +60134,7 @@
 	};
 
 /***/ },
-/* 639 */
+/* 645 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -59664,7 +60307,7 @@
 	};
 
 /***/ },
-/* 640 */
+/* 646 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -59738,7 +60381,7 @@
 	};
 
 /***/ },
-/* 641 */
+/* 647 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -59769,7 +60412,7 @@
 	};
 
 /***/ },
-/* 642 */
+/* 648 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -59840,7 +60483,7 @@
 	};
 
 /***/ },
-/* 643 */
+/* 649 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -59880,7 +60523,7 @@
 	};
 
 /***/ },
-/* 644 */
+/* 650 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -60057,7 +60700,7 @@
 	};
 
 /***/ },
-/* 645 */
+/* 651 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -60122,7 +60765,7 @@
 	};
 
 /***/ },
-/* 646 */
+/* 652 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -60237,7 +60880,7 @@
 	};
 
 /***/ },
-/* 647 */
+/* 653 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -60356,7 +60999,7 @@
 	};
 
 /***/ },
-/* 648 */
+/* 654 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -60501,7 +61144,7 @@
 	};
 
 /***/ },
-/* 649 */
+/* 655 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -60559,7 +61202,7 @@
 	};
 
 /***/ },
-/* 650 */
+/* 656 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -60661,7 +61304,7 @@
 	};
 
 /***/ },
-/* 651 */
+/* 657 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -60721,7 +61364,7 @@
 	};
 
 /***/ },
-/* 652 */
+/* 658 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -60775,7 +61418,7 @@
 	};
 
 /***/ },
-/* 653 */
+/* 659 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -60845,7 +61488,7 @@
 	};
 
 /***/ },
-/* 654 */
+/* 660 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -60946,7 +61589,7 @@
 	};
 
 /***/ },
-/* 655 */
+/* 661 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -61110,7 +61753,7 @@
 	};
 
 /***/ },
-/* 656 */
+/* 662 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -61197,7 +61840,7 @@
 	};
 
 /***/ },
-/* 657 */
+/* 663 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -61239,7 +61882,7 @@
 	};
 
 /***/ },
-/* 658 */
+/* 664 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -61290,7 +61933,7 @@
 	};
 
 /***/ },
-/* 659 */
+/* 665 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -61748,7 +62391,7 @@
 	};
 
 /***/ },
-/* 660 */
+/* 666 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -61871,7 +62514,7 @@
 	};
 
 /***/ },
-/* 661 */
+/* 667 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -61919,7 +62562,7 @@
 	};
 
 /***/ },
-/* 662 */
+/* 668 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -61984,7 +62627,7 @@
 	};
 
 /***/ },
-/* 663 */
+/* 669 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -62050,7 +62693,7 @@
 	};
 
 /***/ },
-/* 664 */
+/* 670 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -62089,7 +62732,7 @@
 	};
 
 /***/ },
-/* 665 */
+/* 671 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -62177,7 +62820,7 @@
 	};
 
 /***/ },
-/* 666 */
+/* 672 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -62247,7 +62890,7 @@
 	};
 
 /***/ },
-/* 667 */
+/* 673 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -62355,7 +62998,7 @@
 	};
 
 /***/ },
-/* 668 */
+/* 674 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -62409,7 +63052,7 @@
 	};
 
 /***/ },
-/* 669 */
+/* 675 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -62469,7 +63112,7 @@
 	};
 
 /***/ },
-/* 670 */
+/* 676 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -62485,7 +63128,7 @@
 	};
 
 /***/ },
-/* 671 */
+/* 677 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -62528,7 +63171,7 @@
 	};
 
 /***/ },
-/* 672 */
+/* 678 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -62570,7 +63213,7 @@
 	};
 
 /***/ },
-/* 673 */
+/* 679 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -62630,7 +63273,7 @@
 	};
 
 /***/ },
-/* 674 */
+/* 680 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -62740,7 +63383,7 @@
 	};
 
 /***/ },
-/* 675 */
+/* 681 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -62878,7 +63521,7 @@
 	};
 
 /***/ },
-/* 676 */
+/* 682 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -62955,7 +63598,7 @@
 	};
 
 /***/ },
-/* 677 */
+/* 683 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -63062,7 +63705,7 @@
 	};
 
 /***/ },
-/* 678 */
+/* 684 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -63137,7 +63780,7 @@
 	};
 
 /***/ },
-/* 679 */
+/* 685 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -63225,7 +63868,7 @@
 	};
 
 /***/ },
-/* 680 */
+/* 686 */
 /***/ function(module, exports) {
 
 	module.exports = function(hljs) {
@@ -63336,7 +63979,7 @@
 	};
 
 /***/ },
-/* 681 */
+/* 687 */
 /***/ function(module, exports) {
 
 	"use strict";
@@ -63399,7 +64042,7 @@
 	}
 
 /***/ },
-/* 682 */
+/* 688 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(process) {'use strict';
@@ -63416,7 +64059,7 @@
 
 	var _Actions = __webpack_require__(84);
 
-	var _PathUtils = __webpack_require__(69);
+	var _PathUtils = __webpack_require__(70);
 
 	var _ExecutionEnvironment = __webpack_require__(113);
 
@@ -63581,7 +64224,7 @@
 	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(2)))
 
 /***/ },
-/* 683 */
+/* 689 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(process) {'use strict';
@@ -63598,7 +64241,7 @@
 
 	var _Actions = __webpack_require__(84);
 
-	var _PathUtils = __webpack_require__(69);
+	var _PathUtils = __webpack_require__(70);
 
 	function createLocation() {
 	  var location = arguments.length <= 0 || arguments[0] === undefined ? '/' : arguments[0];
@@ -63638,7 +64281,7 @@
 	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(2)))
 
 /***/ },
-/* 684 */
+/* 690 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(process) {'use strict';
@@ -63657,7 +64300,7 @@
 
 	var _invariant2 = _interopRequireDefault(_invariant);
 
-	var _PathUtils = __webpack_require__(69);
+	var _PathUtils = __webpack_require__(70);
 
 	var _Actions = __webpack_require__(84);
 
@@ -63798,7 +64441,7 @@
 	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(2)))
 
 /***/ },
-/* 685 */
+/* 691 */
 /***/ function(module, exports) {
 
 	module.exports = {
@@ -63818,18 +64461,63 @@
 
 
 /***/ },
-/* 686 */
+/* 692 */
+/***/ function(module, exports) {
+
+	
+	/**
+	 * Element prototype.
+	 */
+
+	var proto = Element.prototype;
+
+	/**
+	 * Vendor function.
+	 */
+
+	var vendor = proto.matchesSelector
+	  || proto.webkitMatchesSelector
+	  || proto.mozMatchesSelector
+	  || proto.msMatchesSelector
+	  || proto.oMatchesSelector;
+
+	/**
+	 * Expose `match()`.
+	 */
+
+	module.exports = match;
+
+	/**
+	 * Match `el` to `selector`.
+	 *
+	 * @param {Element} el
+	 * @param {String} selector
+	 * @return {Boolean}
+	 * @api public
+	 */
+
+	function match(el, selector) {
+	  if (vendor) return vendor.call(el, selector);
+	  var nodes = el.parentNode.querySelectorAll(selector);
+	  for (var i = 0; i < nodes.length; ++i) {
+	    if (nodes[i] == el) return true;
+	  }
+	  return false;
+	}
+
+/***/ },
+/* 693 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;/*!Please JS v0.4.2, Jordan Checkman 2014, Checkman.io, MIT License, Have fun.*/
 	!function(e,r,a){ true?!(__WEBPACK_AMD_DEFINE_ARRAY__ = [], __WEBPACK_AMD_DEFINE_FACTORY__ = (a), __WEBPACK_AMD_DEFINE_RESULT__ = (typeof __WEBPACK_AMD_DEFINE_FACTORY__ === 'function' ? (__WEBPACK_AMD_DEFINE_FACTORY__.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__)) : __WEBPACK_AMD_DEFINE_FACTORY__), __WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__)):"object"==typeof exports?module.exports=a():r[e]=a()}("Please",this,function(){"use strict";function e(){function e(e,r,a){var o=Math.random;return a instanceof l&&(o=a.random),Math.floor(o()*(r-e+1))+e}function r(e,r,a){var o=Math.random;return a instanceof l&&(o=a.random),o()*(r-e)+e}function a(e,r,a){return Math.max(r,Math.min(e,a))}function o(e,r){var a;switch(e){case"hex":for(a=0;a<r.length;a++)r[a]=F.HSV_to_HEX(r[a]);break;case"rgb":for(a=0;a<r.length;a++)r[a]=F.HSV_to_RGB(r[a]);break;case"rgb-string":for(a=0;a<r.length;a++){var o=F.HSV_to_RGB(r[a]);r[a]="rgb("+o.r+","+o.g+","+o.b+")"}break;case"hsv":break;default:console.error("Format not recognized.")}return r}function n(e){var r=F.HSV_to_RGB(e),a=(299*r.r+587*r.g+114*r.b)/1e3;return a>=128?"dark":"light"}function t(e){var r={};for(var a in e)e.hasOwnProperty(a)&&(r[a]=e[a]);return r}function l(e){function r(){o=(o+1)%256,n=(n+a[o])%256;var e=a[o];return a[o]=a[n],a[n]=e,a[(a[o]+a[n])%256]}for(var a=[],o=0,n=0,t=0;256>t;t++)a[t]=t;for(var l=0,F=0;256>l;l++){F=(F+a[l]+e.charCodeAt(l%e.length))%256;var s=a[l];a[l]=a[F],a[F]=s}this.random=function(){for(var e=0,a=0,o=1;8>e;e++)a+=r()*o,o*=256;return a/0x10000000000000000}}var F={},s={aliceblue:"F0F8FF",antiquewhite:"FAEBD7",aqua:"00FFFF",aquamarine:"7FFFD4",azure:"F0FFFF",beige:"F5F5DC",bisque:"FFE4C4",black:"000000",blanchedalmond:"FFEBCD",blue:"0000FF",blueviolet:"8A2BE2",brown:"A52A2A",burlywood:"DEB887",cadetblue:"5F9EA0",chartreuse:"7FFF00",chocolate:"D2691E",coral:"FF7F50",cornflowerblue:"6495ED",cornsilk:"FFF8DC",crimson:"DC143C",cyan:"00FFFF",darkblue:"00008B",darkcyan:"008B8B",darkgoldenrod:"B8860B",darkgray:"A9A9A9",darkgrey:"A9A9A9",darkgreen:"006400",darkkhaki:"BDB76B",darkmagenta:"8B008B",darkolivegreen:"556B2F",darkorange:"FF8C00",darkorchid:"9932CC",darkred:"8B0000",darksalmon:"E9967A",darkseagreen:"8FBC8F",darkslateblue:"483D8B",darkslategray:"2F4F4F",darkslategrey:"2F4F4F",darkturquoise:"00CED1",darkviolet:"9400D3",deeppink:"FF1493",deepskyblue:"00BFFF",dimgray:"696969",dimgrey:"696969",dodgerblue:"1E90FF",firebrick:"B22222",floralwhite:"FFFAF0",forestgreen:"228B22",fuchsia:"FF00FF",gainsboro:"DCDCDC",ghostwhite:"F8F8FF",gold:"FFD700",goldenrod:"DAA520",gray:"808080",grey:"808080",green:"008000",greenyellow:"ADFF2F",honeydew:"F0FFF0",hotpink:"FF69B4",indianred:"CD5C5C",indigo:"4B0082",ivory:"FFFFF0",khaki:"F0E68C",lavender:"E6E6FA",lavenderblush:"FFF0F5",lawngreen:"7CFC00",lemonchiffon:"FFFACD",lightblue:"ADD8E6",lightcoral:"F08080",lightcyan:"E0FFFF",lightgoldenrodyellow:"FAFAD2",lightgray:"D3D3D3",lightgrey:"D3D3D3",lightgreen:"90EE90",lightpink:"FFB6C1",lightsalmon:"FFA07A",lightseagreen:"20B2AA",lightskyblue:"87CEFA",lightslategray:"778899",lightslategrey:"778899",lightsteelblue:"B0C4DE",lightyellow:"FFFFE0",lime:"00FF00",limegreen:"32CD32",linen:"FAF0E6",magenta:"FF00FF",maroon:"800000",mediumaquamarine:"66CDAA",mediumblue:"0000CD",mediumorchid:"BA55D3",mediumpurple:"9370D8",mediumseagreen:"3CB371",mediumslateblue:"7B68EE",mediumspringgreen:"00FA9A",mediumturquoise:"48D1CC",mediumvioletred:"C71585",midnightblue:"191970",mintcream:"F5FFFA",mistyrose:"FFE4E1",moccasin:"FFE4B5",navajowhite:"FFDEAD",navy:"000080",oldlace:"FDF5E6",olive:"808000",olivedrab:"6B8E23",orange:"FFA500",orangered:"FF4500",orchid:"DA70D6",palegoldenrod:"EEE8AA",palegreen:"98FB98",paleturquoise:"AFEEEE",palevioletred:"D87093",papayawhip:"FFEFD5",peachpuff:"FFDAB9",peru:"CD853F",pink:"FFC0CB",plum:"DDA0DD",powderblue:"B0E0E6",purple:"800080",rebeccapurple:"663399",red:"FF0000",rosybrown:"BC8F8F",royalblue:"4169E1",saddlebrown:"8B4513",salmon:"FA8072",sandybrown:"F4A460",seagreen:"2E8B57",seashell:"FFF5EE",sienna:"A0522D",silver:"C0C0C0",skyblue:"87CEEB",slateblue:"6A5ACD",slategray:"708090",slategrey:"708090",snow:"FFFAFA",springgreen:"00FF7F",steelblue:"4682B4",tan:"D2B48C",teal:"008080",thistle:"D8BFD8",tomato:"FF6347",turquoise:"40E0D0",violet:"EE82EE",wheat:"F5DEB3",white:"FFFFFF",whitesmoke:"F5F5F5",yellow:"FFFF00",yellowgreen:"9ACD32"},i=.618033988749895,u={hue:null,saturation:null,value:null,base_color:"",greyscale:!1,grayscale:!1,golden:!0,full_random:!1,colors_returned:1,format:"hex",seed:null},c={scheme_type:"analogous",format:"hex"},h={golden:!1,format:"hex"};return F.NAME_to_HEX=function(e){return e=e.toLowerCase(),e in s?s[e]:(console.error("Color name not recognized."),void 0)},F.NAME_to_RGB=function(e){return F.HEX_to_RGB(F.NAME_to_HEX(e))},F.NAME_to_HSV=function(e){return F.HEX_to_HSV(F.NAME_to_HEX(e))},F.HEX_to_RGB=function(e){var r=/^#?([a-f\d])([a-f\d])([a-f\d])$/i;e=e.replace(r,function(e,r,a,o){return r+r+a+a+o+o});var a=/^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(e);return a?{r:parseInt(a[1],16),g:parseInt(a[2],16),b:parseInt(a[3],16)}:null},F.RGB_to_HEX=function(e){return"#"+((1<<24)+(e.r<<16)+(e.g<<8)+e.b).toString(16).slice(1)},F.HSV_to_RGB=function(e){var r,a,o,n,t,l,F,s,i=e.h,u=e.s,c=e.v;if(0===u)return{r:c,g:c,b:c};switch(i/=60,n=Math.floor(i),t=i-n,l=c*(1-u),F=c*(1-u*t),s=c*(1-u*(1-t)),n){case 0:r=c,a=s,o=l;break;case 1:r=F,a=c,o=l;break;case 2:r=l,a=c,o=s;break;case 3:r=l,a=F,o=c;break;case 4:r=s,a=l,o=c;break;case 5:r=c,a=l,o=F}return{r:Math.floor(255*r),g:Math.floor(255*a),b:Math.floor(255*o)}},F.RGB_to_HSV=function(e){var r=e.r/255,a=e.g/255,o=e.b/255,n=0,t=0,l=0,F=Math.min(r,Math.min(a,o)),s=Math.max(r,Math.max(a,o));if(F===s)return l=F,{h:0,s:0,v:l};var i=r===F?a-o:o===F?r-a:o-r,u=r===F?3:o===F?1:5;return n=60*(u-i/(s-F)),t=(s-F)/s,l=s,{h:n,s:t,v:l}},F.HSV_to_HEX=function(e){return F.RGB_to_HEX(F.HSV_to_RGB(e))},F.HEX_to_HSV=function(e){return F.RGB_to_HSV(F.HEX_to_RGB(e))},F.make_scheme=function(e,r){function n(e){return{h:e.h,s:e.s,v:e.v}}var l,F,s,i,u,h=t(c);if(null!==r)for(var d in r)r.hasOwnProperty(d)&&(h[d]=r[d]);var g=[e];switch(h.scheme_type.toLowerCase()){case"monochromatic":case"mono":for(u=1;2>=u;u++)l=n(e),s=l.s+.1*u,s=a(s,0,1),i=l.v+.1*u,i=a(i,0,1),l.s=s,l.v=i,g.push(l);for(u=1;2>=u;u++)l=n(e),s=l.s-.1*u,s=a(s,0,1),i=l.v-.1*u,i=a(i,0,1),l.s=s,l.v=i,g.push(l);break;case"complementary":case"complement":case"comp":l=n(e),l.h=(l.h+180)%360,g.push(l);break;case"split-complementary":case"split-complement":case"split":l=n(e),l.h=(l.h+165)%360,g.push(l),l=n(e),l.h=Math.abs((l.h-165)%360),g.push(l);break;case"double-complementary":case"double-complement":case"double":l=n(e),l.h=(l.h+180)%360,g.push(l),l.h=(l.h+30)%360,F=n(l),g.push(l),l.h=(l.h+180)%360,g.push(F);break;case"analogous":case"ana":for(u=1;5>=u;u++)l=n(e),l.h=(l.h+20*u)%360,g.push(l);break;case"triadic":case"triad":case"tri":for(u=1;3>u;u++)l=n(e),l.h=(l.h+120*u)%360,g.push(l);break;default:console.error("Color scheme not recognized.")}return o(h.format.toLowerCase(),g),g},F.make_color=function(n){var s=[],c=t(u),h=null;if(null!==n)for(var d in n)n.hasOwnProperty(d)&&(c[d]=n[d]);var g=null;"string"==typeof c.seed&&(g=new l(c.seed)),c.base_color.length>0&&(h=c.base_color.match(/^#?([0-9a-f]{3})([0-9a-f]{3})?$/i)?F.HEX_to_HSV(c.base_color):F.NAME_to_HSV(c.base_color));for(var m=0;m<c.colors_returned;m++){var f,E,b,p=e(0,360,g);null!==h?(f=a(e(h.h-5,h.h+5,g),0,360),E=0===h.s?0:r(.4,.85,g),b=r(.4,.85,g),s.push({h:f,s:E,v:b})):(f=c.greyscale===!0||c.grayscale===!0?0:c.golden===!0?(p+p/i)%360:null===c.hue||c.full_random===!0?p:a(c.hue,0,360),E=c.greyscale===!0||c.grayscale===!0?0:c.full_random===!0?r(0,1,g):null===c.saturation?.4:a(c.saturation,0,1),b=c.full_random===!0?r(0,1,g):c.greyscale===!0||c.grayscale===!0?r(.15,.75,g):null===c.value?.75:a(c.value,0,1),s.push({h:f,s:E,v:b}))}return o(c.format.toLowerCase(),s),s},F.make_contrast=function(e,r){var l=t(h);if(null!==r)for(var s in r)r.hasOwnProperty(s)&&(l[s]=r[s]);var u,c,d=n(e);if(l.golden===!0)c=e.h*(1+i)%360;else{var g=F.make_scheme(e,{scheme_type:"complementary",format:"hsv"})[1];c=a(g.h-30,0,360)}var m;return"dark"===d?m=a(e.v-.25,0,1):"light"===d&&(m=a(e.v+.25,0,1)),u=[{h:c,s:e.s,v:m}],o(l.format.toLowerCase(),u),u[0]},F}return e()});
 
 /***/ },
-/* 687 */
+/* 694 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
-	var strictUriEncode = __webpack_require__(778);
+	var strictUriEncode = __webpack_require__(786);
 
 	exports.extract = function (str) {
 		return str.split('?')[1] || '';
@@ -63897,13 +64585,13 @@
 
 
 /***/ },
-/* 688 */
+/* 695 */
 /***/ function(module, exports, __webpack_require__) {
 
 	!function(t,e){ true?module.exports=e(__webpack_require__(3)):"function"==typeof define&&define.amd?define(["react"],e):"object"==typeof exports?exports.ReactAutolink=e(require("react")):t.ReactAutolink=e(t.React)}(this,function(t){return function(t){function e(n){if(r[n])return r[n].exports;var o=r[n]={exports:{},id:n,loaded:!1};return t[n].call(o.exports,o,o.exports,e),o.loaded=!0,o.exports}var r={};return e.m=t,e.c=r,e.p="",e(0)}([function(t,e,r){"use strict";var n=function(t){return t&&t.__esModule?t["default"]:t},o=n(r(2)),u=n(r(1)),a=function(){var t=/((?:https?:\/\/)?(?:(?:[a-z0-9]?(?:[a-z0-9\-]{1,61}[a-z0-9])?\.[^\.|\s])+[a-z\.]*[a-z]+|(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)(?:\.(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)){3})(?::\d{1,5})*[a-z0-9.,_\/~#&=;%+?\-\\(\\)]*)/gi,e=function(t,e){return t.slice(0,e.length)===e};return{autolink:function(r){var n=void 0===arguments[1]?{}:arguments[1];return r?r.split(t).map(function(r){var a=r.match(t);if(a){var i=a[0],c=i.split("/");return""!==c[1]&&c[0].length<5?r:o.createElement("a",u({href:e(i,"http")?i:"http://"+i},n),i)}return r}):[]}}};t.exports=a()},function(t,e){"use strict";function r(t){if(null==t)throw new TypeError("Object.assign cannot be called with null or undefined");return Object(t)}t.exports=Object.assign||function(t,e){for(var n,o,u=r(t),a=1;a<arguments.length;a++){n=arguments[a],o=Object.keys(Object(n));for(var i=0;i<o.length;i++)u[o[i]]=n[o[i]]}return u}},function(e,r){e.exports=t}])});
 
 /***/ },
-/* 689 */
+/* 696 */
 /***/ function(module, exports, __webpack_require__) {
 
 	(function webpackUniversalModuleDefinition(root, factory) {
@@ -64282,13 +64970,13 @@
 	//# sourceMappingURL=index.js.map
 
 /***/ },
-/* 690 */
+/* 697 */
 /***/ function(module, exports, __webpack_require__) {
 
 	!function(f,e){ true?module.exports=e(__webpack_require__(3)):"function"==typeof define&&define.amd?define(["react"],e):"object"==typeof exports?exports.ReactEmoji=e(require("react")):f.ReactEmoji=e(f.React)}(this,function(f){return function(f){function e(o){if(a[o])return a[o].exports;var r=a[o]={exports:{},id:o,loaded:!1};return f[o].call(r.exports,r,r.exports,e),r.loaded=!0,r.exports}var a={};return e.m=f,e.c=a,e.p="",e(0)}([function(f,e,a){"use strict";var o=function(f){return f&&f.__esModule?f["default"]:f},r=o(a(6)),t=o(a(1)),n=o(a(2)),i=o(a(3)),c=o(a(5)),s=o(a(4)),_=function(){var f=function(f){return Object.keys(f).map(function(f){return i(f)}).join("|")},e=function(f){var e={useEmoticon:f.useEmoticon!==!1,emojiType:f.emojiType||"twemoji",host:f.host||"",path:f.path||"",ext:f.ext||"svg",singleEmoji:f.singleEmoji||!1,strict:f.strict||!1};return e.attributes=c({width:"20px",height:"20px"},f.attributes),e},a={":/":"1f615"},o="\\:\\/(?!\\/)",_={delimiter:new RegExp("(:(?:"+f(t)+"):|"+f(n)+"|"+o+")","g"),dict:c(t,n,a)},l={delimiter:new RegExp("(:(?:"+f(t)+"):)","g"),dict:t},b=function(f,e){if(e.host)return s([e.host,e.path,""+f+"."+e.ext]).join("/");if("twemoji"===e.emojiType)return"https://twemoji.maxcdn.com/"+e.ext+"/"+f+"."+e.ext;if("emojione"===e.emojiType)return"http://cdn.jsdelivr.net/emojione/assets/"+e.ext+"/"+f.toUpperCase()+"."+e.ext;throw new Error("Invalid emojiType is passed")},u=function(f){return f.match(/^:.*:$/)?f.replace(/^:/,"").replace(/:$/,""):f},d=function(f,e){var a=e.useEmoticon?_:l,o=a.dict,t=o[u(f)];if(e.strict&&!t)throw new Error("Could not find emoji: "+f+".");return t?r.createElement("img",c(e.attributes,{src:b(t,e)})):f},h=function(f,e){var a=e.useEmoticon?_:l,o=a.delimiter,t=a.dict;return s(f.split(o).map(function(f,a){var n=f.match(o);if(e.strict&&""!==f&&null===n)throw new Error("Could not find emoji: "+f+".");if(n){var i=t[u(n[0])];return null===i?f:r.createElement("img",c(e.attributes,{key:a,src:b(i,e)}))}return f}))};return{emojify:function(f){var a=void 0===arguments[1]?{}:arguments[1];return f?(a=e(a),a.singleEmoji?d(f,a):h(f,a)):null}}};f.exports=_()},function(f,e){f.exports={"+1":"1f44d","-1":"1f44e",100:"1f4af",1234:"1f522","8ball":"1f3b1",a:"1f170",ab:"1f18e",abc:"1f524",abcd:"1f521",accept:"1f251",aerial_tramway:"1f6a1",airplane:"2708",alarm_clock:"23f0",alien:"1f47d",ambulance:"1f691",anchor:"2693",angel:"1f47c",anger:"1f4a2",angry:"1f620",anguished:"1f627",ant:"1f41c",apple:"1f34e",aquarius:"2652",aries:"2648",arrow_backward:"25c0",arrow_double_down:"23ec",arrow_double_up:"23eb",arrow_down:"2b07",arrow_down_small:"1f53d",arrow_forward:"25b6",arrow_heading_down:"2935",arrow_heading_up:"2934",arrow_left:"2b05",arrow_lower_left:"2199",arrow_lower_right:"2198",arrow_right:"27a1",arrow_right_hook:"21aa",arrow_up:"2b06",arrow_up_down:"2195",arrow_up_small:"1f53c",arrow_upper_left:"2196",arrow_upper_right:"2197",arrows_clockwise:"1f503",arrows_counterclockwise:"1f504",art:"1f3a8",articulated_lorry:"1f69b",astonished:"1f632",athletic_shoe:"1f45f",atm:"1f3e7",b:"1f171",baby:"1f476",baby_bottle:"1f37c",baby_chick:"1f424",baby_symbol:"1f6bc",back:"1f519",baggage_claim:"1f6c4",balloon:"1f388",ballot_box_with_check:"2611",bamboo:"1f38d",banana:"1f34c",bangbang:"203c",bank:"1f3e6",bar_chart:"1f4ca",barber:"1f488",baseball:"26be",basketball:"1f3c0",bath:"1f6c0",bathtub:"1f6c1",battery:"1f50b",bear:"1f43b",bee:"1f41d",beer:"1f37a",beers:"1f37b",beetle:"1f41e",beginner:"1f530",bell:"1f514",bento:"1f371",bicyclist:"1f6b4",bike:"1f6b2",bikini:"1f459",bird:"1f426",birthday:"1f382",black_circle:"26ab",black_joker:"1f0cf",black_large_square:"2b1b",black_medium_small_square:"25fe",black_medium_square:"25fc",black_nib:"2712",black_small_square:"25aa",black_square_button:"1f532",blossom:"1f33c",blowfish:"1f421",blue_book:"1f4d8",blue_car:"1f699",blue_heart:"1f499",blush:"1f60a",boar:"1f417",boat:"26f5",bomb:"1f4a3",book:"1f4d6",bookmark:"1f516",bookmark_tabs:"1f4d1",books:"1f4da",boom:"1f4a5",boot:"1f462",bouquet:"1f490",bow:"1f647",bowling:"1f3b3",bowtie:null,boy:"1f466",bread:"1f35e",bride_with_veil:"1f470",bridge_at_night:"1f309",briefcase:"1f4bc",broken_heart:"1f494",bug:"1f41b",bulb:"1f4a1",bullettrain_front:"1f685",bullettrain_side:"1f684",bus:"1f68c",busstop:"1f68f",bust_in_silhouette:"1f464",busts_in_silhouette:"1f465",cactus:"1f335",cake:"1f370",calendar:"1f4c6",calling:"1f4f2",camel:"1f42b",camera:"1f4f7",cancer:"264b",candy:"1f36c",capital_abcd:"1f520",capricorn:"2651",car:"1f697",card_index:"1f4c7",carousel_horse:"1f3a0",cat:"1f431",cat2:"1f408",cd:"1f4bf",chart:"1f4b9",chart_with_downwards_trend:"1f4c9",chart_with_upwards_trend:"1f4c8",checkered_flag:"1f3c1",cherries:"1f352",cherry_blossom:"1f338",chestnut:"1f330",chicken:"1f414",children_crossing:"1f6b8",chocolate_bar:"1f36b",christmas_tree:"1f384",church:"26ea",cinema:"1f3a6",circus_tent:"1f3aa",city_sunrise:"1f307",city_sunset:"1f306",cl:"1f191",clap:"1f44f",clapper:"1f3ac",clipboard:"1f4cb",clock1:"1f550",clock10:"1f559",clock1030:"1f565",clock11:"1f55a",clock1130:"1f566",clock12:"1f55b",clock1230:"1f567",clock130:"1f55c",clock2:"1f551",clock230:"1f55d",clock3:"1f552",clock330:"1f55e",clock4:"1f553",clock430:"1f55f",clock5:"1f554",clock530:"1f560",clock6:"1f555",clock630:"1f561",clock7:"1f556",clock730:"1f562",clock8:"1f557",clock830:"1f563",clock9:"1f558",clock930:"1f564",closed_book:"1f4d5",closed_lock_with_key:"1f510",closed_umbrella:"1f302",cloud:"2601",clubs:"2663",cn:"1f1e8-1f1f3",cocktail:"1f378",coffee:"2615",cold_sweat:"1f630",collision:"1f4a5",computer:"1f4bb",confetti_ball:"1f38a",confounded:"1f616",confused:"1f615",congratulations:"3297",construction:"1f6a7",construction_worker:"1f477",convenience_store:"1f3ea",cookie:"1f36a",cool:"1f192",cop:"1f46e",copyright:"00a9",corn:"1f33d",couple:"1f46b",couple_with_heart:"1f491",couplekiss:"1f48f",cow:"1f42e",cow2:"1f404",credit_card:"1f4b3",crescent_moon:"1f319",crocodile:"1f40a",crossed_flags:"1f38c",crown:"1f451",cry:"1f622",crying_cat_face:"1f63f",crystal_ball:"1f52e",cupid:"1f498",curly_loop:"27b0",currency_exchange:"1f4b1",curry:"1f35b",custard:"1f36e",customs:"1f6c3",cyclone:"1f300",dancer:"1f483",dancers:"1f46f",dango:"1f361",dart:"1f3af",dash:"1f4a8",date:"1f4c5",de:"1f1e9-1f1ea",deciduous_tree:"1f333",department_store:"1f3ec",diamond_shape_with_a_dot_inside:"1f4a0",diamonds:"2666",disappointed:"1f61e",disappointed_relieved:"1f625",dizzy:"1f4ab",dizzy_face:"1f635",do_not_litter:"1f6af",dog:"1f436",dog2:"1f415",dollar:"1f4b5",dolls:"1f38e",dolphin:"1f42c",door:"1f6aa",doughnut:"1f369",dragon:"1f409",dragon_face:"1f432",dress:"1f457",dromedary_camel:"1f42a",droplet:"1f4a7",dvd:"1f4c0","e-mail":"1f4e7",ear:"1f442",ear_of_rice:"1f33e",earth_africa:"1f30d",earth_americas:"1f30e",earth_asia:"1f30f",egg:"1f373",eggplant:"1f346",eight:"0038-20e3",eight_pointed_black_star:"2734",eight_spoked_asterisk:"2733",electric_plug:"1f50c",elephant:"1f418",email:"2709",end:"1f51a",envelope:"2709",envelope_with_arrow:"1f4e9",es:"1f1ea-1f1f8",euro:"1f4b6",european_castle:"1f3f0",european_post_office:"1f3e4",evergreen_tree:"1f332",exclamation:"2757",expressionless:"1f611",eyeglasses:"1f453",eyes:"1f440",facepunch:"1f44a",factory:"1f3ed",fallen_leaf:"1f342",family:"1f46a",fast_forward:"23e9",fax:"1f4e0",fearful:"1f628",feelsgood:null,feet:"1f43e",ferris_wheel:"1f3a1",file_folder:"1f4c1",finnadie:null,fire:"1f525",fire_engine:"1f692",fireworks:"1f386",first_quarter_moon:"1f313",first_quarter_moon_with_face:"1f31b",fish:"1f41f",fish_cake:"1f365",fishing_pole_and_fish:"1f3a3",fist:"270a",five:"0035-20e3",flags:"1f38f",flashlight:"1f526",flipper:"1f42c",floppy_disk:"1f4be",flower_playing_cards:"1f3b4",flushed:"1f633",foggy:"1f301",football:"1f3c8",footprints:"1f463",fork_and_knife:"1f374",fountain:"26f2",four:"0034-20e3",four_leaf_clover:"1f340",fr:"1f1eb-1f1f7",free:"1f193",fried_shrimp:"1f364",fries:"1f35f",frog:"1f438",frowning:"1f626",fu:null,fuelpump:"26fd",full_moon:"1f315",full_moon_with_face:"1f31d",game_die:"1f3b2",gb:"1f1ec-1f1e7",gem:"1f48e",gemini:"264a",ghost:"1f47b",gift:"1f381",gift_heart:"1f49d",girl:"1f467",globe_with_meridians:"1f310",goat:"1f410",goberserk:null,godmode:null,golf:"26f3",grapes:"1f347",green_apple:"1f34f",green_book:"1f4d7",green_heart:"1f49a",grey_exclamation:"2755",grey_question:"2754",grimacing:"1f62c",grin:"1f601",grinning:"1f600",guardsman:"1f482",guitar:"1f3b8",gun:"1f52b",haircut:"1f487",hamburger:"1f354",hammer:"1f528",hamster:"1f439",hand:"270b",handbag:"1f45c",hankey:"1f4a9",hash:"0023-20e3",hatched_chick:"1f425",hatching_chick:"1f423",headphones:"1f3a7",hear_no_evil:"1f649",heart:"2764",heart_decoration:"1f49f",heart_eyes:"1f60d",heart_eyes_cat:"1f63b",heartbeat:"1f493",heartpulse:"1f497",hearts:"2665",heavy_check_mark:"2714",heavy_division_sign:"2797",heavy_dollar_sign:"1f4b2",heavy_exclamation_mark:"2757",heavy_minus_sign:"2796",heavy_multiplication_x:"2716",heavy_plus_sign:"2795",helicopter:"1f681",herb:"1f33f",hibiscus:"1f33a",high_brightness:"1f506",high_heel:"1f460",hocho:"1f52a",honey_pot:"1f36f",honeybee:"1f41d",horse:"1f434",horse_racing:"1f3c7",hospital:"1f3e5",hotel:"1f3e8",hotsprings:"2668",hourglass:"231b",hourglass_flowing_sand:"23f3",house:"1f3e0",house_with_garden:"1f3e1",hurtrealbad:null,hushed:"1f62f",ice_cream:"1f368",icecream:"1f366",id:"1f194",ideograph_advantage:"1f250",imp:"1f47f",inbox_tray:"1f4e5",incoming_envelope:"1f4e8",information_desk_person:"1f481",information_source:"2139",innocent:"1f607",interrobang:"2049",iphone:"1f4f1",it:"1f1ee-1f1f9",izakaya_lantern:"1f3ee",jack_o_lantern:"1f383",japan:"1f5fe",japanese_castle:"1f3ef",japanese_goblin:"1f47a",japanese_ogre:"1f479",jeans:"1f456",joy:"1f602",joy_cat:"1f639",jp:"1f1ef-1f1f5",key:"1f511",keycap_ten:"1f51f",kimono:"1f458",kiss:"1f48b",kissing:"1f617",kissing_cat:"1f63d",kissing_closed_eyes:"1f61a",kissing_heart:"1f618",kissing_smiling_eyes:"1f619",knife:"1f52a",koala:"1f428",koko:"1f201",kr:"1f1f0-1f1f7",lantern:"1f3ee",large_blue_circle:"1f535",large_blue_diamond:"1f537",large_orange_diamond:"1f536",last_quarter_moon:"1f317",last_quarter_moon_with_face:"1f31c",laughing:"1f606",leaves:"1f343",ledger:"1f4d2",left_luggage:"1f6c5",left_right_arrow:"2194",leftwards_arrow_with_hook:"21a9",lemon:"1f34b",leo:"264c",leopard:"1f406",libra:"264e",light_rail:"1f688",link:"1f517",lips:"1f444",lipstick:"1f484",lock:"1f512",lock_with_ink_pen:"1f50f",lollipop:"1f36d",loop:"27bf",loud_sound:"1f50a",loudspeaker:"1f4e2",love_hotel:"1f3e9",love_letter:"1f48c",low_brightness:"1f505",m:"24c2",mag:"1f50d",mag_right:"1f50e",mahjong:"1f004",mailbox:"1f4eb",mailbox_closed:"1f4ea",mailbox_with_mail:"1f4ec",mailbox_with_no_mail:"1f4ed",man:"1f468",man_with_gua_pi_mao:"1f472",man_with_turban:"1f473",mans_shoe:"1f45e",maple_leaf:"1f341",mask:"1f637",massage:"1f486",meat_on_bone:"1f356",mega:"1f4e3",melon:"1f348",memo:"1f4dd",mens:"1f6b9",metal:null,metro:"1f687",microphone:"1f3a4",microscope:"1f52c",milky_way:"1f30c",minibus:"1f690",minidisc:"1f4bd",mobile_phone_off:"1f4f4",money_with_wings:"1f4b8",moneybag:"1f4b0",monkey:"1f412",monkey_face:"1f435",monorail:"1f69d",moon:"1f314",mortar_board:"1f393",mount_fuji:"1f5fb",mountain_bicyclist:"1f6b5",mountain_cableway:"1f6a0",mountain_railway:"1f69e",mouse:"1f42d",mouse2:"1f401",movie_camera:"1f3a5",moyai:"1f5ff",muscle:"1f4aa",mushroom:"1f344",musical_keyboard:"1f3b9",musical_note:"1f3b5",musical_score:"1f3bc",mute:"1f507",nail_care:"1f485",name_badge:"1f4db",neckbeard:null,necktie:"1f454",negative_squared_cross_mark:"274e",neutral_face:"1f610","new":"1f195",new_moon:"1f311",new_moon_with_face:"1f31a",newspaper:"1f4f0",ng:"1f196",night_with_stars:"1f303",nine:"0039-20e3",no_bell:"1f515",no_bicycles:"1f6b3",no_entry:"26d4",no_entry_sign:"1f6ab",no_good:"1f645",no_mobile_phones:"1f4f5",no_mouth:"1f636",no_pedestrians:"1f6b7",no_smoking:"1f6ad","non-potable_water":"1f6b1",nose:"1f443",notebook:"1f4d3",notebook_with_decorative_cover:"1f4d4",notes:"1f3b6",nut_and_bolt:"1f529",o:"2b55",o2:"1f17e",ocean:"1f30a",octocat:null,octopus:"1f419",oden:"1f362",office:"1f3e2",ok:"1f197",ok_hand:"1f44c",ok_woman:"1f646",older_man:"1f474",older_woman:"1f475",on:"1f51b",oncoming_automobile:"1f698",oncoming_bus:"1f68d",oncoming_police_car:"1f694",oncoming_taxi:"1f696",one:"0031-20e3",open_book:"1f4d6",open_file_folder:"1f4c2",open_hands:"1f450",open_mouth:"1f62e",ophiuchus:"26ce",orange_book:"1f4d9",outbox_tray:"1f4e4",ox:"1f402","package":"1f4e6",page_facing_up:"1f4c4",page_with_curl:"1f4c3",pager:"1f4df",palm_tree:"1f334",panda_face:"1f43c",paperclip:"1f4ce",parking:"1f17f",part_alternation_mark:"303d",partly_sunny:"26c5",passport_control:"1f6c2",paw_prints:"1f43e",peach:"1f351",pear:"1f350",pencil:"1f4dd",pencil2:"270f",penguin:"1f427",pensive:"1f614",performing_arts:"1f3ad",persevere:"1f623",person_frowning:"1f64d",person_with_blond_hair:"1f471",person_with_pouting_face:"1f64e",phone:"260e",pig:"1f437",pig2:"1f416",pig_nose:"1f43d",pill:"1f48a",pineapple:"1f34d",pisces:"2653",pizza:"1f355",point_down:"1f447",point_left:"1f448",point_right:"1f449",point_up:"261d",point_up_2:"1f446",police_car:"1f693",poodle:"1f429",poop:"1f4a9",post_office:"1f3e3",postal_horn:"1f4ef",postbox:"1f4ee",potable_water:"1f6b0",pouch:"1f45d",poultry_leg:"1f357",pound:"1f4b7",pouting_cat:"1f63e",pray:"1f64f",princess:"1f478",punch:"1f44a",purple_heart:"1f49c",purse:"1f45b",pushpin:"1f4cc",put_litter_in_its_place:"1f6ae",question:"2753",rabbit:"1f430",rabbit2:"1f407",racehorse:"1f40e",radio:"1f4fb",radio_button:"1f518",rage:"1f621",rage1:null,rage2:null,rage3:null,rage4:null,railway_car:"1f683",rainbow:"1f308",raised_hand:"270b",raised_hands:"1f64c",raising_hand:"1f64b",ram:"1f40f",ramen:"1f35c",rat:"1f400",recycle:"267b",red_car:"1f697",red_circle:"1f534",registered:"00ae",relaxed:"263a",relieved:"1f60c",repeat:"1f501",repeat_one:"1f502",restroom:"1f6bb",revolving_hearts:"1f49e",rewind:"23ea",ribbon:"1f380",rice:"1f35a",rice_ball:"1f359",rice_cracker:"1f358",rice_scene:"1f391",ring:"1f48d",rocket:"1f680",roller_coaster:"1f3a2",rooster:"1f413",rose:"1f339",rotating_light:"1f6a8",round_pushpin:"1f4cd",rowboat:"1f6a3",ru:"1f1f7-1f1fa",rugby_football:"1f3c9",runner:"1f3c3",running:"1f3c3",running_shirt_with_sash:"1f3bd",sa:"1f202",sagittarius:"2650",sailboat:"26f5",sake:"1f376",sandal:"1f461",santa:"1f385",satellite:"1f4e1",satisfied:"1f606",saxophone:"1f3b7",school:"1f3eb",school_satchel:"1f392",scissors:"2702",scorpius:"264f",scream:"1f631",scream_cat:"1f640",scroll:"1f4dc",seat:"1f4ba",secret:"3299",see_no_evil:"1f648",seedling:"1f331",seven:"0037-20e3",shaved_ice:"1f367",sheep:"1f411",shell:"1f41a",ship:"1f6a2",shipit:null,shirt:"1f455",shit:"1f4a9",shoe:"1f45e",shower:"1f6bf",signal_strength:"1f4f6",six:"0036-20e3",six_pointed_star:"1f52f",ski:"1f3bf",skull:"1f480",sleeping:"1f634",sleepy:"1f62a",slot_machine:"1f3b0",small_blue_diamond:"1f539",small_orange_diamond:"1f538",small_red_triangle:"1f53a",small_red_triangle_down:"1f53b",smile:"1f604",smile_cat:"1f638",smiley:"1f603",smiley_cat:"1f63a",smiling_imp:"1f608",smirk:"1f60f",smirk_cat:"1f63c",smoking:"1f6ac",snail:"1f40c",snake:"1f40d",snowboarder:"1f3c2",snowflake:"2744",snowman:"26c4",sob:"1f62d",soccer:"26bd",soon:"1f51c",sos:"1f198",sound:"1f509",space_invader:"1f47e",spades:"2660",spaghetti:"1f35d",sparkle:"2747",sparkler:"1f387",sparkles:"2728",sparkling_heart:"1f496",speak_no_evil:"1f64a",speaker:"1f508",speech_balloon:"1f4ac",speedboat:"1f6a4",squirrel:null,star:"2b50",star2:"1f31f",stars:"1f320",station:"1f689",statue_of_liberty:"1f5fd",steam_locomotive:"1f682",stew:"1f372",straight_ruler:"1f4cf",strawberry:"1f353",stuck_out_tongue:"1f61b",stuck_out_tongue_closed_eyes:"1f61d",stuck_out_tongue_winking_eye:"1f61c",sun_with_face:"1f31e",sunflower:"1f33b",sunglasses:"1f60e",sunny:"2600",sunrise:"1f305",sunrise_over_mountains:"1f304",surfer:"1f3c4",sushi:"1f363",suspect:null,suspension_railway:"1f69f",sweat:"1f613",sweat_drops:"1f4a6",sweat_smile:"1f605",sweet_potato:"1f360",swimmer:"1f3ca",symbols:"1f523",syringe:"1f489",tada:"1f389",tanabata_tree:"1f38b",tangerine:"1f34a",taurus:"2649",taxi:"1f695",tea:"1f375",telephone:"260e",telephone_receiver:"1f4de",telescope:"1f52d",tennis:"1f3be",tent:"26fa",thought_balloon:"1f4ad",three:"0033-20e3",thumbsdown:"1f44e",thumbsup:"1f44d",ticket:"1f3ab",tiger:"1f42f",tiger2:"1f405",tired_face:"1f62b",tm:"2122",toilet:"1f6bd",tokyo_tower:"1f5fc",tomato:"1f345",tongue:"1f445",top:"1f51d",tophat:"1f3a9",tractor:"1f69c",traffic_light:"1f6a5",train:"1f68b",train2:"1f686",tram:"1f68a",triangular_flag_on_post:"1f6a9",triangular_ruler:"1f4d0",trident:"1f531",triumph:"1f624",trolleybus:"1f68e",trollface:null,trophy:"1f3c6",tropical_drink:"1f379",tropical_fish:"1f420",truck:"1f69a",trumpet:"1f3ba",tshirt:"1f455",tulip:"1f337",turtle:"1f422",tv:"1f4fa",twisted_rightwards_arrows:"1f500",two:"0032-20e3",two_hearts:"1f495",two_men_holding_hands:"1f46c",two_women_holding_hands:"1f46d",u5272:"1f239",u5408:"1f234",u55b6:"1f23a",u6307:"1f22f",u6708:"1f237",u6709:"1f236",u6e80:"1f235",u7121:"1f21a",u7533:"1f238",u7981:"1f232",u7a7a:"1f233",uk:"1f1ec-1f1e7",umbrella:"2614",unamused:"1f612",underage:"1f51e",unlock:"1f513",up:"1f199",us:"1f1fa-1f1f8",v:"270c",vertical_traffic_light:"1f6a6",vhs:"1f4fc",vibration_mode:"1f4f3",video_camera:"1f4f9",video_game:"1f3ae",violin:"1f3bb",virgo:"264d",volcano:"1f30b",vs:"1f19a",walking:"1f6b6",waning_crescent_moon:"1f318",waning_gibbous_moon:"1f316",warning:"26a0",watch:"231a",water_buffalo:"1f403",watermelon:"1f349",wave:"1f44b",wavy_dash:"3030",waxing_crescent_moon:"1f312",waxing_gibbous_moon:"1f314",wc:"1f6be",weary:"1f629",wedding:"1f492",whale:"1f433",whale2:"1f40b",wheelchair:"267f",white_check_mark:"2705",white_circle:"26aa",white_flower:"1f4ae",white_large_square:"2b1c",white_medium_small_square:"25fd",white_medium_square:"25fb",white_small_square:"25ab",white_square_button:"1f533",wind_chime:"1f390",wine_glass:"1f377",wink:"1f609",wolf:"1f43a",woman:"1f469",womans_clothes:"1f45a",womans_hat:"1f452",womens:"1f6ba",worried:"1f61f",wrench:"1f527",x:"274c",yellow_heart:"1f49b",yen:"1f4b4",yum:"1f60b",zap:"26a1",zero:"0030-20e3",zzz:"1f4a4",simple_smile:"1f642"}},function(f,e){f.exports={"<3":"2764","</3":"1f494",":')":"1f642",":'-)":"1f642",":D":"1f603",":-D":"1f603","=D":"1f603",":)":"1f642",":-)":"1f604","=]":"1f604","=)":"1f604",":]":"1f604","':)":"1f605","':-)":"1f605","'=)":"1f605","':D":"1f605","':-D":"1f605","'=D":"1f605",">:)":"1f606",">;)":"1f606",">:-)":"1f606",">=)":"1f606",";)":"1f609",";-)":"1f609","*-)":"1f609","*)":"1f609",";-]":"1f609",";]":"1f609",";D":"1f609",";^)":"1f609","':(":"1f613","':-(":"1f613","'=(":"1f613",":*":"1f618",":-*":"1f618","=*":"1f618",":^*":"1f618",">:P":"1f61c","X-P":"1f61c","x-p":"1f61c",">:[":"1f61e",":-(":"1f61e",":(":"1f61e",":-[":"1f61e",":[":"1f61e","=(":"1f61e",">:(":"1f620",">:-(":"1f620",":@":"1f620",":'(":"1f622",":'-(":"1f622",";(":"1f622",";-(":"1f622",">.<":"1f623",":$":"1f633","=$":"1f633","#-)":"1f635","#)":"1f635","%-)":"1f635","%)":"1f635","X)":"1f635","X-)":"1f635","*\\0/*":"1f646","\\0/":"1f646","*\\O/*":"1f646","\\O/":"1f646","O:-)":"1f607","0:-3":"1f607","0:3":"1f607","0:-)":"1f607","0:)":"1f607","0;^)":"1f607","O:)":"1f607","O;-)":"1f607","O=)":"1f607","0;-)":"1f607","O:-3":"1f607","O:3":"1f607","B-)":"1f60e","B)":"1f60e","8)":"1f60e","8-)":"1f60e","B-D":"1f60e","8-D":"1f60e","-_-":"1f611","-__-":"1f611","-___-":"1f611",">:\\":"1f615",">:/":"1f615",":-/":"1f615",":-.":"1f615",":\\":"1f615","=/":"1f615","=\\":"1f615",":L":"1f615","=L":"1f615",":P":"1f61b",":-P":"1f61b","=P":"1f61b",":-p":"1f61b",":p":"1f61b","=p":"1f61b",":-Þ":"1f61b",":Þ":"1f61b",":þ":"1f61b",":-þ":"1f61b",":-b":"1f61b",":b":"1f61b","d:":"1f61b",":-O":"1f62e",":O":"1f62e",":-o":"1f62e",":o":"1f62e",O_O:"1f62e",">:O":"1f62e",":-X":"1f636",":X":"1f636",":-#":"1f636",":#":"1f636","=X":"1f636","=x":"1f636",":x":"1f636",":-x":"1f636","=#":"1f636"}},function(f,e){"use strict";var a=/[|\\{}()[\]^$+*?.]/g;f.exports=function(f){if("string"!=typeof f)throw new TypeError("Expected a string");return f.replace(a,"\\$&")}},function(f,e){function a(f){for(var e=-1,a=f?f.length:0,o=0,r=[];++e<a;){var t=f[e];t&&(r[o++]=t)}return r}f.exports=a},function(f,e){"use strict";function a(f){if(null==f)throw new TypeError("Object.assign cannot be called with null or undefined");return Object(f)}f.exports=Object.assign||function(f,e){for(var o,r,t=a(f),n=1;n<arguments.length;n++){o=arguments[n],r=Object.keys(Object(o));for(var i=0;i<r.length;i++)t[r[i]]=o[r[i]]}return t}},function(e,a){e.exports=f}])});
 
 /***/ },
-/* 691 */
+/* 698 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(process) {'use strict';
@@ -64324,7 +65012,7 @@
 	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(2)))
 
 /***/ },
-/* 692 */
+/* 699 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -64359,7 +65047,7 @@
 	module.exports = exports['default'];
 
 /***/ },
-/* 693 */
+/* 700 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(process) {'use strict';
@@ -64429,7 +65117,7 @@
 	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(2)))
 
 /***/ },
-/* 694 */
+/* 701 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(process) {'use strict';
@@ -64450,7 +65138,7 @@
 
 	var _invariant2 = _interopRequireDefault(_invariant);
 
-	var _RouteUtils = __webpack_require__(59);
+	var _RouteUtils = __webpack_require__(60);
 
 	var _PropTypes = __webpack_require__(71);
 
@@ -64496,7 +65184,7 @@
 	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(2)))
 
 /***/ },
-/* 695 */
+/* 702 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(process) {'use strict';
@@ -64571,7 +65259,7 @@
 	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(2)))
 
 /***/ },
-/* 696 */
+/* 703 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(process) {'use strict';
@@ -64588,7 +65276,7 @@
 
 	var _invariant2 = _interopRequireDefault(_invariant);
 
-	var _RouteUtils = __webpack_require__(59);
+	var _RouteUtils = __webpack_require__(60);
 
 	var _PropTypes = __webpack_require__(71);
 
@@ -64633,7 +65321,7 @@
 	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(2)))
 
 /***/ },
-/* 697 */
+/* 704 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(process) {'use strict';
@@ -64685,7 +65373,7 @@
 	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(2)))
 
 /***/ },
-/* 698 */
+/* 705 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(process) {'use strict';
@@ -64720,7 +65408,7 @@
 
 	var _RouterContext2 = _interopRequireDefault(_RouterContext);
 
-	var _RouteUtils = __webpack_require__(59);
+	var _RouteUtils = __webpack_require__(60);
 
 	var _RouterUtils = __webpack_require__(233);
 
@@ -64901,7 +65589,7 @@
 	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(2)))
 
 /***/ },
-/* 699 */
+/* 706 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(process) {'use strict';
@@ -64939,7 +65627,7 @@
 	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(2)))
 
 /***/ },
-/* 700 */
+/* 707 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(process) {'use strict';
@@ -65070,7 +65758,7 @@
 	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(2)))
 
 /***/ },
-/* 701 */
+/* 708 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -65079,7 +65767,7 @@
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
 
-	var _historyLibCreateBrowserHistory = __webpack_require__(682);
+	var _historyLibCreateBrowserHistory = __webpack_require__(688);
 
 	var _historyLibCreateBrowserHistory2 = _interopRequireDefault(_historyLibCreateBrowserHistory);
 
@@ -65091,7 +65779,7 @@
 	module.exports = exports['default'];
 
 /***/ },
-/* 702 */
+/* 709 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -65173,7 +65861,7 @@
 	module.exports = exports['default'];
 
 /***/ },
-/* 703 */
+/* 710 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(process) {'use strict';
@@ -65258,7 +65946,7 @@
 	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(2)))
 
 /***/ },
-/* 704 */
+/* 711 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -65291,7 +65979,7 @@
 	module.exports = exports['default'];
 
 /***/ },
-/* 705 */
+/* 712 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -65312,7 +66000,7 @@
 	module.exports = exports['default'];
 
 /***/ },
-/* 706 */
+/* 713 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* components */
@@ -65322,7 +66010,7 @@
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
 
-	var _Router2 = __webpack_require__(698);
+	var _Router2 = __webpack_require__(705);
 
 	var _Router3 = _interopRequireDefault(_Router2);
 
@@ -65334,7 +66022,7 @@
 
 	exports.Link = _Link3['default'];
 
-	var _IndexLink2 = __webpack_require__(692);
+	var _IndexLink2 = __webpack_require__(699);
 
 	var _IndexLink3 = _interopRequireDefault(_IndexLink2);
 
@@ -65342,13 +66030,13 @@
 
 	/* components (configuration) */
 
-	var _IndexRedirect2 = __webpack_require__(693);
+	var _IndexRedirect2 = __webpack_require__(700);
 
 	var _IndexRedirect3 = _interopRequireDefault(_IndexRedirect2);
 
 	exports.IndexRedirect = _IndexRedirect3['default'];
 
-	var _IndexRoute2 = __webpack_require__(694);
+	var _IndexRoute2 = __webpack_require__(701);
 
 	var _IndexRoute3 = _interopRequireDefault(_IndexRoute2);
 
@@ -65360,7 +66048,7 @@
 
 	exports.Redirect = _Redirect3['default'];
 
-	var _Route2 = __webpack_require__(696);
+	var _Route2 = __webpack_require__(703);
 
 	var _Route3 = _interopRequireDefault(_Route2);
 
@@ -65368,19 +66056,19 @@
 
 	/* mixins */
 
-	var _History2 = __webpack_require__(691);
+	var _History2 = __webpack_require__(698);
 
 	var _History3 = _interopRequireDefault(_History2);
 
 	exports.History = _History3['default'];
 
-	var _Lifecycle2 = __webpack_require__(695);
+	var _Lifecycle2 = __webpack_require__(702);
 
 	var _Lifecycle3 = _interopRequireDefault(_Lifecycle2);
 
 	exports.Lifecycle = _Lifecycle3['default'];
 
-	var _RouteContext2 = __webpack_require__(697);
+	var _RouteContext2 = __webpack_require__(704);
 
 	var _RouteContext3 = _interopRequireDefault(_RouteContext2);
 
@@ -65388,13 +66076,13 @@
 
 	/* utils */
 
-	var _useRoutes2 = __webpack_require__(710);
+	var _useRoutes2 = __webpack_require__(717);
 
 	var _useRoutes3 = _interopRequireDefault(_useRoutes2);
 
 	exports.useRoutes = _useRoutes3['default'];
 
-	var _RouteUtils = __webpack_require__(59);
+	var _RouteUtils = __webpack_require__(60);
 
 	exports.createRoutes = _RouteUtils.createRoutes;
 
@@ -65404,7 +66092,7 @@
 
 	exports.RouterContext = _RouterContext3['default'];
 
-	var _RoutingContext2 = __webpack_require__(699);
+	var _RoutingContext2 = __webpack_require__(706);
 
 	var _RoutingContext3 = _interopRequireDefault(_RoutingContext2);
 
@@ -65416,7 +66104,7 @@
 
 	exports.PropTypes = _PropTypes3['default'];
 
-	var _match2 = __webpack_require__(708);
+	var _match2 = __webpack_require__(715);
 
 	var _match3 = _interopRequireDefault(_match2);
 
@@ -65434,13 +66122,13 @@
 
 	/* histories */
 
-	var _browserHistory2 = __webpack_require__(701);
+	var _browserHistory2 = __webpack_require__(708);
 
 	var _browserHistory3 = _interopRequireDefault(_browserHistory2);
 
 	exports.browserHistory = _browserHistory3['default'];
 
-	var _hashHistory2 = __webpack_require__(705);
+	var _hashHistory2 = __webpack_require__(712);
 
 	var _hashHistory3 = _interopRequireDefault(_hashHistory2);
 
@@ -65453,7 +66141,7 @@
 	exports.createMemoryHistory = _createMemoryHistory3['default'];
 
 /***/ },
-/* 707 */
+/* 714 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -65605,7 +66293,7 @@
 	module.exports = exports['default'];
 
 /***/ },
-/* 708 */
+/* 715 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(process) {'use strict';
@@ -65630,7 +66318,7 @@
 
 	var _createTransitionManager2 = _interopRequireDefault(_createTransitionManager);
 
-	var _RouteUtils = __webpack_require__(59);
+	var _RouteUtils = __webpack_require__(60);
 
 	var _RouterUtils = __webpack_require__(233);
 
@@ -65692,7 +66380,7 @@
 	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(2)))
 
 /***/ },
-/* 709 */
+/* 716 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(process) {'use strict';
@@ -65713,7 +66401,7 @@
 
 	var _PatternUtils = __webpack_require__(85);
 
-	var _RouteUtils = __webpack_require__(59);
+	var _RouteUtils = __webpack_require__(60);
 
 	function getChildRoutes(route, location, callback) {
 	  if (route.childRoutes) {
@@ -65923,7 +66611,7 @@
 	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(2)))
 
 /***/ },
-/* 710 */
+/* 717 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(process) {'use strict';
@@ -65980,7 +66668,7 @@
 	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(2)))
 
 /***/ },
-/* 711 */
+/* 718 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/**
@@ -66021,7 +66709,7 @@
 	module.exports = AutoFocusUtils;
 
 /***/ },
-/* 712 */
+/* 719 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/**
@@ -66041,9 +66729,9 @@
 	var EventConstants = __webpack_require__(53);
 	var EventPropagators = __webpack_require__(94);
 	var ExecutionEnvironment = __webpack_require__(16);
-	var FallbackCompositionState = __webpack_require__(720);
-	var SyntheticCompositionEvent = __webpack_require__(756);
-	var SyntheticInputEvent = __webpack_require__(759);
+	var FallbackCompositionState = __webpack_require__(727);
+	var SyntheticCompositionEvent = __webpack_require__(763);
+	var SyntheticInputEvent = __webpack_require__(766);
 
 	var keyOf = __webpack_require__(58);
 
@@ -66431,7 +67119,7 @@
 	module.exports = BeforeInputEventPlugin;
 
 /***/ },
-/* 713 */
+/* 720 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(process) {/**
@@ -66452,10 +67140,10 @@
 	var ExecutionEnvironment = __webpack_require__(16);
 	var ReactPerf = __webpack_require__(34);
 
-	var camelizeStyleName = __webpack_require__(499);
-	var dangerousStyleValue = __webpack_require__(764);
-	var hyphenateStyleName = __webpack_require__(504);
-	var memoizeStringOnly = __webpack_require__(508);
+	var camelizeStyleName = __webpack_require__(503);
+	var dangerousStyleValue = __webpack_require__(771);
+	var hyphenateStyleName = __webpack_require__(508);
+	var memoizeStringOnly = __webpack_require__(512);
 	var warning = __webpack_require__(9);
 
 	var processStyleName = memoizeStringOnly(function (styleName) {
@@ -66612,7 +67300,7 @@
 	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(2)))
 
 /***/ },
-/* 714 */
+/* 721 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/**
@@ -66938,7 +67626,7 @@
 	module.exports = ChangeEventPlugin;
 
 /***/ },
-/* 715 */
+/* 722 */
 /***/ function(module, exports) {
 
 	/**
@@ -66966,7 +67654,7 @@
 	module.exports = ClientReactRootIndex;
 
 /***/ },
-/* 716 */
+/* 723 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(process) {/**
@@ -66985,7 +67673,7 @@
 
 	var ExecutionEnvironment = __webpack_require__(16);
 
-	var createNodesFromMarkup = __webpack_require__(501);
+	var createNodesFromMarkup = __webpack_require__(505);
 	var emptyFunction = __webpack_require__(39);
 	var getMarkupWrap = __webpack_require__(221);
 	var invariant = __webpack_require__(4);
@@ -67117,7 +67805,7 @@
 	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(2)))
 
 /***/ },
-/* 717 */
+/* 724 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/**
@@ -67149,7 +67837,7 @@
 	module.exports = DefaultEventPluginOrder;
 
 /***/ },
-/* 718 */
+/* 725 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/**
@@ -67278,7 +67966,7 @@
 	module.exports = EnterLeaveEventPlugin;
 
 /***/ },
-/* 719 */
+/* 726 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(process) {/**
@@ -67486,7 +68174,7 @@
 	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(2)))
 
 /***/ },
-/* 720 */
+/* 727 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/**
@@ -67503,7 +68191,7 @@
 
 	'use strict';
 
-	var PooledClass = __webpack_require__(60);
+	var PooledClass = __webpack_require__(61);
 
 	var assign = __webpack_require__(6);
 	var getTextContentAccessor = __webpack_require__(263);
@@ -67586,7 +68274,7 @@
 	module.exports = FallbackCompositionState;
 
 /***/ },
-/* 721 */
+/* 728 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/**
@@ -67821,7 +68509,7 @@
 	module.exports = HTMLDOMPropertyConfig;
 
 /***/ },
-/* 722 */
+/* 729 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(process) {/**
@@ -67863,7 +68551,7 @@
 	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(2)))
 
 /***/ },
-/* 723 */
+/* 730 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/**
@@ -67884,8 +68572,8 @@
 
 	var assign = __webpack_require__(6);
 
-	var ReactTransitionGroup = __webpack_require__(750);
-	var ReactCSSTransitionGroupChild = __webpack_require__(724);
+	var ReactTransitionGroup = __webpack_require__(757);
+	var ReactCSSTransitionGroupChild = __webpack_require__(731);
 
 	function createTransitionTimeoutPropValidator(transitionType) {
 	  var timeoutPropName = 'transition' + transitionType + 'Timeout';
@@ -67951,7 +68639,7 @@
 	module.exports = ReactCSSTransitionGroup;
 
 /***/ },
-/* 724 */
+/* 731 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/**
@@ -67971,8 +68659,8 @@
 	var React = __webpack_require__(115);
 	var ReactDOM = __webpack_require__(163);
 
-	var CSSCore = __webpack_require__(497);
-	var ReactTransitionEvents = __webpack_require__(749);
+	var CSSCore = __webpack_require__(501);
+	var ReactTransitionEvents = __webpack_require__(756);
 
 	var onlyChild = __webpack_require__(265);
 
@@ -68121,7 +68809,7 @@
 	module.exports = ReactCSSTransitionGroupChild;
 
 /***/ },
-/* 725 */
+/* 732 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(process) {/**
@@ -68249,7 +68937,7 @@
 	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(2)))
 
 /***/ },
-/* 726 */
+/* 733 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(process) {/**
@@ -68949,7 +69637,7 @@
 	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(2)))
 
 /***/ },
-/* 727 */
+/* 734 */
 /***/ function(module, exports) {
 
 	/**
@@ -69004,7 +69692,7 @@
 	module.exports = ReactDOMButton;
 
 /***/ },
-/* 728 */
+/* 735 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(process) {/**
@@ -69023,20 +69711,20 @@
 
 	'use strict';
 
-	var AutoFocusUtils = __webpack_require__(711);
-	var CSSPropertyOperations = __webpack_require__(713);
+	var AutoFocusUtils = __webpack_require__(718);
+	var CSSPropertyOperations = __webpack_require__(720);
 	var DOMProperty = __webpack_require__(72);
 	var DOMPropertyOperations = __webpack_require__(159);
 	var EventConstants = __webpack_require__(53);
 	var ReactBrowserEventEmitter = __webpack_require__(116);
 	var ReactComponentBrowserEnvironment = __webpack_require__(161);
-	var ReactDOMButton = __webpack_require__(727);
-	var ReactDOMInput = __webpack_require__(730);
-	var ReactDOMOption = __webpack_require__(731);
+	var ReactDOMButton = __webpack_require__(734);
+	var ReactDOMInput = __webpack_require__(737);
+	var ReactDOMOption = __webpack_require__(738);
 	var ReactDOMSelect = __webpack_require__(244);
-	var ReactDOMTextarea = __webpack_require__(734);
+	var ReactDOMTextarea = __webpack_require__(741);
 	var ReactMount = __webpack_require__(24);
-	var ReactMultiChild = __webpack_require__(741);
+	var ReactMultiChild = __webpack_require__(748);
 	var ReactPerf = __webpack_require__(34);
 	var ReactUpdateQueue = __webpack_require__(165);
 
@@ -69972,7 +70660,7 @@
 	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(2)))
 
 /***/ },
-/* 729 */
+/* 736 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(process) {/**
@@ -69992,7 +70680,7 @@
 	var ReactElement = __webpack_require__(29);
 	var ReactElementValidator = __webpack_require__(248);
 
-	var mapObject = __webpack_require__(507);
+	var mapObject = __webpack_require__(511);
 
 	/**
 	 * Create a factory that creates HTML tag elements.
@@ -70155,7 +70843,7 @@
 	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(2)))
 
 /***/ },
-/* 730 */
+/* 737 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(process) {/**
@@ -70314,7 +71002,7 @@
 	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(2)))
 
 /***/ },
-/* 731 */
+/* 738 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(process) {/**
@@ -70409,7 +71097,7 @@
 	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(2)))
 
 /***/ },
-/* 732 */
+/* 739 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/**
@@ -70427,7 +71115,7 @@
 
 	var ExecutionEnvironment = __webpack_require__(16);
 
-	var getNodeForCharacterOffset = __webpack_require__(767);
+	var getNodeForCharacterOffset = __webpack_require__(774);
 	var getTextContentAccessor = __webpack_require__(263);
 
 	/**
@@ -70626,7 +71314,7 @@
 	module.exports = ReactDOMSelection;
 
 /***/ },
-/* 733 */
+/* 740 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/**
@@ -70643,7 +71331,7 @@
 	'use strict';
 
 	var ReactDefaultInjection = __webpack_require__(247);
-	var ReactServerRendering = __webpack_require__(746);
+	var ReactServerRendering = __webpack_require__(753);
 	var ReactVersion = __webpack_require__(166);
 
 	ReactDefaultInjection.inject();
@@ -70657,7 +71345,7 @@
 	module.exports = ReactDOMServer;
 
 /***/ },
-/* 734 */
+/* 741 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(process) {/**
@@ -70776,7 +71464,7 @@
 	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(2)))
 
 /***/ },
-/* 735 */
+/* 742 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/**
@@ -70794,11 +71482,11 @@
 	'use strict';
 
 	var DOMProperty = __webpack_require__(72);
-	var ReactDefaultPerfAnalysis = __webpack_require__(736);
+	var ReactDefaultPerfAnalysis = __webpack_require__(743);
 	var ReactMount = __webpack_require__(24);
 	var ReactPerf = __webpack_require__(34);
 
-	var performanceNow = __webpack_require__(510);
+	var performanceNow = __webpack_require__(514);
 
 	function roundFloat(val) {
 	  return Math.floor(val * 100) / 100;
@@ -71018,7 +71706,7 @@
 	module.exports = ReactDefaultPerf;
 
 /***/ },
-/* 736 */
+/* 743 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/**
@@ -71224,7 +71912,7 @@
 	module.exports = ReactDefaultPerfAnalysis;
 
 /***/ },
-/* 737 */
+/* 744 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/**
@@ -71267,7 +71955,7 @@
 	module.exports = ReactEventEmitterMixin;
 
 /***/ },
-/* 738 */
+/* 745 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/**
@@ -71286,14 +71974,14 @@
 
 	var EventListener = __webpack_require__(217);
 	var ExecutionEnvironment = __webpack_require__(16);
-	var PooledClass = __webpack_require__(60);
+	var PooledClass = __webpack_require__(61);
 	var ReactInstanceHandles = __webpack_require__(86);
 	var ReactMount = __webpack_require__(24);
 	var ReactUpdates = __webpack_require__(40);
 
 	var assign = __webpack_require__(6);
 	var getEventTarget = __webpack_require__(170);
-	var getUnboundedScrollPosition = __webpack_require__(502);
+	var getUnboundedScrollPosition = __webpack_require__(506);
 
 	var DOCUMENT_FRAGMENT_NODE_TYPE = 11;
 
@@ -71483,7 +72171,7 @@
 	module.exports = ReactEventListener;
 
 /***/ },
-/* 739 */
+/* 746 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/**
@@ -71526,7 +72214,7 @@
 	module.exports = ReactInjection;
 
 /***/ },
-/* 740 */
+/* 747 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(process) {/**
@@ -71545,7 +72233,7 @@
 	var ReactChildren = __webpack_require__(240);
 	var ReactComponent = __webpack_require__(242);
 	var ReactClass = __webpack_require__(241);
-	var ReactDOMFactories = __webpack_require__(729);
+	var ReactDOMFactories = __webpack_require__(736);
 	var ReactElement = __webpack_require__(29);
 	var ReactElementValidator = __webpack_require__(248);
 	var ReactPropTypes = __webpack_require__(257);
@@ -71606,7 +72294,7 @@
 	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(2)))
 
 /***/ },
-/* 741 */
+/* 748 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(process) {/**
@@ -71628,7 +72316,7 @@
 
 	var ReactCurrentOwner = __webpack_require__(54);
 	var ReactReconciler = __webpack_require__(73);
-	var ReactChildReconciler = __webpack_require__(725);
+	var ReactChildReconciler = __webpack_require__(732);
 
 	var flattenChildren = __webpack_require__(261);
 
@@ -72108,7 +72796,7 @@
 	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(2)))
 
 /***/ },
-/* 742 */
+/* 749 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(process) {/**
@@ -72205,7 +72893,7 @@
 	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(2)))
 
 /***/ },
-/* 743 */
+/* 750 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/**
@@ -72223,7 +72911,7 @@
 	'use strict';
 
 	var CallbackQueue = __webpack_require__(158);
-	var PooledClass = __webpack_require__(60);
+	var PooledClass = __webpack_require__(61);
 	var ReactBrowserEventEmitter = __webpack_require__(116);
 	var ReactDOMFeatureFlags = __webpack_require__(243);
 	var ReactInputSelection = __webpack_require__(252);
@@ -72361,7 +73049,7 @@
 	module.exports = ReactReconcileTransaction;
 
 /***/ },
-/* 744 */
+/* 751 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/**
@@ -72377,7 +73065,7 @@
 
 	'use strict';
 
-	var ReactOwner = __webpack_require__(742);
+	var ReactOwner = __webpack_require__(749);
 
 	var ReactRef = {};
 
@@ -72444,7 +73132,7 @@
 	module.exports = ReactRef;
 
 /***/ },
-/* 745 */
+/* 752 */
 /***/ function(module, exports) {
 
 	/**
@@ -72472,7 +73160,7 @@
 	module.exports = ReactServerBatchingStrategy;
 
 /***/ },
-/* 746 */
+/* 753 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(process) {/**
@@ -72492,8 +73180,8 @@
 	var ReactElement = __webpack_require__(29);
 	var ReactInstanceHandles = __webpack_require__(86);
 	var ReactMarkupChecksum = __webpack_require__(253);
-	var ReactServerBatchingStrategy = __webpack_require__(745);
-	var ReactServerRenderingTransaction = __webpack_require__(747);
+	var ReactServerBatchingStrategy = __webpack_require__(752);
+	var ReactServerRenderingTransaction = __webpack_require__(754);
 	var ReactUpdates = __webpack_require__(40);
 
 	var emptyObject = __webpack_require__(92);
@@ -72561,7 +73249,7 @@
 	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(2)))
 
 /***/ },
-/* 747 */
+/* 754 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/**
@@ -72578,7 +73266,7 @@
 
 	'use strict';
 
-	var PooledClass = __webpack_require__(60);
+	var PooledClass = __webpack_require__(61);
 	var CallbackQueue = __webpack_require__(158);
 	var Transaction = __webpack_require__(120);
 
@@ -72653,7 +73341,7 @@
 	module.exports = ReactServerRenderingTransaction;
 
 /***/ },
-/* 748 */
+/* 755 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/**
@@ -72756,7 +73444,7 @@
 	module.exports = ReactTransitionChildMapping;
 
 /***/ },
-/* 749 */
+/* 756 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/**
@@ -72870,7 +73558,7 @@
 	module.exports = ReactTransitionEvents;
 
 /***/ },
-/* 750 */
+/* 757 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/**
@@ -72887,7 +73575,7 @@
 	'use strict';
 
 	var React = __webpack_require__(115);
-	var ReactTransitionChildMapping = __webpack_require__(748);
+	var ReactTransitionChildMapping = __webpack_require__(755);
 
 	var assign = __webpack_require__(6);
 	var emptyFunction = __webpack_require__(39);
@@ -73080,7 +73768,7 @@
 	module.exports = ReactTransitionGroup;
 
 /***/ },
-/* 751 */
+/* 758 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/**
@@ -73212,7 +73900,7 @@
 	module.exports = SVGDOMPropertyConfig;
 
 /***/ },
-/* 752 */
+/* 759 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/**
@@ -73418,7 +74106,7 @@
 	module.exports = SelectEventPlugin;
 
 /***/ },
-/* 753 */
+/* 760 */
 /***/ function(module, exports) {
 
 	/**
@@ -73452,7 +74140,7 @@
 	module.exports = ServerReactRootIndex;
 
 /***/ },
-/* 754 */
+/* 761 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(process) {/**
@@ -73472,15 +74160,15 @@
 	var EventListener = __webpack_require__(217);
 	var EventPropagators = __webpack_require__(94);
 	var ReactMount = __webpack_require__(24);
-	var SyntheticClipboardEvent = __webpack_require__(755);
+	var SyntheticClipboardEvent = __webpack_require__(762);
 	var SyntheticEvent = __webpack_require__(74);
-	var SyntheticFocusEvent = __webpack_require__(758);
-	var SyntheticKeyboardEvent = __webpack_require__(760);
+	var SyntheticFocusEvent = __webpack_require__(765);
+	var SyntheticKeyboardEvent = __webpack_require__(767);
 	var SyntheticMouseEvent = __webpack_require__(119);
-	var SyntheticDragEvent = __webpack_require__(757);
-	var SyntheticTouchEvent = __webpack_require__(761);
+	var SyntheticDragEvent = __webpack_require__(764);
+	var SyntheticTouchEvent = __webpack_require__(768);
 	var SyntheticUIEvent = __webpack_require__(96);
-	var SyntheticWheelEvent = __webpack_require__(762);
+	var SyntheticWheelEvent = __webpack_require__(769);
 
 	var emptyFunction = __webpack_require__(39);
 	var getEventCharCode = __webpack_require__(168);
@@ -74045,7 +74733,7 @@
 	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(2)))
 
 /***/ },
-/* 755 */
+/* 762 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/**
@@ -74089,7 +74777,7 @@
 	module.exports = SyntheticClipboardEvent;
 
 /***/ },
-/* 756 */
+/* 763 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/**
@@ -74131,7 +74819,7 @@
 	module.exports = SyntheticCompositionEvent;
 
 /***/ },
-/* 757 */
+/* 764 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/**
@@ -74173,7 +74861,7 @@
 	module.exports = SyntheticDragEvent;
 
 /***/ },
-/* 758 */
+/* 765 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/**
@@ -74215,7 +74903,7 @@
 	module.exports = SyntheticFocusEvent;
 
 /***/ },
-/* 759 */
+/* 766 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/**
@@ -74258,7 +74946,7 @@
 	module.exports = SyntheticInputEvent;
 
 /***/ },
-/* 760 */
+/* 767 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/**
@@ -74278,7 +74966,7 @@
 	var SyntheticUIEvent = __webpack_require__(96);
 
 	var getEventCharCode = __webpack_require__(168);
-	var getEventKey = __webpack_require__(766);
+	var getEventKey = __webpack_require__(773);
 	var getEventModifierState = __webpack_require__(169);
 
 	/**
@@ -74348,7 +75036,7 @@
 	module.exports = SyntheticKeyboardEvent;
 
 /***/ },
-/* 761 */
+/* 768 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/**
@@ -74399,7 +75087,7 @@
 	module.exports = SyntheticTouchEvent;
 
 /***/ },
-/* 762 */
+/* 769 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/**
@@ -74459,7 +75147,7 @@
 	module.exports = SyntheticWheelEvent;
 
 /***/ },
-/* 763 */
+/* 770 */
 /***/ function(module, exports) {
 
 	/**
@@ -74506,7 +75194,7 @@
 	module.exports = adler32;
 
 /***/ },
-/* 764 */
+/* 771 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/**
@@ -74566,7 +75254,7 @@
 	module.exports = dangerousStyleValue;
 
 /***/ },
-/* 765 */
+/* 772 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(process) {/**
@@ -74620,7 +75308,7 @@
 	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(2)))
 
 /***/ },
-/* 766 */
+/* 773 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/**
@@ -74728,7 +75416,7 @@
 	module.exports = getEventKey;
 
 /***/ },
-/* 767 */
+/* 774 */
 /***/ function(module, exports) {
 
 	/**
@@ -74806,7 +75494,7 @@
 	module.exports = getNodeForCharacterOffset;
 
 /***/ },
-/* 768 */
+/* 775 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/**
@@ -74837,7 +75525,7 @@
 	module.exports = quoteAttributeValueForBrowser;
 
 /***/ },
-/* 769 */
+/* 776 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/**
@@ -74858,7 +75546,7 @@
 	module.exports = ReactMount.renderSubtreeIntoContainer;
 
 /***/ },
-/* 770 */
+/* 777 */
 /***/ function(module, exports) {
 
 	"use strict";
@@ -74888,7 +75576,7 @@
 	};
 
 /***/ },
-/* 771 */
+/* 778 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -74959,7 +75647,7 @@
 	module.exports = createAction;
 
 /***/ },
-/* 772 */
+/* 779 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -74981,7 +75669,7 @@
 
 	Reflux.StoreMethods = __webpack_require__(267);
 
-	Reflux.createAction = __webpack_require__(771);
+	Reflux.createAction = __webpack_require__(778);
 
 	Reflux.createStore = __webpack_require__(268);
 
@@ -75068,7 +75756,7 @@
 	module.exports = exports["default"];
 
 /***/ },
-/* 773 */
+/* 780 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -75132,7 +75820,7 @@
 	};
 
 /***/ },
-/* 774 */
+/* 781 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var ListenerMethods = __webpack_require__(75),
@@ -75166,7 +75854,7 @@
 
 
 /***/ },
-/* 775 */
+/* 782 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var ListenerMethods = __webpack_require__(75),
@@ -75207,7 +75895,7 @@
 
 
 /***/ },
-/* 776 */
+/* 783 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var ListenerMethods = __webpack_require__(75);
@@ -75248,7 +75936,7 @@
 
 
 /***/ },
-/* 777 */
+/* 784 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var ListenerMethods = __webpack_require__(75);
@@ -75287,7 +75975,41 @@
 
 
 /***/ },
-/* 778 */
+/* 785 */
+/***/ function(module, exports) {
+
+	function select(element) {
+	    var selectedText;
+
+	    if (element.nodeName === 'INPUT' || element.nodeName === 'TEXTAREA') {
+	        element.focus();
+	        element.setSelectionRange(0, element.value.length);
+
+	        selectedText = element.value;
+	    }
+	    else {
+	        if (element.hasAttribute('contenteditable')) {
+	            element.focus();
+	        }
+
+	        var selection = window.getSelection();
+	        var range = document.createRange();
+
+	        range.selectNodeContents(element);
+	        selection.removeAllRanges();
+	        selection.addRange(range);
+
+	        selectedText = selection.toString();
+	    }
+
+	    return selectedText;
+	}
+
+	module.exports = select;
+
+
+/***/ },
+/* 786 */
 /***/ function(module, exports) {
 
 	'use strict';
@@ -75299,13 +76021,13 @@
 
 
 /***/ },
-/* 779 */
+/* 787 */
 /***/ function(module, exports, __webpack_require__) {
 
 	// style-loader: Adds some css to the DOM by adding a <style> tag
 
 	// load the styles
-	var content = __webpack_require__(468);
+	var content = __webpack_require__(471);
 	if(typeof content === 'string') content = [[module.id, content, '']];
 	// add the styles to the DOM
 	var update = __webpack_require__(14)(content, {});
@@ -75325,13 +76047,13 @@
 	}
 
 /***/ },
-/* 780 */
+/* 788 */
 /***/ function(module, exports, __webpack_require__) {
 
 	// style-loader: Adds some css to the DOM by adding a <style> tag
 
 	// load the styles
-	var content = __webpack_require__(469);
+	var content = __webpack_require__(472);
 	if(typeof content === 'string') content = [[module.id, content, '']];
 	// add the styles to the DOM
 	var update = __webpack_require__(14)(content, {});
@@ -75351,13 +76073,13 @@
 	}
 
 /***/ },
-/* 781 */
+/* 789 */
 /***/ function(module, exports, __webpack_require__) {
 
 	// style-loader: Adds some css to the DOM by adding a <style> tag
 
 	// load the styles
-	var content = __webpack_require__(470);
+	var content = __webpack_require__(473);
 	if(typeof content === 'string') content = [[module.id, content, '']];
 	// add the styles to the DOM
 	var update = __webpack_require__(14)(content, {});
@@ -75377,13 +76099,13 @@
 	}
 
 /***/ },
-/* 782 */
+/* 790 */
 /***/ function(module, exports, __webpack_require__) {
 
 	// style-loader: Adds some css to the DOM by adding a <style> tag
 
 	// load the styles
-	var content = __webpack_require__(471);
+	var content = __webpack_require__(474);
 	if(typeof content === 'string') content = [[module.id, content, '']];
 	// add the styles to the DOM
 	var update = __webpack_require__(14)(content, {});
@@ -75403,13 +76125,13 @@
 	}
 
 /***/ },
-/* 783 */
+/* 791 */
 /***/ function(module, exports, __webpack_require__) {
 
 	// style-loader: Adds some css to the DOM by adding a <style> tag
 
 	// load the styles
-	var content = __webpack_require__(472);
+	var content = __webpack_require__(475);
 	if(typeof content === 'string') content = [[module.id, content, '']];
 	// add the styles to the DOM
 	var update = __webpack_require__(14)(content, {});
@@ -75429,13 +76151,13 @@
 	}
 
 /***/ },
-/* 784 */
+/* 792 */
 /***/ function(module, exports, __webpack_require__) {
 
 	// style-loader: Adds some css to the DOM by adding a <style> tag
 
 	// load the styles
-	var content = __webpack_require__(473);
+	var content = __webpack_require__(476);
 	if(typeof content === 'string') content = [[module.id, content, '']];
 	// add the styles to the DOM
 	var update = __webpack_require__(14)(content, {});
@@ -75455,13 +76177,13 @@
 	}
 
 /***/ },
-/* 785 */
+/* 793 */
 /***/ function(module, exports, __webpack_require__) {
 
 	// style-loader: Adds some css to the DOM by adding a <style> tag
 
 	// load the styles
-	var content = __webpack_require__(474);
+	var content = __webpack_require__(477);
 	if(typeof content === 'string') content = [[module.id, content, '']];
 	// add the styles to the DOM
 	var update = __webpack_require__(14)(content, {});
@@ -75481,13 +76203,13 @@
 	}
 
 /***/ },
-/* 786 */
+/* 794 */
 /***/ function(module, exports, __webpack_require__) {
 
 	// style-loader: Adds some css to the DOM by adding a <style> tag
 
 	// load the styles
-	var content = __webpack_require__(475);
+	var content = __webpack_require__(478);
 	if(typeof content === 'string') content = [[module.id, content, '']];
 	// add the styles to the DOM
 	var update = __webpack_require__(14)(content, {});
@@ -75507,13 +76229,13 @@
 	}
 
 /***/ },
-/* 787 */
+/* 795 */
 /***/ function(module, exports, __webpack_require__) {
 
 	// style-loader: Adds some css to the DOM by adding a <style> tag
 
 	// load the styles
-	var content = __webpack_require__(476);
+	var content = __webpack_require__(479);
 	if(typeof content === 'string') content = [[module.id, content, '']];
 	// add the styles to the DOM
 	var update = __webpack_require__(14)(content, {});
@@ -75533,13 +76255,13 @@
 	}
 
 /***/ },
-/* 788 */
+/* 796 */
 /***/ function(module, exports, __webpack_require__) {
 
 	// style-loader: Adds some css to the DOM by adding a <style> tag
 
 	// load the styles
-	var content = __webpack_require__(477);
+	var content = __webpack_require__(480);
 	if(typeof content === 'string') content = [[module.id, content, '']];
 	// add the styles to the DOM
 	var update = __webpack_require__(14)(content, {});
@@ -75559,13 +76281,13 @@
 	}
 
 /***/ },
-/* 789 */
+/* 797 */
 /***/ function(module, exports, __webpack_require__) {
 
 	// style-loader: Adds some css to the DOM by adding a <style> tag
 
 	// load the styles
-	var content = __webpack_require__(478);
+	var content = __webpack_require__(481);
 	if(typeof content === 'string') content = [[module.id, content, '']];
 	// add the styles to the DOM
 	var update = __webpack_require__(14)(content, {});
@@ -75585,13 +76307,13 @@
 	}
 
 /***/ },
-/* 790 */
+/* 798 */
 /***/ function(module, exports, __webpack_require__) {
 
 	// style-loader: Adds some css to the DOM by adding a <style> tag
 
 	// load the styles
-	var content = __webpack_require__(479);
+	var content = __webpack_require__(482);
 	if(typeof content === 'string') content = [[module.id, content, '']];
 	// add the styles to the DOM
 	var update = __webpack_require__(14)(content, {});
@@ -75611,13 +76333,13 @@
 	}
 
 /***/ },
-/* 791 */
+/* 799 */
 /***/ function(module, exports, __webpack_require__) {
 
 	// style-loader: Adds some css to the DOM by adding a <style> tag
 
 	// load the styles
-	var content = __webpack_require__(480);
+	var content = __webpack_require__(483);
 	if(typeof content === 'string') content = [[module.id, content, '']];
 	// add the styles to the DOM
 	var update = __webpack_require__(14)(content, {});
@@ -75637,13 +76359,13 @@
 	}
 
 /***/ },
-/* 792 */
+/* 800 */
 /***/ function(module, exports, __webpack_require__) {
 
 	// style-loader: Adds some css to the DOM by adding a <style> tag
 
 	// load the styles
-	var content = __webpack_require__(481);
+	var content = __webpack_require__(484);
 	if(typeof content === 'string') content = [[module.id, content, '']];
 	// add the styles to the DOM
 	var update = __webpack_require__(14)(content, {});
@@ -75663,13 +76385,13 @@
 	}
 
 /***/ },
-/* 793 */
+/* 801 */
 /***/ function(module, exports, __webpack_require__) {
 
 	// style-loader: Adds some css to the DOM by adding a <style> tag
 
 	// load the styles
-	var content = __webpack_require__(482);
+	var content = __webpack_require__(485);
 	if(typeof content === 'string') content = [[module.id, content, '']];
 	// add the styles to the DOM
 	var update = __webpack_require__(14)(content, {});
@@ -75689,13 +76411,13 @@
 	}
 
 /***/ },
-/* 794 */
+/* 802 */
 /***/ function(module, exports, __webpack_require__) {
 
 	// style-loader: Adds some css to the DOM by adding a <style> tag
 
 	// load the styles
-	var content = __webpack_require__(483);
+	var content = __webpack_require__(486);
 	if(typeof content === 'string') content = [[module.id, content, '']];
 	// add the styles to the DOM
 	var update = __webpack_require__(14)(content, {});
@@ -75715,13 +76437,13 @@
 	}
 
 /***/ },
-/* 795 */
+/* 803 */
 /***/ function(module, exports, __webpack_require__) {
 
 	// style-loader: Adds some css to the DOM by adding a <style> tag
 
 	// load the styles
-	var content = __webpack_require__(484);
+	var content = __webpack_require__(487);
 	if(typeof content === 'string') content = [[module.id, content, '']];
 	// add the styles to the DOM
 	var update = __webpack_require__(14)(content, {});
@@ -75741,13 +76463,13 @@
 	}
 
 /***/ },
-/* 796 */
+/* 804 */
 /***/ function(module, exports, __webpack_require__) {
 
 	// style-loader: Adds some css to the DOM by adding a <style> tag
 
 	// load the styles
-	var content = __webpack_require__(485);
+	var content = __webpack_require__(488);
 	if(typeof content === 'string') content = [[module.id, content, '']];
 	// add the styles to the DOM
 	var update = __webpack_require__(14)(content, {});
@@ -75767,13 +76489,13 @@
 	}
 
 /***/ },
-/* 797 */
+/* 805 */
 /***/ function(module, exports, __webpack_require__) {
 
 	// style-loader: Adds some css to the DOM by adding a <style> tag
 
 	// load the styles
-	var content = __webpack_require__(486);
+	var content = __webpack_require__(489);
 	if(typeof content === 'string') content = [[module.id, content, '']];
 	// add the styles to the DOM
 	var update = __webpack_require__(14)(content, {});
@@ -75793,13 +76515,13 @@
 	}
 
 /***/ },
-/* 798 */
+/* 806 */
 /***/ function(module, exports, __webpack_require__) {
 
 	// style-loader: Adds some css to the DOM by adding a <style> tag
 
 	// load the styles
-	var content = __webpack_require__(487);
+	var content = __webpack_require__(490);
 	if(typeof content === 'string') content = [[module.id, content, '']];
 	// add the styles to the DOM
 	var update = __webpack_require__(14)(content, {});
@@ -75819,13 +76541,13 @@
 	}
 
 /***/ },
-/* 799 */
+/* 807 */
 /***/ function(module, exports, __webpack_require__) {
 
 	// style-loader: Adds some css to the DOM by adding a <style> tag
 
 	// load the styles
-	var content = __webpack_require__(488);
+	var content = __webpack_require__(491);
 	if(typeof content === 'string') content = [[module.id, content, '']];
 	// add the styles to the DOM
 	var update = __webpack_require__(14)(content, {});
@@ -75845,7 +76567,79 @@
 	}
 
 /***/ },
-/* 800 */
+/* 808 */
+/***/ function(module, exports) {
+
+	function E () {
+		// Keep this empty so it's easier to inherit from
+	  // (via https://github.com/lipsmack from https://github.com/scottcorgan/tiny-emitter/issues/3)
+	}
+
+	E.prototype = {
+		on: function (name, callback, ctx) {
+	    var e = this.e || (this.e = {});
+
+	    (e[name] || (e[name] = [])).push({
+	      fn: callback,
+	      ctx: ctx
+	    });
+
+	    return this;
+	  },
+
+	  once: function (name, callback, ctx) {
+	    var self = this;
+	    function listener () {
+	      self.off(name, listener);
+	      callback.apply(ctx, arguments);
+	    };
+
+	    listener._ = callback
+	    return this.on(name, listener, ctx);
+	  },
+
+	  emit: function (name) {
+	    var data = [].slice.call(arguments, 1);
+	    var evtArr = ((this.e || (this.e = {}))[name] || []).slice();
+	    var i = 0;
+	    var len = evtArr.length;
+
+	    for (i; i < len; i++) {
+	      evtArr[i].fn.apply(evtArr[i].ctx, data);
+	    }
+
+	    return this;
+	  },
+
+	  off: function (name, callback) {
+	    var e = this.e || (this.e = {});
+	    var evts = e[name];
+	    var liveEvents = [];
+
+	    if (evts && callback) {
+	      for (var i = 0, len = evts.length; i < len; i++) {
+	        if (evts[i].fn !== callback && evts[i].fn._ !== callback)
+	          liveEvents.push(evts[i]);
+	      }
+	    }
+
+	    // Remove event from queue to prevent memory leak
+	    // Suggested by https://github.com/lazd
+	    // Ref: https://github.com/scottcorgan/tiny-emitter/commit/c6ebfaa9bc973b33d110a84a307742b7cf94c953#commitcomment-5024910
+
+	    (liveEvents.length)
+	      ? e[name] = liveEvents
+	      : delete e[name];
+
+	    return this;
+	  }
+	};
+
+	module.exports = E;
+
+
+/***/ },
+/* 809 */
 /***/ function(module, exports) {
 
 	module.exports = function(module) {

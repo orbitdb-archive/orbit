@@ -8,6 +8,9 @@ import 'styles/File.scss';
 import Highlight from 'components/plugins/highlight';
 import highlight from 'highlight.js'
 import ChannelActions from 'actions/ChannelActions';
+import Clipboard from 'clipboard';
+import Logger from 'logplease';
+const logger = Logger.create('Clipboard', { color: Logger.Colors.Magenta });
 
 var getFileUrl = apiurl.getApiUrl() + "/api/cat/";
 
@@ -21,6 +24,13 @@ class File extends React.Component {
       showPreview: false,
       previewContent: "Loading...",
     };
+    var self = this;
+    this.clipboard = new Clipboard('.clipboard-' + this.state.file, {
+      text: function(trigger) {
+        logger.info(self.state.file + " copied to clipboard!");
+        return self.state.file;
+      }
+    });
   }
 
   handleClick(name) {
@@ -60,11 +70,13 @@ class File extends React.Component {
     if(isVideo)
       video = this.state.showPreview ? <div className="preview"><video height={200} ref="video_tag" src={openLink} controls autoPlay={false}/></div> : <span/>;
     if(isAudio)
-      audio = this.state.showPreview ? <div className="preview"><audio height={200} ref="audio_tag" src={openLink} controls autoPlay={false}/></div> : <span/>;
+      audio = this.state.showPreview ? <div className="preview"><audio height={200} ref="audio_tag" src={openLink} controls autoPlay={true}/></div> : <span/>;
     if(isCode)
       code = this.state.showPreview ? <div className="preview smallText" style={this.state.theme}>{this.state.previewContent}</div> : <span/>;
     if(isPicture)
       picture = this.state.showPreview ? <div className="preview"><a href={openLink} target="_blank"><img height={200} src={openLink}/></a></div> : <span/>;
+
+    const className = "clipboard-" + this.state.file + " download";
 
     var content = <span/>
     if(isVideo) {
@@ -80,7 +92,8 @@ class File extends React.Component {
           >
           <span className="text" onClick={this.handleClick.bind(this, this.state.name)}>{this.state.name}</span>
           <a className="download" href={openLink} target="_blank">Open</a>
-          <a className="download" href={downloadLink} target="_blank">Download</a>
+          <a className="download" href={downloadLink}>Download</a>
+          <span className={className}>Hash</span>
           <span className="size">{size}</span>
           {video}
         </TransitionGroup>)
@@ -97,7 +110,8 @@ class File extends React.Component {
           >
           <span className="text" onClick={this.handleClick.bind(this, this.state.name)}>{this.state.name}</span>
           <a className="download" href={openLink} target="_blank">Open</a>
-          <a className="download" href={downloadLink} target="_blank">Download</a>
+          <a className="download" href={downloadLink}>Download</a>
+          <span className={className}>Hash</span>
           <span className="size">{size}</span>
           {audio}
         </TransitionGroup>)
@@ -105,16 +119,18 @@ class File extends React.Component {
       content =
         (<TransitionGroup
           transitionName="fileAnimation"
-          transitionAppear={true}
-          transitionAppearTimeout={1000}
-          transitionEnterTimeout={0}
-          transitionLeaveTimeout={0}
+          transitionEnter={true}
+          transitionLeave={true}
+          transitionAppearTimeout={0}
+          transitionEnterTimeout={2000}
+          transitionLeaveTimeout={1000}
           component="div"
           className="content"
           >
           <span className="text" onClick={this.handleClick.bind(this, this.state.name)}>{this.state.name}</span>
           <a className="download" href={openLink} target="_blank">Open</a>
-          <a className="download" href={downloadLink} target="_blank">Download</a>
+          <a className="download" href={downloadLink}>Download</a>
+          <span className={className}>Hash</span>
           <span className="size">{size}</span>
           {code}
         </TransitionGroup>)
@@ -131,7 +147,8 @@ class File extends React.Component {
           >
           <span className="text" onClick={this.handleClick.bind(this, this.state.name)}>{this.state.name}</span>
           <a className="download" href={openLink} target="_blank">Open</a>
-          <a className="download" href={downloadLink} target="_blank">Download</a>
+          <a className="download" href={downloadLink}>Download</a>
+          <span className={className}>Hash</span>
           <span className="size">{size}</span>
           {picture}
         </TransitionGroup>)
@@ -148,7 +165,8 @@ class File extends React.Component {
           >
           <a className="text" href={openLink} target="_blank">{this.state.name}</a>
           <a className="download" href={openLink} target="_blank">Open</a>
-          <a className="download" href={downloadLink} target="_blank">Download</a>
+          <a className="download" href={downloadLink}>Download</a>
+          <span className={className}>Hash</span>
           <span className="size">{size}</span>
         </TransitionGroup>)
     }
