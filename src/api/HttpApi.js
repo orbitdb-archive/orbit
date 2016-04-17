@@ -57,9 +57,11 @@ const HttpApi = async ((ipfsInstance, events) => {
   }));
 
   /* HTTP SERVER */
-  var startServer = Promise.promisify((cb) => {
-    var s = app.listen(3001, () => cb(null, s));
-  });
+  var startServer = () => {
+    return new Promise((resolve, reject) => {
+      var s = app.listen(3001, () => resolve(s));
+    });
+  };
 
   const server = await(startServer());
   logger.debug('HTTP server started at http://%s:%s', server.address().address, server.address().port);

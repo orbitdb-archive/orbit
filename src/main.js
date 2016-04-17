@@ -3,7 +3,6 @@
 const fs           = require('fs');
 const path         = require('path');
 const EventEmitter = require('events').EventEmitter;
-const Promise      = require('bluebird');
 const async        = require('asyncawait/async');
 const await        = require('asyncawait/await');
 const ipfsDaemon   = require('orbit-common/lib/ipfs-daemon');
@@ -13,8 +12,6 @@ const SocketApi    = require('./api/SocketApi');
 const HttpApi      = require('./api/HttpApi');
 const Network      = require('./NetworkConfig');
 const Orbit        = require('./Orbit');
-
-Promise.longStackTraces(); // enable regular stack traces in catch
 
 var ENV = process.env["ENV"] || "release";
 logger.debug("Running in '" + ENV + "' mode");
