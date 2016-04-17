@@ -32,7 +32,8 @@ let ApiMessages = {
     get: "message.get"
   },
   file: {
-    add: "file.add"
+    add: "file.add",
+    get: "file.get"
   },
   directory: {
     get: "directory.get"

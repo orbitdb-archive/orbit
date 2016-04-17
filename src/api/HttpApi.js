@@ -11,6 +11,7 @@ const methodOverride = require('method-override');
 const mime           = require('mime');
 const http           = require('http');
 const logger         = require('logplease').create("Orbit.HttpApi");
+var request = require('request');
 
 /* HTTP API */
 const HttpApi = async ((ipfsInstance, events) => {
@@ -39,22 +40,17 @@ const HttpApi = async ((ipfsInstance, events) => {
   app.get("/api/cat/:hash", async((req, res, next) => {
     logger.debug("ipfs.cat: " + req.params.hash + " - " + JSON.stringify(req.query));
 
-    const hash = req.params.hash;
-    try {
-      ipfs.cat(hash, (err, result) => {
-        if(err) next(err);
-        if(result) {
-          const filename = req.query.name || "";
-          const type     = mime.lookup(filename);
-          if(req.query.action && req.query.action == "download")
-            res.setHeader('Content-disposition', 'attachment; filename=' + filename.replace(",", ""));
+    const hash     = req.params.hash;
+    const filename = req.query.name || "";
+    const type     = mime.lookup(filename);
+    if(req.query.action && req.query.action == "download")
+      res.setHeader('Content-disposition', 'attachment; filename=' + filename.replace(",", ""));
+    res.setHeader('Content-Type', type);
 
-          res.setHeader('Content-Type', type);
-          result.pipe(res);
-        } else {
-          res.send("error: " + err);
-        }
-      });
+    try {
+      request
+        .get('http://localhost:8080/ipfs/' + hash)
+        .pipe(res);
     } catch(e) {
       logger.error(e.stack);
     }

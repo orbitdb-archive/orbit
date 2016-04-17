@@ -6,7 +6,8 @@ import { getHumanReadableBytes } from '../utils/utils.js';
 import apiurl from 'utils/apiurl';
 import 'styles/File.scss';
 import Highlight from 'components/plugins/highlight';
-
+import highlight from 'highlight.js'
+import ChannelActions from 'actions/ChannelActions';
 
 var getFileUrl = apiurl.getApiUrl() + "/api/cat/";
 
@@ -18,81 +19,52 @@ class File extends React.Component {
       file: props.hash,
       size: props.size,
       showPreview: false,
-      previewContent: null,
+      previewContent: "Loading...",
     };
   }
 
   handleClick(name) {
-    const snippet =
-    `'use strict';
+    const isCode = this._isTextFile(this.state.name);
 
-const ipfsAPI = require('ipfs-api');
-const Logger  = require('logplease');
-const logger  = Logger.create("orbit-db example", { color: Logger.Colors.Green, showTimestamp: false, showLevel: false });
-const OrbitDB = require('../src/Client');
+    if(!this.state.showPreview && isCode) {
+      ChannelActions.loadFile(this.state.file, (file) => {
+        this.setState({ previewContent: <Highlight>{file}</Highlight> });
+      });
+    } else {
+      this.setState({ previewContent: "Loading..." });
+    }
 
-const host     = '178.62.241.75'
-const port     = 3333;
-const username = 'user1';
-const password = '';
-const channel  = 'testing123';
-const key      = 'greeting';
-const value    = 'Hello world';
+    this.setState({ showPreview: !this.state.showPreview });
+  }
 
-try {
-  const ipfs = ipfsAPI();
-  OrbitDB.connect(host, port, username, password, ipfs).then((orbit) => {
-    orbit.channel(channel).then((db) => {
-      let count = 1;
-      const query = () => {
-        const startTime = new Date().getTime();
-        db.put(key, value + " " + count).then((res) => {
-          const endTime = new Date().getTime();
-          count ++;
-
-          const result = db.get(key);
-          logger.debug("---------------------------------------------------")
-          logger.debug("Key | Value")
-          logger.debug("---------------------------------------------------")
-          logger.debug("---------------------------------------------------")
-        }).catch((e) => logger.error(e));
-      };
-      setInterval(query, 1000);
-    });
-  });
-} catch(e) {
-  logger.error(e.stack);
-}`;
-
-    this.setState({ showPreview: !this.state.showPreview, previewContent: snippet });
+  _isTextFile(name) {
+    return highlight.getLanguage(this.state.name.split('.').pop());
   }
 
   render() {
-    // var openLink     = getFileUrl + this.state.file + "?name=" + this.state.name;
-    // var openLink     = "http://localhost:5001/api/v0/cat?arg=" + this.state.file;
     var openLink     = "http://localhost:8080/ipfs/" + this.state.file;
-    var downloadLink = openLink + "&action=download";
+    var downloadLink = getFileUrl + this.state.file + "?name=" + this.state.name + "&action=download";
     var size         = getHumanReadableBytes(this.state.size);
 
     var split = this.state.name.split('.');
     var isVideo = split[split.length - 1] === 'mp4';
     var isAudio = split[split.length - 1] === 'mp3';
-    var isCode  = split[split.length - 1] === 'js';
+    var isCode  = this._isTextFile(this.state.name);
+    var isPicture = split[split.length - 1] === 'png';
 
     var video;
     var audio;
     var code;
+    var picture;
 
     if(isVideo)
-      video = this.state.showPreview ? <div className="preview"><video height={200} ref="video_tag" src={openLink} controls autoplay="false"/></div> : <span/>;
+      video = this.state.showPreview ? <div className="preview"><video height={200} ref="video_tag" src={openLink} controls autoPlay={false}/></div> : <span/>;
     if(isAudio)
-      audio = this.state.showPreview ? <div className="preview"><audio width={320} height={200} ref="audio_tag" src={openLink} controls autoplay="false"/></div> : <span/>;
+      audio = this.state.showPreview ? <div className="preview"><audio height={200} ref="audio_tag" src={openLink} controls autoPlay={false}/></div> : <span/>;
     if(isCode)
-      code = this.state.showPreview ? <div className="preview smallText" style={this.state.theme}>
-        <Highlight language='javascript'>
-          {this.state.previewContent}
-        </Highlight>
-      </div> : <span/>;
+      code = this.state.showPreview ? <div className="preview smallText" style={this.state.theme}>{this.state.previewContent}</div> : <span/>;
+    if(isPicture)
+      picture = this.state.showPreview ? <div className="preview"><a href={openLink} target="_blank"><img height={200} src={openLink}/></a></div> : <span/>;
 
     var content = <span/>
     if(isVideo) {
@@ -107,6 +79,7 @@ try {
           className="content"
           >
           <span className="text" onClick={this.handleClick.bind(this, this.state.name)}>{this.state.name}</span>
+          <a className="download" href={openLink} target="_blank">Open</a>
           <a className="download" href={downloadLink} target="_blank">Download</a>
           <span className="size">{size}</span>
           {video}
@@ -123,6 +96,7 @@ try {
           className="content"
           >
           <span className="text" onClick={this.handleClick.bind(this, this.state.name)}>{this.state.name}</span>
+          <a className="download" href={openLink} target="_blank">Open</a>
           <a className="download" href={downloadLink} target="_blank">Download</a>
           <span className="size">{size}</span>
           {audio}
@@ -139,9 +113,27 @@ try {
           className="content"
           >
           <span className="text" onClick={this.handleClick.bind(this, this.state.name)}>{this.state.name}</span>
+          <a className="download" href={openLink} target="_blank">Open</a>
           <a className="download" href={downloadLink} target="_blank">Download</a>
           <span className="size">{size}</span>
           {code}
+        </TransitionGroup>)
+    } else if(isPicture) {
+      content =
+        (<TransitionGroup
+          transitionName="fileAnimation"
+          transitionAppear={true}
+          transitionAppearTimeout={1000}
+          transitionEnterTimeout={0}
+          transitionLeaveTimeout={0}
+          component="div"
+          className="content"
+          >
+          <span className="text" onClick={this.handleClick.bind(this, this.state.name)}>{this.state.name}</span>
+          <a className="download" href={openLink} target="_blank">Open</a>
+          <a className="download" href={downloadLink} target="_blank">Download</a>
+          <span className="size">{size}</span>
+          {picture}
         </TransitionGroup>)
     } else {
       content =
@@ -155,6 +147,7 @@ try {
           className="content"
           >
           <a className="text" href={openLink} target="_blank">{this.state.name}</a>
+          <a className="download" href={openLink} target="_blank">Open</a>
           <a className="download" href={downloadLink} target="_blank">Download</a>
           <span className="size">{size}</span>
         </TransitionGroup>)

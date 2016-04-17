@@ -232,6 +232,19 @@ const MessageStore = Reflux.createStore({
     } else {
       cb(null);
     }
+  },
+  onLoadFile: function(hash, cb) {
+    if(!this.socket)
+      return;
+
+    if(hash) {
+      this.socket.emit('file.get', hash, (result) => {
+        logger.debug("<-- received file:");
+        cb(result);
+      });
+    } else {
+      cb(null);
+    }
   }
 });
 

@@ -82,6 +82,7 @@ var SocketApi = (socketServer, httpServer, events, orbit) => {
     socket.on(ApiMessages.message.send, async((channel, message, cb) => orbit.sendMessage(channel, message, cb)));
     socket.on(ApiMessages.file.add, async((channel, filePath, cb) => orbit.addFile(channel, filePath, cb)));
     socket.on(ApiMessages.directory.get, async((hash, cb) => orbit.getDirectory(hash, cb)));
+    socket.on(ApiMessages.file.get, async((hash, cb) => orbit.getFile(hash, cb)));
     socket.on(ApiMessages.swarm.peers, async((cb) => orbit.getSwarmPeers(cb)));
   });
 

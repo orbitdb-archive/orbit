@@ -35,8 +35,8 @@ $directory-link-hover-color2: rgba(240, 240, 240, 0.9);
     border-left: 1px dotted rgba(255, 255, 255, 0.1);
     overflow: hidden;
     display: flex;
-    // height: 20em;
- box-sizing: content-box;
+    max-height: 30em;
+    box-sizing: content-box;
   }
 
   .preview:hover {
@@ -51,9 +51,11 @@ $directory-link-hover-color2: rgba(240, 240, 240, 0.9);
 
   pre {
     margin: 0;
+    // margin-right: 0.25em;
     box-sizing: content-box;
-    overflow-x: scroll;
-    // width: 100%;
+    overflow-x: auto;
+    overflow-y: auto;
+    width: 100%;
   }
 
   // .preview {
@@ -68,6 +70,7 @@ $directory-link-hover-color2: rgba(240, 240, 240, 0.9);
   .download {
     visibility: hidden;
     font-weight: 100;
+    margin: 0;
     // margin-left: 0.5em;
     // margin-right: 0.5em;
   }
@@ -81,25 +84,28 @@ $directory-link-hover-color2: rgba(240, 240, 240, 0.9);
 
   .size {
     visibility: hidden;
+    margin-left: 0.25em;
+    margin-right: 0.5em;
   }
 
   .text {
-    margin-right: 0.5em;
+    // margin-right: 0.25em;
     color: $directory-link-color;
     text-decoration: none;
     cursor: pointer;
   }
 
   a {
+    user-select: none;
     color: $directory-link-color;
     text-decoration: none;
-    margin-right: 0.5em;
+    margin-right: 0.1em;
+    margin-left: 0.1em;
   }
 
   a:hover {
     color: $directory-link-hover-color2;
     text-decoration: none;
-    margin-right: 0.5em;
   }
 
 }

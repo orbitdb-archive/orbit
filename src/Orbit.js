@@ -11,6 +11,7 @@ const utils        = require('orbit-common/lib/utils');
 const OrbitDB      = require('orbit-db');
 const Post         = require('orbit-db/src/post/Post');
 const Network      = require('./NetworkConfig');
+var request = require('request');
 
 class Orbit {
   constructor(ipfs, events) {
@@ -190,6 +191,17 @@ class Orbit {
       this._handleError(e);
       if(callback) callback(null);
     });
+  }
+
+  getFile(hash, callback) {
+    request('http://localhost:8080/ipfs/' + hash, function (error, response, body) {
+      if(!error && response.statusCode === 200) {
+        if(callback) callback(body);
+      }
+    })
+    // this.ipfs.cat(hash, (err, result) => {
+    //   if(callback) callback(result);
+    // });
   }
 
   get user() {
