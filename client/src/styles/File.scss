@@ -13,28 +13,47 @@ $directory-link-hover-color2: rgba(240, 240, 240, 0.9);
   white-space: nowrap;
   font-weight: 300;
   width: 100%;
+    overflow: hidden;
+ box-sizing: content-box;
 
   .content {
     // width: 100%;
-    margin-bottom: 0.2em;
+    // margin-bottom: 0.2em;
+ box-sizing: content-box;
   }
 
   .preview {
     margin-top: 0.25em;
     // margin-bottom: 0.25em;
-    margin-left: 0.1em;
-    margin-right: 0.3em;
+    margin-left: 0.25em;
+    // margin-right: 0.3em;
     padding-left: 0.5em;
+    padding-right: 0.5em;
     padding-top: 0.5em;
-    padding-bottom: 0.25em;
-    margin-bottom: 0.2em;
+    padding-bottom: 0.5em;
     background-color: rgba(0, 0, 0, 0.075);
     border-left: 1px dotted rgba(255, 255, 255, 0.1);
-    width: 100%;
+    overflow: hidden;
+    display: flex;
+    // height: 20em;
+ box-sizing: content-box;
   }
 
   .preview:hover {
-    border-left: 1px dotted rgba(255, 255, 255, 0.8);
+    border-left: 1px dotted rgba(224, 224, 224, 0.5);
+    // border-left: 1px dotted $main-color-highligth;
+    // -webkit-filter: hue-rotate(50deg) saturate(80%) brightness(80%) !important;
+  }
+
+  .smallText {
+    font-size: 0.8em;
+  }
+
+  pre {
+    margin: 0;
+    box-sizing: content-box;
+    overflow-x: scroll;
+    // width: 100%;
   }
 
   // .preview {

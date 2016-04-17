@@ -1,9 +1,9 @@
 'use strict';
 
 import React from 'react';
-import TransitionGroup from "react-addons-css-transition-group"; //eslint-disable-line
+import TransitionGroup from "react-addons-css-transition-group";
 import ChannelActions from 'actions/ChannelActions';
-import File from 'components/File'; //eslint-disable-line
+import File from 'components/File';
 import {getHumanReadableBytes} from '../utils/utils.js';
 import 'styles/Directory.scss';
 
@@ -60,10 +60,10 @@ class Directory extends React.Component {
     // <a className="download" href={downloadLink} target="_blank">Download</a>
     return (
       <div className="DirectoryView">
-        <span className="Directory">
+        <div className="Directory">
           {name}
           <span className="size">{size}</span>
-        </span>
+        </div>
         <div className={children.length > 0 ? "children" : ""}>{children}</div>
       </div>
     );

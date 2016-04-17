@@ -35,6 +35,7 @@ import 'normalize.css';
 import '../styles/main.css';
 import 'styles/App.scss';
 import 'styles/Scrollbars.scss';
+import 'highlight.js/styles/hybrid.css';
 
 const views = {
   "Index": "/",

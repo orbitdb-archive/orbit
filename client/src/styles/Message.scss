@@ -29,6 +29,8 @@ $timestamp-color:  rgba(240, 240, 240, 0.6);
 
   color: rgba(255, 255, 255, 0.6);
 
+  overflow: hidden;
+
   .Timestamp {
     display: flex;
     color: $timestamp-color;
@@ -43,9 +45,11 @@ $timestamp-color:  rgba(240, 240, 240, 0.6);
   .Content {
     margin-left: 0.2em;
     margin-right: 0.5em;
-    width: 100%;
+    margin-bottom: 0.2em;
+    // width: 100%;
     display: flex;
     flex: 1;
+    overflow: hidden;
   }
 
   // .messagesAnimation-appear {
