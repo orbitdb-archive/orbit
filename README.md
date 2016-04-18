@@ -14,7 +14,7 @@ There's currently a server (https://github.com/haadcode/orbit-server) that track
 
 ![Screenshot 1](https://raw.githubusercontent.com/haadcode/orbit/master/screenshots/screenshot4%202016-04-16.png)
 ![Screenshot 2](https://raw.githubusercontent.com/haadcode/orbit/master/screenshots/screenshot3%202016-04-14.png)
-![Screenshot 3](https://raw.githubusercontent.com/haadcode/orbit/master/screenshots/screenshot5%202016-04-17.png)
+![Screenshot 3](https://raw.githubusercontent.com/haadcode/orbit/master/screenshots/screenshot6%202016-04-17.png)
 
 ## Requirements
 - Node.js v4.x.x
