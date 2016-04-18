@@ -10,8 +10,8 @@ const bodyParser     = require('body-parser');
 const methodOverride = require('method-override');
 const mime           = require('mime');
 const http           = require('http');
+const request        = require('request');
 const logger         = require('logplease').create("Orbit.HttpApi");
-var request = require('request');
 
 /* HTTP API */
 const HttpApi = async ((ipfsInstance, events) => {
@@ -45,12 +45,11 @@ const HttpApi = async ((ipfsInstance, events) => {
     const type     = mime.lookup(filename);
     if(req.query.action && req.query.action == "download")
       res.setHeader('Content-disposition', 'attachment; filename=' + filename.replace(",", ""));
+
     res.setHeader('Content-Type', type);
 
     try {
-      request
-        .get('http://localhost:8080/ipfs/' + hash)
-        .pipe(res);
+      request.get('http://localhost:8080/ipfs/' + hash).pipe(res);
     } catch(e) {
       logger.error(e.stack);
     }

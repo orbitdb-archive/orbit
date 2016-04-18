@@ -5,13 +5,13 @@ const path         = require('path');
 const EventEmitter = require('events').EventEmitter;
 const async        = require('asyncawait/async');
 const await        = require('asyncawait/await');
+const request      = require('request');
 const Logger       = require('logplease');
 const logger       = Logger.create("Orbit.Orbit", { color: Logger.Colors.Green });
 const utils        = require('orbit-common/lib/utils');
 const OrbitDB      = require('orbit-db');
 const Post         = require('orbit-db/src/post/Post');
 const Network      = require('./NetworkConfig');
-var request = require('request');
 
 class Orbit {
   constructor(ipfs, events) {
