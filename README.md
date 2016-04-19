@@ -28,7 +28,6 @@ For development
 
 ## Run
 ### Browser
-*NOTE: npm version 3.x.x is required to install dependencies. If you're running v2.x.x, you can install npm3 wrapper with `npm install npm3 -g` after which you can user npm v3 with `npm3 install ...`*
 
 Install and run:
 ```
