@@ -110,7 +110,7 @@ module.exports = function (grunt) {
   grunt.registerTask('npm_install', '', function () {
       var done = this.async();
       var params = ['install', '--production', '--cache-min 9999999'];
-      var npm = spawn('npm3', params, { cwd: '.tmp' });
+      var npm = spawn('npm', params, { cwd: '.tmp' });
       npm.stdout.pipe(process.stdout);
       npm.stderr.pipe(process.stderr);
       npm.on('error', (err) => done(false));
