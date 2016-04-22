@@ -19984,7 +19984,7 @@
 
 	const fs = __webpack_require__(526);
 
-	const isNodejs = process.version ? true : false;
+	let isNodejs = process.version ? true : false;
 
 	const LogLevels = {
 	  'DEBUG': 'DEBUG',
@@ -19994,8 +19994,11 @@
 	  'NONE':  'NONE',
 	};
 
-	// Default log level
+	// Global log level
 	let GlobalLogLevel = LogLevels.DEBUG;
+
+	// Global log file name
+	let GlobalLogfile = null;
 
 	// ANSI colors
 	let Colors = {
@@ -20034,23 +20037,17 @@
 	  color: Colors.Default,
 	  showTimestamp: true,
 	  showLevel: true,
-	  filename: null,
+	  filename: GlobalLogfile,
 	  appendFile: true,
 	};
 
 	class Logger {
 	  constructor(category, options) {
 	    this.category = category;
-
 	    let opts = {};
 	    Object.assign(opts, defaultOptions);
 	    Object.assign(opts, options);
 	    this.options = opts;
-
-	    if(this.options.filename) {
-	      const flags = this.options.appendFile ? 'a' : 'w'
-	      this.fileWriter = fs.createWriteStream(this.options.filename, { flags: flags });
-	    }
 	  }
 
 	  debug(text) {
@@ -20077,12 +20074,15 @@
 	    if(!this._shouldLog(level))
 	      return;
 
+	    if((this.options.filename || GlobalLogfile) && !this.fileWriter)
+	      this.fileWriter = fs.openSync(this.options.filename || GlobalLogfile, this.options.appendFile ? 'a+' : 'w+');
+
 	    let format = this._format(level, text);
 	    let unformattedText = this._createLogMessage(level, text);
 	    let formattedText = this._createLogMessage(level, text, format.timestamp, format.level, format.category, format.text);
 
 	    if(this.fileWriter)
-	      this.fileWriter.write(unformattedText + '\n');
+	      fs.writeSync(this.fileWriter, unformattedText + '\n', null, 'utf-8');
 
 	    if(isNodejs) {
 	      console.log(formattedText)
@@ -20193,11 +20193,18 @@
 	/* Public API */
 	module.exports = {
 	  Colors: Colors,
-	  LogLevel: LogLevels,
+	  LogLevels: LogLevels,
 	  setLogLevel: (level) => {
-	    GlobalLogLevel = level
+	    GlobalLogLevel = level;
 	  },
-	  create: (category, options) => new Logger(category, options),
+	  setLogfile: (filename) => {
+	    GlobalLogfile = filename;
+	  },
+	  create: (category, options) => {
+	    const logger = new Logger(category, options);
+	    return logger;
+	  },
+	  forceBrowserMode: (force) => isNodejs = !force, // for testing
 	};
 
 	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(2)))
@@ -46618,6 +46625,12 @@
 	  },
 	  writeFileSync: function() {
 	    return;
+	  },
+	  openSync: function() {
+	    return;
+	  },
+	  writeSync: function() {
+	    return;
 	  }
 	}
 
@@ -48013,47 +48026,45 @@
 	  }
 
 	  var getComponent = route.getComponent || route.getComponents;
-	  if (getComponent) {
-	    var _ret = (function () {
-	      var nextStateWithLocation = _extends({}, nextState);
-	      var location = nextState.location;
-
-	      if (process.env.NODE_ENV !== 'production' && _deprecateObjectProperties.canUseMembrane) {
-	        var _loop = function (prop) {
-	          if (!Object.prototype.hasOwnProperty.call(location, prop)) {
-	            return 'continue';
-	          }
-
-	          Object.defineProperty(nextStateWithLocation, prop, {
-	            get: function get() {
-	              process.env.NODE_ENV !== 'production' ? _routerWarning2['default'](false, 'Accessing location properties from the first argument to `getComponent` and `getComponents` is deprecated. That argument is now the router state (`nextState`) rather than the location. To access the location, use `nextState.location`.') : undefined;
-	              return location[prop];
-	            }
-	          });
-	        };
-
-	        // I don't use deprecateObjectProperties here because I want to keep the
-	        // same code path between development and production, in that we just
-	        // assign extra properties to the copy of the state object in both cases.
-	        for (var prop in location) {
-	          var _ret2 = _loop(prop);
-
-	          if (_ret2 === 'continue') continue;
-	        }
-	      } else {
-	        Object.assign(nextStateWithLocation, location);
-	      }
-
-	      getComponent.call(route, nextStateWithLocation, callback);
-	      return {
-	        v: undefined
-	      };
-	    })();
-
-	    if (typeof _ret === 'object') return _ret.v;
+	  if (!getComponent) {
+	    callback();
+	    return;
 	  }
 
-	  callback();
+	  var location = nextState.location;
+
+	  var nextStateWithLocation = undefined;
+
+	  if (process.env.NODE_ENV !== 'production' && _deprecateObjectProperties.canUseMembrane) {
+	    nextStateWithLocation = _extends({}, nextState);
+
+	    // I don't use deprecateObjectProperties here because I want to keep the
+	    // same code path between development and production, in that we just
+	    // assign extra properties to the copy of the state object in both cases.
+
+	    var _loop = function (prop) {
+	      if (!Object.prototype.hasOwnProperty.call(location, prop)) {
+	        return 'continue';
+	      }
+
+	      Object.defineProperty(nextStateWithLocation, prop, {
+	        get: function get() {
+	          process.env.NODE_ENV !== 'production' ? _routerWarning2['default'](false, 'Accessing location properties from the first argument to `getComponent` and `getComponents` is deprecated. That argument is now the router state (`nextState`) rather than the location. To access the location, use `nextState.location`.') : undefined;
+	          return location[prop];
+	        }
+	      });
+	    };
+
+	    for (var prop in location) {
+	      var _ret = _loop(prop);
+
+	      if (_ret === 'continue') continue;
+	    }
+	  } else {
+	    nextStateWithLocation = _extends({}, nextState, location);
+	  }
+
+	  getComponent.call(route, nextStateWithLocation, callback);
 	}
 
 	/**
@@ -48313,20 +48324,42 @@
 	  return String(a) === String(b);
 	}
 
-	function paramsAreActive(paramNames, paramValues, activeParams) {
-	  // FIXME: This doesn't work on repeated params in activeParams.
-	  return paramNames.every(function (paramName, index) {
-	    return String(paramValues[index]) === String(activeParams[paramName]);
-	  });
+	/**
+	 * Returns true if the current pathname matches the supplied one, net of
+	 * leading and trailing slash normalization. This is sufficient for an
+	 * indexOnly route match.
+	 */
+	function pathIsActive(pathname, currentPathname) {
+	  // Normalize leading slash for consistency. Leading slash on pathname has
+	  // already been normalized in isActive. See caveat there.
+	  if (currentPathname.charAt(0) !== '/') {
+	    currentPathname = '/' + currentPathname;
+	  }
+
+	  // Normalize the end of both path names too. Maybe `/foo/` shouldn't show
+	  // `/foo` as active, but in this case, we would already have failed the
+	  // match.
+	  if (pathname.charAt(pathname.length - 1) !== '/') {
+	    pathname += '/';
+	  }
+	  if (currentPathname.charAt(currentPathname.length - 1) !== '/') {
+	    currentPathname += '/';
+	  }
+
+	  return currentPathname === pathname;
 	}
 
-	function getMatchingRouteIndex(pathname, activeRoutes, activeParams) {
+	/**
+	 * Returns true if the given pathname matches the active routes and params.
+	 */
+	function routeIsActive(pathname, routes, params) {
 	  var remainingPathname = pathname,
 	      paramNames = [],
 	      paramValues = [];
 
-	  for (var i = 0, len = activeRoutes.length; i < len; ++i) {
-	    var route = activeRoutes[i];
+	  // for...of would work here but it's probably slower post-transpilation.
+	  for (var i = 0, len = routes.length; i < len; ++i) {
+	    var route = routes[i];
 	    var pattern = route.path || '';
 
 	    if (pattern.charAt(0) === '/') {
@@ -48335,46 +48368,24 @@
 	      paramValues = [];
 	    }
 
-	    if (remainingPathname !== null) {
+	    if (remainingPathname !== null && pattern) {
 	      var matched = _PatternUtils.matchPattern(pattern, remainingPathname);
 	      remainingPathname = matched.remainingPathname;
 	      paramNames = [].concat(paramNames, matched.paramNames);
 	      paramValues = [].concat(paramValues, matched.paramValues);
+
+	      if (remainingPathname === '') {
+	        // We have an exact match on the route. Just check that all the params
+	        // match.
+	        // FIXME: This doesn't work on repeated params.
+	        return paramNames.every(function (paramName, index) {
+	          return String(paramValues[index]) === String(params[paramName]);
+	        });
+	      }
 	    }
-
-	    if (remainingPathname === '' && route.path && paramsAreActive(paramNames, paramValues, activeParams)) return i;
 	  }
 
-	  return null;
-	}
-
-	/**
-	 * Returns true if the given pathname matches the active routes
-	 * and params.
-	 */
-	function routeIsActive(pathname, routes, params, indexOnly) {
-	  // TODO: This is a bit ugly. It keeps around support for treating pathnames
-	  // without preceding slashes as absolute paths, but possibly also works
-	  // around the same quirks with basenames as in matchRoutes.
-	  if (pathname.charAt(0) !== '/') {
-	    pathname = '/' + pathname;
-	  }
-
-	  var i = getMatchingRouteIndex(pathname, routes, params);
-
-	  if (i === null) {
-	    // No match.
-	    return false;
-	  } else if (!indexOnly) {
-	    // Any match is good enough.
-	    return true;
-	  }
-
-	  // If any remaining routes past the match index have paths, then we can't
-	  // be on the index route.
-	  return routes.slice(i + 1).every(function (route) {
-	    return !route.path;
-	  });
+	  return false;
 	}
 
 	/**
@@ -48400,7 +48411,20 @@
 
 	  if (currentLocation == null) return false;
 
-	  if (!routeIsActive(pathname, routes, params, indexOnly)) return false;
+	  // TODO: This is a bit ugly. It keeps around support for treating pathnames
+	  // without preceding slashes as absolute paths, but possibly also works
+	  // around the same quirks with basenames as in matchRoutes.
+	  if (pathname.charAt(0) !== '/') {
+	    pathname = '/' + pathname;
+	  }
+
+	  if (!pathIsActive(pathname, currentLocation.pathname)) {
+	    // The path check is necessary and sufficient for indexOnly, but otherwise
+	    // we still need to check the routes.
+	    if (indexOnly || !routeIsActive(pathname, routes, params)) {
+	      return false;
+	    }
+	  }
 
 	  return queryIsActive(query, currentLocation.query);
 	}

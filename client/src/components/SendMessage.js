@@ -3,6 +3,7 @@
 import React from 'react';
 import Actions from "actions/UIActions";
 import 'styles/SendMessage.scss';
+import UsersStore from 'stores/UsersStore';
 
 class SendMessage extends React.Component {
   constructor(props) {
@@ -41,7 +42,39 @@ class SendMessage extends React.Component {
     if(event.which === 9) {
       // Tab
       event.preventDefault();
-      // TODO: autocomplete user names
+      // get value of the last typed letters
+      this.getLastChars = (message) => {
+        // split the message, string to array
+        this.words = message.split(' ');
+        this.lastWord = this.words.pop();
+      }
+      
+      if(this.tabNumber == undefined){
+        this.tabNumber = 0;
+        this.getLastChars(this.refs.message.value);
+        // console.log(this.lastWord);
+      }
+      else{
+        this.tabNumber += 1;
+        // when end of array is reached go back to the first elt
+        this.tabNumber = this.tabNumber % this.matches.length;
+        this.words.pop();
+      }
+
+      // get matches
+      this.matches = [];      
+      this.matches = UsersStore.users.filter((s) => {
+        return s.startsWith(this.lastWord)
+      });
+      
+      console.log(`%c ${this.matches}`, 'color:green; background-color:yellow');     
+      console.log(this.words);
+      console.log(this.tabNumber);
+
+      // push the selected user name to array and convert back to string
+      this.words.push(this.matches[this.tabNumber]);
+      this.refs.message.value = this.words.join(' ');      
+      
     } else if(event.which === 186) {
       // ':'
       // TODO: bring up emoji preview
