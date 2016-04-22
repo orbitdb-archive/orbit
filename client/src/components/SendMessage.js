@@ -8,6 +8,8 @@ import UsersStore from 'stores/UsersStore';
 class SendMessage extends React.Component {
   constructor(props) {
     super(props);
+    this.tabPressCounter = null;
+    this.matches = []; 
     this.state = {
       theme: props.theme
     };
@@ -44,36 +46,35 @@ class SendMessage extends React.Component {
       event.preventDefault();
       // TODO: autocomplete user name
       // get value of the last typed letters
-      this.getLastChars = (message) => {
+      
+      const getLastChars = (message) => {
         // split the message, string to array
         this.words = message.split(' ');
-        this.lastWord = this.words.pop();
+        return this.words.pop();
       }
-      
-      if(this.tabNumber == undefined || this.tabNumber == null){
-        this.tabNumber = 0;
-        this.getLastChars(this.refs.message.value);
+
+      if(this.tabPressCounter == null){
+        this.tabPressCounter = 0;
+        this.lastWord = getLastChars(this.refs.message.value);
         // console.log(this.lastWord);
+        // get matches     
+        this.matches = UsersStore.users.filter((s) => {
+           return s.startsWith(this.lastWord)
+        });
       }
       else{
-        this.tabNumber += 1;
+        this.tabPressCounter += 1;
         // when end of array is reached go back to the first elt
-        this.tabNumber = this.tabNumber % this.matches.length;
+        this.tabPressCounter = this.tabPressCounter % this.matches.length;
         this.words.pop();
       }
-
-      // get matches
-      this.matches = [];      
-      this.matches = UsersStore.users.filter((s) => {
-        return s.startsWith(this.lastWord)
-      });
-      
+       
       console.log(`%c matches = ${this.matches}`, 'color:green; background-color:yellow');     
       console.log(`words = ${this.words}`);
-      console.log(`tabNumber = ${this.tabNumber}`);
+      console.log(`tabPressCounter = ${this.tabPressCounter}`);
 
       // push the selected user name to array and convert back to string
-      this.words.push(this.matches[this.tabNumber]);
+      this.words.push(this.matches[this.tabPressCounter]);
       this.refs.message.value = this.words.join(' ');      
       
     } else if(event.which === 186) {
@@ -84,7 +85,7 @@ class SendMessage extends React.Component {
     // else reset variables
     else{
       this.words = this.refs.message.value.split(' ');
-      this.tabNumber = null;
+      this.tabPressCounter = null;
       this.matches = [];
     }
     return;
