@@ -52,11 +52,17 @@ class SendMessage extends React.Component {
         this.words = message.split(' ');
         return this.words.pop();
       }
+      
+      // console.log relevant variables
+      const control = (matches, words, tabs) => {
+        console.log(`%c matches = ${matches}`, 'color:green; background-color:yellow');     
+        console.log(`words = ${words}`);
+        console.log(`tabPressCounter = ${tabs}`);
+      }
 
       if(this.tabPressCounter == null){
         this.tabPressCounter = 0;
         this.lastWord = getLastChars(this.refs.message.value);
-        // console.log(this.lastWord);
         // get matches     
         this.matches = UsersStore.users.filter((s) => {
            return s.startsWith(this.lastWord)
@@ -69,9 +75,8 @@ class SendMessage extends React.Component {
         this.words.pop();
       }
        
-      console.log(`%c matches = ${this.matches}`, 'color:green; background-color:yellow');     
-      console.log(`words = ${this.words}`);
-      console.log(`tabPressCounter = ${this.tabPressCounter}`);
+      // control
+      control(this.matches, this.words, this.tabPressCounter);
 
       // push the selected user name to array and convert back to string
       this.words.push(this.matches[this.tabPressCounter]);
