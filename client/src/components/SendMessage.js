@@ -42,6 +42,7 @@ class SendMessage extends React.Component {
     if(event.which === 9) {
       // Tab
       event.preventDefault();
+      // TODO: autocomplete user name
       // get value of the last typed letters
       this.getLastChars = (message) => {
         // split the message, string to array
@@ -49,7 +50,7 @@ class SendMessage extends React.Component {
         this.lastWord = this.words.pop();
       }
       
-      if(this.tabNumber == undefined){
+      if(this.tabNumber == undefined || this.tabNumber == null){
         this.tabNumber = 0;
         this.getLastChars(this.refs.message.value);
         // console.log(this.lastWord);
@@ -67,9 +68,9 @@ class SendMessage extends React.Component {
         return s.startsWith(this.lastWord)
       });
       
-      console.log(`%c ${this.matches}`, 'color:green; background-color:yellow');     
-      console.log(this.words);
-      console.log(this.tabNumber);
+      console.log(`%c matches = ${this.matches}`, 'color:green; background-color:yellow');     
+      console.log(`words = ${this.words}`);
+      console.log(`tabNumber = ${this.tabNumber}`);
 
       // push the selected user name to array and convert back to string
       this.words.push(this.matches[this.tabNumber]);
@@ -79,9 +80,16 @@ class SendMessage extends React.Component {
       // ':'
       // TODO: bring up emoji preview
     }
+    
+    // else reset variables
+    else{
+      this.words = this.refs.message.value.split(' ');
+      this.tabNumber = null;
+      this.matches = [];
+    }
     return;
   }
-
+  
   render() {
     return (
       <div className="SendMessage">
