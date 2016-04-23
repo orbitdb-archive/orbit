@@ -55,18 +55,47 @@ class SendMessage extends React.Component {
       
       // console.log relevant variables
       const control = (matches, words, tabs) => {
+        console.log(`%c all users = ${UsersStore.users}`, 'color:green; background-color:yellow');     
         console.log(`%c matches = ${matches}`, 'color:green; background-color:yellow');     
         console.log(`words = ${words}`);
         console.log(`tabPressCounter = ${tabs}`);
       }
 
+      // make case insensitive    
+      let matchIndex = [];
+      
+      /*
+      UsersStore.users.forEach((element,index,array) => {
+        matchIndex.push(index);
+      });
+      
+      console.log(`%c matchIndex = ${matchIndex}`, 'color:grey; background-color:#a0ffff');
+      */
+      
       if(this.tabPressCounter == null){
         this.tabPressCounter = 0;
-        let lastWord = getLastChars(this.refs.message.value);
-        // get matches     
-        this.matches = UsersStore.users.filter((s) => {
-           return s.startsWith(lastWord);
+        let lastWord = getLastChars(this.refs.message.value).toLowerCase();
+
+        // get matches
+        let usersLc = [];
+        // convert users to Lc for comparison
+        UsersStore.users.forEach((value) => {
+          usersLc.push(value.toLowerCase());
         });
+        
+        console.log(`%c usersLc = ${usersLc}`, 'color:grey; background-color:#a0ffff');
+        
+        usersLc.forEach((value, index) => {
+          if(value.startsWith(lastWord)){
+            matchIndex.push(index);
+          }
+        });
+        
+        matchIndex.forEach((element) => {
+          this.matches.push(UsersStore.users[element]);
+        });
+        
+        console.log(`%c matchIndex = ${matchIndex}`, 'color:grey; background-color:#a0ffff');
       }
       else{
         this.tabPressCounter += 1;
