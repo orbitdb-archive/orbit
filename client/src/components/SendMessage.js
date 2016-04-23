@@ -62,10 +62,10 @@ class SendMessage extends React.Component {
 
       if(this.tabPressCounter == null){
         this.tabPressCounter = 0;
-        this.lastWord = getLastChars(this.refs.message.value);
+        let lastWord = getLastChars(this.refs.message.value);
         // get matches     
         this.matches = UsersStore.users.filter((s) => {
-           return s.startsWith(this.lastWord)
+           return s.startsWith(lastWord);
         });
       }
       else{
