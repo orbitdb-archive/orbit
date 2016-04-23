@@ -48,11 +48,16 @@ class SendMessage extends React.Component {
       // get value of the last typed letters
       
       const getLastChars = (message) => {
-        // split the message, string to array
         this.words = message.split(' ');
         return this.words.pop();
       }
       
+      const lowerCasefy = (s) => {
+        UsersStore.users.forEach((value) => {
+          s.push(value.toLowerCase());
+        });
+      }
+
       // console.log relevant variables
       const control = (matches, words, tabs) => {
         console.log(`%c all users = ${UsersStore.users}`, 'color:green; background-color:yellow');     
@@ -61,41 +66,27 @@ class SendMessage extends React.Component {
         console.log(`tabPressCounter = ${tabs}`);
       }
 
-      // make case insensitive    
-      let matchIndex = [];
-      
-      /*
-      UsersStore.users.forEach((element,index,array) => {
-        matchIndex.push(index);
-      });
-      
-      console.log(`%c matchIndex = ${matchIndex}`, 'color:grey; background-color:#a0ffff');
-      */
-      
       if(this.tabPressCounter == null){
         this.tabPressCounter = 0;
         let lastWord = getLastChars(this.refs.message.value).toLowerCase();
 
-        // get matches
-        let usersLc = [];
         // convert users to Lc for comparison
-        UsersStore.users.forEach((value) => {
-          usersLc.push(value.toLowerCase());
-        });
+        let usersLc = [];
+        lowerCasefy(usersLc);
         
-        console.log(`%c usersLc = ${usersLc}`, 'color:grey; background-color:#a0ffff');
-        
-        usersLc.forEach((value, index) => {
+        // get only indexes of the matching elements
+        let matchIndex = [];
+        const indexMatches = (value, index) => {
           if(value.startsWith(lastWord)){
             matchIndex.push(index);
           }
-        });
+        } 
+        usersLc.forEach(indexMatches);
         
+        // make array of matches from the original and non-lowerCasefyed user array
         matchIndex.forEach((element) => {
           this.matches.push(UsersStore.users[element]);
         });
-        
-        console.log(`%c matchIndex = ${matchIndex}`, 'color:grey; background-color:#a0ffff');
       }
       else{
         this.tabPressCounter += 1;
