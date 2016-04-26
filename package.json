@@ -28,8 +28,7 @@
     "grunt-contrib-copy": "^1.0.0",
     "grunt-electron": "^2.0.1",
     "load-grunt-tasks": "^3.3.0",
-    "mocha": "^2.4.5",
-    "npm3": "^1.1.0"
+    "mocha": "^2.4.5"
   },
   "scripts": {
     "test": "mocha",
