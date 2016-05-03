@@ -3,8 +3,6 @@
 const fs           = require('fs');
 const path         = require('path');
 const EventEmitter = require('events').EventEmitter;
-const async        = require('asyncawait/async');
-const await        = require('asyncawait/await');
 const request      = require('request');
 const Logger       = require('logplease');
 const logger       = Logger.create("Orbit.Orbit", { color: Logger.Colors.Green });
@@ -166,24 +164,30 @@ class Orbit {
     }
 
     logger.info("Adding file from path '" + filePath + "'");
-    var isDirectory = await (utils.isDirectory(filePath));
-    var hash = await (addToIpfs(this.ipfs, filePath, isDirectory));
-    var size = await (utils.getFileSize(filePath));
-    logger.info("Added local file '" + filePath + "' as " + hash);
+    let isDirectory = false, size = -1, hash;
+    utils.isDirectory(filePath)
+      .then((res) => isDirectory = res)
+      .then(() => addToIpfs(this.ipfs, filePath, isDirectory))
+      .then((res) => hash = res)
+      .then(() => utils.getFileSize(filePath))
+      .then((res) => size = res)
+      .then(() => {
+        logger.info("Added local file '" + filePath + "' as " + hash);
 
-    const data = {
-      name: filePath.split("/").pop(),
-      hash: hash,
-      size: size,
-      from: this.orbit.user.id
-    };
+        const data = {
+          name: filePath.split("/").pop(),
+          hash: hash,
+          size: size,
+          from: this.orbit.user.id
+        };
 
-    const type = isDirectory ? Post.Types.Directory : Post.Types.File;
-    Post.create(this.ipfs, type, data).then((post) => {
-      this._channels[channel].db.add(post.Hash).then((hash) => {
-        if(callback) callback(null);
+        const type = isDirectory ? Post.Types.Directory : Post.Types.File;
+        Post.create(this.ipfs, type, data).then((post) => {
+          this._channels[channel].db.add(post.Hash).then((hash) => {
+            if(callback) callback(null);
+          });
+        });
       });
-    });
   }
 
   getDirectory(hash, callback) {

@@ -4,7 +4,6 @@
   "description": "Distributed, p2p chat built on IPFS",
   "main": "index-native.js",
   "dependencies": {
-    "asyncawait": "^1.0.3",
     "bluebird": "^3.3.5",
     "body-parser": "^1.14.1",
     "cors": "^2.7.1",
@@ -22,6 +21,7 @@
     "socket.io": "^1.4.5"
   },
   "devDependencies": {
+    "asyncawait": "^1.0.3",
     "electron-prebuilt": "0.34.1",
     "grunt": "^1.0.1",
     "grunt-chmod": "^1.1.1",

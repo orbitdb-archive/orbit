@@ -1,7 +1,5 @@
 'use strict';
 
-const async          = require('asyncawait/async');
-const await          = require('asyncawait/await');
 const Promise        = require('bluebird');
 const express        = require('express');
 const app            = express();
@@ -14,7 +12,7 @@ const request        = require('request');
 const logger         = require('logplease').create("Orbit.HttpApi");
 
 /* HTTP API */
-const HttpApi = async ((ipfsInstance, events) => {
+const HttpApi = (ipfsInstance, events) => {
   const ipfs = ipfsInstance;
 
   function errorHandler(err, req, res, next) {
@@ -37,7 +35,7 @@ const HttpApi = async ((ipfsInstance, events) => {
     'video/webm': ['mkv', 'mp4', 'mov', 'avi']
   });
 
-  app.get("/api/cat/:hash", async((req, res, next) => {
+  app.get("/api/cat/:hash", (req, res, next) => {
     logger.debug("ipfs.cat: " + req.params.hash + " - " + JSON.stringify(req.query));
 
     const hash     = req.params.hash;
@@ -53,7 +51,7 @@ const HttpApi = async ((ipfsInstance, events) => {
     } catch(e) {
       logger.error(e.stack);
     }
-  }));
+  });
 
   /* HTTP SERVER */
   var startServer = () => {
@@ -62,10 +60,11 @@ const HttpApi = async ((ipfsInstance, events) => {
     });
   };
 
-  const server = await(startServer());
-  logger.debug('HTTP server started at http://%s:%s', server.address().address, server.address().port);
-
-  return { server: server, socketServer: http.Server(app) };
-});
+  return startServer()
+    .then((server) => {
+      logger.debug('HTTP server started at http://%s:%s', server.address().address, server.address().port);
+      return { server: server, socketServer: http.Server(app) };
+    });
+};
 
 module.exports = HttpApi;
