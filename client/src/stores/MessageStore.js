@@ -42,7 +42,7 @@ const MessageStore = Reflux.createStore({
     this.canLoadMore = true;
   },
   getMessages: function(channel: string) {
-    if(!this.messages[channel])
+    if(!this.messages[channel] || this.messages[channel].length === 0)
       this.loadMessages(channel, null, null, messagesBatchSize);
 
     return this.messages[channel] ? this.messages[channel] : [];
@@ -62,21 +62,22 @@ const MessageStore = Reflux.createStore({
     });
 
     // Handle DB loading state
-    this.socket.on('db.load', (action, channel) => {
-      if(action === 'sync') {
+    this.socket.on('db.load', (channel) => {
+      // if(action === 'sync') {
         this.hasLoaded = false;
         UIActions.startLoading(channel, "loadhistory", "Syncing...");
-      }
-      else if(action === 'query')
-        UIActions.startLoading(channel, "query", "Loading...");
+      // }
+      // else if(action === 'query')
+      //   UIActions.startLoading(channel, "query", "Loading...");
     });
-    this.socket.on('db.loaded', (action, channel) => {
-      if(action === 'sync') {
+    this.socket.on('readable', (channel) => {
+      // if(action === 'sync') {
         this.hasLoaded = true;
         UIActions.stopLoading(channel, "loadhistory");
-      }
-      else if(action === 'query')
-        UIActions.stopLoading(channel, "query");
+        this.loadMessages(channel, null, null, messagesBatchSize);
+      // }
+      // else if(action === 'query')
+      //   UIActions.stopLoading(channel, "query");
     });
   },
   onSocketDisconnected: function() {
@@ -100,8 +101,10 @@ const MessageStore = Reflux.createStore({
   onShowChannel: function(channel: string) {
     if(!this.messages[channel]) this.messages[channel] = [];
     this._resetLoadingState();
+    // this.loadMessages(channel, null, null, messagesBatchSize);
   },
   onLoadMoreMessages: function(channel: string) {
+    console.log("+++", this.loading, this.canLoadMore, this.hasLoaded)
     if(!this.loading && this.canLoadMore) {
       logger.debug("load more messages from #" + channel);
       this.canLoadMore = false;

@@ -47,6 +47,7 @@ class Channel extends React.Component {
         reachedChannelStart: false
       });
       UIActions.focusOnSendMessage();
+      console.log("======================================================")
       this._getMessages(nextProps.channel);
     }
 
@@ -65,6 +66,7 @@ class Channel extends React.Component {
 
   _onLoadStateChange(state) {
     const loadingState = state[this.state.channelName];
+    console.log("STATE", state)
     if(loadingState) {
       const loading = Object.keys(loadingState).filter((f) => loadingState[f] && loadingState[f].loading);
       const loadingText = loadingState[loading[0]] ? loadingState[loading[0]].message : null;
@@ -82,7 +84,6 @@ class Channel extends React.Component {
   }
 
   componentDidMount() {
-    this._getMessages(this.state.channelName);
 
     this.unsubscribeFromMessageStore = MessageStore.listen(this.onNewMessages.bind(this));
     this.stopListeningLoadingState = LoadingStateStore.listen(this._onLoadStateChange.bind(this));
@@ -90,6 +91,8 @@ class Channel extends React.Component {
     this.unsubscribeFromErrors = UIActions.raiseError.listen(this._onError.bind(this));
 
     this.node = this.refs.MessagesView;
+    this._getMessages(this.state.channelName);
+    // this._getMessages(this.state.channel);
     this.loadOlderMessages();
   }
 
@@ -131,6 +134,7 @@ class Channel extends React.Component {
   }
 
   loadOlderMessages() {
+    console.log("load", this.state.loading)
     if(!this.state.loading)
       ChannelActions.loadMoreMessages(this.state.channelName);
   }
@@ -160,6 +164,7 @@ class Channel extends React.Component {
       this.setState({ channelChanged: false });
     }
 
+    console.log("----------- abcdefghaöljsd -----------", this._shouldLoadMoreMessages())
     if(this._shouldLoadMoreMessages())
       this.loadOlderMessages();
   }

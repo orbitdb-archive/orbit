@@ -4,7 +4,7 @@ const async   = require('asyncawait/async');
 const await   = require('asyncawait/await');
 const OrbitDB = require('orbit-db');
 
-// usage: get-channel.js <host> <username> <channel> <data> <interval in ms>
+// usage: get-channel.js <host> <username> <channel>
 
 // orbit-server
 const host = process.argv[2] ? process.argv[2] : 'localhost'
@@ -17,7 +17,7 @@ let run = (async(() => {
   try {
     var orbit = OrbitDB.connect(host, port, username, password);
     const channelName = process.argv[4] ? process.argv[4] : 'test';
-    const db = orbit.channel(channelName);
+    const db = orbit.eventlog(channelName);
 
     orbit.events.on('loaded', (channel, hash) => {
         let items = db.iterator({ limit: -1 }).collect();

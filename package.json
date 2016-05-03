@@ -11,6 +11,7 @@
     "debug": "^2.2.0",
     "du": "^0.1.0",
     "express": "^4.13.4",
+    "ipfs-post": "https://github.com/haadcode/ipfs-post",
     "lodash": "^4.8.2",
     "logplease": "^1.2.5",
     "method-override": "^2.3.5",

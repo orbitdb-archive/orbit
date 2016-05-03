@@ -10,7 +10,7 @@ const Logger       = require('logplease');
 const logger       = Logger.create("Orbit.Orbit", { color: Logger.Colors.Green });
 const utils        = require('orbit-common/lib/utils');
 const OrbitDB      = require('orbit-db');
-const Post         = require('orbit-db/src/post/Post');
+const Post         = require('ipfs-post');
 const Network      = require('./NetworkConfig');
 
 class Orbit {
@@ -34,9 +34,9 @@ class Orbit {
     OrbitDB.connect(network.host, network.port, user.username, user.password, this.ipfs, { cacheFile: cacheFile })
       .then((orbit) => {
         this.orbit = orbit;
-        this.orbit.events.on('data', this._handleMessage.bind(this));
-        this.orbit.events.on('load', this._handleStartLoading.bind(this));
-        this.orbit.events.on('loaded', this._handleStopLoading.bind(this));
+        // this.orbit.events.on('data', this._handleMessage.bind(this));
+        // this.orbit.events.on('load', this._handleStartLoading.bind(this));
+        // this.orbit.events.on('loaded', this._handleStopLoading.bind(this));
         logger.info(`Connected to '${this.orbit.network.name}' at '${this.orbit.network.host}:${this.orbit.network.port}' as '${user.username}`)
         this.events.emit('network', this.orbit);
       })
@@ -48,9 +48,9 @@ class Orbit {
 
   disconnect() {
     if(this.orbit) {
-      this.orbit.events.removeListener('message', this._handleMessage);
-      this.orbit.events.removeListener('load', this._handleStartLoading);
-      this.orbit.events.removeListener('loaded', this._handleStopLoading);
+      // this.orbit.events.removeListener('message', this._handleMessage);
+      // this.orbit.events.removeListener('load', this._handleStartLoading);
+      // this.orbit.events.removeListener('loaded', this._handleStopLoading);
       logger.warn(`Disconnected from '${this.orbit.network.name}' at '${this.orbit.network.host}:${this.orbit.network.port}'`);
       this.orbit.disconnect();
       this.orbit = null;
@@ -72,7 +72,10 @@ class Orbit {
   join(channel, password, callback) {
     logger.debug(`Join #${channel}`);
     if(!this._channels[channel]) {
-      this.orbit.channel(channel, password).then((db) => {
+      this.orbit.eventlog(channel, password).then((db) => {
+        db.events.on('readable', this._handleStopLoading.bind(this));
+        db.events.on('data', this._handleMessage.bind(this));
+        db.events.on('load', this._handleStartLoading.bind(this));
         this._channels[channel] = { name: channel, password: password, db: db };
         this.events.emit('channels.updated', this.getChannels());
         if(callback) callback(null, { name: channel, modes: {} })
@@ -219,15 +222,18 @@ class Orbit {
   }
 
   _handleMessage(channel, message) {
+    console.log(">", channel, message)
     this.events.emit('message', channel, message);
   }
 
-  _handleStartLoading(action, channel) {
-    this.events.emit('db.load', action, channel)
+  _handleStartLoading(channel) {
+    console.log("load", channel)
+    this.events.emit('db.load', channel)
   }
 
-  _handleStopLoading(action, channel) {
-    this.events.emit('db.loaded', action, channel)
+  _handleStopLoading(channel) {
+    console.log("ready", channel)
+    this.events.emit('readable', channel)
   }
 
   onSocketConnected(socket) {
