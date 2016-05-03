@@ -6,10 +6,14 @@ const EventEmitter = require('events').EventEmitter;
 const request      = require('request');
 const Logger       = require('logplease');
 const logger       = Logger.create("Orbit.Orbit", { color: Logger.Colors.Green });
-const utils        = require('orbit-common/lib/utils');
+const utils        = require('./utils');
 const OrbitDB      = require('orbit-db');
 const Post         = require('ipfs-post');
 const Network      = require('./NetworkConfig');
+
+const getAppPath = () => {
+  return process.type && process.env.ENV !== "dev" ? process.resourcesPath + "/app/" : process.cwd();
+}
 
 class Orbit {
   constructor(ipfs, events) {
@@ -24,10 +28,10 @@ class Orbit {
     const port = host.split(":")[1];
     // const network = { host: hostname, port: port };
     // TODO: hard coded until UI is fixed
-    var network = Network.fromFile(path.resolve(utils.getAppPath(), "network.json"));
+    var network = Network.fromFile(path.resolve(getAppPath(), "network.json"));
     const user = { username: username, password: password };
     logger.info(`Connecting to network at '${network.host}:${network.port}' as '${user.username}`);
-    const cacheFile = path.resolve(utils.getAppPath(), "orbit-db-cache.json");
+    const cacheFile = path.resolve(getAppPath(), "orbit-db-cache.json");
     logger.debug("Load cache from:", cacheFile);
     OrbitDB.connect(network.host, network.port, user.username, user.password, this.ipfs, { cacheFile: cacheFile })
       .then((orbit) => {
