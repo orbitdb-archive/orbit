@@ -28385,17 +28385,17 @@
 	    this._resetLoadingState();
 	  },
 	  _resetLoadingState: function _resetLoadingState() {
-	    this.hasLoaded = false;
 	    this.loading = false;
+	    this.hasLoaded = true;
 	    this.canLoadMore = true;
 	  },
 	  getMessages: function getMessages(channel) {
-	    if (!this.messages[channel]) this.loadMessages(channel, null, null, messagesBatchSize);
+	    if (!this.messages[channel] || this.messages[channel].length === 0) this.loadMessages(channel, null, null, messagesBatchSize);
 
 	    return this.messages[channel] ? this.messages[channel] : [];
 	  },
 	  getOldestMessage: function getOldestMessage(channel) {
-	    return this.messages[channel] && this.messages[channel].length > 0 ? this.messages[channel][0].key : null;
+	    return this.messages[channel] && this.messages[channel].length > 0 ? this.messages[channel][0].hash : null;
 	  },
 	  onSocketConnected: function onSocketConnected(socket) {
 	    var _this2 = this;
@@ -28411,17 +28411,14 @@
 	    });
 
 	    // Handle DB loading state
-	    this.socket.on('db.load', function (action, channel) {
-	      if (action === 'sync') {
-	        _this2.hasLoaded = false;
-	        _UIActions2.default.startLoading(channel, "loadhistory", "Syncing...");
-	      } else if (action === 'query') _UIActions2.default.startLoading(channel, "query", "Loading...");
+	    this.socket.on('db.load', function (channel) {
+	      _this2.hasLoaded = false;
+	      _UIActions2.default.startLoading(channel, "loadhistory", "Syncing...");
 	    });
-	    this.socket.on('db.loaded', function (action, channel) {
-	      if (action === 'sync') {
-	        _this2.hasLoaded = true;
-	        _UIActions2.default.stopLoading(channel, "loadhistory");
-	      } else if (action === 'query') _UIActions2.default.stopLoading(channel, "query");
+	    this.socket.on('readable', function (channel) {
+	      _this2.hasLoaded = true;
+	      _UIActions2.default.stopLoading(channel, "loadhistory");
+	      _this2.loadMessages(channel, null, null, messagesBatchSize);
 	    });
 	  },
 	  onSocketDisconnected: function onSocketDisconnected() {
@@ -28433,12 +28430,10 @@
 	    this._reset();
 	  },
 	  onJoinedChannel: function onJoinedChannel(channel) {
-	    // console.log("MessageStore - open #" + channel);
 	    if (!this.messages[channel]) this.messages[channel] = [];
 	    this._resetLoadingState();
 	  },
 	  onLeaveChannel: function onLeaveChannel(channel) {
-	    // console.log("MessageStore - close #" + channel);
 	    this._resetLoadingState();
 	    delete this.messages[channel];
 	  },
@@ -28447,7 +28442,7 @@
 	    this._resetLoadingState();
 	  },
 	  onLoadMoreMessages: function onLoadMoreMessages(channel) {
-	    if (!this.loading && this.canLoadMore) {
+	    if (!this.loading && this.canLoadMore && this.hasLoaded) {
 	      logger.debug("load more messages from #" + channel);
 	      this.canLoadMore = false;
 	      this.loadMessages(channel, this.getOldestMessage(channel), null, messagesBatchSize);
@@ -35371,12 +35366,7 @@
 
 	function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
 
-	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; } //eslint-disable-line
-	//eslint-disable-line
-	//eslint-disable-line
-	//eslint-disable-line
-	//eslint-disable-line
-
+	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
 	var Channel = function (_React$Component) {
 	  _inherits(Channel, _React$Component);
@@ -35439,6 +35429,7 @@
 	    key: '_onLoadStateChange',
 	    value: function _onLoadStateChange(state) {
 	      var loadingState = state[this.state.channelName];
+	      console.log("STATE", state);
 	      if (loadingState) {
 	        var loading = Object.keys(loadingState).filter(function (f) {
 	          return loadingState[f] && loadingState[f].loading;
@@ -35461,15 +35452,14 @@
 	  }, {
 	    key: 'componentDidMount',
 	    value: function componentDidMount() {
-	      this._getMessages(this.state.channelName);
-
 	      this.unsubscribeFromMessageStore = _MessageStore2.default.listen(this.onNewMessages.bind(this));
 	      this.stopListeningLoadingState = _LoadingStateStore2.default.listen(this._onLoadStateChange.bind(this));
 	      this.stopListeningChannelState = _ChannelActions2.default.reachedChannelStart.listen(this._onReachedChannelStart.bind(this));
 	      this.unsubscribeFromErrors = _UIActions2.default.raiseError.listen(this._onError.bind(this));
 
 	      this.node = this.refs.MessagesView;
-	      this.loadOlderMessages();
+	      // this._getMessages(this.state.channelName);
+	      // this.loadOlderMessages();
 	    }
 	  }, {
 	    key: 'componentWillUnmount',
@@ -35636,7 +35626,7 @@
 	        });
 	      });
 
-	      var channelStateText = this.state.loading && this.state.loadingText ? this.state.loadingText : 'Older messages...';
+	      var channelStateText = this.state.loading && this.state.loadingText ? this.state.loadingText : 'Loading more messages...';
 	      if (this.state.reachedChannelStart) channelStateText = 'Beginning of # ' + this.state.channelName;
 
 	      messages.unshift(_react2.default.createElement(
@@ -36779,7 +36769,7 @@
 	            { className: 'label' },
 	            'Network'
 	          ),
-	          _react2.default.createElement('input', { type: 'text', ref: 'network', defaultValue: '178.62.241.75:3333', style: this.state.theme })
+	          _react2.default.createElement('input', { type: 'text', ref: 'network', defaultValue: 'QmRB8x6aErtKTFHDNRiViixSKYwW1DbfcvJHaZy1hnRzLM', style: this.state.theme })
 	        ),
 	        _react2.default.createElement(
 	          'div',
@@ -42533,7 +42523,7 @@
 
 
 	// module
-	exports.push([module.id, ".LoginView {\n  font-family: \"Source Sans Pro\";\n  font-weight: 100;\n  font-size: 0.9em;\n  padding: 0.1em;\n  color: gray;\n  display: flex;\n  justify-content: center;\n  width: 100%;\n  height: 100%;\n  margin-top: 0;\n  border-top: 1px solid #1e1e1e;\n  box-sizing: border-box;\n}\n\n.LoginView .inputs {\n  margin: 1.5em;\n  margin-top: 0;\n}\n\n.LoginView h1 {\n  margin-top: 0.6em;\n  font-family: \"Lato\";\n  font-size: 2.5em;\n  font-weight: 100;\n  padding: 1.0em;\n  text-transform: uppercase;\n  color: rgba(240, 240, 240, 0.7);\n}\n\n.LoginView form {\n  display: flex;\n  align-self: flex-start;\n  width: 100%;\n  flex-direction: column;\n  justify-content: center;\n  margin-left: 0.5em;\n  margin-right: 0.5em;\n  max-width: 30em;\n}\n\n.LoginView form .hidden {\n  visibility: hidden;\n  display: none;\n}\n\n.LoginView form .centerrow {\n  display: flex;\n  flex-direction: row;\n  margin-bottom: 0.5em;\n  justify-content: center;\n  width: 100%;\n}\n\n.LoginView form .row {\n  display: flex;\n  flex-direction: row;\n  margin-bottom: 0.5em;\n  justify-content: flex-end;\n  width: 100%;\n}\n\n.LoginView form .label {\n  display: flex;\n  flex: 1 1 8%;\n  min-width: 5em;\n  align-self: center;\n  justify-content: flex-start;\n}\n\n.LoginView form .nicknameLength {\n  margin-top: 0.5em;\n  padding: 0em 0.5em;\n  font-size: 0.8em;\n  display: flex;\n  align-self: center;\n}\n\n.LoginView form .error {\n  color: rgba(240, 96, 96, 0.8);\n  margin-top: 1em;\n  flex: 1 1 auto;\n  text-align: center;\n}\n\n.LoginView form input[type=submit] {\n  margin-top: 1em;\n}\n\n.LoginView form input[type=text], .LoginView form input[type=password] {\n  margin-bottom: 0;\n  width: 90%;\n}\n\n.LoginView form input[type=text]:disabled {\n  color: rgba(228, 228, 228, 0.25);\n  font-style: italic;\n  cursor: not-allowed;\n  width: 90%;\n}\n\n.loginHeaderAnimation-appear {\n  -webkit-animation: bounceInDown;\n  animation: bounceInDown;\n  -webkit-animation-duration: 0.5s;\n  animation-duration: 0.5s;\n  -webkit-animation-fill-mode: both;\n  animation-fill-mode: both;\n  -webkit-animation-timing-function: ease-out;\n  animation-timing-function: ease-out;\n}\n\n.loginScreenAnimation-appear {\n  -webkit-animation: fadeIn;\n  animation: fadeIn;\n  -webkit-animation-duration: 0.5s;\n  animation-duration: 0.5s;\n  -webkit-animation-fill-mode: both;\n  animation-fill-mode: both;\n  -webkit-animation-timing-function: ease-out;\n  animation-timing-function: ease-out;\n}\n", ""]);
+	exports.push([module.id, ".LoginView {\n  font-family: \"Source Sans Pro\";\n  font-weight: 100;\n  font-size: 0.9em;\n  padding: 0.1em;\n  color: gray;\n  display: flex;\n  justify-content: center;\n  width: 100%;\n  height: 100%;\n  margin-top: 0;\n  border-top: 1px solid #1e1e1e;\n  box-sizing: border-box;\n}\n\n.LoginView .inputs {\n  margin: 1.5em;\n  margin-top: 0;\n}\n\n.LoginView h1 {\n  margin-top: 0.6em;\n  font-family: \"Lato\";\n  font-size: 2.5em;\n  font-weight: 100;\n  padding: 1.0em;\n  text-transform: uppercase;\n  color: rgba(240, 240, 240, 0.7);\n}\n\n.LoginView form {\n  display: flex;\n  align-self: flex-start;\n  width: 100%;\n  flex-direction: column;\n  justify-content: center;\n  margin-left: 0.5em;\n  margin-right: 0.5em;\n  max-width: 32em;\n}\n\n.LoginView form .hidden {\n  visibility: hidden;\n  display: none;\n}\n\n.LoginView form .centerrow {\n  display: flex;\n  flex-direction: row;\n  margin-bottom: 0.5em;\n  justify-content: center;\n  width: 100%;\n}\n\n.LoginView form .row {\n  display: flex;\n  flex-direction: row;\n  margin-bottom: 0.5em;\n  justify-content: flex-end;\n  width: 100%;\n}\n\n.LoginView form .label {\n  display: flex;\n  flex: 1 1 8%;\n  min-width: 5em;\n  align-self: center;\n  justify-content: flex-start;\n}\n\n.LoginView form .nicknameLength {\n  margin-top: 0.5em;\n  padding: 0em 0.5em;\n  font-size: 0.8em;\n  display: flex;\n  align-self: center;\n}\n\n.LoginView form .error {\n  color: rgba(240, 96, 96, 0.8);\n  margin-top: 1em;\n  flex: 1 1 auto;\n  text-align: center;\n}\n\n.LoginView form input[type=submit] {\n  margin-top: 1em;\n}\n\n.LoginView form input[type=text], .LoginView form input[type=password] {\n  margin-bottom: 0;\n  width: 90%;\n}\n\n.LoginView form input[type=text]:disabled {\n  color: rgba(228, 228, 228, 0.25);\n  font-style: italic;\n  cursor: not-allowed;\n  width: 90%;\n}\n\n.loginHeaderAnimation-appear {\n  -webkit-animation: bounceInDown;\n  animation: bounceInDown;\n  -webkit-animation-duration: 0.5s;\n  animation-duration: 0.5s;\n  -webkit-animation-fill-mode: both;\n  animation-fill-mode: both;\n  -webkit-animation-timing-function: ease-out;\n  animation-timing-function: ease-out;\n}\n\n.loginScreenAnimation-appear {\n  -webkit-animation: fadeIn;\n  animation: fadeIn;\n  -webkit-animation-duration: 0.5s;\n  animation-duration: 0.5s;\n  -webkit-animation-fill-mode: both;\n  animation-fill-mode: both;\n  -webkit-animation-timing-function: ease-out;\n  animation-timing-function: ease-out;\n}\n", ""]);
 
 	// exports
 
