@@ -4,12 +4,11 @@ const fs           = require('fs');
 const path         = require('path');
 const EventEmitter = require('events').EventEmitter;
 const request      = require('request');
+const OrbitDB      = require('orbit-db');
+const Post         = require('ipfs-post');
 const Logger       = require('logplease');
 const logger       = Logger.create("Orbit.Orbit", { color: Logger.Colors.Green });
 const utils        = require('./utils');
-const OrbitDB      = require('orbit-db');
-const Post         = require('ipfs-post');
-const Network      = require('./NetworkConfig');
 
 const getAppPath = () => {
   return process.type && process.env.ENV !== "dev" ? process.resourcesPath + "/app/" : process.cwd();
@@ -42,7 +41,7 @@ class Orbit {
 
   disconnect() {
     if(this.orbit) {
-      logger.warn(`Disconnected from '${this.orbit.network.name}' at '${this.orbit.network.host}:${this.orbit.network.port}'`);
+      logger.warn(`Disconnected from '${this.orbit.network.name}' at '${this.orbit.network.publishers[0]}'`);
       this.orbit.disconnect();
       this.orbit = null;
       this._channels = {};
@@ -91,12 +90,15 @@ class Orbit {
   }
 
   getSwarmPeers(callback) {
-    this.ipfs.swarm.peers().then((peers) => {
-      if(callback) callback(peers.Strings);
-    }).catch((e) => {
-      this._handleError(e);
-      if(callback) callback(null);
-    });
+    this.ipfs.swarm.peers()
+      .then((peers) => {
+        if(callback)
+          callback(peers.Strings);
+      })
+      .catch((e) => {
+        this._handleError(e);
+        if(callback) callback(null);
+      });
   }
 
   getMessages(channel, lessThanHash, greaterThanHash, amount, callback) {
@@ -109,12 +111,15 @@ class Orbit {
   }
 
   getPost(hash, callback) {
-    this.ipfs.object.get(hash).then((res) => {
-      if(callback) callback(null, JSON.parse(res.Data));
-    }).catch((e) => {
-      this._handleError(e);
-      if(callback) callback(e.message, null);
-    });
+    this.ipfs.object.get(hash)
+      .then((res) => {
+        if(callback)
+          callback(null, JSON.parse(res.Data));
+      })
+      .catch((e) => {
+        this._handleError(e);
+        if(callback) callback(e.message, null);
+      });
   }
 
   sendMessage(channel, message, callback) {
@@ -123,14 +128,16 @@ class Orbit {
       content: message,
       from: this.orbit.user.id
     };
-    Post.create(this.ipfs, Post.Types.Message, data).then((post) => {
-      this._channels[channel].db.add(post.Hash).then((hash) => {
-        if(callback) callback(null);
+    Post.create(this.ipfs, Post.Types.Message, data)
+      .then((post) => this._channels[channel].db.add(post.Hash))
+      .then((hash) => {
+        if(callback)
+          callback(null);
+      })
+      .catch((e) => {
+        this._handleError(e);
+        if(callback) callback(e.message);
       });
-    }).catch((e) => {
-      this._handleError(e);
-      if(callback) callback(e.message);
-    });
   }
 
   addFile(channel, filePath, callback) {
@@ -199,9 +206,6 @@ class Orbit {
         if(callback) callback(body);
       }
     })
-    // this.ipfs.cat(hash, (err, result) => {
-    //   if(callback) callback(result);
-    // });
   }
 
   get user() {
@@ -219,17 +223,16 @@ class Orbit {
   }
 
   _handleMessage(channel, message) {
-    console.log(">", channel, message)
     this.events.emit('message', channel, message);
   }
 
   _handleStartLoading(channel) {
-    console.log("load", channel)
+    logger.debug("load channel", channel)
     this.events.emit('db.load', channel)
   }
 
   _handleStopLoading(channel) {
-    console.log("ready", channel)
+    logger.debug("channel ready", channel)
     this.events.emit('readable', channel)
   }
 

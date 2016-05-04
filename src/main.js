@@ -7,7 +7,6 @@ const ipfsDaemon   = require('orbit-common/lib/ipfs-daemon');
 const logger       = require('logplease').create("Orbit.Main");
 const SocketApi    = require('./api/SocketApi');
 const HttpApi      = require('./api/HttpApi');
-const Network      = require('./NetworkConfig');
 const Orbit        = require('./Orbit');
 
 var ENV = process.env["ENV"] || "release";
