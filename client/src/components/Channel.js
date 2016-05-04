@@ -2,15 +2,15 @@
 
 import _ from 'lodash';
 import React from 'react';
-import TransitionGroup from "react-addons-css-transition-group"; //eslint-disable-line
-import Message from 'components/Message'; //eslint-disable-line
-import SendMessage from 'components/SendMessage'; //eslint-disable-line
-import Dropzone from 'react-dropzone'; //eslint-disable-line
+import TransitionGroup from "react-addons-css-transition-group";
+import Message from 'components/Message';
+import SendMessage from 'components/SendMessage';
+import Dropzone from 'react-dropzone';
 import MessageStore from 'stores/MessageStore';
 import LoadingStateStore from 'stores/LoadingStateStore';
 import UIActions from 'actions/UIActions';
 import ChannelActions from 'actions/ChannelActions';
-import Halogen from 'halogen'; //eslint-disable-line
+import Halogen from 'halogen';
 import 'styles/Channel.scss';
 
 class Channel extends React.Component {
@@ -91,7 +91,7 @@ class Channel extends React.Component {
     this.unsubscribeFromErrors = UIActions.raiseError.listen(this._onError.bind(this));
 
     this.node = this.refs.MessagesView;
-    this._getMessages(this.state.channelName);
+    // this._getMessages(this.state.channelName);
     // this._getMessages(this.state.channel);
     this.loadOlderMessages();
   }

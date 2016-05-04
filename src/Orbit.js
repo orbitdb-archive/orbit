@@ -23,23 +23,15 @@ class Orbit {
     this._channels = {};
   }
 
-  connect(host, username, password) {
-    const hostname = host.split(":")[0];
-    const port = host.split(":")[1];
-    // const network = { host: hostname, port: port };
-    // TODO: hard coded until UI is fixed
-    var network = Network.fromFile(path.resolve(getAppPath(), "network.json"));
+  connect(network, username, password) {
     const user = { username: username, password: password };
-    logger.info(`Connecting to network at '${network.host}:${network.port}' as '${user.username}`);
     const cacheFile = path.resolve(getAppPath(), "orbit-db-cache.json");
     logger.debug("Load cache from:", cacheFile);
-    OrbitDB.connect(network.host, network.port, user.username, user.password, this.ipfs, { cacheFile: cacheFile })
-      .then((orbit) => {
-        this.orbit = orbit;
-        // this.orbit.events.on('data', this._handleMessage.bind(this));
-        // this.orbit.events.on('load', this._handleStartLoading.bind(this));
-        // this.orbit.events.on('loaded', this._handleStopLoading.bind(this));
-        logger.info(`Connected to '${this.orbit.network.name}' at '${this.orbit.network.host}:${this.orbit.network.port}' as '${user.username}`)
+    logger.info(`Connecting to network '${network}' as '${username}`);
+    OrbitDB.connect(network, user.username, user.password, this.ipfs, { cacheFile: cacheFile })
+      .then((orbit) => this.orbit = orbit)
+      .then(() => {
+        logger.info(`Connected to '${this.orbit.network.name}' at '${this.orbit.network.publishers[0]}' as '${user.username}`)
         this.events.emit('network', this.orbit);
       })
       .catch((e) => {
@@ -50,9 +42,6 @@ class Orbit {
 
   disconnect() {
     if(this.orbit) {
-      // this.orbit.events.removeListener('message', this._handleMessage);
-      // this.orbit.events.removeListener('load', this._handleStartLoading);
-      // this.orbit.events.removeListener('loaded', this._handleStopLoading);
       logger.warn(`Disconnected from '${this.orbit.network.name}' at '${this.orbit.network.host}:${this.orbit.network.port}'`);
       this.orbit.disconnect();
       this.orbit = null;

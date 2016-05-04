@@ -37,8 +37,8 @@ const MessageStore = Reflux.createStore({
     this._resetLoadingState();
   },
   _resetLoadingState: function() {
-    this.hasLoaded = false;
     this.loading = false;
+    this.hasLoaded = true;
     this.canLoadMore = true;
   },
   getMessages: function(channel: string) {
@@ -48,7 +48,7 @@ const MessageStore = Reflux.createStore({
     return this.messages[channel] ? this.messages[channel] : [];
   },
   getOldestMessage: function(channel: string) {
-    return this.messages[channel] && this.messages[channel].length > 0 ? this.messages[channel][0].key : null;
+    return this.messages[channel] && this.messages[channel].length > 0 ? this.messages[channel][0].hash : null;
   },
   onSocketConnected: function(socket) {
     logger.debug("connected");
@@ -63,6 +63,7 @@ const MessageStore = Reflux.createStore({
 
     // Handle DB loading state
     this.socket.on('db.load', (channel) => {
+      logger.warn("LOADING!", channel)
       // if(action === 'sync') {
         this.hasLoaded = false;
         UIActions.startLoading(channel, "loadhistory", "Syncing...");
@@ -71,6 +72,7 @@ const MessageStore = Reflux.createStore({
       //   UIActions.startLoading(channel, "query", "Loading...");
     });
     this.socket.on('readable', (channel) => {
+      logger.warn("DONE!!", channel)
       // if(action === 'sync') {
         this.hasLoaded = true;
         UIActions.stopLoading(channel, "loadhistory");

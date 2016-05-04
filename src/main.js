@@ -43,11 +43,11 @@ const start = exports.start = () => {
       // auto-login if there's a user.json file
       var userFile = path.join(path.resolve(getAppPath(), "user.json"));
       if(fs.existsSync(userFile)) {
-        var user = JSON.parse(fs.readFileSync(userFile));
+        const user = JSON.parse(fs.readFileSync(userFile));
         logger.debug(`Using credentials from '${userFile}'`);
         logger.debug(`Registering as '${user.username}'`);
-        var network = Network.fromFile(path.resolve(getAppPath(), "network.json"));
-        return orbit.connect(network.host + ":" + network.port, user.username, user.password);
+        const network = 'QmRB8x6aErtKTFHDNRiViixSKYwW1DbfcvJHaZy1hnRzLM';
+        return orbit.connect(network, user.username, user.password);
       }
       return;
     })
