@@ -63,23 +63,13 @@ const MessageStore = Reflux.createStore({
 
     // Handle DB loading state
     this.socket.on('db.load', (channel) => {
-      logger.warn("LOADING!", channel)
-      // if(action === 'sync') {
-        this.hasLoaded = false;
-        UIActions.startLoading(channel, "loadhistory", "Syncing...");
-      // }
-      // else if(action === 'query')
-      //   UIActions.startLoading(channel, "query", "Loading...");
+      this.hasLoaded = false;
+      UIActions.startLoading(channel, "loadhistory", "Syncing...");
     });
     this.socket.on('readable', (channel) => {
-      logger.warn("DONE!!", channel)
-      // if(action === 'sync') {
-        this.hasLoaded = true;
-        UIActions.stopLoading(channel, "loadhistory");
-        this.loadMessages(channel, null, null, messagesBatchSize);
-      // }
-      // else if(action === 'query')
-      //   UIActions.stopLoading(channel, "query");
+      this.hasLoaded = true;
+      UIActions.stopLoading(channel, "loadhistory");
+      this.loadMessages(channel, null, null, messagesBatchSize);
     });
   },
   onSocketDisconnected: function() {
@@ -91,23 +81,19 @@ const MessageStore = Reflux.createStore({
     this._reset();
   },
   onJoinedChannel: function(channel) {
-    // console.log("MessageStore - open #" + channel);
     if(!this.messages[channel]) this.messages[channel] = [];
     this._resetLoadingState();
   },
   onLeaveChannel: function(channel: string) {
-    // console.log("MessageStore - close #" + channel);
     this._resetLoadingState();
     delete this.messages[channel];
   },
   onShowChannel: function(channel: string) {
     if(!this.messages[channel]) this.messages[channel] = [];
     this._resetLoadingState();
-    // this.loadMessages(channel, null, null, messagesBatchSize);
   },
   onLoadMoreMessages: function(channel: string) {
-    console.log("+++", this.loading, this.canLoadMore, this.hasLoaded)
-    if(!this.loading && this.canLoadMore) {
+    if(!this.loading && this.canLoadMore && this.hasLoaded) {
       logger.debug("load more messages from #" + channel);
       this.canLoadMore = false;
       this.loadMessages(channel, this.getOldestMessage(channel), null, messagesBatchSize);
