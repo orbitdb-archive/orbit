@@ -1,6 +1,5 @@
 'use strict';
 
-const Promise        = require('bluebird');
 const express        = require('express');
 const app            = express();
 const cors           = require('cors');
