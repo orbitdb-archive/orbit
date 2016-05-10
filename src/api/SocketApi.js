@@ -27,34 +27,47 @@ var SocketApi = (socketServer, httpServer, events, orbit) => {
     if(socket) socket.emit('orbit.error', err);
   };
 
-  const onNewMessages = (channel, data) => {
-    if(socket) socket.emit('messages', channel, data);
-  };
-
   const onChannelsUpdated = (channels) => {
     if(socket) socket.emit(ApiMessages.channels.updated, channels);
   };
 
-  const onLoading = (channel) => {
-    if(socket) socket.emit('db.load', channel);
+  const onData = (channel, hash) => {
+    if(socket) socket.emit('data', channel, hash);
   };
 
-  const onLoaded = (channel) => {
-    if(socket) socket.emit('readable', channel);
+  const onLoad = (channel) => {
+    if(socket) socket.emit('load', channel);
+  };
+
+  const onReady = (channel) => {
+    if(socket) socket.emit('ready', channel);
+  }
+
+  const onSync = (channel) => {
+    if(socket) socket.emit('sync', channel);
+  };
+
+  const onSynced = (channel) => {
+    if(socket) socket.emit('synced', channel);
   };
 
   events.removeListener('orbit.error', onError);
   events.removeListener('network', onNetwork);
-  events.removeListener('message', onNewMessages);
   events.removeListener('channels.updated', onChannelsUpdated);
-  events.removeListener('db.load', onLoading);
-  events.removeListener('readable', onLoaded);
   events.on('orbit.error', onError);
   events.on('network', onNetwork);
-  events.on('message', onNewMessages);
   events.on('channels.updated', onChannelsUpdated);
-  events.on('db.load', onLoading);
-  events.on('readable', onLoaded);
+
+  events.removeListener('data', onData);
+  events.removeListener('load', onLoad);
+  events.removeListener('ready', onReady);
+  events.removeListener('sync', onSync);
+  events.removeListener('synced', onSynced);
+  events.on('data', onData);
+  events.on('load', onLoad);
+  events.on('ready', onReady);
+  events.on('sync', onSync);
+  events.on('synced', onSynced);
 
   io.on('connection', (s) => {
     logger.debug("UI connected");

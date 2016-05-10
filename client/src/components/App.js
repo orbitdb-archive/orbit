@@ -79,12 +79,12 @@ var App = React.createClass({
 
     window.onblur = () => {
       AppActions.windowLostFocus();
-      logger.debug("Lost focus!");
+      // logger.debug("Lost focus!");
     };
 
     window.onfocus = () => {
       AppActions.windowOnFocus();
-      logger.debug("Got focus!");
+      // logger.debug("Got focus!");
     };
   },
   _handleAppStateChange: function(state) {

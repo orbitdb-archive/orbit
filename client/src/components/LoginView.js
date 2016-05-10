@@ -100,7 +100,7 @@ class LoginView extends React.Component{
     var form = !this.state.connecting ? (
       <TransitionGroup transitionName="loginScreenAnimation" transitionAppear={true} component="div" className="inputs" transitionAppearTimeout={5000} transitionEnterTimeout={5000} transitionLeaveTimeout={5000}>
         <div className="row">
-          <span className="label">Network</span><input type="text" ref="network" defaultValue="QmRB8x6aErtKTFHDNRiViixSKYwW1DbfcvJHaZy1hnRzLM" style={this.state.theme}/>
+          <span className="label">Network</span><input type="text" ref="network" defaultValue="QmZjhqUtFK3aWbUfjYEsgS8CMK8fZrQXqUcqW5Q32LznMk" style={this.state.theme}/>
         </div>
         <div className="row">
           <span className="label">Nickname</span>

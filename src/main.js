@@ -45,7 +45,7 @@ const start = exports.start = () => {
         const user = JSON.parse(fs.readFileSync(userFile));
         logger.debug(`Using credentials from '${userFile}'`);
         logger.debug(`Registering as '${user.username}'`);
-        const network = 'QmRB8x6aErtKTFHDNRiViixSKYwW1DbfcvJHaZy1hnRzLM';
+        const network = 'QmZjhqUtFK3aWbUfjYEsgS8CMK8fZrQXqUcqW5Q32LznMk';
         return orbit.connect(network, user.username, user.password);
       }
       return;

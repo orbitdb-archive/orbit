@@ -28389,12 +28389,14 @@
 	    this.hasLoaded = true;
 	    this.canLoadMore = true;
 	  },
-	  getMessages: function getMessages(channel) {
-	    if (!this.messages[channel] || this.messages[channel].length === 0) this.loadMessages(channel, null, null, messagesBatchSize);
-
-	    return this.messages[channel] ? this.messages[channel] : [];
-	  },
+	  // getMessages: function(channel: string) {
+	  //   // if(!this.messages[channel] || this.messages[channel].length === 0)
+	  //   //   this.loadMessages(channel, null, null, messagesBatchSize);
+	  //   return this.messages[channel] ? this.messages[channel] : [];
+	  // },
 	  getOldestMessage: function getOldestMessage(channel) {
+	    console.log("C", channel);
+	    console.log(this.messages[channel]);
 	    return this.messages[channel] && this.messages[channel].length > 0 ? this.messages[channel][0].hash : null;
 	  },
 	  onSocketConnected: function onSocketConnected(socket) {
@@ -28404,20 +28406,34 @@
 	    this.socket = socket;
 
 	    // Handle new messages
-	    this.socket.on('messages', function (channel, message) {
+	    this.socket.on('data', function (channel, hash) {
+	      console.log("DATA", channel, hash);
 	      logger.debug("--> new messages in #" + channel);
-	      console.log(message);
 	      _this2.loadMessages(channel, null, null, messagesBatchSize);
 	    });
 
 	    // Handle DB loading state
-	    this.socket.on('db.load', function (channel) {
+	    this.socket.on('load', function (channel) {
+	      console.log("LOAD", channel);
 	      _this2.hasLoaded = false;
-	      _UIActions2.default.startLoading(channel, "loadhistory", "Syncing...");
+	      // UIActions.startLoading(channel, "loadhistory", "Syncing...");
 	    });
-	    this.socket.on('readable', function (channel) {
+	    this.socket.on('ready', function (channel) {
+	      console.log("READY", channel);
 	      _this2.hasLoaded = true;
-	      _UIActions2.default.stopLoading(channel, "loadhistory");
+	      // UIActions.stopLoading(channel, "loadhistory");
+	      _this2.loadMessages(channel, null, null, messagesBatchSize);
+	    });
+	    this.socket.on('sync', function (channel) {
+	      console.log("SYNC", channel);
+	      _this2.hasLoaded = false;
+	      // UIActions.stopLoading(channel, "loadhistory");
+	      // this.loadMessages(channel, null, null, messagesBatchSize);
+	    });
+	    this.socket.on('synced', function (channel) {
+	      console.log("SYNCED", channel);
+	      _this2.hasLoaded = true;
+	      // UIActions.stopLoading(channel, "loadhistory");
 	      _this2.loadMessages(channel, null, null, messagesBatchSize);
 	    });
 	  },
@@ -28453,7 +28469,7 @@
 
 	    if (!this.socket) return;
 
-	    logger.debug("--> #" + channel + ".get " + olderThanHash + " " + newerThanHash + " " + amount);
+	    logger.debug("--> GET MESSAGES #" + channel + ", " + olderThanHash + " " + newerThanHash + " " + amount);
 	    this.loading = true;
 	    _UIActions2.default.startLoading(channel, "loadmessages", "Loading messages...");
 	    this.socket.emit('channel.get', channel, olderThanHash, newerThanHash, amount, function (c, messages) {
@@ -28483,12 +28499,12 @@
 
 	      // Load message content
 	      unique.reverse().forEach(function (f) {
-	        return _this4._loadPost(channel, f);
+	        return _this4._loadPost(channel, f.payload);
 	      });
 
 	      // Sort by timestamp
 	      this.messages[channel] = _lodash2.default.sortBy(this.messages[channel], function (e) {
-	        return e.meta.ts;
+	        return e.payload.meta.ts;
 	      });
 
 	      _NotificationActions2.default.newMessage(channel);
@@ -35147,12 +35163,12 @@
 
 	    window.onblur = function () {
 	      _AppActions2.default.windowLostFocus();
-	      logger.debug("Lost focus!");
+	      // logger.debug("Lost focus!");
 	    };
 
 	    window.onfocus = function () {
 	      _AppActions2.default.windowOnFocus();
-	      logger.debug("Got focus!");
+	      // logger.debug("Got focus!");
 	    };
 	  },
 	  _handleAppStateChange: function _handleAppStateChange(state) {
@@ -35422,14 +35438,14 @@
 	  }, {
 	    key: '_getMessages',
 	    value: function _getMessages(channel) {
-	      var messages = _MessageStore2.default.getMessages(channel);
-	      this.setState({ messages: messages });
+	      // const messages = MessageStore.getMessages(channel);
+	      // this.setState({ messages: messages });
 	    }
 	  }, {
 	    key: '_onLoadStateChange',
 	    value: function _onLoadStateChange(state) {
 	      var loadingState = state[this.state.channelName];
-	      console.log("STATE", state);
+	      // console.log("STATE", state)
 	      if (loadingState) {
 	        var loading = Object.keys(loadingState).filter(function (f) {
 	          return loadingState[f] && loadingState[f].loading;
@@ -35477,7 +35493,7 @@
 	      if (channel !== this.state.channelName) return;
 
 	      this.node = this.refs.MessagesView;
-	      if (this.node.scrollHeight - this.node.scrollTop + this.bottomMargin > this.node.clientHeight && this.node.scrollHeight > this.node.clientHeight + 1 && this.state.messages.length > 0 && _lodash2.default.last(messages).meta.ts > _lodash2.default.last(this.state.messages).meta.ts && this.node.scrollHeight > 0) {
+	      if (this.node.scrollHeight - this.node.scrollTop + this.bottomMargin > this.node.clientHeight && this.node.scrollHeight > this.node.clientHeight + 1 && this.state.messages.length > 0 && _lodash2.default.last(messages).payload.meta.ts > _lodash2.default.last(this.state.messages).payload.meta.ts && this.node.scrollHeight > 0) {
 	        this.setState({
 	          displayNewMessagesIcon: true,
 	          unreadMessages: this.state.unreadMessages + 1
@@ -35617,7 +35633,7 @@
 
 	      var messages = this.state.messages.map(function (e) {
 	        return _react2.default.createElement(_Message2.default, {
-	          message: e,
+	          message: e.payload,
 	          key: e.hash,
 	          onDragEnter: _this4.onDragEnter.bind(_this4),
 	          highlightWords: _this4.state.username,
@@ -36769,7 +36785,7 @@
 	            { className: 'label' },
 	            'Network'
 	          ),
-	          _react2.default.createElement('input', { type: 'text', ref: 'network', defaultValue: 'QmRB8x6aErtKTFHDNRiViixSKYwW1DbfcvJHaZy1hnRzLM', style: this.state.theme })
+	          _react2.default.createElement('input', { type: 'text', ref: 'network', defaultValue: 'QmZjhqUtFK3aWbUfjYEsgS8CMK8fZrQXqUcqW5Q32LznMk', style: this.state.theme })
 	        ),
 	        _react2.default.createElement(
 	          'div',

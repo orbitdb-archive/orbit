@@ -59,13 +59,13 @@ class Channel extends React.Component {
   }
 
   _getMessages(channel) {
-    const messages = MessageStore.getMessages(channel);
-    this.setState({ messages: messages });
+    // const messages = MessageStore.getMessages(channel);
+    // this.setState({ messages: messages });
   }
 
   _onLoadStateChange(state) {
     const loadingState = state[this.state.channelName];
-    console.log("STATE", state)
+    // console.log("STATE", state)
     if(loadingState) {
       const loading = Object.keys(loadingState).filter((f) => loadingState[f] && loadingState[f].loading);
       const loadingText = loadingState[loading[0]] ? loadingState[loading[0]].message : null;
@@ -109,7 +109,7 @@ class Channel extends React.Component {
     this.node = this.refs.MessagesView;
     if(this.node.scrollHeight - this.node.scrollTop + this.bottomMargin > this.node.clientHeight
       && this.node.scrollHeight > this.node.clientHeight + 1
-      && this.state.messages.length > 0 && _.last(messages).meta.ts > _.last(this.state.messages).meta.ts
+      && this.state.messages.length > 0 && _.last(messages).payload.meta.ts > _.last(this.state.messages).payload.meta.ts
       && this.node.scrollHeight > 0) {
       this.setState({
         displayNewMessagesIcon: true,
@@ -235,7 +235,7 @@ class Channel extends React.Component {
 
     const messages = this.state.messages.map((e) => {
       return <Message
-                message={e}
+                message={e.payload}
                 key={e.hash}
                 onDragEnter={this.onDragEnter.bind(this)}
                 highlightWords={this.state.username}

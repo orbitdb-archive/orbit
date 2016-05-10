@@ -28,7 +28,14 @@ class Orbit {
     logger.debug("Load cache from:", cacheFile);
     logger.info(`Connecting to network '${network}' as '${username}`);
     OrbitDB.connect(network, user.username, user.password, this.ipfs, { cacheFile: cacheFile })
-      .then((orbit) => this.orbit = orbit)
+      .then((orbit) => {
+        this.orbit = orbit
+        this.orbit.events.on('data', this._handleMessage.bind(this));
+        this.orbit.events.on('load', this._handleStartLoading.bind(this));
+        this.orbit.events.on('ready', this._handleDatabaseReady.bind(this));
+        this.orbit.events.on('sync', this._handleSync.bind(this));
+        this.orbit.events.on('synced', this._handleSynced.bind(this));
+      })
       .then(() => {
         logger.info(`Connected to '${this.orbit.network.name}' at '${this.orbit.network.publishers[0]}' as '${user.username}`)
         this.events.emit('network', this.orbit);
@@ -63,9 +70,6 @@ class Orbit {
     logger.debug(`Join #${channel}`);
     if(!this._channels[channel]) {
       this.orbit.eventlog(channel, password).then((db) => {
-        db.events.on('readable', this._handleStopLoading.bind(this));
-        db.events.on('data', this._handleMessage.bind(this));
-        db.events.on('load', this._handleStartLoading.bind(this));
         this._channels[channel] = { name: channel, password: password, db: db };
         this.events.emit('channels.updated', this.getChannels());
         if(callback) callback(null, { name: channel, modes: {} })
@@ -223,17 +227,28 @@ class Orbit {
   }
 
   _handleMessage(channel, message) {
-    this.events.emit('message', channel, message);
+    logger.debug("new entry", channel, message)
+    this.events.emit('data', channel, message);
   }
 
   _handleStartLoading(channel) {
     logger.debug("load channel", channel)
-    this.events.emit('db.load', channel)
+    this.events.emit('load', channel)
   }
 
-  _handleStopLoading(channel) {
-    logger.debug("channel ready", channel)
-    this.events.emit('readable', channel)
+  _handleDatabaseReady(db) {
+    logger.debug("database ready", db.dbname)
+    this.events.emit('ready', db.dbname)
+  }
+
+  _handleSync(channel) {
+    logger.debug("sync channel", channel)
+    this.events.emit('sync', channel)
+  }
+
+  _handleSynced(channel) {
+    logger.debug("channel synced", channel)
+    this.events.emit('synced', channel)
   }
 
   onSocketConnected(socket) {
