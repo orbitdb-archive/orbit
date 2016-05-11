@@ -10,14 +10,12 @@ const emojify = (emojis, selected) => {
     return emojis.map(emoji => {
             let elementClass = '';
             const element = ReactEmoji.emojify(emoji, emojiOpts)[0];
-            if (typeof element !== 'string'){ //shortname string returned if no emoji_img found, discard
-                if (counter === selected)
-                    elementClass = 'selected';
-                return (<li key={counter++}
-                            className={elementClass}>
-                            {element}
-                        </li>);
-            }
+            if (counter === selected)
+                elementClass = 'selected';
+            return (<li key={counter++}
+                        className={elementClass}>
+                        {element}
+                    </li>);
         }
     );
 };

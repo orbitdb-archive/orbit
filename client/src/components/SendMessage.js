@@ -159,8 +159,10 @@ class SendMessage extends React.Component {
       <div className="SendMessage">
         <form onSubmit={this.sendMessage.bind(this)}>
             {this.props.useEmojis &&
-             this.state.emojiSettings.emojiPickerActive ? <EmojiPicker emojis={this.state.emojiSettings.emojis}
-                                                         selected={this.state.emojiSettings.emojiIndex}/> : null}
+             this.state.emojiSettings.emojiPickerActive ?
+                 <EmojiPicker
+                     emojis={this.state.emojiSettings.emojis}
+                     selected={this.state.emojiSettings.emojiIndex}/> : null}
           <input
             type="text"
             ref="message"
