@@ -154,7 +154,7 @@ var App = React.createClass({
     this.setState({ joiningToChannel: channel, requirePassword: true} );
   },
   onJoinedChannel: function(channel) {
-    logger.debug("Join channel #" + channel, ChannelStore.channels);
+    logger.debug("Joined channel #" + channel, ChannelStore.channels);
     const channelInfo = ChannelStore.get(channel);
     this.showChannel(channelInfo.name);
   },
