@@ -1,0 +1,31 @@
+.emoji-picker {
+  width: 240px;
+  height: 180px;
+  background: #fff;
+  box-sizing: border-box;
+  border-radius: 2px;
+  overflow: auto;
+  z-index: 2;
+  position: absolute;
+  bottom: 44px;
+  background-color: rgb(64, 64, 64);
+
+  ul {
+      list-style-type: none;
+      margin: 0 auto;
+      padding: 5px;
+      display: flex;
+      flex-direction: row;
+      flex-wrap: wrap;
+      width: 100%;
+
+      li {
+          padding: 4px;
+          margin: 0;
+      }
+  }
+}
+
+.selected {
+    background-color: rgb(92, 92, 92);
+}

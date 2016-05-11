@@ -233,7 +233,7 @@ class Channel extends React.Component {
         transitionLeaveTimeout={0}
         >
         <div className="Controls" key="controls">
-          <SendMessage onSendMessage={this.sendMessage.bind(this)} key="SendMessage" theme={theme}/>
+          <SendMessage onSendMessage={this.sendMessage.bind(this)} key="SendMessage" theme={theme} useEmojis={this.state.appSettings.useEmojis}/>
           <Dropzone className="dropzone2" onDrop={this.onDrop.bind(this)} key="dropzone2">
             <div className="icon flaticon-tool490" style={theme} key="icon"/>
           </Dropzone>
