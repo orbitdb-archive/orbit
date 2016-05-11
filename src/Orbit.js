@@ -14,6 +14,8 @@ const getAppPath = () => {
   return process.type && process.env.ENV !== "dev" ? process.resourcesPath + "/app/" : process.cwd();
 }
 
+const cacheFile = path.resolve(getAppPath(), "orbit-db-cache.json");
+
 class Orbit {
   constructor(ipfs, events) {
     this.ipfs = ipfs;
@@ -24,10 +26,9 @@ class Orbit {
 
   connect(network, username, password) {
     const user = { username: username, password: password };
-    const cacheFile = path.resolve(getAppPath(), "orbit-db-cache.json");
     logger.debug("Load cache from:", cacheFile);
     logger.info(`Connecting to network '${network}' as '${username}`);
-    OrbitDB.connect(network, user.username, user.password, this.ipfs, { cacheFile: cacheFile })
+    OrbitDB.connect(network, user.username, user.password, this.ipfs)
       .then((orbit) => {
         this.orbit = orbit
         this.orbit.events.on('data', this._handleMessage.bind(this));
@@ -69,7 +70,7 @@ class Orbit {
   join(channel, password, callback) {
     logger.debug(`Join #${channel}`);
     if(!this._channels[channel]) {
-      this.orbit.eventlog(channel, password).then((db) => {
+      this.orbit.eventlog(channel, { cacheFile: cacheFile }).then((db) => {
         this._channels[channel] = { name: channel, password: password, db: db };
         this.events.emit('channels.updated', this.getChannels());
         if(callback) callback(null, { name: channel, modes: {} })
@@ -246,9 +247,9 @@ class Orbit {
     this.events.emit('sync', channel)
   }
 
-  _handleSynced(channel) {
-    logger.debug("channel synced", channel)
-    this.events.emit('synced', channel)
+  _handleSynced(channel, items) {
+    logger.debug("channel synced", channel, items.length)
+    this.events.emit('synced', channel, items)
   }
 
   onSocketConnected(socket) {

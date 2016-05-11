@@ -47,8 +47,8 @@ var SocketApi = (socketServer, httpServer, events, orbit) => {
     if(socket) socket.emit('sync', channel);
   };
 
-  const onSynced = (channel) => {
-    if(socket) socket.emit('synced', channel);
+  const onSynced = (channel, items) => {
+    if(socket) socket.emit('synced', channel, items);
   };
 
   events.removeListener('orbit.error', onError);

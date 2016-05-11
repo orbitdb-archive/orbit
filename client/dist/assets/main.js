@@ -28385,18 +28385,17 @@
 	    this._resetLoadingState();
 	  },
 	  _resetLoadingState: function _resetLoadingState() {
+	    console.log("RESET");
 	    this.loading = false;
 	    this.hasLoaded = true;
 	    this.canLoadMore = true;
 	  },
-	  // getMessages: function(channel: string) {
-	  //   // if(!this.messages[channel] || this.messages[channel].length === 0)
-	  //   //   this.loadMessages(channel, null, null, messagesBatchSize);
-	  //   return this.messages[channel] ? this.messages[channel] : [];
-	  // },
+	  getMessages: function getMessages(channel) {
+	    if (!this.messages[channel] || this.messages[channel].length === 0) this.loadMessages(channel, null, null, messagesBatchSize);
+
+	    return this.messages[channel] ? this.messages[channel] : [];
+	  },
 	  getOldestMessage: function getOldestMessage(channel) {
-	    console.log("C", channel);
-	    console.log(this.messages[channel]);
 	    return this.messages[channel] && this.messages[channel].length > 0 ? this.messages[channel][0].hash : null;
 	  },
 	  onSocketConnected: function onSocketConnected(socket) {
@@ -28415,26 +28414,29 @@
 	    // Handle DB loading state
 	    this.socket.on('load', function (channel) {
 	      console.log("LOAD", channel);
-	      _this2.hasLoaded = false;
-	      // UIActions.startLoading(channel, "loadhistory", "Syncing...");
+	      _this2.loading = true;
+	      // this.hasLoaded = false;
+	      _UIActions2.default.startLoading(channel, "loadhistory", "Connecting...");
 	    });
 	    this.socket.on('ready', function (channel) {
 	      console.log("READY", channel);
-	      _this2.hasLoaded = true;
-	      // UIActions.stopLoading(channel, "loadhistory");
-	      _this2.loadMessages(channel, null, null, messagesBatchSize);
+	      _this2.loading = false;
+	      // this.hasLoaded = true;
+	      _UIActions2.default.stopLoading(channel, "loadhistory");
+	      // this.loadMessages(channel, null, null, messagesBatchSize);
 	    });
 	    this.socket.on('sync', function (channel) {
 	      console.log("SYNC", channel);
 	      _this2.hasLoaded = false;
-	      // UIActions.stopLoading(channel, "loadhistory");
-	      // this.loadMessages(channel, null, null, messagesBatchSize);
+	      _this2.loading = true;
+	      _UIActions2.default.startLoading(channel, "sync", "Syncing...");
 	    });
-	    this.socket.on('synced', function (channel) {
+	    this.socket.on('synced', function (channel, items) {
 	      console.log("SYNCED", channel);
 	      _this2.hasLoaded = true;
-	      // UIActions.stopLoading(channel, "loadhistory");
-	      _this2.loadMessages(channel, null, null, messagesBatchSize);
+	      _this2.loading = false;
+	      _UIActions2.default.stopLoading(channel, "sync");
+	      if (items.length > 0) _this2.loadMessages(channel, null, null, messagesBatchSize);
 	    });
 	  },
 	  onSocketDisconnected: function onSocketDisconnected() {
@@ -28448,6 +28450,10 @@
 	  onJoinedChannel: function onJoinedChannel(channel) {
 	    if (!this.messages[channel]) this.messages[channel] = [];
 	    this._resetLoadingState();
+	    // TODO: load older messages
+	    console.log("JOINED");
+	    this.hasLoaded = true;
+	    this.loadMessages(channel, null, null, messagesBatchSize);
 	  },
 	  onLeaveChannel: function onLeaveChannel(channel) {
 	    this._resetLoadingState();
@@ -28456,9 +28462,15 @@
 	  onShowChannel: function onShowChannel(channel) {
 	    if (!this.messages[channel]) this.messages[channel] = [];
 	    this._resetLoadingState();
+	    // TODO: load older messages
+	    console.log("SHOW");
+	    this.hasLoaded = true;
+	    this.loadMessages(channel, null, null, messagesBatchSize);
 	  },
 	  onLoadMoreMessages: function onLoadMoreMessages(channel) {
-	    if (!this.loading && this.canLoadMore && this.hasLoaded) {
+	    console.log("TRY LOAD", this.loading, this.canLoadMore, this.hasLoaded);
+	    // if(!this.loading && this.canLoadMore && this.hasLoaded) {
+	    if (!this.loading && this.canLoadMore) {
 	      logger.debug("load more messages from #" + channel);
 	      this.canLoadMore = false;
 	      this.loadMessages(channel, this.getOldestMessage(channel), null, messagesBatchSize);
@@ -35235,7 +35247,7 @@
 	    this.setState({ joiningToChannel: channel, requirePassword: true });
 	  },
 	  onJoinedChannel: function onJoinedChannel(channel) {
-	    logger.debug("Join channel #" + channel, _ChannelStore2.default.channels);
+	    logger.debug("Joined channel #" + channel, _ChannelStore2.default.channels);
 	    var channelInfo = _ChannelStore2.default.get(channel);
 	    this.showChannel(channelInfo.name);
 	  },
@@ -35422,9 +35434,11 @@
 	        this.setState({
 	          channelChanged: true,
 	          displayNewMessagesIcon: false,
-	          reachedChannelStart: false
+	          reachedChannelStart: false,
+	          messages: []
 	        });
 	        _UIActions2.default.focusOnSendMessage();
+	        // ChannelActions.loadMoreMessages(nextProps.channel);
 	        this._getMessages(nextProps.channel);
 	      }
 
@@ -35436,16 +35450,29 @@
 	      });
 	    }
 	  }, {
+	    key: 'componentDidMount',
+	    value: function componentDidMount() {
+	      this.unsubscribeFromMessageStore = _MessageStore2.default.listen(this.onNewMessages.bind(this));
+	      this.stopListeningLoadingState = _LoadingStateStore2.default.listen(this._onLoadStateChange.bind(this));
+	      this.stopListeningChannelState = _ChannelActions2.default.reachedChannelStart.listen(this._onReachedChannelStart.bind(this));
+	      this.unsubscribeFromErrors = _UIActions2.default.raiseError.listen(this._onError.bind(this));
+
+	      this.node = this.refs.MessagesView;
+	      // ChannelActions.loadMoreMessages(this.state.channelName);
+	      // this._getMessages(this.state.channelName);
+	      // this.loadOlderMessages();
+	    }
+	  }, {
 	    key: '_getMessages',
 	    value: function _getMessages(channel) {
-	      // const messages = MessageStore.getMessages(channel);
-	      // this.setState({ messages: messages });
+	      var messages = _MessageStore2.default.getMessages(channel);
+	      this.setState({ messages: messages });
 	    }
 	  }, {
 	    key: '_onLoadStateChange',
 	    value: function _onLoadStateChange(state) {
 	      var loadingState = state[this.state.channelName];
-	      // console.log("STATE", state)
+	      // console.log("LOAD STATE", loadingState)
 	      if (loadingState) {
 	        var loading = Object.keys(loadingState).filter(function (f) {
 	          return loadingState[f] && loadingState[f].loading;
@@ -35464,18 +35491,6 @@
 	    key: '_onReachedChannelStart',
 	    value: function _onReachedChannelStart() {
 	      this.setState({ reachedChannelStart: true });
-	    }
-	  }, {
-	    key: 'componentDidMount',
-	    value: function componentDidMount() {
-	      this.unsubscribeFromMessageStore = _MessageStore2.default.listen(this.onNewMessages.bind(this));
-	      this.stopListeningLoadingState = _LoadingStateStore2.default.listen(this._onLoadStateChange.bind(this));
-	      this.stopListeningChannelState = _ChannelActions2.default.reachedChannelStart.listen(this._onReachedChannelStart.bind(this));
-	      this.unsubscribeFromErrors = _UIActions2.default.raiseError.listen(this._onError.bind(this));
-
-	      this.node = this.refs.MessagesView;
-	      // this._getMessages(this.state.channelName);
-	      // this.loadOlderMessages();
 	    }
 	  }, {
 	    key: 'componentWillUnmount',
@@ -35642,12 +35657,12 @@
 	        });
 	      });
 
-	      var channelStateText = this.state.loading && this.state.loadingText ? this.state.loadingText : 'Loading more messages...';
+	      var channelStateText = this.state.loading && this.state.loadingText ? this.state.loadingText : 'Loading messages...';
 	      if (this.state.reachedChannelStart) channelStateText = 'Beginning of # ' + this.state.channelName;
 
 	      messages.unshift(_react2.default.createElement(
 	        'div',
-	        { className: 'firstMessage', key: 'firstMessage' },
+	        { className: 'firstMessage', key: 'firstMessage', onClick: this.loadOlderMessages.bind(this) },
 	        channelStateText
 	      ));
 
@@ -42441,7 +42456,7 @@
 
 
 	// module
-	exports.push([module.id, "@keyframes fadeIn {\n  0% {\n    opacity: 0;\n  }\n  100% {\n    opacity: 1;\n  }\n}\n\n@keyframes fadeInFromBottom {\n  0% {\n    opacity: 0;\n    transform: translateY(-5px);\n  }\n  100% {\n    opacity: 1;\n    transform: translateY(0);\n  }\n}\n\n@keyframes fadeInCircles {\n  0% {\n    opacity: 0.2;\n    transform: translate(-20px, 0);\n  }\n  10% {\n    opacity: 1;\n  }\n  90% {\n    opacity: 1;\n  }\n  100% {\n    opacity: 0.2;\n    transform: translate(20px, 0);\n  }\n}\n\n@keyframes fadeInCirclesLoop {\n  0% {\n    opacity: 0.2;\n  }\n  40% {\n    opacity: 0.4;\n  }\n  50% {\n    opacity: 1;\n  }\n  80% {\n    opacity: 0.4;\n  }\n  100% {\n    opacity: 0.2;\n  }\n}\n\n@keyframes pulse1 {\n  0% {\n    opacity: 0.3;\n  }\n  50% {\n    opacity: 0.5;\n  }\n  100% {\n    opacity: 0.3;\n  }\n}\n\n@keyframes fadeOut {\n  0% {\n    opacity: 1;\n  }\n  100% {\n    opacity: 0;\n  }\n}\n\n@keyframes darken {\n  0% {\n    opacity: 0;\n  }\n  100% {\n    opacity: 1;\n  }\n}\n\n@keyframes fadeOutUp {\n  0% {\n    opacity: 1;\n  }\n  100% {\n    opacity: 0;\n    height: 0;\n  }\n}\n\n@keyframes fadeOutDown {\n  0% {\n    opacity: 1;\n    transform: translateY(0);\n  }\n  100% {\n    opacity: 0;\n    transform: translateY(20px);\n  }\n}\n\n@keyframes fadeInDown {\n  0% {\n    opacity: 0;\n    transform: translateY(-20px);\n  }\n  100% {\n    opacity: 1;\n    transform: translateY(0);\n  }\n}\n\n@keyframes fadeInUp {\n  0% {\n    opacity: 0;\n    transform: translateY(20px);\n  }\n  100% {\n    opacity: 1;\n    transform: translateY(0);\n  }\n}\n\n@keyframes bounceInLeft {\n  0% {\n    opacity: 0;\n    transform: translateX(-200px);\n  }\n  60% {\n    transform: translateX(2px);\n  }\n  80% {\n    transform: translateX(-2px);\n  }\n  100% {\n    opacity: 1;\n    transform: translateX(0);\n  }\n}\n\n@keyframes bounceInDown {\n  0% {\n    opacity: 0;\n    transform: translateY(-200px);\n  }\n  60% {\n    transform: translateY(2px);\n  }\n  80% {\n    transform: translateY(-2px);\n  }\n  100% {\n    opacity: 1;\n    transform: translateY(0);\n  }\n}\n\n@keyframes slideFromLeft {\n  0% {\n    opacity: 0;\n    transform: translateX(-200px);\n  }\n  100% {\n    opacity: 1;\n    transform: translateX(0);\n  }\n}\n\n@keyframes appearFromTop {\n  0% {\n    opacity: 0;\n    transform: translateY(-10px);\n  }\n  100% {\n    opacity: 1;\n    transform: translateY(0);\n  }\n}\n\n@keyframes fadeOutRight {\n  0% {\n    opacity: 1;\n  }\n  100% {\n    opacity: 0;\n  }\n}\n\n.Channel {\n  width: 100%;\n  display: flex;\n  flex-direction: column;\n  overflow: hidden;\n  transform-style: preserve-3d;\n  background-color: #202020;\n}\n\n.Channel .center {\n  display: flex;\n  justify-content: center;\n  width: 100%;\n}\n\n.Channel .loadingIcon {\n  position: absolute;\n  bottom: 0.75em;\n  left: 0.75em;\n}\n\n.Channel .active {\n  background-color: #783c8c;\n}\n\n.Channel .active:hover {\n  background-color: #8c50dc;\n}\n\n.newMessagesBar {\n  position: absolute;\n  bottom: 2.75em;\n  width: 100%;\n  background-color: rgba(32, 32, 32, 0.8);\n  display: flex;\n  justify-content: center;\n  padding: 0.2em;\n  font-family: \"Lato\";\n  font-weight: 300;\n  cursor: s-resize;\n}\n\n.newMessagesBar .newMessagesNumber {\n  color: rgba(160, 220, 90, 0.6);\n  padding: 0em 0.5em;\n}\n\n.ChannelView {\n  width: 100%;\n  height: 100%;\n  padding: 0;\n  margin: 0;\n  color: #fff;\n  display: flex;\n  overflow: auto;\n}\n\n.flipped {\n  justify-content: flex-end;\n}\n\n.dimmed {\n  opacity: 0.5;\n}\n\n.hide {\n  display: none;\n}\n\n.none {\n  display: none;\n}\n\n.icon {\n  width: 1.0em;\n  height: 1.0em;\n  font-size: 1.2em;\n  display: flex;\n  align-items: center;\n  justify-content: center;\n  padding: 0.5em;\n  margin-left: 0.2em;\n  margin-right: 0.2em;\n  color: #e4e4e4;\n}\n\n.icon-active {\n  width: 1.0em;\n  height: 1.0em;\n  font-size: 1.2em;\n  display: flex;\n  align-items: center;\n  justify-content: center;\n  padding: 0.5em;\n  margin-left: 0.2em;\n  margin-right: 0.2em;\n  color: #e4e4e4;\n  background-color: #783c8c;\n  border-radius: 32px;\n}\n\n.icon-active:hover {\n  background-color: #783c8c;\n  border-radius: 32px;\n}\n\n.icon:hover {\n  background-color: #303030;\n  border-radius: 32px;\n}\n\n.icon:active {\n  background-color: #783c8c;\n  border-radius: 32px;\n}\n\n.blurred {\n  -webkit-filter: blur(2px);\n  -moz-filter: blur(2px);\n  -o-filter: blur(2px);\n  -ms-filter: blur(2px);\n  filter: blur(2px);\n}\n\n.ChannelOptions {\n  position: absolute;\n  bottom: 2.75em;\n  right: 0;\n  padding: 1.2em 1.2em;\n  margin: 0.5em 0.5em;\n  margin-right: 1em;\n  max-width: 30em;\n  font-weight: 300;\n  color: #e4e4e4;\n  background-color: #1a1a1a;\n  display: flex;\n  flex-direction: row;\n}\n\n.ChannelOptions .row {\n  display: flex;\n  flex-direction: column;\n  flex: 1 1 55%;\n  max-width: 55%;\n  margin-right: 1em;\n}\n\n.ChannelOptions form {\n  display: flex;\n  flex-direction: column;\n  justify-content: flex-end;\n  align-items: flex-end;\n  flex: 1;\n  margin-left: 1vw;\n}\n\n.ChannelOptions input[type=text] {\n  font-size: 0.8em;\n  width: 100%;\n}\n\n.ChannelOptions input[type=submit] {\n  margin-top: 0.2em;\n  font-size: 0.8em;\n  align-self: flex-end;\n}\n\n.ChannelOptions .headerText {\n  font-size: 0.8em;\n  margin-bottom: 0.5em;\n  color: #e4e4e4;\n}\n\n.ChannelOptions .instructionText {\n  font-size: 0.8em;\n  display: flex;\n  color: rgba(228, 228, 228, 0.15);\n  font-style: italic;\n}\n\ninput[type=button], .channelOptionsButton {\n  border-top: 1px solid rgba(28, 28, 28, 0);\n  border-bottom: 1px solid rgba(28, 28, 28, 0);\n  min-width: 2em;\n  margin-left: 0em;\n  margin-right: 0em;\n  height: 100%;\n  margin-top: 0em;\n  margin-bottom: 0.5em;\n  padding-left: 0.75em;\n  padding-right: 0.75em;\n  font-size: 1.0em;\n}\n\ninput[type=button], .addFilesButton {\n  display: block;\n  border-top: 1px solid rgba(28, 28, 28, 0);\n  border-bottom: 1px solid rgba(28, 28, 28, 0);\n  min-width: 2em;\n  height: 100%;\n  margin-left: 0em;\n  margin-right: 0em;\n  margin-top: 0em;\n  margin-bottom: 0em;\n  padding-left: 0.75em;\n  padding-right: 0.75em;\n  font-size: 1.1em;\n  font-weight: 400;\n}\n\n.Controls {\n  background-color: #1e1e1e;\n  box-sizing: border-box;\n  display: flex;\n  justify-content: center;\n  align-items: center;\n  max-height: 2.8em;\n  min-height: 2.8em;\n  border-top: 1px solid rgba(28, 28, 28, 0);\n  border-bottom: 1px solid rgba(28, 28, 28, 0);\n}\n\n.statusMessage {\n  position: absolute;\n  bottom: 1.2em;\n  right: 1em;\n  margin-right: 0.5em;\n  margin-left: 0.5em;\n  color: rgba(228, 228, 228, 0.8);\n  font-size: 0.6em;\n  font-weight: 300;\n  font-family: \"Lato\";\n  display: flex;\n  justify-content: center;\n  -webkit-user-select: none;\n  user-select: none;\n  cursor: default;\n  display: flex;\n  align-items: center;\n  text-transform: uppercase;\n  padding: 0.5em 1em;\n  border-radius: 16px;\n  letter-spacing: 1px;\n  background-color: rgba(48, 48, 48, 0.5);\n}\n\n.statusMessage:hover {\n  background-color: #303030;\n}\n\n.statusMessage:active {\n  background-color: #783c8c;\n}\n\n.Messages {\n  display: block;\n  position: relative;\n  box-sizing: border-box;\n  width: 100%;\n  height: 100%;\n  overflow: auto;\n  -webkit-transform-style: preserve-3d;\n  transform-style: preserve-3d;\n}\n\n.Messages .firstMessage {\n  display: flex;\n  justify-content: center;\n  background-color: #242424;\n  color: rgba(228, 228, 228, 0.6);\n  font-weight: 300;\n  font-size: 0.8em;\n  padding: 0.2em;\n  user-select: none;\n  -webkit-user-select: none;\n}\n\n.flopped {\n  flex: 1 1 100%;\n}\n\n.controlsAnimation-appear {\n  -webkit-animation: fadeInUp;\n  animation: fadeInUp;\n  -webkit-animation-duration: 0.3s;\n  animation-duration: 0.3s;\n  -webkit-animation-fill-mode: both;\n  animation-fill-mode: both;\n  -webkit-animation-timing-function: ease-out;\n  animation-timing-function: ease-out;\n}\n\n.dropzone {\n  top: 0;\n  left: 0;\n  position: absolute;\n  width: 100%;\n  height: 100%;\n  box-sizing: border-box;\n  overflow: hidden;\n  display: flex;\n  align-self: flex-end;\n  align-items: center;\n  flex-direction: row;\n  justify-content: center;\n  white-space: nowrap;\n  padding: 0.5em;\n  font-family: \"Lato\";\n  font-weight: 300;\n  font-size: 4em;\n  color: #e4e4e4;\n  background-color: rgba(0, 0, 0, 0.6);\n  border: 2px dotted #783c8c;\n}\n\n.dropzoneActive {\n  color: #e4e4e4;\n  background-color: rgba(0, 0, 0, 0.6);\n  border: 2px dotted #783c8c;\n}\n\n.messagesAnimation-enter {\n  -webkit-animation-name: fadeIn;\n  animation-name: fadeIn;\n  -webkit-animation-duration: 0.3s;\n  animation-duration: 0.3s;\n  -webkit-animation-fill-mode: both;\n  animation-fill-mode: both;\n  -webkit-animation-timing-function: ease-in;\n  animation-timing-function: ease-in;\n}\n", ""]);
+	exports.push([module.id, "@keyframes fadeIn {\n  0% {\n    opacity: 0;\n  }\n  100% {\n    opacity: 1;\n  }\n}\n\n@keyframes fadeInFromBottom {\n  0% {\n    opacity: 0;\n    transform: translateY(-5px);\n  }\n  100% {\n    opacity: 1;\n    transform: translateY(0);\n  }\n}\n\n@keyframes fadeInCircles {\n  0% {\n    opacity: 0.2;\n    transform: translate(-20px, 0);\n  }\n  10% {\n    opacity: 1;\n  }\n  90% {\n    opacity: 1;\n  }\n  100% {\n    opacity: 0.2;\n    transform: translate(20px, 0);\n  }\n}\n\n@keyframes fadeInCirclesLoop {\n  0% {\n    opacity: 0.2;\n  }\n  40% {\n    opacity: 0.4;\n  }\n  50% {\n    opacity: 1;\n  }\n  80% {\n    opacity: 0.4;\n  }\n  100% {\n    opacity: 0.2;\n  }\n}\n\n@keyframes pulse1 {\n  0% {\n    opacity: 0.3;\n  }\n  50% {\n    opacity: 0.5;\n  }\n  100% {\n    opacity: 0.3;\n  }\n}\n\n@keyframes fadeOut {\n  0% {\n    opacity: 1;\n  }\n  100% {\n    opacity: 0;\n  }\n}\n\n@keyframes darken {\n  0% {\n    opacity: 0;\n  }\n  100% {\n    opacity: 1;\n  }\n}\n\n@keyframes fadeOutUp {\n  0% {\n    opacity: 1;\n  }\n  100% {\n    opacity: 0;\n    height: 0;\n  }\n}\n\n@keyframes fadeOutDown {\n  0% {\n    opacity: 1;\n    transform: translateY(0);\n  }\n  100% {\n    opacity: 0;\n    transform: translateY(20px);\n  }\n}\n\n@keyframes fadeInDown {\n  0% {\n    opacity: 0;\n    transform: translateY(-20px);\n  }\n  100% {\n    opacity: 1;\n    transform: translateY(0);\n  }\n}\n\n@keyframes fadeInUp {\n  0% {\n    opacity: 0;\n    transform: translateY(20px);\n  }\n  100% {\n    opacity: 1;\n    transform: translateY(0);\n  }\n}\n\n@keyframes bounceInLeft {\n  0% {\n    opacity: 0;\n    transform: translateX(-200px);\n  }\n  60% {\n    transform: translateX(2px);\n  }\n  80% {\n    transform: translateX(-2px);\n  }\n  100% {\n    opacity: 1;\n    transform: translateX(0);\n  }\n}\n\n@keyframes bounceInDown {\n  0% {\n    opacity: 0;\n    transform: translateY(-200px);\n  }\n  60% {\n    transform: translateY(2px);\n  }\n  80% {\n    transform: translateY(-2px);\n  }\n  100% {\n    opacity: 1;\n    transform: translateY(0);\n  }\n}\n\n@keyframes slideFromLeft {\n  0% {\n    opacity: 0;\n    transform: translateX(-200px);\n  }\n  100% {\n    opacity: 1;\n    transform: translateX(0);\n  }\n}\n\n@keyframes appearFromTop {\n  0% {\n    opacity: 0;\n    transform: translateY(-10px);\n  }\n  100% {\n    opacity: 1;\n    transform: translateY(0);\n  }\n}\n\n@keyframes fadeOutRight {\n  0% {\n    opacity: 1;\n  }\n  100% {\n    opacity: 0;\n  }\n}\n\n.Channel {\n  width: 100%;\n  display: flex;\n  flex-direction: column;\n  overflow: hidden;\n  transform-style: preserve-3d;\n  background-color: #202020;\n}\n\n.Channel .center {\n  display: flex;\n  justify-content: center;\n  width: 100%;\n}\n\n.Channel .loadingIcon {\n  position: absolute;\n  bottom: 0.75em;\n  left: 0.75em;\n}\n\n.Channel .active {\n  background-color: #783c8c;\n}\n\n.Channel .active:hover {\n  background-color: #8c50dc;\n}\n\n.newMessagesBar {\n  position: absolute;\n  bottom: 2.75em;\n  width: 100%;\n  background-color: rgba(32, 32, 32, 0.8);\n  display: flex;\n  justify-content: center;\n  padding: 0.2em;\n  font-family: \"Lato\";\n  font-weight: 300;\n  cursor: s-resize;\n}\n\n.newMessagesBar .newMessagesNumber {\n  color: rgba(160, 220, 90, 0.6);\n  padding: 0em 0.5em;\n}\n\n.ChannelView {\n  width: 100%;\n  height: 100%;\n  padding: 0;\n  margin: 0;\n  color: #fff;\n  display: flex;\n  overflow: auto;\n}\n\n.flipped {\n  justify-content: flex-end;\n}\n\n.dimmed {\n  opacity: 0.5;\n}\n\n.hide {\n  display: none;\n}\n\n.none {\n  display: none;\n}\n\n.icon {\n  width: 1.0em;\n  height: 1.0em;\n  font-size: 1.2em;\n  display: flex;\n  align-items: center;\n  justify-content: center;\n  padding: 0.5em;\n  margin-left: 0.2em;\n  margin-right: 0.2em;\n  color: #e4e4e4;\n}\n\n.icon-active {\n  width: 1.0em;\n  height: 1.0em;\n  font-size: 1.2em;\n  display: flex;\n  align-items: center;\n  justify-content: center;\n  padding: 0.5em;\n  margin-left: 0.2em;\n  margin-right: 0.2em;\n  color: #e4e4e4;\n  background-color: #783c8c;\n  border-radius: 32px;\n}\n\n.icon-active:hover {\n  background-color: #783c8c;\n  border-radius: 32px;\n}\n\n.icon:hover {\n  background-color: #303030;\n  border-radius: 32px;\n}\n\n.icon:active {\n  background-color: #783c8c;\n  border-radius: 32px;\n}\n\n.blurred {\n  -webkit-filter: blur(2px);\n  -moz-filter: blur(2px);\n  -o-filter: blur(2px);\n  -ms-filter: blur(2px);\n  filter: blur(2px);\n}\n\n.ChannelOptions {\n  position: absolute;\n  bottom: 2.75em;\n  right: 0;\n  padding: 1.2em 1.2em;\n  margin: 0.5em 0.5em;\n  margin-right: 1em;\n  max-width: 30em;\n  font-weight: 300;\n  color: #e4e4e4;\n  background-color: #1a1a1a;\n  display: flex;\n  flex-direction: row;\n}\n\n.ChannelOptions .row {\n  display: flex;\n  flex-direction: column;\n  flex: 1 1 55%;\n  max-width: 55%;\n  margin-right: 1em;\n}\n\n.ChannelOptions form {\n  display: flex;\n  flex-direction: column;\n  justify-content: flex-end;\n  align-items: flex-end;\n  flex: 1;\n  margin-left: 1vw;\n}\n\n.ChannelOptions input[type=text] {\n  font-size: 0.8em;\n  width: 100%;\n}\n\n.ChannelOptions input[type=submit] {\n  margin-top: 0.2em;\n  font-size: 0.8em;\n  align-self: flex-end;\n}\n\n.ChannelOptions .headerText {\n  font-size: 0.8em;\n  margin-bottom: 0.5em;\n  color: #e4e4e4;\n}\n\n.ChannelOptions .instructionText {\n  font-size: 0.8em;\n  display: flex;\n  color: rgba(228, 228, 228, 0.15);\n  font-style: italic;\n}\n\ninput[type=button], .channelOptionsButton {\n  border-top: 1px solid rgba(28, 28, 28, 0);\n  border-bottom: 1px solid rgba(28, 28, 28, 0);\n  min-width: 2em;\n  margin-left: 0em;\n  margin-right: 0em;\n  height: 100%;\n  margin-top: 0em;\n  margin-bottom: 0.5em;\n  padding-left: 0.75em;\n  padding-right: 0.75em;\n  font-size: 1.0em;\n}\n\ninput[type=button], .addFilesButton {\n  display: block;\n  border-top: 1px solid rgba(28, 28, 28, 0);\n  border-bottom: 1px solid rgba(28, 28, 28, 0);\n  min-width: 2em;\n  height: 100%;\n  margin-left: 0em;\n  margin-right: 0em;\n  margin-top: 0em;\n  margin-bottom: 0em;\n  padding-left: 0.75em;\n  padding-right: 0.75em;\n  font-size: 1.1em;\n  font-weight: 400;\n}\n\n.Controls {\n  background-color: #1e1e1e;\n  box-sizing: border-box;\n  display: flex;\n  justify-content: center;\n  align-items: center;\n  max-height: 2.8em;\n  min-height: 2.8em;\n  border-top: 1px solid rgba(28, 28, 28, 0);\n  border-bottom: 1px solid rgba(28, 28, 28, 0);\n}\n\n.statusMessage {\n  position: absolute;\n  bottom: 1.2em;\n  right: 1em;\n  margin-right: 0.5em;\n  margin-left: 0.5em;\n  color: rgba(228, 228, 228, 0.8);\n  font-size: 0.6em;\n  font-weight: 300;\n  font-family: \"Lato\";\n  display: flex;\n  justify-content: center;\n  -webkit-user-select: none;\n  user-select: none;\n  cursor: default;\n  display: flex;\n  align-items: center;\n  text-transform: uppercase;\n  padding: 0.5em 1em;\n  border-radius: 16px;\n  letter-spacing: 1px;\n  background-color: rgba(48, 48, 48, 0.5);\n}\n\n.statusMessage:hover {\n  background-color: #303030;\n}\n\n.statusMessage:active {\n  background-color: #783c8c;\n}\n\n.Messages {\n  display: block;\n  position: relative;\n  box-sizing: border-box;\n  width: 100%;\n  height: 100%;\n  overflow: auto;\n  -webkit-transform-style: preserve-3d;\n  transform-style: preserve-3d;\n}\n\n.Messages .firstMessage {\n  display: flex;\n  justify-content: center;\n  background-color: #242424;\n  color: rgba(228, 228, 228, 0.6);\n  font-weight: 300;\n  font-size: 0.8em;\n  padding: 0.2em;\n  user-select: none;\n  -webkit-user-select: none;\n  cursor: default;\n}\n\n.flopped {\n  flex: 1 1 100%;\n}\n\n.controlsAnimation-appear {\n  -webkit-animation: fadeInUp;\n  animation: fadeInUp;\n  -webkit-animation-duration: 0.3s;\n  animation-duration: 0.3s;\n  -webkit-animation-fill-mode: both;\n  animation-fill-mode: both;\n  -webkit-animation-timing-function: ease-out;\n  animation-timing-function: ease-out;\n}\n\n.dropzone {\n  top: 0;\n  left: 0;\n  position: absolute;\n  width: 100%;\n  height: 100%;\n  box-sizing: border-box;\n  overflow: hidden;\n  display: flex;\n  align-self: flex-end;\n  align-items: center;\n  flex-direction: row;\n  justify-content: center;\n  white-space: nowrap;\n  padding: 0.5em;\n  font-family: \"Lato\";\n  font-weight: 300;\n  font-size: 4em;\n  color: #e4e4e4;\n  background-color: rgba(0, 0, 0, 0.6);\n  border: 2px dotted #783c8c;\n}\n\n.dropzoneActive {\n  color: #e4e4e4;\n  background-color: rgba(0, 0, 0, 0.6);\n  border: 2px dotted #783c8c;\n}\n\n.messagesAnimation-enter {\n  -webkit-animation-name: fadeIn;\n  animation-name: fadeIn;\n  -webkit-animation-duration: 0.3s;\n  animation-duration: 0.3s;\n  -webkit-animation-fill-mode: both;\n  animation-fill-mode: both;\n  -webkit-animation-timing-function: ease-in;\n  animation-timing-function: ease-in;\n}\n", ""]);
 
 	// exports
 
@@ -42539,7 +42554,7 @@
 
 
 	// module
-	exports.push([module.id, ".LoginView {\n  font-family: \"Source Sans Pro\";\n  font-weight: 100;\n  font-size: 0.9em;\n  padding: 0.1em;\n  color: gray;\n  display: flex;\n  justify-content: center;\n  width: 100%;\n  height: 100%;\n  margin-top: 0;\n  border-top: 1px solid #1e1e1e;\n  box-sizing: border-box;\n}\n\n.LoginView .inputs {\n  margin: 1.5em;\n  margin-top: 0;\n}\n\n.LoginView h1 {\n  margin-top: 0.6em;\n  font-family: \"Lato\";\n  font-size: 2.5em;\n  font-weight: 100;\n  padding: 1.0em;\n  text-transform: uppercase;\n  color: rgba(240, 240, 240, 0.7);\n}\n\n.LoginView form {\n  display: flex;\n  align-self: flex-start;\n  width: 100%;\n  flex-direction: column;\n  justify-content: center;\n  margin-left: 0.5em;\n  margin-right: 0.5em;\n  max-width: 32em;\n}\n\n.LoginView form .hidden {\n  visibility: hidden;\n  display: none;\n}\n\n.LoginView form .centerrow {\n  display: flex;\n  flex-direction: row;\n  margin-bottom: 0.5em;\n  justify-content: center;\n  width: 100%;\n}\n\n.LoginView form .row {\n  display: flex;\n  flex-direction: row;\n  margin-bottom: 0.5em;\n  justify-content: flex-end;\n  width: 100%;\n}\n\n.LoginView form .label {\n  display: flex;\n  flex: 1 1 8%;\n  min-width: 5em;\n  align-self: center;\n  justify-content: flex-start;\n}\n\n.LoginView form .nicknameLength {\n  margin-top: 0.5em;\n  padding: 0em 0.5em;\n  font-size: 0.8em;\n  display: flex;\n  align-self: center;\n}\n\n.LoginView form .error {\n  color: rgba(240, 96, 96, 0.8);\n  margin-top: 1em;\n  flex: 1 1 auto;\n  text-align: center;\n}\n\n.LoginView form input[type=submit] {\n  margin-top: 1em;\n}\n\n.LoginView form input[type=text], .LoginView form input[type=password] {\n  margin-bottom: 0;\n  width: 90%;\n}\n\n.LoginView form input[type=text]:disabled {\n  color: rgba(228, 228, 228, 0.25);\n  font-style: italic;\n  cursor: not-allowed;\n  width: 90%;\n}\n\n.loginHeaderAnimation-appear {\n  -webkit-animation: bounceInDown;\n  animation: bounceInDown;\n  -webkit-animation-duration: 0.5s;\n  animation-duration: 0.5s;\n  -webkit-animation-fill-mode: both;\n  animation-fill-mode: both;\n  -webkit-animation-timing-function: ease-out;\n  animation-timing-function: ease-out;\n}\n\n.loginScreenAnimation-appear {\n  -webkit-animation: fadeIn;\n  animation: fadeIn;\n  -webkit-animation-duration: 0.5s;\n  animation-duration: 0.5s;\n  -webkit-animation-fill-mode: both;\n  animation-fill-mode: both;\n  -webkit-animation-timing-function: ease-out;\n  animation-timing-function: ease-out;\n}\n", ""]);
+	exports.push([module.id, ".LoginView {\n  font-family: \"Source Sans Pro\";\n  font-weight: 100;\n  font-size: 0.9em;\n  padding: 0.1em;\n  color: gray;\n  display: flex;\n  justify-content: center;\n  width: 100%;\n  height: 100%;\n  margin-top: 0;\n  border-top: 1px solid #1e1e1e;\n  box-sizing: border-box;\n}\n\n.LoginView .inputs {\n  margin: 1.5em;\n  margin-top: 0;\n}\n\n.LoginView h1 {\n  margin-top: 0.6em;\n  font-family: \"Lato\";\n  font-size: 2.5em;\n  font-weight: 100;\n  padding: 1.0em;\n  text-transform: uppercase;\n  color: rgba(240, 240, 240, 0.7);\n}\n\n.LoginView form {\n  display: flex;\n  align-self: flex-start;\n  width: 100%;\n  flex-direction: column;\n  justify-content: center;\n  margin-left: 0.5em;\n  margin-right: 0.5em;\n  max-width: 32.5em;\n}\n\n.LoginView form .hidden {\n  visibility: hidden;\n  display: none;\n}\n\n.LoginView form .centerrow {\n  display: flex;\n  flex-direction: row;\n  margin-bottom: 0.5em;\n  justify-content: center;\n  width: 100%;\n}\n\n.LoginView form .row {\n  display: flex;\n  flex-direction: row;\n  margin-bottom: 0.5em;\n  justify-content: flex-end;\n  width: 100%;\n}\n\n.LoginView form .label {\n  display: flex;\n  flex: 1 1 8%;\n  min-width: 5em;\n  align-self: center;\n  justify-content: flex-start;\n}\n\n.LoginView form .nicknameLength {\n  margin-top: 0.5em;\n  padding: 0em 0.5em;\n  font-size: 0.8em;\n  display: flex;\n  align-self: center;\n}\n\n.LoginView form .error {\n  color: rgba(240, 96, 96, 0.8);\n  margin-top: 1em;\n  flex: 1 1 auto;\n  text-align: center;\n}\n\n.LoginView form input[type=submit] {\n  margin-top: 1em;\n}\n\n.LoginView form input[type=text], .LoginView form input[type=password] {\n  margin-bottom: 0;\n  width: 90%;\n}\n\n.LoginView form input[type=text]:disabled {\n  color: rgba(228, 228, 228, 0.25);\n  font-style: italic;\n  cursor: not-allowed;\n  width: 90%;\n}\n\n.loginHeaderAnimation-appear {\n  -webkit-animation: bounceInDown;\n  animation: bounceInDown;\n  -webkit-animation-duration: 0.5s;\n  animation-duration: 0.5s;\n  -webkit-animation-fill-mode: both;\n  animation-fill-mode: both;\n  -webkit-animation-timing-function: ease-out;\n  animation-timing-function: ease-out;\n}\n\n.loginScreenAnimation-appear {\n  -webkit-animation: fadeIn;\n  animation: fadeIn;\n  -webkit-animation-duration: 0.5s;\n  animation-duration: 0.5s;\n  -webkit-animation-fill-mode: both;\n  animation-fill-mode: both;\n  -webkit-animation-timing-function: ease-out;\n  animation-timing-function: ease-out;\n}\n", ""]);
 
 	// exports
 
