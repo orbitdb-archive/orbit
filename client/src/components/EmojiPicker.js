@@ -4,8 +4,7 @@ import 'styles/EmojiPicker.scss';
 
 const emojify = (emojis, selected) => {
     const emojiOpts = {
-      emojiType: 'emojione',
-      attributes: { width: '20px', height: '20px' }
+      emojiType: 'emojione'
     };
     let counter = 0;
     return emojis.map(emoji => {
