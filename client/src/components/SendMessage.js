@@ -3,8 +3,11 @@
 import React from 'react';
 import EmojiPicker from './EmojiPicker'
 import Actions from "actions/UIActions";
+<<<<<<< HEAD
 import AutoCompleter from "./AutoCompleter.js";
 import { filterEmojis } from "../utils/emojis";
+=======
+>>>>>>> Moved key handling to emojipicker
 import 'styles/SendMessage.scss';
 import UsersStore from 'stores/UsersStore';
 
@@ -16,12 +19,7 @@ class SendMessage extends React.Component {
     this.state = {
       theme: props.theme,
       useEmojis: props.useEmojis,
-      emojiSettings: {
-          emojiPickerActive: false,
-          emojis: [],
-          emojiMatchString: '',
-          emojiIndex: 0
-      }
+      emojiPickerActive: false
     };
   }
 
@@ -50,46 +48,18 @@ class SendMessage extends React.Component {
   }
 
   hideEmojiPicker() {
-      const emojiSettings = {
-          ...this.state.emojiSettings,
-          emojis: [],
-          emojiIndex: 0,
-          emojiPickerActive : false
-      };
       this.setState({
           ...this.state,
-          emojiSettings: emojiSettings
+          emojiPickerActive : false
       });
   }
   onKeyUp(event) {
-      if(event.which === 9) {
-          if (this.state.emojiSettings.emojiPickerActive){
-              this.displayEmojiText();
-          }
-      } else {
-          if (this.state.emojiSettings.emojiPickerActive) {
+      if (this.state.emojiPickerActive){
+          if (event.which === 9) {
+              this.refs.emojipicker.onKeyUp(event);
+          } else {
               const lastWord = this.refs.message.value.split(" ").pop();
-              const emojiRe = /^::?[\w\d_\+-]*$/;
-              if (emojiRe.test(lastWord)) {
-                  const filteredEmojis = filterEmojis(lastWord.slice(1), 50);
-                  if (filteredEmojis.length > 0)
-                  {
-                      const emojiSettings = {
-                          ...this.state.emojiSettings,
-                          emojis: filteredEmojis,
-                          emojiMatchString: lastWord,
-                          emojiIndex: 0,
-                          emojiPickerActive : true
-                      };
-                      this.setState({
-                          ...this.state,
-                          emojiSettings: emojiSettings
-                      });
-                  }
-                  else
-                      this.hideEmojiPicker();
-              } else
-                  this.hideEmojiPicker();
+              this.refs.emojipicker.filterWord(lastWord);
           }
       }
   }
@@ -98,59 +68,28 @@ class SendMessage extends React.Component {
     this.autoComplete.onKeyDown(event, this.refs.message.value, UsersStore.users);
 
     // console.log("KEYDOWN", event.type, event.which);
+    if (this.state.emojiPickerActive) {
+        this.refs.emojipicker.onKeyDown(event);
+    }
     if(event.which === 9) {
       // Tab
       event.preventDefault();
-      if (this.state.emojiSettings.emojiPickerActive) {
-          const len = this.state.emojiSettings.emojis.length;
-          const selectedIndex = (this.state.emojiSettings.emojiIndex + 1) % len;
-          const emojiSettings = {
-              ...this.state.emojiSettings,
-              emojiIndex : selectedIndex
-          };
-          this.setState({
-              ...this.state,
-              emojiSettings : emojiSettings
-          });
-      }
       // TODO: autocomplete user names
     } else if(event.which === 186) {
       // ':'
       if (this.props.useEmojis) {
-          const filteredEmojis = filterEmojis('', 50);
-          const emojiSettings = {
-              ...this.state.emojiSettings,
-              emojis : filteredEmojis,
-              emojiPickerActive : true
-          };
          this.setState({
              ...this.state,
-             emojiSettings : emojiSettings
+             emojiPickerActive : true
          });
-      }
-
-  } else if (event.which === 13 || event.which === 32) {
-      // Return or Space
-      if (this.state.emojiSettings.emojiPickerActive) {
-          event.preventDefault();
-          this.displayEmojiText();
-          this.hideEmojiPicker();
-      }
-  } else if (event.which === 27) {
-      //ESC
-      if (this.state.emojiSettings.emojiPickerActive) {
-          this.hideEmojiPicker();
       }
   }
     return;
   }
-  displayEmojiText () {
-      let filteredEmojis = filterEmojis(this.state.emojiSettings.emojiMatchString.slice(1), 50);
-      const emojiIndex = this.state.emojiSettings.emojiIndex;
-      const emojiShortName = filteredEmojis[emojiIndex];
+  displayEmojiText (emojiText) {
       let text = this.refs.message.value.split(" ");
       text.pop();
-      text.push(emojiShortName);
+      text.push(emojiText);
       this.refs.message.value = text.join(" ");
   }
 
@@ -159,10 +98,10 @@ class SendMessage extends React.Component {
       <div className="SendMessage">
         <form onSubmit={this.sendMessage.bind(this)}>
             {this.props.useEmojis &&
-             this.state.emojiSettings.emojiPickerActive ?
-                 <EmojiPicker
-                     emojis={this.state.emojiSettings.emojis}
-                     selected={this.state.emojiSettings.emojiIndex}/> : null}
+             this.state.emojiPickerActive ?
+                 <EmojiPicker ref='emojipicker'
+                     hideEmojiPicker={this.hideEmojiPicker.bind(this)}
+                     displayEmojiText={this.displayEmojiText.bind(this)}/> : null}
           <input
             type="text"
             ref="message"
