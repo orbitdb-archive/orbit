@@ -3,8 +3,9 @@
 const fs           = require('fs');
 const path         = require('path');
 const EventEmitter = require('events').EventEmitter;
-const ipfsDaemon   = require('orbit-common/lib/ipfs-daemon');
-const logger       = require('logplease').create("Orbit.Main");
+const Logger       = require('logplease');
+const logger       = Logger.create("Orbit.Main", { color: Logger.Colors.Yellow });
+const ipfsd        = require('ipfsd-ctl');
 const SocketApi    = require('./api/SocketApi');
 const HttpApi      = require('./api/HttpApi');
 const Orbit        = require('./Orbit');
@@ -13,25 +14,44 @@ var ENV = process.env["ENV"] || "release";
 logger.debug("Running in '" + ENV + "' mode");
 process.env.PATH += ":/usr/local/bin" // fix for Electron app release bug (PATH doesn't get carried over)
 
-const getAppPath = () => {
-  return process.type && process.env.ENV !== "dev" ? process.resourcesPath + "/app/" : process.cwd();
-}
+const getAppPath = () => process.type && process.env.ENV !== "dev" ? process.resourcesPath + "/app/" : process.cwd();
 
 /* MAIN */
 const events = new EventEmitter();
-let ipfsd, orbit;
+let ipfs, orbit;
 
 const start = exports.start = () => {
   const startTime = new Date().getTime();
 
-  logger.info("Starting IPFS...");
+  const ipfsDaemon = () => {
+    logger.info("Starting IPFS...");
+    return new Promise((resolve, reject) => {
+      ipfsd.local((err, node) => {
+        if(err) reject(err);
+        if(node.initialized) {
+          node.startDaemon((err, ipfs) => {
+            if(err) reject(err);
+            resolve(ipfs);
+          });
+        } else {
+          node.init((err, res) => {
+            if(err) reject(err);
+            node.startDaemon((err, ipfs) => {
+              if(err) reject(err);
+              resolve(ipfs);
+            });
+          });
+        }
+      });
+    });
+  };
 
   return ipfsDaemon()
     .then((res) => {
-      ipfsd = res;
-      orbit = new Orbit(ipfsd.ipfs, events);
+      ipfs = res;
+      orbit = new Orbit(ipfs, events);
     })
-    .then(() => HttpApi(ipfsd.ipfs, events))
+    .then(() => HttpApi(ipfs, events))
     .then((httpApi) => SocketApi(httpApi.socketServer, httpApi.server, events, orbit))
     .then(() => {
       events.on('socket.connected', (s) => orbit.onSocketConnected(s));
@@ -55,8 +75,4 @@ const start = exports.start = () => {
       logger.debug('Startup time: ' + (endTime - startTime) + "ms");
       return events;
     })
-    .catch((e) => {
-      logger.error(e.message);
-      logger.error("Stack trace:\n", e.stack);
-    });
 };
