@@ -42,7 +42,7 @@ const MessageStore = Reflux.createStore({
         if(this.connectTimeout[channel.name]) clearTimeout(this.connectTimeout[channel.name]);
         this.connectTimeout[channel.name] = setTimeout(() => {
           UIActions.startLoading(channel.name, "loadhistory", `Connecting to the channel is taking a long time. This usually means connection problems with the network.`);
-        }, 5000);
+        }, 10000);
       } else {
         clearTimeout(this.connectTimeout[channel.name]);
         delete this.connectTimeout[channel.name];
@@ -54,7 +54,7 @@ const MessageStore = Reflux.createStore({
         if(this.syncTimeout[channel.name]) clearTimeout(this.syncTimeout[channel.name]);
         this.syncTimeout[channel.name] = setTimeout(() => {
           UIActions.startLoading(channel.name, "synctimeout", "Syncing is taking a long time. This usually means connection problems with the network.");
-        }, 5000);
+        }, 10000);
       } else {
         clearTimeout(this.syncTimeout[channel.name]);
         delete this.syncTimeout[channel.name];
