@@ -2,11 +2,13 @@
 
 ### WIP
 - Tab to finish the username when writing
+- emoji auto-completion
 
 ### Must have
-- Move loading icon in Channel to its own component
-- Move new messages notification bar in Channel to its own component
-- Move controlsBar from Channel to its own component
+- Refactor: Move channel loading state to the node.js process
+- Refactor: Move loading icon in Channel to its own component
+- Refactor: Move new messages notification bar in Channel to its own component
+- Refactor: Move controlsBar from Channel to its own component
 - Remember scroll position after channel change
 - Add snippet message type for multiline messages (includes: rendering, code higlighting, markdown, etc.)
 - Try right-aligned channels panels
@@ -14,8 +16,6 @@
 - Fix browser file upload
 - Add notification bubbles to native app
 - Add a notification sound
-- "copy ipfs hash" to clipboard
-- emoji auto-completion
 - fancy link preview
 - Private messages (one-to-one messages)
 - SwarmStore
