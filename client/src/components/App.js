@@ -64,7 +64,7 @@ var App = React.createClass({
     document.title = 'Orbit';
 
     UIActions.joinChannel.listen(this.joinChannel);
-    UIActions.showChannel.listen(this.showChannel);
+    // UIActions.showChannel.listen(this.showChannel);
     NetworkActions.joinedChannel.listen(this.onJoinedChannel);
     NetworkActions.joinChannelError.listen(this.onJoinChannelError);
     SocketActions.socketDisconnected.listen(this.onDaemonDisconnected);
@@ -154,16 +154,15 @@ var App = React.createClass({
     this.setState({ joiningToChannel: channel, requirePassword: true} );
   },
   onJoinedChannel: function(channel) {
-    logger.debug("Joined channel #" + channel, ChannelStore.channels);
-    // const channelInfo = ChannelStore.get(channel);
-    this.showChannel(channel);
-  },
-  showChannel: function(channel) {
+    logger.debug("Joined channel #" + channel);
+    // this.showChannel(channel);
     this.closePanel();
     document.title = `#${channel}`;
     logger.debug("Set title: " + document.title);
     AppActions.setCurrentChannel(channel);
   },
+  // showChannel: function(channel) {
+  // },
   openSettings: function() {
     this.closePanel();
     AppActions.setLocation("Settings");

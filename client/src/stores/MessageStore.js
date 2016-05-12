@@ -23,19 +23,62 @@ const MessageStore = Reflux.createStore({
     this.channels = {};
     this.posts = {}; // simple cache for message contents
     this._reset();
+    this.stopListeningChannelUpdates = ChannelStore.listen((channels) => {
+      logger.debug("Channels state updated")
+      const channel = channels.find((e) => e.name === this.currentChannel);
+      this._updateLoadingState(channel);
+    });
+  },
+  _updateLoadingState: function(channel) {
+    if(channel) {
+      logger.debug("Update channel state");
+      console.log(channel);
+      this.channels[channel.name].isReady = !channel.state.loading && !channel.state.syncing;
+      this.channels[channel.name].loading = channel.state.loading;
+      this.channels[channel.name].syncing = channel.state.syncing;
+
+      if(channel.state.loading) {
+        UIActions.startLoading(channel.name, "loadhistory", "Connecting...");
+        if(this.connectTimeout[channel.name]) clearTimeout(this.connectTimeout[channel.name]);
+        this.connectTimeout[channel.name] = setTimeout(() => {
+          UIActions.startLoading(channel.name, "loadhistory", `Connecting to the channel is taking a long time. This usually means connection problems with the network.`);
+        }, 5000);
+      } else {
+        clearTimeout(this.connectTimeout[channel.name]);
+        delete this.connectTimeout[channel.name];
+        UIActions.stopLoading(channel.name, "loadhistory");
+      }
+
+      if(channel.state.syncing) {
+        UIActions.startLoading(channel.name, "sync", "Syncing...");
+        if(this.syncTimeout[channel.name]) clearTimeout(this.syncTimeout[channel.name]);
+        this.syncTimeout[channel.name] = setTimeout(() => {
+          UIActions.startLoading(channel.name, "synctimeout", "Syncing is taking a long time. This usually means connection problems with the network.");
+        }, 5000);
+      } else {
+        clearTimeout(this.syncTimeout[channel.name]);
+        delete this.syncTimeout[channel.name];
+        UIActions.stopLoading(channel.name, "sync");
+        UIActions.stopLoading(channel.name, "synctimeout");
+      }
+    }
   },
   _reset: function() {
-    this._resetChannelState(this.currentChannel);
     this.channels = {};
     this.posts = {};
     this.currentChannel = null;
+    this.syncTimeout = {};
+    this.connectTimeout = {};
   },
   _resetChannelState: function(channel) {
+    if(this.syncTimeout[channel]) clearTimeout(this.syncTimeout[channel]);
+    if(this.connectTimeout[channel]) clearTimeout(this.connectTimeout[channel]);
+    delete this.syncTimeout[channel];
+    delete this.connectTimeout[channel];
     if(channel) {
-      UIActions.stopLoading(channel, "sync");
-      UIActions.stopLoading(channel, "loadhistory");
       this.channels[channel].isReady = false;
       this.channels[channel].loading = false;
+      this.channels[channel].syncing = false;
       this.channels[channel].canLoadMore = true;
     }
   },
@@ -48,44 +91,25 @@ const MessageStore = Reflux.createStore({
 
     // Handle new messages
     this.socket.on('data', (channel, hash) => {
-      console.log("DATA", channel, hash);
+      // console.log("DATA", channel, hash);
       logger.debug("--> new messages in #" + channel);
       this.loadMessages(channel, null, null, messagesBatchSize);
     });
 
     // Handle DB loading state
     this.socket.on('load', (channel) => {
-      console.log("LOAD", channel);
-      this.channels[channel].loading = true;
-      this.channels[channel].isReady = false;
-      // UIActions.stopLoading(this.currentChannel, "loadhistory");
-      UIActions.startLoading(channel, "loadhistory", "Connecting...");
-      this.connectTimeout = setTimeout(() => {
-        UIActions.startLoading(channel, "loadhistory", `Connecting to the channel is taking a long time. This usually means connection problems with the network.`);
-      }, 5000);
+      // console.log("LOAD", channel);
     });
     this.socket.on('ready', (channel) => {
-      clearTimeout(this.connectTimeout);
-      console.log("READY", channel);
-      this.channels[channel].loading = false;
-      this.channels[channel].isReady = true;
-      UIActions.stopLoading(channel, "loadhistory");
+      // console.log("READY", channel);
+      this.channels[channel].canLoadMore = true;
     });
     this.socket.on('sync', (channel) => {
-      console.log("SYNC", channel);
-      this.channels[channel].isReady = false;
-      UIActions.stopLoading(this.currentChannel, "sync");
-      UIActions.startLoading(channel, "sync", "Syncing...");
-      this.syncTimeout = setTimeout(() => {
-        UIActions.startLoading(channel, "sync", "Syncing is taking a long time. This usually means connection problems with the network.");
-      }, 5000);
+      // console.log("SYNC", channel);
     });
     this.socket.on('synced', (channel, items) => {
-      clearTimeout(this.syncTimeout);
-      clearTimeout(this.connectTimeout);
-      console.log("SYNCED", channel);
-      this.channels[channel].isReady = true;
-      UIActions.stopLoading(channel, "sync");
+      // console.log("SYNCED", channel);
+      this.channels[channel].canLoadMore = true;
     });
   },
   onSocketDisconnected: function() {
@@ -103,6 +127,8 @@ const MessageStore = Reflux.createStore({
   onJoinedChannel: function(channel) {
     // console.log("JOINED", channel, this.channels)
     this.currentChannel = channel;
+    const c = ChannelStore.channels.find((e) => e.name === this.currentChannel);
+    this._updateLoadingState(c);
   },
   onLeaveChannel: function(channel: string) {
     this._resetChannelState(channel);
@@ -113,11 +139,11 @@ const MessageStore = Reflux.createStore({
       this.trigger(channel, this.channels[channel].messages);
   },
   onLoadMoreMessages: function(channel: string) {
-    // console.log("TRY LOAD", channel, this.currentChannel, this.channels[channel].loading, this.channels[channel].canLoadMore, this.channels[channel].isReady)
+    // console.log("TRY LOAD", channel, this.currentChannel, this.channels[channel].loading, this.channels[channel].syncing, this.channels[channel].canLoadMore, this.channels[channel].isReady)
     if(channel !== this.currentChannel)
       return;
 
-    if(!this.channels[channel].loading && this.channels[channel].canLoadMore && this.channels[channel].isReady) {
+    if(!this.channels[channel].loading && this.channels[channel].canLoadMore) {
       logger.debug("load more messages from #" + channel);
       this.channels[channel].canLoadMore = true;
       this.loadMessages(channel, this.getOldestMessage(channel), null, messagesBatchSize);
@@ -144,7 +170,6 @@ const MessageStore = Reflux.createStore({
 
     if(unique.length > 0) {
       // If we received more than 1 message, there are more messages to be loaded
-      // this.canLoadMore = true;
       this.channels[channel].canLoadMore = true;
       if(unique.length === 1 && this.channels[channel].messages.length === 0 && older) {
         // Special case for a channel that has only one message
@@ -218,13 +243,13 @@ const MessageStore = Reflux.createStore({
   },
   onAddFile: function(channel: string, filePath: string) {
     logger.debug("--> add file: " + filePath);
-    UIActions.startLoading(channel);
+    UIActions.startLoading(channel, "file");
     this.socket.emit('file.add', channel, filePath, (err) => {
       if(err) {
         logger.warn("Couldn't add file: " + filePath + " - " + err.toString());
         UIActions.raiseError(err.toString());
       }
-      UIActions.stopLoading(channel);
+      UIActions.stopLoading(channel, "file");
     });
   },
   onLoadDirectoryInfo: function(hash, cb) {

@@ -14,7 +14,7 @@ const utils        = require('./utils');
 //   return process.type && process.env.ENV !== "dev" ? process.resourcesPath + "/app/" : process.cwd();
 // }
 
-const cacheFile = path.resolve(utils.getAppPath(), "orbit-db-cache.json");
+const cacheFile = path.resolve(utils.getAppPath(), "/data/orbit-db-cache.json");
 
 class Orbit {
   constructor(ipfs, events) {
@@ -60,7 +60,7 @@ class Orbit {
   getChannels(callback) {
     const channels = Object.keys(this._channels)
       .map((f) => this._channels[f])
-      .map((f) => { return { name: f.name, password: f.password } });
+      .map((f) => { return { name: f.name, password: f.password, db: f.db, state: f.state } });
 
     if(callback) callback(channels);
 
@@ -70,14 +70,16 @@ class Orbit {
   join(channel, password, callback) {
     logger.debug(`Join #${channel}`);
     if(!this._channels[channel]) {
+      this._channels[channel] = { name: channel, password: password, db: null, state: { loading: true, syncing: false }};
       this.orbit.eventlog(channel, { cacheFile: cacheFile }).then((db) => {
-        this._channels[channel] = { name: channel, password: password, db: db };
+        this._channels[channel].db = db;
+        this._channels[channel].state.loading = false;
         this.events.emit('channels.updated', this.getChannels());
       });
     } else {
       this.events.emit('ready', channel);
     }
-    if(callback) callback(null, { name: channel, modes: {} })
+    if(callback) callback(null, channel)
   }
 
   leave(channel) {
@@ -228,27 +230,35 @@ class Orbit {
   }
 
   _handleMessage(channel, message) {
-    logger.debug("new entry", channel, message)
+    logger.debug("new entry in database", channel, message)
     this.events.emit('data', channel, message);
   }
 
   _handleStartLoading(channel) {
     logger.debug("load channel", channel)
+    this._channels[channel].state.loading = true;
+    this.events.emit('channels.updated', this.getChannels());
     this.events.emit('load', channel)
   }
 
   _handleDatabaseReady(db) {
     logger.debug("database ready", db.dbname)
+    this._channels[db.dbname].state.loading = false;
+    this.events.emit('channels.updated', this.getChannels());
     this.events.emit('ready', db.dbname)
   }
 
   _handleSync(channel) {
     logger.debug("sync channel", channel)
+    this._channels[channel].state.syncing = true;
+    this.events.emit('channels.updated', this.getChannels());
     this.events.emit('sync', channel)
   }
 
   _handleSynced(channel, items) {
     logger.debug("channel synced", channel, items.length)
+    this._channels[channel].state.syncing = false;
+    this.events.emit('channels.updated', this.getChannels());
     this.events.emit('synced', channel, items)
   }
 
