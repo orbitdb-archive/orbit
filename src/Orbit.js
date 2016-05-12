@@ -173,8 +173,8 @@ class Orbit {
     logger.info("Adding file from path '" + filePath + "'");
     let isDirectory = false, size = -1, hash;
     utils.isDirectory(filePath)
-      .then((res) => isDirectory = res)
-      .then(() => addToIpfs(this.ipfs, filePath, isDirectory))
+      // .then((res) => isDirectory = res)
+    addToIpfs(this.ipfs, filePath, utils.isDirectory(filePath))
       .then((res) => hash = res)
       .then(() => utils.getFileSize(filePath))
       .then((res) => size = res)
