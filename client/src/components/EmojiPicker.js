@@ -12,7 +12,7 @@ const emojify = (emojis, highlightedIndex) => {
     let counter = 0;
     return emojis.map(emoji => {
             let elementClass = '';
-            const element = ReactEmoji.emojify(emoji, emojiOpts)[0];
+            const element = emoji.element;// ReactEmoji.emojify(emoji, emojiOpts)[0];
             if (counter === highlightedIndex)
                 elementClass = 'selected';
             return (<li key={counter++}
@@ -57,7 +57,7 @@ class EmojiPicker extends React.Component {
     selectHighlightedEmoji() {
         const filteredEmojis = this.state.emojis;
         const emojiIndex = this.state.highlightedIndex % filteredEmojis.length;
-        const emojiShortName = filteredEmojis[emojiIndex];
+        const emojiShortName = filteredEmojis[emojiIndex].shortname;
         this.props.displayEmojiText(emojiShortName);
     }
 
@@ -95,7 +95,6 @@ class EmojiPicker extends React.Component {
       }
 
     render() {
-        const filteredEmojis = filterEmojis('', 50);
         return (
             <div className="emoji-picker">
                 <EmojiList
