@@ -50,7 +50,8 @@ class SendMessage extends React.Component {
         this.words = this.refs.message.value.split(' ');
         let lastWord = this.words.pop().toLowerCase();
         let usersLc = UsersStore.users.map((f) => f.toLowerCase());
-        this.matches = usersLc.map((f) => lastWord !== '' && f.startsWith(lastWord) ? f : null).filter((f) => f !== null)
+        let matchIndexes = usersLc.map((f, index) => lastWord !== '' && f.startsWith(lastWord) ? index : null).filter((f) => f !== null);
+        this.matches = matchIndexes.map((f) => UsersStore.users[f] ? UsersStore.users[f] : null).filter((f) => f !== null);
 
       } else {
         this.tabPressCounter += 1;
