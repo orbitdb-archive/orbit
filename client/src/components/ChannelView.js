@@ -48,7 +48,7 @@ class ChannelView extends React.Component {
       <div className="ChannelView">
         <Channel
           className="Channel"
-          channel={this.state.channelName}
+          channel={this.props.params.channel}
           channelInfo={this.state.channel}
           appSettings={this.state.appSettings}
           theme={theme}

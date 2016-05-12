@@ -243,8 +243,8 @@ input[type=button], .channelOptionsButton {
   font-family: "Lato";
   display: flex;
   justify-content: center;
-  -webkit-user-select: none;
-  user-select: none;
+  // -webkit-user-select: none;
+  // user-select: none;
   cursor: default;
   display: flex;
   align-items: center;
@@ -283,8 +283,8 @@ input[type=button], .channelOptionsButton {
     font-weight: 300;
     font-size: 0.8em;
     padding: 0.2em;
-    user-select: none;
-    -webkit-user-select: none;
+    // user-select: none;
+    // -webkit-user-select: none;
     cursor: default;
   }
 

@@ -16,13 +16,14 @@ import 'styles/Channel.scss';
 class Channel extends React.Component {
   constructor(props) {
     super(props);
+    console.log("Channel.constructor")
 
     this.state = {
       channelChanged: true,
-      channelName: props.channel,
+      channelName: null,
       messages: [],
-      loading: false,
-      loadingText: 'Syncing...',
+      loading: true,
+      loadingText: 'Connecting...',
       reachedChannelStart: false,
       channelMode: "Public",
       error: null,
@@ -40,7 +41,9 @@ class Channel extends React.Component {
   }
 
   componentWillReceiveProps(nextProps) {
+    console.log("Channel.componentWillReceiveProps", nextProps, this.state.channelName)
     if(nextProps.channel !== this.state.channelName) {
+      console.log("new channel")
       this.setState({
         channelChanged: true,
         displayNewMessagesIcon: false,
@@ -49,7 +52,15 @@ class Channel extends React.Component {
       });
       UIActions.focusOnSendMessage();
       // ChannelActions.loadMoreMessages(nextProps.channel);
-      this._getMessages(nextProps.channel);
+      // this._getMessages(nextProps.channel);
+
+      this._onLoadStateChange(nextProps.channel, LoadingStateStore.queue);
+      // const loadingState = LoadingStateStore.queue[nextProps.channel];
+      // console.log("loadingState", LoadingStateStore.queue, nextProps.channel)
+      // const loading = loadingState ? Object.keys(loadingState).filter((f) => loadingState[f] && loadingState[f].loading) : [];
+      // this.setState({ loading: loading.length > 0 })
+
+      ChannelActions.loadMessages(nextProps.channel);
     }
 
     this.setState({
@@ -58,32 +69,44 @@ class Channel extends React.Component {
       appSettings: nextProps.appSettings,
       theme: nextProps.theme
     });
+
+    // console.log("channel._getMessages")
+    // this._getMessages(nextProps.channel);
   }
 
   componentDidMount() {
     this.unsubscribeFromMessageStore = MessageStore.listen(this.onNewMessages.bind(this));
-    this.stopListeningLoadingState = LoadingStateStore.listen(this._onLoadStateChange.bind(this));
+    console.log("Channel.componentDidMount")
+    this.stopListeningLoadingState = LoadingStateStore.listen((state) => this._onLoadStateChange(this.state.channelName, state));
     this.stopListeningChannelState = ChannelActions.reachedChannelStart.listen(this._onReachedChannelStart.bind(this));
     this.unsubscribeFromErrors = UIActions.raiseError.listen(this._onError.bind(this));
-
     this.node = this.refs.MessagesView;
+
+    // const loadingState = LoadingStateStore.queue[this.state.channelName];
+    // console.log("loadingState", LoadingStateStore.queue, this.state.channelName)
+    // const loading = loadingState ? Object.keys(loadingState).filter((f) => loadingState[f] && loadingState[f].loading) : [];
+    // this.setState({ loading: loading.length > 0 })
+
     // ChannelActions.loadMoreMessages(this.state.channelName);
     // this._getMessages(this.state.channelName);
     // this.loadOlderMessages();
+    // ChannelActions.loadMessages(this.state.channelName);
   }
 
-  _getMessages(channel) {
-    const messages = MessageStore.getMessages(channel);
-    this.setState({ messages: messages });
-  }
+  // _getMessages(channel) {
+  //   const messages = MessageStore.getMessages(channel);
+  //   this.setState({ messages: messages });
+  // }
 
-  _onLoadStateChange(state) {
-    const loadingState = state[this.state.channelName];
-    // console.log("LOAD STATE", loadingState)
+  _onLoadStateChange(channel, state) {
+    const loadingState = state[channel];
+    console.log("LOAD STATE", channel, state)
     if(loadingState) {
       const loading = Object.keys(loadingState).filter((f) => loadingState[f] && loadingState[f].loading);
       const loadingText = loadingState[loading[0]] ? loadingState[loading[0]].message : null;
       this.setState({ loading: loading.length > 0, loadingText: loadingText });
+    } else {
+      this.setState({ loading: false, loadingText: "" });
     }
   }
 
@@ -106,6 +129,7 @@ class Channel extends React.Component {
   }
 
   onNewMessages(channel: string, messages) {
+    console.log("add messages", messages)
     if(channel !== this.state.channelName)
       return;
 
@@ -134,8 +158,10 @@ class Channel extends React.Component {
   }
 
   loadOlderMessages() {
-    if(!this.state.loading)
+    if(!this.state.loading) {
+      console.log("loadOlderMessages")
       ChannelActions.loadMoreMessages(this.state.channelName);
+    }
   }
 
   componentWillUpdate() {
@@ -163,8 +189,10 @@ class Channel extends React.Component {
       this.setState({ channelChanged: false });
     }
 
-    if(this._shouldLoadMoreMessages())
+    if(this._shouldLoadMoreMessages()) {
+      console.log("1")
       this.loadOlderMessages();
+    }
   }
 
   _shouldLoadMoreMessages() {

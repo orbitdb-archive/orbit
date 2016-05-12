@@ -155,8 +155,8 @@ var App = React.createClass({
   },
   onJoinedChannel: function(channel) {
     logger.debug("Joined channel #" + channel, ChannelStore.channels);
-    const channelInfo = ChannelStore.get(channel);
-    this.showChannel(channelInfo.name);
+    // const channelInfo = ChannelStore.get(channel);
+    this.showChannel(channel);
   },
   showChannel: function(channel) {
     this.closePanel();

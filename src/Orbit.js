@@ -10,11 +10,11 @@ const Logger       = require('logplease');
 const logger       = Logger.create("Orbit.Orbit", { color: Logger.Colors.Green });
 const utils        = require('./utils');
 
-const getAppPath = () => {
-  return process.type && process.env.ENV !== "dev" ? process.resourcesPath + "/app/" : process.cwd();
-}
+// const getAppPath = () => {
+//   return process.type && process.env.ENV !== "dev" ? process.resourcesPath + "/app/" : process.cwd();
+// }
 
-const cacheFile = path.resolve(getAppPath(), "orbit-db-cache.json");
+const cacheFile = path.resolve(utils.getAppPath(), "orbit-db-cache.json");
 
 class Orbit {
   constructor(ipfs, events) {
@@ -73,11 +73,11 @@ class Orbit {
       this.orbit.eventlog(channel, { cacheFile: cacheFile }).then((db) => {
         this._channels[channel] = { name: channel, password: password, db: db };
         this.events.emit('channels.updated', this.getChannels());
-        if(callback) callback(null, { name: channel, modes: {} })
       });
     } else {
-      if(callback) callback(null, { name: channel, modes: {} })
+      this.events.emit('ready', channel);
     }
+    if(callback) callback(null, { name: channel, modes: {} })
   }
 
   leave(channel) {
@@ -85,8 +85,8 @@ class Orbit {
       this._channels[channel].db.close();
       delete this._channels[channel];
       logger.debug("Left channel #" + channel);
-      this.events.emit('channels.updated', this.getChannels());
     }
+    this.events.emit('channels.updated', this.getChannels());
   }
 
   getUser(hash, callback) {
