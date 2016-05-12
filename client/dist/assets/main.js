@@ -36800,7 +36800,7 @@
 	            { className: 'label' },
 	            'Network'
 	          ),
-	          _react2.default.createElement('input', { type: 'text', ref: 'network', defaultValue: 'QmZjhqUtFK3aWbUfjYEsgS8CMK8fZrQXqUcqW5Q32LznMk', style: this.state.theme })
+	          _react2.default.createElement('input', { type: 'text', ref: 'network', defaultValue: 'QmRB8x6aErtKTFHDNRiViixSKYwW1DbfcvJHaZy1hnRzLM', style: this.state.theme })
 	        ),
 	        _react2.default.createElement(
 	          'div',
