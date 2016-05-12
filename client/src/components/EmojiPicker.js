@@ -62,7 +62,8 @@ class EmojiPicker extends React.Component {
     }
 
     onKeyUp(event) {
-        if(event.which === 9) {
+        if(event.which === 9 || event.which === 37 || event.which === 39) {
+               //Tab or left or right arrow
             this.selectHighlightedEmoji();
         }
     }
@@ -73,17 +74,15 @@ class EmojiPicker extends React.Component {
                 highlightedIndex: 0
             });
         }
-        if(event.which === 9) {
-            // Tab
+        if(event.which === 9 || event.which === 39) {
+            // Tab or Right
             event.preventDefault();
-            const newIndex = this.state.highlightedIndex + 1
-            const highlightedIndex = newIndex % this.state.emojis.length;
-            this.setState({
-                ...this.state,
-                highlightedIndex: highlightedIndex
-            });
-        }
-        else if (event.which === 13 || event.which === 32) {
+            this.cycleRight();
+        } else if (event.which === 37) {
+            // Left
+            event.preventDefault();
+            this.cycleLeft();
+        } else if (event.which === 13 || event.which === 32) {
             // Return or Space
             event.preventDefault();
             this.selectHighlightedEmoji();
@@ -94,15 +93,34 @@ class EmojiPicker extends React.Component {
           }
       }
 
-    render() {
-        return (
-            <div className="emoji-picker">
-                <EmojiList
-                    emojis={this.state.emojis}
-                    highlightedIndex={this.state.highlightedIndex}/>
-            </div>
-        );
-    }
-}
+      cycleRight() {
+          const newIndex = this.state.highlightedIndex + 1;
+          const highlightedIndex = newIndex % this.state.emojis.length;
+          this.setState({
+              ...this.state,
+              highlightedIndex: highlightedIndex
+          });
+      }
+      cycleLeft() {
+          console.log(-1 % 5);
+          let newIndex = this.state.highlightedIndex - 1;
+          const n = this.state.emojis.length;
+          const highlightedIndex = ((newIndex % n)+n)%n;
+          this.setState({
+              ...this.state,
+              highlightedIndex: highlightedIndex
+          });
+      }
+
+      render() {
+          return (
+              <div className="emoji-picker">
+                  <EmojiList
+                      emojis={this.state.emojis}
+                      highlightedIndex={this.state.highlightedIndex}/>
+              </div>
+          );
+      }
+  }
 
 export default EmojiPicker;
