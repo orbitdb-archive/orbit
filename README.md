@@ -30,7 +30,7 @@ For development
 ### Browser
 Install and run:
 ```
-npm install
+npm install --production
 node index.js
 ```
 
