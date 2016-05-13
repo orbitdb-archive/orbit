@@ -110,6 +110,7 @@ const MessageStore = Reflux.createStore({
     this.socket.on('synced', (channel, items) => {
       // console.log("SYNCED", channel);
       this.channels[channel].canLoadMore = true;
+      this.loadMessages(channel, null, null, messagesBatchSize);
     });
   },
   onSocketDisconnected: function() {
