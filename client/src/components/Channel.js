@@ -105,6 +105,7 @@ class Channel extends React.Component {
     this.unsubscribeFromErrors();
     this.stopListeningLoadingState();
     this.stopListeningChannelState();
+    this.stopListeningChannelUpdates();
     this.setState({ messages: [] });
   }
 
