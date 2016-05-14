@@ -2,14 +2,15 @@
 
 import React from 'react';
 import Actions from "actions/UIActions";
+import AutoCompleter from "./AutoCompleter.js";
 import 'styles/SendMessage.scss';
 import UsersStore from 'stores/UsersStore';
 
 class SendMessage extends React.Component {
   constructor(props) {
     super(props);
-    this.tabPressCounter = null;
-    this.matches = []; 
+    this.autoComplete = new AutoCompleter();
+    this.autoComplete.onUpdated = (text) => this.refs.message.value = text;
     this.state = {
       theme: props.theme
     };
@@ -40,38 +41,7 @@ class SendMessage extends React.Component {
   }
 
   onKeyDown(event) {
-    // console.log("KEYDOWN", event.type, event.which);
-    if(event.which === 9) {
-      // 'Tab': autocomplete user name
-      event.preventDefault();
-
-      if(this.tabPressCounter == null) {
-        this.tabPressCounter = 0;
-        this.words = this.refs.message.value.split(' ');
-        let lastWord = this.words.pop().toLowerCase();
-        let usersLc = UsersStore.users.map((f) => f.toLowerCase());
-        let matchIndexes = usersLc.map((f, index) => lastWord !== '' && f.startsWith(lastWord) ? index : null).filter((f) => f !== null);
-        this.matches = matchIndexes.map((f) => UsersStore.users[f] ? UsersStore.users[f] : null).filter((f) => f !== null);
-
-      } else {
-        this.tabPressCounter += 1;
-        this.tabPressCounter = this.tabPressCounter % this.matches.length;
-        this.words.pop();
-      }
-
-      if(this.matches.length > 0) {
-        this.words.push(this.matches[this.tabPressCounter]);
-        this.refs.message.value = this.words.join(' ');
-      }
-    } else if(event.which === 186) {
-      // ':'
-      // TODO: bring up emoji preview
-    } else {
-      this.words = this.refs.message.value.split(' ');
-      this.tabPressCounter = null;
-      this.matches = [];
-    }
-    return;
+    this.autoComplete.onKeyDown(event, this.refs.message.value, UsersStore.users);
   }
   
   render() {
