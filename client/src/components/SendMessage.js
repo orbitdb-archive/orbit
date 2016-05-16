@@ -70,12 +70,19 @@ class SendMessage extends React.Component {
       this.refs.message.value = text.join(" ");
   }
 
+  onSelectEmoji (emojiText) {
+     let text = this.refs.message.value.split(' ');
+     text.pop();
+     text.push(emojiText);
+     this.refs.message.value = text.join(' ');
+ }
+
   render() {
       const emojiPicker = this.state.emojiPickerActive ?
            <EmojiPicker ref='emojipicker'
                filterText={this.state.lastWord}
                onClose={this.onCloseEmojiPicker.bind(this)}
-               displayEmojiText={this.displayEmojiText.bind(this)}/> : <span/>
+               onSelectEmoji={this.onSelectEmoji.bind(this)}/> : <span/>
     return (
       <div className="SendMessage">
         <form onSubmit={this.sendMessage.bind(this)}>

@@ -8,7 +8,7 @@ import 'styles/EmojiPicker.scss';
 
 const supportedEmojis = Object.values(emojisAnnotations).filter((e) => e !== '1f642');
 const emojiList = _.pickBy(emojiData, (e) => supportedEmojis.indexOf(e.unicode) > -1);
-
+const maxEmojiAmount = 100;
 const filterEmojis = function(emojiList, word, amount) {
   return Object.values(emojiList)
     .filter((e) => e.shortname.indexOf(word) > -1 || e.aliases.indexOf(word) > -1 || word === '')
@@ -36,25 +36,15 @@ class EmojiPicker extends React.Component {
         }
     }
 
-    selectHighlightedEmoji() {
-        const filteredEmojis = this.state.emojis;
-        const emojiIndex = this.state.highlightedIndex % filteredEmojis.length;
-        const emojiShortName = filteredEmojis[emojiIndex].shortname;
-        this.props.displayEmojiText(emojiShortName);
+    selectEmoji(index) {
+        const emojiShortName = this.state.emojis[index] ? this.state.emojis[index].shortname : this.props.filterText;
+        this.props.onSelectEmoji(emojiShortName);
     }
 
-    onKeyUp(event) {
-        if(event.which === 9 || event.which === 37 || event.which === 39) {
-               //Tab or left or right arrow
-            this.selectHighlightedEmoji();
-        }
-    }
     onKeyDown(event) {
         if (event.which === 8) {
-            this.setState({
-                ...this.state,
-                highlightedIndex: 0
-            });
+            // Backspace
+            this.setState({ highlightedIndex: 0 });
         }
         if(event.which === 9 || event.which === 39) {
             // Tab or Right
@@ -67,7 +57,7 @@ class EmojiPicker extends React.Component {
         } else if (event.which === 13 || event.which === 32) {
             // Return or Space
             event.preventDefault();
-            this.selectHighlightedEmoji();
+            this.selectEmoji(this.state.highlightedIndex);
             this.props.onClose();
         } else if (event.which === 27) {
             //ESC
@@ -78,31 +68,27 @@ class EmojiPicker extends React.Component {
       cycleRight() {
           const newIndex = this.state.highlightedIndex + 1;
           const highlightedIndex = newIndex % this.state.emojis.length;
-          this.setState({
-              ...this.state,
-              highlightedIndex: highlightedIndex
-          });
+          this.setState({ highlightedIndex: highlightedIndex });
+          this.selectEmoji(highlightedIndex);
       }
+
       cycleLeft() {
-          console.log(-1 % 5);
           let newIndex = this.state.highlightedIndex - 1;
-          const n = this.state.emojis.length;
-          const highlightedIndex = ((newIndex % n)+n)%n;
-          this.setState({
-              ...this.state,
-              highlightedIndex: highlightedIndex
-          });
+          const count = this.state.emojis.length;
+          const highlightedIndex = ((newIndex % count) + count) % count;
+          this.setState({ highlightedIndex: highlightedIndex });
+          this.selectEmoji(highlightedIndex);
       }
 
       componentWillReceiveProps(nextProps) {
-          const emojis = filterEmojis(emojiList, nextProps.filterText, 100);
+          const emojis = filterEmojis(emojiList, nextProps.filterText, maxEmojiAmount);
           this.setState({ emojis: emojis });
           if(nextProps.filterText === '' || emojis.length === 0)
               this.props.onClose();
       }
 
       componentDidMount() {
-          const emojis = filterEmojis(emojiList, this.props.filterText, 50);
+          const emojis = filterEmojis(emojiList, this.props.filterText, maxEmojiAmount);
           this.setState({emojis: emojis});
           if(emojis.length === 0)
               this.props.onClose();
