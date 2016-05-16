@@ -1,5 +1,6 @@
 'use strict';
 
+import _ from 'lodash';
 import React from 'react';
 import ReactEmoji from "react-emoji";
 import { emojiData } from "../utils/emojilist";
@@ -44,7 +45,11 @@ class EmojiPicker extends React.Component {
     onKeyDown(event) {
         if (event.which === 8) {
             // Backspace
-            this.setState({ highlightedIndex: 0 });
+            this.selectEmoji(-1);
+            if(this.state.highlightedIndex !== 0) {
+                event.preventDefault();
+                this.setState({ highlightedIndex: 0});
+            }
         }
         if(event.which === 9 || event.which === 39) {
             // Tab or Right
@@ -61,6 +66,7 @@ class EmojiPicker extends React.Component {
             this.props.onClose();
         } else if (event.which === 27) {
             //ESC
+            this.selectEmoji(-1);
             this.props.onClose();
           }
       }

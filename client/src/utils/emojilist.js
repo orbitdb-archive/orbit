@@ -1,3 +1,4 @@
+// Based on: https://raw.githubusercontent.com/Ranks/emojione/master/emoji.json
 module.exports.emojiData = {
     "100": {
     "unicode": "1f4af",
