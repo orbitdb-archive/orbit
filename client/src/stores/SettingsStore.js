@@ -12,7 +12,8 @@ var settingsDescriptions = {
 var defaultSettings = {
   theme: Themes.Default,
   useEmojis: true,
-  colorifyUsernames: true
+  colorifyUsernames: true,
+  spacing: 0.1,
 };
 
 var SettingsStore = Reflux.createStore({
@@ -35,6 +36,7 @@ var SettingsStore = Reflux.createStore({
       this.settings.useEmojis = (this.settings.useEmojis !== undefined) ? this.settings.useEmojis : defaultSettings.useEmojis;
       this.settings.colorifyUsernames = (this.settings.colorifyUsernames !== undefined) ? this.settings.colorifyUsernames : defaultSettings.colorifyUsernames;
       this.settings.theme = this.settings.theme || defaultSettings.theme;
+      this.settings.spacing = this.settings.spacing || defaultSettings.spacing;
 
       // Save the defaults for this user
       localStorage.setItem("anonet.app." + this.username + ".settings", JSON.stringify(this.settings));

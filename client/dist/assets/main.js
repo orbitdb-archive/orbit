@@ -29043,9 +29043,9 @@
 	      // console.log("SYNC", channel);
 	    });
 	    this.socket.on('synced', function (channel, items) {
-	      // console.log("SYNCED", channel);
+	      // console.log("SYNCED", channel, this.channels[channel]);
 	      _this2.channels[channel].canLoadMore = true;
-	      _this2.loadMessages(channel, null, null, messagesBatchSize);
+	      if (_this2.channels[channel] && !_this2.channels[channel].loading) _this2.loadMessages(channel, null, null, messagesBatchSize);
 	    });
 	  },
 	  onSocketDisconnected: function onSocketDisconnected() {
@@ -29353,7 +29353,8 @@
 	var defaultSettings = {
 	  theme: _Themes2.default.Default,
 	  useEmojis: true,
-	  colorifyUsernames: true
+	  colorifyUsernames: true,
+	  spacing: 0.1
 	};
 
 	var SettingsStore = _reflux2.default.createStore({
@@ -29378,6 +29379,7 @@
 	    this.settings.useEmojis = this.settings.useEmojis !== undefined ? this.settings.useEmojis : defaultSettings.useEmojis;
 	    this.settings.colorifyUsernames = this.settings.colorifyUsernames !== undefined ? this.settings.colorifyUsernames : defaultSettings.colorifyUsernames;
 	    this.settings.theme = this.settings.theme || defaultSettings.theme;
+	    this.settings.spacing = this.settings.spacing || defaultSettings.spacing;
 
 	    // Save the defaults for this user
 	    localStorage.setItem("anonet.app." + this.username + ".settings", JSON.stringify(this.settings));
@@ -36744,7 +36746,8 @@
 	          onDragEnter: _this5.onDragEnter.bind(_this5),
 	          highlightWords: _this5.state.username,
 	          colorifyUsername: _this5.state.appSettings.colorifyUsernames,
-	          useEmojis: _this5.state.appSettings.useEmojis
+	          useEmojis: _this5.state.appSettings.useEmojis,
+	          spacing: _this5.state.appSettings.spacing
 	        });
 	      });
 
@@ -38096,6 +38099,7 @@
 	        "div",
 	        {
 	          className: className,
+	          style: { padding: this.props.spacing + "em" },
 	          onDragEnter: this.onDragEnter.bind(this) },
 	        _react2.default.createElement(
 	          "span",
@@ -44082,7 +44086,7 @@
 
 
 	// module
-	exports.push([module.id, "@keyframes fadeIn {\n  0% {\n    opacity: 0;\n  }\n  100% {\n    opacity: 1;\n  }\n}\n\n@keyframes fadeInFromBottom {\n  0% {\n    opacity: 0;\n    transform: translateY(-5px);\n  }\n  100% {\n    opacity: 1;\n    transform: translateY(0);\n  }\n}\n\n@keyframes fadeInCircles {\n  0% {\n    opacity: 0.2;\n    transform: translate(-20px, 0);\n  }\n  10% {\n    opacity: 1;\n  }\n  90% {\n    opacity: 1;\n  }\n  100% {\n    opacity: 0.2;\n    transform: translate(20px, 0);\n  }\n}\n\n@keyframes fadeInCirclesLoop {\n  0% {\n    opacity: 0.2;\n  }\n  40% {\n    opacity: 0.4;\n  }\n  50% {\n    opacity: 1;\n  }\n  80% {\n    opacity: 0.4;\n  }\n  100% {\n    opacity: 0.2;\n  }\n}\n\n@keyframes pulse1 {\n  0% {\n    opacity: 0.3;\n  }\n  50% {\n    opacity: 0.5;\n  }\n  100% {\n    opacity: 0.3;\n  }\n}\n\n@keyframes fadeOut {\n  0% {\n    opacity: 1;\n  }\n  100% {\n    opacity: 0;\n  }\n}\n\n@keyframes darken {\n  0% {\n    opacity: 0;\n  }\n  100% {\n    opacity: 1;\n  }\n}\n\n@keyframes fadeOutUp {\n  0% {\n    opacity: 1;\n  }\n  100% {\n    opacity: 0;\n    height: 0;\n  }\n}\n\n@keyframes fadeOutDown {\n  0% {\n    opacity: 1;\n    transform: translateY(0);\n  }\n  100% {\n    opacity: 0;\n    transform: translateY(20px);\n  }\n}\n\n@keyframes fadeInDown {\n  0% {\n    opacity: 0;\n    transform: translateY(-20px);\n  }\n  100% {\n    opacity: 1;\n    transform: translateY(0);\n  }\n}\n\n@keyframes fadeInUp {\n  0% {\n    opacity: 0;\n    transform: translateY(20px);\n  }\n  100% {\n    opacity: 1;\n    transform: translateY(0);\n  }\n}\n\n@keyframes bounceInLeft {\n  0% {\n    opacity: 0;\n    transform: translateX(-200px);\n  }\n  60% {\n    transform: translateX(2px);\n  }\n  80% {\n    transform: translateX(-2px);\n  }\n  100% {\n    opacity: 1;\n    transform: translateX(0);\n  }\n}\n\n@keyframes bounceInDown {\n  0% {\n    opacity: 0;\n    transform: translateY(-200px);\n  }\n  60% {\n    transform: translateY(2px);\n  }\n  80% {\n    transform: translateY(-2px);\n  }\n  100% {\n    opacity: 1;\n    transform: translateY(0);\n  }\n}\n\n@keyframes slideFromLeft {\n  0% {\n    opacity: 0;\n    transform: translateX(-200px);\n  }\n  100% {\n    opacity: 1;\n    transform: translateX(0);\n  }\n}\n\n@keyframes appearFromTop {\n  0% {\n    opacity: 0;\n    transform: translateY(-10px);\n  }\n  100% {\n    opacity: 1;\n    transform: translateY(0);\n  }\n}\n\n@keyframes fadeOutRight {\n  0% {\n    opacity: 1;\n  }\n  100% {\n    opacity: 0;\n  }\n}\n\n.highlighted {\n  background-color: #252525 !important;\n}\n\n.command {\n  font-style: italic;\n  color: #f0f0f0 !important;\n  margin-left: 0em !important;\n}\n\n.Message {\n  display: flex;\n  flex: 1 1 100%;\n  flex-direction: row;\n  justify-content: flex-start;\n  align-items: flex-start;\n  background-color: #232323;\n  font-weight: 100;\n  border-bottom: 1px solid rgba(34, 34, 34, 0);\n  padding: 0.2em;\n  padding-bottom: 0;\n  color: rgba(255, 255, 255, 0.6);\n  overflow: hidden;\n}\n\n.Message .Timestamp {\n  display: flex;\n  color: rgba(240, 240, 240, 0.6);\n  font-weight: 300;\n  font-size: 0.8em;\n  padding-left: 0.2em;\n  padding-right: 0.5em;\n  border-right: 1px solid rgba(255, 255, 255, 0.2);\n  padding-top: 0.25em;\n}\n\n.Message .Content {\n  margin-left: 0.2em;\n  margin-right: 0.5em;\n  display: flex;\n  flex: 1;\n  overflow: hidden;\n}\n", ""]);
+	exports.push([module.id, "@keyframes fadeIn {\n  0% {\n    opacity: 0;\n  }\n  100% {\n    opacity: 1;\n  }\n}\n\n@keyframes fadeInFromBottom {\n  0% {\n    opacity: 0;\n    transform: translateY(-5px);\n  }\n  100% {\n    opacity: 1;\n    transform: translateY(0);\n  }\n}\n\n@keyframes fadeInCircles {\n  0% {\n    opacity: 0.2;\n    transform: translate(-20px, 0);\n  }\n  10% {\n    opacity: 1;\n  }\n  90% {\n    opacity: 1;\n  }\n  100% {\n    opacity: 0.2;\n    transform: translate(20px, 0);\n  }\n}\n\n@keyframes fadeInCirclesLoop {\n  0% {\n    opacity: 0.2;\n  }\n  40% {\n    opacity: 0.4;\n  }\n  50% {\n    opacity: 1;\n  }\n  80% {\n    opacity: 0.4;\n  }\n  100% {\n    opacity: 0.2;\n  }\n}\n\n@keyframes pulse1 {\n  0% {\n    opacity: 0.3;\n  }\n  50% {\n    opacity: 0.5;\n  }\n  100% {\n    opacity: 0.3;\n  }\n}\n\n@keyframes fadeOut {\n  0% {\n    opacity: 1;\n  }\n  100% {\n    opacity: 0;\n  }\n}\n\n@keyframes darken {\n  0% {\n    opacity: 0;\n  }\n  100% {\n    opacity: 1;\n  }\n}\n\n@keyframes fadeOutUp {\n  0% {\n    opacity: 1;\n  }\n  100% {\n    opacity: 0;\n    height: 0;\n  }\n}\n\n@keyframes fadeOutDown {\n  0% {\n    opacity: 1;\n    transform: translateY(0);\n  }\n  100% {\n    opacity: 0;\n    transform: translateY(20px);\n  }\n}\n\n@keyframes fadeInDown {\n  0% {\n    opacity: 0;\n    transform: translateY(-20px);\n  }\n  100% {\n    opacity: 1;\n    transform: translateY(0);\n  }\n}\n\n@keyframes fadeInUp {\n  0% {\n    opacity: 0;\n    transform: translateY(20px);\n  }\n  100% {\n    opacity: 1;\n    transform: translateY(0);\n  }\n}\n\n@keyframes bounceInLeft {\n  0% {\n    opacity: 0;\n    transform: translateX(-200px);\n  }\n  60% {\n    transform: translateX(2px);\n  }\n  80% {\n    transform: translateX(-2px);\n  }\n  100% {\n    opacity: 1;\n    transform: translateX(0);\n  }\n}\n\n@keyframes bounceInDown {\n  0% {\n    opacity: 0;\n    transform: translateY(-200px);\n  }\n  60% {\n    transform: translateY(2px);\n  }\n  80% {\n    transform: translateY(-2px);\n  }\n  100% {\n    opacity: 1;\n    transform: translateY(0);\n  }\n}\n\n@keyframes slideFromLeft {\n  0% {\n    opacity: 0;\n    transform: translateX(-200px);\n  }\n  100% {\n    opacity: 1;\n    transform: translateX(0);\n  }\n}\n\n@keyframes appearFromTop {\n  0% {\n    opacity: 0;\n    transform: translateY(-10px);\n  }\n  100% {\n    opacity: 1;\n    transform: translateY(0);\n  }\n}\n\n@keyframes fadeOutRight {\n  0% {\n    opacity: 1;\n  }\n  100% {\n    opacity: 0;\n  }\n}\n\n.highlighted {\n  background-color: #252525 !important;\n}\n\n.command {\n  font-style: italic;\n  color: #f0f0f0 !important;\n  margin-left: 0em !important;\n}\n\n.Message {\n  display: flex;\n  flex: 1 1 100%;\n  flex-direction: row;\n  justify-content: flex-start;\n  align-items: flex-end;\n  background-color: #232323;\n  font-weight: 100;\n  border-bottom: 1px solid rgba(34, 34, 34, 0);\n  padding-bottom: 0;\n  color: rgba(255, 255, 255, 0.6);\n  overflow: hidden;\n}\n\n.Message .Timestamp {\n  display: flex;\n  color: rgba(240, 240, 240, 0.6);\n  font-weight: 300;\n  font-size: 0.8em;\n  padding-left: 0.2em;\n  padding-right: 0.5em;\n  border-right: 1px solid rgba(255, 255, 255, 0.2);\n}\n\n.Message .Content {\n  margin-left: 0.2em;\n  margin-right: 0.5em;\n  display: flex;\n  flex: 1;\n  overflow: hidden;\n}\n", ""]);
 
 	// exports
 

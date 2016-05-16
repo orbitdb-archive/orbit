@@ -249,6 +249,7 @@ class Channel extends React.Component {
                 highlightWords={this.state.username}
                 colorifyUsername={this.state.appSettings.colorifyUsernames}
                 useEmojis={this.state.appSettings.useEmojis}
+                spacing={this.state.appSettings.spacing}
               />;
     });
 
