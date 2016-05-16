@@ -1,4 +1,4 @@
-module.exports.emojiList = {
+module.exports.emojiData = {
     "100": {
     "unicode": "1f4af",
     "shortname": ":100:",

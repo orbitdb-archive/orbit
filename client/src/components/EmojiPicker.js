@@ -2,25 +2,24 @@
 
 import React from 'react';
 import ReactEmoji from "react-emoji";
-import { filterEmojis } from "../utils/emojis";
+import { emojiData } from "../utils/emojilist";
+import emojisAnnotations from 'emoji-annotation-to-unicode';
 import 'styles/EmojiPicker.scss';
 
+const supportedEmojis = Object.values(emojisAnnotations).filter((e) => e !== '1f642');
+const emojiList = _.pickBy(emojiData, (e) => supportedEmojis.indexOf(e.unicode) > -1);
+
+const filterEmojis = function(emojiList, word, amount) {
+  return Object.values(emojiList)
+    .filter((e) => e.shortname.indexOf(word) > -1 || e.aliases.indexOf(word) > -1 || word === '')
+    .slice(0, amount);
+};
+
 const emojify = (emojis, highlightedIndex) => {
-    const emojiOpts = {
-      emojiType: 'emojione'
-    };
-    let counter = 0;
-    return emojis.map(emoji => {
-            let elementClass = '';
-            const element = emoji.element;// ReactEmoji.emojify(emoji, emojiOpts)[0];
-            if (counter === highlightedIndex)
-                elementClass = 'selected';
-            return (<li key={counter++}
-                        className={elementClass}>
-                        {element}
-                    </li>);
-        }
-    );
+  const emojiOpts = { emojiType: 'emojione' };
+  return emojis
+    .map(e => ReactEmoji.emojify(e.shortname, emojiOpts))
+    .map((e, index) => <li key={index} className={index === highlightedIndex ? 'selected' : ''}>{e}</li>);
 };
 
 const EmojiList = ({
@@ -35,23 +34,6 @@ class EmojiPicker extends React.Component {
             emojis: [],
             highlightedIndex: 0
         }
-    }
-
-    filterWord(lastWord){
-        const emojiRe = /^::?[\w\d_\+-]*$/;
-        if (emojiRe.test(lastWord)) {
-            const filteredEmojis = filterEmojis(lastWord.slice(1), 50);
-            if (filteredEmojis.length > 0)
-            {
-                this.setState({
-                    ...this.state,
-                    emojis: filteredEmojis
-                });
-            }
-            else
-                this.props.hideEmojiPicker();
-        } else
-            this.props.hideEmojiPicker();
     }
 
     selectHighlightedEmoji() {
@@ -86,10 +68,10 @@ class EmojiPicker extends React.Component {
             // Return or Space
             event.preventDefault();
             this.selectHighlightedEmoji();
-            this.props.hideEmojiPicker();
+            this.props.onClose();
         } else if (event.which === 27) {
             //ESC
-            this.props.hideEmojiPicker();
+            this.props.onClose();
           }
       }
 
@@ -110,6 +92,20 @@ class EmojiPicker extends React.Component {
               ...this.state,
               highlightedIndex: highlightedIndex
           });
+      }
+
+      componentWillReceiveProps(nextProps) {
+          const emojis = filterEmojis(emojiList, nextProps.filterText, 100);
+          this.setState({ emojis: emojis });
+          if(nextProps.filterText === '' || emojis.length === 0)
+              this.props.onClose();
+      }
+
+      componentDidMount() {
+          const emojis = filterEmojis(emojiList, this.props.filterText, 50);
+          this.setState({emojis: emojis});
+          if(emojis.length === 0)
+              this.props.onClose();
       }
 
       render() {

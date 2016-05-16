@@ -10,6 +10,7 @@
   "mainOutput": "main",
   "dependencies": {
     "clipboard": "^1.5.10",
+    "emoji-annotation-to-unicode": "^0.2.4",
     "file-loader": "^0.8.5",
     "halogen": "^0.2.0",
     "highlight.js": "^9.3.0",

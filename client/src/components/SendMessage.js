@@ -3,11 +3,7 @@
 import React from 'react';
 import EmojiPicker from './EmojiPicker'
 import Actions from "actions/UIActions";
-<<<<<<< HEAD
 import AutoCompleter from "./AutoCompleter.js";
-import { filterEmojis } from "../utils/emojis";
-=======
->>>>>>> Moved key handling to emojipicker
 import 'styles/SendMessage.scss';
 import UsersStore from 'stores/UsersStore';
 
@@ -19,7 +15,8 @@ class SendMessage extends React.Component {
     this.state = {
       theme: props.theme,
       useEmojis: props.useEmojis,
-      emojiPickerActive: false
+      emojiPickerActive: false,
+      lastWord: null
     };
   }
 
@@ -47,46 +44,25 @@ class SendMessage extends React.Component {
     return;
   }
 
-  hideEmojiPicker() {
-      this.setState({
-          ...this.state,
-          emojiPickerActive : false
-      });
+  onCloseEmojiPicker() {
+      this.setState({ emojiPickerActive : false });
   }
-  onKeyUp(event) {
-      if (this.state.emojiPickerActive){
-          if (event.which === 9 || event.which === 37 || event.which === 39) {
-              // Cycle through preview
-              this.refs.emojipicker.onKeyUp(event);
-          } else {
-              const lastWord = this.refs.message.value.split(" ").pop();
-              this.refs.emojipicker.filterWord(lastWord);
-          }
+
+  onInput() {
+      const lastWord = this.refs.message.value.split(' ').pop();
+      this.setState({ lastWord: lastWord });
+      if (lastWord.startsWith(':')) {
+          this.setState({ emojiPickerActive: this.props.useEmojis });
       }
   }
 
   onKeyDown(event) {
     this.autoComplete.onKeyDown(event, this.refs.message.value, UsersStore.users);
-
-    // console.log("KEYDOWN", event.type, event.which);
     if (this.state.emojiPickerActive) {
         this.refs.emojipicker.onKeyDown(event);
     }
-    if(event.which === 9) {
-      // Tab
-      event.preventDefault();
-      // TODO: autocomplete user names
-    } else if(event.which === 186) {
-      // ':'
-      if (this.props.useEmojis) {
-         this.setState({
-             ...this.state,
-             emojiPickerActive : true
-         });
-      }
   }
-    return;
-  }
+
   displayEmojiText (emojiText) {
       let text = this.refs.message.value.split(" ");
       text.pop();
@@ -95,14 +71,15 @@ class SendMessage extends React.Component {
   }
 
   render() {
+      const emojiPicker = this.state.emojiPickerActive ?
+           <EmojiPicker ref='emojipicker'
+               filterText={this.state.lastWord}
+               onClose={this.onCloseEmojiPicker.bind(this)}
+               displayEmojiText={this.displayEmojiText.bind(this)}/> : <span/>
     return (
       <div className="SendMessage">
         <form onSubmit={this.sendMessage.bind(this)}>
-            {this.props.useEmojis &&
-             this.state.emojiPickerActive ?
-                 <EmojiPicker ref='emojipicker'
-                     hideEmojiPicker={this.hideEmojiPicker.bind(this)}
-                     displayEmojiText={this.displayEmojiText.bind(this)}/> : null}
+            {emojiPicker}
           <input
             type="text"
             ref="message"
@@ -110,7 +87,7 @@ class SendMessage extends React.Component {
             autoComplete={true}
             style={this.state.theme}
             onKeyDown={this.onKeyDown.bind(this)}
-            onKeyUp={this.onKeyUp.bind(this)}
+            onInput={this.onInput.bind(this)}
             />
         </form>
       </div>
