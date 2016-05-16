@@ -1,14 +1,13 @@
 .emoji-picker {
-  width: 235px;
+  width: 238px;
   background: #fff;
   box-sizing: border-box;
-  border-radius: 2px;
   overflow: auto;
   z-index: 2;
   position: absolute;
   bottom: 44px;
   background-color: rgb(64, 64, 64);
-  box-shadow: 1px 2px 2px 1px rgba(0,0,0,0.3);
+  border: 1px solid rgb(28, 28, 28);
 
   ul {
       list-style-type: none;
@@ -32,5 +31,5 @@
 
 .selected {
     background-color: rgb(92, 92, 92);
-    box-shadow: 1px 0px 1px 1px rgba(0,0,0,0.15);
+    border: 1px solid rgb(54, 54, 54);
 }

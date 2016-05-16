@@ -48,6 +48,13 @@ class SendMessage extends React.Component {
       this.setState({ emojiPickerActive : false });
   }
 
+  onSelectEmoji (emojiText) {
+      let text = this.refs.message.value.split(' ');
+      text.pop();
+      text.push(emojiText);
+      this.refs.message.value = text.join(' ');
+  }
+
   onInput() {
       const lastWord = this.refs.message.value.split(' ').pop();
       this.setState({ lastWord: lastWord });
@@ -62,20 +69,6 @@ class SendMessage extends React.Component {
         this.refs.emojipicker.onKeyDown(event);
     }
   }
-
-  displayEmojiText (emojiText) {
-      let text = this.refs.message.value.split(" ");
-      text.pop();
-      text.push(emojiText);
-      this.refs.message.value = text.join(" ");
-  }
-
-  onSelectEmoji (emojiText) {
-     let text = this.refs.message.value.split(' ');
-     text.pop();
-     text.push(emojiText);
-     this.refs.message.value = text.join(' ');
- }
 
   render() {
       const emojiPicker = this.state.emojiPickerActive ?
