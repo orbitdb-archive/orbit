@@ -1,5 +1,9 @@
 # Changelog for Orbit
 
+**2.2.0**
+- Update to orbit-db 0.8.x
+- Tab to finish the username when writing
+
 **2.1.0**
 - Use IPFS daemon v0.4.0
 

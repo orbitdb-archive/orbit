@@ -1,7 +1,6 @@
 # TODO
 
 ### WIP
-- Tab to finish the username when writing
 - emoji auto-completion
 
 ### Must have
