@@ -2,11 +2,15 @@
 
 import React from 'react';
 import Actions from "actions/UIActions";
+import AutoCompleter from "./AutoCompleter.js";
 import 'styles/SendMessage.scss';
+import UsersStore from 'stores/UsersStore';
 
 class SendMessage extends React.Component {
   constructor(props) {
     super(props);
+    this.autoComplete = new AutoCompleter();
+    this.autoComplete.onUpdated = (text) => this.refs.message.value = text;
     this.state = {
       theme: props.theme
     };
@@ -37,18 +41,9 @@ class SendMessage extends React.Component {
   }
 
   onKeyDown(event) {
-    // console.log("KEYDOWN", event.type, event.which);
-    if(event.which === 9) {
-      // Tab
-      event.preventDefault();
-      // TODO: autocomplete user names
-    } else if(event.which === 186) {
-      // ':'
-      // TODO: bring up emoji preview
-    }
-    return;
+    this.autoComplete.onKeyDown(event, this.refs.message.value, UsersStore.users);
   }
-
+  
   render() {
     return (
       <div className="SendMessage">
