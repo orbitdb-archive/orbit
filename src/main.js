@@ -8,13 +8,17 @@ const logger       = Logger.create("Orbit.Main", { color: Logger.Colors.Yellow }
 const ipfsd        = require('ipfsd-ctl');
 const SocketApi    = require('./api/SocketApi');
 const HttpApi      = require('./api/HttpApi');
+const utils        = require('./utils');
 const Orbit        = require('./Orbit');
 
 var ENV = process.env["ENV"] || "release";
 logger.debug("Running in '" + ENV + "' mode");
 process.env.PATH += ":/usr/local/bin" // fix for Electron app release bug (PATH doesn't get carried over)
 
-const getAppPath = () => process.type && process.env.ENV !== "dev" ? process.resourcesPath + "/app/" : process.cwd();
+// Create data directory
+const dataPath = path.join(utils.getAppPath(), "/data");
+if(!fs.existsSync(dataPath))
+  fs.mkdirSync(dataPath);
 
 /* MAIN */
 const events = new EventEmitter();
@@ -49,7 +53,7 @@ const start = exports.start = () => {
   return ipfsDaemon()
     .then((res) => {
       ipfs = res;
-      orbit = new Orbit(ipfs, events);
+      orbit = new Orbit(ipfs, events, { dataPath: dataPath });
     })
     .then(() => HttpApi(ipfs, events))
     .then((httpApi) => SocketApi(httpApi.socketServer, httpApi.server, events, orbit))
@@ -60,12 +64,12 @@ const start = exports.start = () => {
     })
     .then(() => {
       // auto-login if there's a user.json file
-      var userFile = path.join(path.resolve(getAppPath(), "user.json"));
+      var userFile = path.join(path.resolve(utils.getAppPath(), "user.json"));
       if(fs.existsSync(userFile)) {
         const user = JSON.parse(fs.readFileSync(userFile));
         logger.debug(`Using credentials from '${userFile}'`);
         logger.debug(`Registering as '${user.username}'`);
-        const network = 'QmZjhqUtFK3aWbUfjYEsgS8CMK8fZrQXqUcqW5Q32LznMk';
+        const network = 'QmRB8x6aErtKTFHDNRiViixSKYwW1DbfcvJHaZy1hnRzLM';
         return orbit.connect(network, user.username, user.password);
       }
       return;

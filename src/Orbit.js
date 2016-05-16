@@ -10,23 +10,23 @@ const Logger       = require('logplease');
 const logger       = Logger.create("Orbit.Orbit", { color: Logger.Colors.Green });
 const utils        = require('./utils');
 
-// const getAppPath = () => {
-//   return process.type && process.env.ENV !== "dev" ? process.resourcesPath + "/app/" : process.cwd();
-// }
-
-const cacheFile = path.resolve(utils.getAppPath(), "/data/orbit-db-cache.json");
+const defaultOptions = {
+  dataPath: path.join(utils.getAppPath(), "/data")
+};
 
 class Orbit {
-  constructor(ipfs, events) {
+  constructor(ipfs, events, options) {
     this.ipfs = ipfs;
     this.orbit = null;
     this.events = events;
+    this.options = options || defaultOptions;
+    this.options.cacheFile = path.join(this.options.dataPath, "/orbit-db-cache.json");
     this._channels = {};
   }
 
   connect(network, username, password) {
     const user = { username: username, password: password };
-    logger.debug("Load cache from:", cacheFile);
+    logger.debug("Load cache from:", this.options.cacheFile);
     logger.info(`Connecting to network '${network}' as '${username}`);
     OrbitDB.connect(network, user.username, user.password, this.ipfs)
       .then((orbit) => {
@@ -36,6 +36,7 @@ class Orbit {
         this.orbit.events.on('ready', this._handleDatabaseReady.bind(this));
         this.orbit.events.on('sync', this._handleSync.bind(this));
         this.orbit.events.on('synced', this._handleSynced.bind(this));
+        return;
       })
       .then(() => {
         logger.info(`Connected to '${this.orbit.network.name}' at '${this.orbit.network.publishers[0]}' as '${user.username}`)
@@ -70,8 +71,8 @@ class Orbit {
   join(channel, password, callback) {
     logger.debug(`Join #${channel}`);
     if(!this._channels[channel]) {
-      this._channels[channel] = { name: channel, password: password, db: null, state: { loading: true, syncing: false }};
-      this.orbit.eventlog(channel, { cacheFile: cacheFile }).then((db) => {
+      this._channels[channel] = { name: channel, password: password, db: null, state: { loading: true, syncing: true }};
+      this.orbit.eventlog(channel, { cacheFile: this.options.cacheFile }).then((db) => {
         this._channels[channel].db = db;
         this._channels[channel].state.loading = false;
         this.events.emit('channels.updated', this.getChannels());
@@ -113,7 +114,7 @@ class Orbit {
     let options = { limit: amount };
     if(lessThanHash) options.lt = lessThanHash;
     if(greaterThanHash) options.gte = greaterThanHash;
-    const messages = this._channels[channel].db.iterator(options).collect();
+    const messages = this._channels[channel].db ? this._channels[channel].db.iterator(options).collect() : [];
     if(callback) callback(channel, messages);
   }
 

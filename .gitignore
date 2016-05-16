@@ -20,3 +20,5 @@ user.json
 orbit-db-cache.json
 
 Vagrantfile
+
+data/
