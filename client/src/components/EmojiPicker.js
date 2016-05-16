@@ -7,9 +7,10 @@ import { emojiData } from "../utils/emojilist";
 import emojisAnnotations from 'emoji-annotation-to-unicode';
 import 'styles/EmojiPicker.scss';
 
+const modulo = (op1, op2) => (((op1 % op2) + op2) % op2);
 const supportedEmojis = Object.values(emojisAnnotations).filter((e) => e !== '1f642');
 const emojiList = _.pickBy(emojiData, (e) => supportedEmojis.indexOf(e.unicode) > -1);
-const maxEmojiAmount = 100;
+
 const filterEmojis = function(emojiList, word, amount) {
   return Object.values(emojiList)
     .filter((e) => e.shortname.indexOf(word) > -1 || e.aliases.indexOf(word) > -1 || word === '')
@@ -33,7 +34,8 @@ class EmojiPicker extends React.Component {
         super(props);
         this.state = {
             emojis: [],
-            highlightedIndex: 0
+            highlightedIndex: 0,
+            keysDown: {}
         }
     }
 
@@ -42,6 +44,13 @@ class EmojiPicker extends React.Component {
         this.props.onSelectEmoji(emojiShortName);
     }
 
+    onKeyUp(event) {
+        if (event.which === 16) {
+            // Shift
+            const keysDown = { 'shift' : false };
+            this.setState({ keysDown: keysDown });
+        }
+    }
     onKeyDown(event) {
         if (event.which === 8) {
             // Backspace
@@ -50,15 +59,35 @@ class EmojiPicker extends React.Component {
                 event.preventDefault();
                 this.setState({ highlightedIndex: 0});
             }
-        }
-        if(event.which === 9 || event.which === 39) {
-            // Tab or Right
+        } else if (event.which === 16) {
+            // Shift
+            const keysDown = { 'shift' : true };
+            this.setState({ keysDown: keysDown });
+        } else if(event.which === 9) {
+            // Tab
             event.preventDefault();
-            this.cycleRight();
+            if (this.state.keysDown['shift']) {
+                // Shift + Tab
+                this.cycle(-1);
+            } else {
+                this.cycle(1);
+            }
+        } else if (event.which === 39) {
+            // Right arrow
+            event.preventDefault();
+            this.cycle(1);
         } else if (event.which === 37) {
-            // Left
+            // Left arrow
             event.preventDefault();
-            this.cycleLeft();
+            this.cycle(-1);
+        } else if (event.which === 38) {
+            // Up arrow
+            event.preventDefault();
+            this.cycleRow(-8);
+        } else if (event.which === 40) {
+            // Down arrow
+            event.preventDefault();
+            this.cycleRow(8);
         } else if (event.which === 13 || event.which === 32) {
             // Return or Space
             event.preventDefault();
@@ -71,30 +100,36 @@ class EmojiPicker extends React.Component {
           }
       }
 
-      cycleRight() {
-          const newIndex = this.state.highlightedIndex + 1;
-          const highlightedIndex = newIndex % this.state.emojis.length;
+      cycleRow(step) {
+          const newIndex = this.state.highlightedIndex + step;
+          const elemsPerRow = 8;
+          const offset = modulo(newIndex, elemsPerRow);
+          const count = this.state.emojis.length;
+          const numRows = Math.ceil(count/elemsPerRow);
+          const maxRow = numRows*elemsPerRow - (elemsPerRow - offset) < count ? numRows : numRows - 1;
+          const row = modulo(Math.floor(newIndex / elemsPerRow), maxRow);
+          const highlightedIndex = row*elemsPerRow + offset;
           this.setState({ highlightedIndex: highlightedIndex });
           this.selectEmoji(highlightedIndex);
       }
 
-      cycleLeft() {
-          let newIndex = this.state.highlightedIndex - 1;
+      cycle(step) {
+          const newIndex = this.state.highlightedIndex + step;
           const count = this.state.emojis.length;
-          const highlightedIndex = ((newIndex % count) + count) % count;
+          const highlightedIndex = modulo(newIndex, count);
           this.setState({ highlightedIndex: highlightedIndex });
           this.selectEmoji(highlightedIndex);
       }
 
       componentWillReceiveProps(nextProps) {
-          const emojis = filterEmojis(emojiList, nextProps.filterText, maxEmojiAmount);
+          const emojis = filterEmojis(emojiList, nextProps.filterText, 100);
           this.setState({ emojis: emojis });
           if(nextProps.filterText === '' || emojis.length === 0)
               this.props.onClose();
       }
 
       componentDidMount() {
-          const emojis = filterEmojis(emojiList, this.props.filterText, maxEmojiAmount);
+          const emojis = filterEmojis(emojiList, this.props.filterText, 100);
           this.setState({emojis: emojis});
           if(emojis.length === 0)
               this.props.onClose();

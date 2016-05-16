@@ -62,7 +62,11 @@ class SendMessage extends React.Component {
           this.setState({ emojiPickerActive: this.props.useEmojis });
       }
   }
-
+  onKeyUp(event){
+      if (this.state.emojiPickerActive) {
+          this.refs.emojipicker.onKeyUp(event);
+      }
+  }
   onKeyDown(event) {
     this.autoComplete.onKeyDown(event, this.refs.message.value, UsersStore.users);
     if (this.state.emojiPickerActive) {
@@ -87,6 +91,7 @@ class SendMessage extends React.Component {
             autoComplete={true}
             style={this.state.theme}
             onKeyDown={this.onKeyDown.bind(this)}
+            onKeyUp={this.onKeyUp.bind(this)}
             onInput={this.onInput.bind(this)}
             />
         </form>
