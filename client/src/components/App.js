@@ -11,6 +11,7 @@ import UIActions from "actions/UIActions";
 import SocketActions from 'actions/SocketActions';
 import NetworkActions from 'actions/NetworkActions';
 import NotificationActions from 'actions/NotificationActions';
+import ChannelActions from 'actions/ChannelActions';
 
 import AppStateStore from 'stores/AppStateStore';
 import UserStore from 'stores/UserStore';
@@ -37,6 +38,8 @@ import 'styles/App.scss';
 import 'styles/Scrollbars.scss';
 import 'highlight.js/styles/hybrid.css';
 
+import Main from '../main';
+
 const views = {
   "Index": "/",
   "Settings": "/settings",
@@ -46,6 +49,90 @@ const views = {
 };
 
 const logger = Logger.create('App', { color: Logger.Colors.Red });
+
+Main.start()
+  .then((orbit) => {
+    console.log("Systems started");
+    // events.emit('socket.connected', { omg: "hello" })
+    // events.on('network', (network) => logger.info("On.Network", network));
+    // socket.on(ApiMessages.network.disconnect, () => orbit.disconnect());
+    // socket.on(ApiMessages.register, (host, username, password) => orbit.connect(host, username, password));
+    // socket.on(ApiMessages.channels.get, (cb) => orbit.getChannels(cb));
+    // socket.on(ApiMessages.channel.join, (channel, password, cb) => orbit.join(channel, password, cb));
+    // socket.on(ApiMessages.channel.part, (channel) => orbit.leave(channel));
+    // socket.on(ApiMessages.channel.messages, (channel, lessThanHash, greaterThanHash, amount, callback) => orbit.getMessages(channel, lessThanHash, greaterThanHash, amount, callback));
+    // socket.on(ApiMessages.post.get, (hash, callback) => orbit.getPost(hash, callback));
+    // socket.on(ApiMessages.user.get, (hash, cb) => orbit.getUser(hash, cb));
+    // socket.on(ApiMessages.message.send, (channel, message, cb) => orbit.sendMessage(channel, message, cb));
+    // socket.on(ApiMessages.file.add, (channel, filePath, cb) => orbit.addFile(channel, filePath, cb));
+    // socket.on(ApiMessages.directory.get, (hash, cb) => orbit.getDirectory(hash, cb));
+    // socket.on(ApiMessages.file.get, (hash, cb) => orbit.getFile(hash, cb));
+    // socket.on(ApiMessages.swarm.peers, (cb) => orbit.getSwarmPeers(cb));
+    NetworkActions.connect.listen((host, username, password) => orbit.connect(host, username, password));
+    NetworkActions.joinChannel.listen((channel, password) => orbit.join(channel, password, (err, res) => {
+      logger.debug("joined channel", channel, res);
+      if(!err) {
+        NetworkActions.joinedChannel(channel);
+      } else {
+        console.error("Can't join #" + channel + ":", err);
+        NetworkActions.joinChannelError(channel, err);
+      }
+    }));
+    ChannelActions.sendMessage.listen((channel: string, text: string, callback) => {
+      logger.debug("--> send message" + text);
+      UIActions.startLoading(channel, "send");
+      orbit.sendMessage(channel, text, (err) => {
+        if(err) {
+          logger.warn("Couldn't send message: " + err.toString());
+          UIActions.raiseError(err.toString());
+        }
+        UIActions.stopLoading(channel, "send");
+      });
+    });
+    ChannelActions.loadMoreMessages.listen((channel: string) => {
+      logger.debug("load more messages from #" + channel);
+      if(!MessageStore.channels[channel].loading && MessageStore.channels[channel].canLoadMore) {
+        MessageStore.channels[channel].canLoadMore = true;
+        // this.loadMessages(channel, MessageStore.getOldestMessage(channel), null, 8);
+        // logger.debug("--> GET MESSAGES #" + channel + ", " + olderThanHash + " " + newerThanHash  + " " + amount);
+        MessageStore.channels[channel].loading = true;
+        UIActions.startLoading(channel, "loadmessages", "Loading messages...");
+        const olderThanHash = MessageStore.getOldestMessage(channel);
+        orbit.getMessages(channel, olderThanHash, null, 8, (messages) => {
+          MessageStore._addMessages(channel, messages, olderThanHash !== null);
+          MessageStore.channels[channel].loading = false;
+          UIActions.stopLoading(channel, "loadmessages");
+        });
+      }
+    });
+    ChannelActions.loadPost.listen((hash: string, callback) => {
+      if(!MessageStore.posts[hash]) {
+        orbit.getPost(hash, (err, data) => {
+          MessageStore.posts[hash] = data;
+          callback(err, data);
+        })
+      } else {
+        callback(null, MessageStore.posts[hash]);
+      }
+    });
+    orbit.events.on('network', (network) => {
+      // console.log("OMG", network)
+      logger.info("On.Network", network)
+      NetworkActions.updateNetwork(network)
+      // events.emit('network', network)
+    });
+    orbit.events.on('channels.updated', (channels) => {
+      logger.info("On.CahnnelsUpdated", channels)
+      ChannelStore._updateChannels(channels);
+      // events.emit('network', network)
+    });
+    // orbit.onSocketConnected({ omg: "hello" })
+    NetworkActions.updateNetwork(null)
+  })
+  .catch((e) => {
+    logger.error(e.message);
+    logger.error("Stack trace:\n", e.stack);
+  });
 
 var App = React.createClass({
   // mixins: [History],
@@ -69,7 +156,7 @@ var App = React.createClass({
     NetworkActions.joinChannelError.listen(this.onJoinChannelError);
     SocketActions.socketDisconnected.listen(this.onDaemonDisconnected);
 
-    this.unsubscribeFromConnectionStore = ConnectionStore.listen(this.onDaemonConnected);
+    // this.unsubscribeFromConnectionStore = ConnectionStore.listen(this.onDaemonConnected);
     this.unsubscribeFromNetworkStore = NetworkStore.listen(this.onNetworkUpdated);
     this.unsubscribeFromUserStore = UserStore.listen(this.onUserUpdated);
     this.stopListeningAppState = AppStateStore.listen(this._handleAppStateChange);

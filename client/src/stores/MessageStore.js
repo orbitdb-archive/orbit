@@ -140,30 +140,30 @@ const MessageStore = Reflux.createStore({
     if(this.channels[channel])
       this.trigger(channel, this.channels[channel].messages);
   },
-  onLoadMoreMessages: function(channel: string) {
-    // console.log("TRY LOAD", channel, this.currentChannel, this.channels[channel].loading, this.channels[channel].syncing, this.channels[channel].canLoadMore, this.channels[channel].isReady)
-    if(channel !== this.currentChannel)
-      return;
+  // onLoadMoreMessages: function(channel: string) {
+  //   // console.log("TRY LOAD", channel, this.currentChannel, this.channels[channel].loading, this.channels[channel].syncing, this.channels[channel].canLoadMore, this.channels[channel].isReady)
+  //   if(channel !== this.currentChannel)
+  //     return;
 
-    if(!this.channels[channel].loading && this.channels[channel].canLoadMore) {
-      logger.debug("load more messages from #" + channel);
-      this.channels[channel].canLoadMore = true;
-      this.loadMessages(channel, this.getOldestMessage(channel), null, messagesBatchSize);
-    }
-  },
-  loadMessages: function(channel: string, olderThanHash: string, newerThanHash: string, amount: number) {
-    if(!this.socket)
-      return;
+  //   if(!this.channels[channel].loading && this.channels[channel].canLoadMore) {
+  //     logger.debug("load more messages from #" + channel);
+  //     this.channels[channel].canLoadMore = true;
+  //     this.loadMessages(channel, this.getOldestMessage(channel), null, messagesBatchSize);
+  //   }
+  // },
+  // loadMessages: function(channel: string, olderThanHash: string, newerThanHash: string, amount: number) {
+  //   if(!this.socket)
+  //     return;
 
-    logger.debug("--> GET MESSAGES #" + channel + ", " + olderThanHash + " " + newerThanHash  + " " + amount);
-    this.channels[channel].loading = true;
-    UIActions.startLoading(channel, "loadmessages", "Loading messages...");
-    this.socket.emit('channel.get', channel, olderThanHash, newerThanHash, amount, (c, messages) => {
-      this._addMessages(channel, messages, olderThanHash !== null);
-      this.channels[channel].loading = false;
-      UIActions.stopLoading(channel, "loadmessages");
-    });
-  },
+  //   logger.debug("--> GET MESSAGES #" + channel + ", " + olderThanHash + " " + newerThanHash  + " " + amount);
+  //   this.channels[channel].loading = true;
+  //   UIActions.startLoading(channel, "loadmessages", "Loading messages...");
+  //   this.socket.emit('channel.get', channel, olderThanHash, newerThanHash, amount, (c, messages) => {
+  //     this._addMessages(channel, messages, olderThanHash !== null);
+  //     this.channels[channel].loading = false;
+  //     UIActions.stopLoading(channel, "loadmessages");
+  //   });
+  // },
   _addMessages: function(channel: string, newMessages: Array, older: boolean) {
     logger.debug("<-- messages: " + channel + " - " + newMessages.length);
     console.log(newMessages);
@@ -233,6 +233,9 @@ const MessageStore = Reflux.createStore({
     }
   },
   onSendMessage: function(channel: string, text: string, callback) {
+    if(!this.socket)
+      return;
+
     logger.debug("--> send message" + text);
     UIActions.startLoading(channel, "send");
     this.socket.emit('message.send', channel, text, (err) => {

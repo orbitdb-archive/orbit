@@ -36,14 +36,14 @@ var NetworkStore = Reflux.createStore({
     this.network = null;
     this.trigger(this.network);
   },
-  onConnect: function(host, username, password) {
-    if(!this.socket) {
-      console.error("Socket not connected");
-      return;
-    }
-    logger.debug("--> connect to " + host + " as " + username);
-    this.socket.emit('register', host, username, password); // TODO: rename event to 'connect'
-  },
+  // onConnect: function(host, username, password) {
+  //   if(!this.socket) {
+  //     console.error("Socket not connected");
+  //     return;
+  //   }
+  //   logger.debug("--> connect to " + host + " as " + username);
+  //   this.socket.emit('register', host, username, password); // TODO: rename event to 'connect'
+  // },
   onDisconnect: function() {
     logger.debug("disconnect");
     this.socket.emit('network.disconnect');

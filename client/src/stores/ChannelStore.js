@@ -39,9 +39,17 @@ var ChannelStore = Reflux.createStore({
     this.init();
     this.trigger(this.channels);
   },
+  onJoinedChannel: function(channel) {
+    this.trigger(this.channels);
+  },
   onJoinChannel: function(channel, password) {
     if(channel === AppStateStore.state.currentChannel)
       return;
+
+    if(!this.socket) {
+      console.error("Socket not connected");
+      return;
+    }
 
     this.socket.emit("channel.join", channel, password, (err, res) => {
       logger.debug("joined channel", channel, res);
