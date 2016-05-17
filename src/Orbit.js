@@ -61,7 +61,7 @@ class Orbit {
   getChannels(callback) {
     const channels = Object.keys(this._channels)
       .map((f) => this._channels[f])
-      .map((f) => { return { name: f.name, password: f.password, db: f.db, state: f.state } });
+      .map((f) => { return { name: f.name, password: f.password, state: f.state } });
 
     if(callback) callback(channels);
 
@@ -263,8 +263,8 @@ class Orbit {
   _handleSynced(channel, items) {
     logger.debug("channel synced", channel, items.length)
     this._channels[channel].state.syncing = false;
-    // this.events.emit('channels.updated', this.getChannels());
-    // this.events.emit('synced', channel, items)
+    this.events.emit('channels.updated', this.getChannels());
+    this.events.emit('synced', channel, items)
   }
 
   onSocketConnected(socket) {
