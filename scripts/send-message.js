@@ -35,19 +35,36 @@ let run = (async(() => {
         orbit.events.on('load', () => console.log("loading history"))
         orbit.events.on('synced', () => {
           console.log("ready!")
-          let items = db.iterator({ limit: -1 })
-            .collect()
-            .map((f) => ipfs.object.get(f.payload.value, { enc: 'base58' }))
+          const data = {
+            content: message,
+            from: username
+          };
+          console.log("1")
+          Post.create(ipfs, Post.Types.Message, data)
+            .then((post) => {
+          console.log("2")
+              return db.add(post.Hash)
+            })
+            .then(() => {
+          console.log("3")
+              let items = db.iterator({ limit: -1 })
+                .collect()
+                .map((f) => ipfs.object.get(f.payload.value, { enc: 'base58' }))
 
-          Promise.all(items).then((res) => {
-            const events = res.map((f) => JSON.parse(f.toJSON().Data));
-            console.log("---------------------------------------------------")
-            console.log("Timestamp | Message | From")
-            console.log("---------------------------------------------------")
-            console.log(events.map((e) => `${e.meta.ts} | ${e.content} | ${e.meta.from}`).join("\n"));
-            console.log("---------------------------------------------------")
-            process.exit(0);
-          });
+              Promise.all(items).then((res) => {
+                const events = res.map((f) => JSON.parse(f.toJSON().Data));
+                console.log("---------------------------------------------------")
+                console.log("Timestamp | Message | From")
+                console.log("---------------------------------------------------")
+                console.log(events.map((e) => `${e.meta.ts} | ${e.content} | ${e.meta.from}`).join("\n"));
+                console.log("---------------------------------------------------")
+                process.exit(0);
+              });
+            })
+            .catch((e) => {
+              console.log("EEE", e)
+              throw e;
+            })
         });
         return orbit;
       })

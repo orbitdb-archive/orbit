@@ -5,11 +5,12 @@ const path         = require('path');
 const EventEmitter = require('events').EventEmitter;
 const Logger       = require('logplease');
 const logger       = Logger.create("Orbit.Main", { color: Logger.Colors.Yellow });
-const ipfsd        = require('ipfsd-ctl');
+// const ipfsd        = require('ipfsd-ctl');
 const SocketApi    = require('./api/SocketApi');
 const HttpApi      = require('./api/HttpApi');
 const utils        = require('./utils');
 const Orbit        = require('./Orbit');
+const IPFS         = require('ipfs');
 
 var ENV = process.env["ENV"] || "release";
 logger.debug("Running in '" + ENV + "' mode");
@@ -30,23 +31,27 @@ const start = exports.start = () => {
   const ipfsDaemon = () => {
     logger.info("Starting IPFS...");
     return new Promise((resolve, reject) => {
-      ipfsd.local((err, node) => {
-        if(err) reject(err);
-        if(node.initialized) {
-          node.startDaemon((err, ipfs) => {
-            if(err) reject(err);
-            resolve(ipfs);
-          });
-        } else {
-          node.init((err, res) => {
-            if(err) reject(err);
-            node.startDaemon((err, ipfs) => {
-              if(err) reject(err);
-              resolve(ipfs);
-            });
-          });
-        }
-      });
+      const ipfs = new IPFS();
+      ipfs.goOnline(() => {
+        resolve(ipfs)
+      })
+      // ipfsd.local((err, node) => {
+      //   if(err) reject(err);
+      //   if(node.initialized) {
+      //     node.startDaemon((err, ipfs) => {
+      //       if(err) reject(err);
+      //       resolve(ipfs);
+      //     });
+      //   } else {
+      //     node.init((err, res) => {
+      //       if(err) reject(err);
+      //       node.startDaemon((err, ipfs) => {
+      //         if(err) reject(err);
+      //         resolve(ipfs);
+      //       });
+      //     });
+      //   }
+      // });
     });
   };
 

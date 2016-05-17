@@ -98,15 +98,16 @@ class Orbit {
   }
 
   getSwarmPeers(callback) {
-    this.ipfs.swarm.peers()
-      .then((peers) => {
-        if(callback)
-          callback(peers.Strings);
-      })
-      .catch((e) => {
-        this._handleError(e);
-        if(callback) callback(null);
-      });
+    callback([]);
+    // this.ipfs.swarm.peers()
+    //   .then((peers) => {
+    //     if(callback)
+    //       callback(peers.Strings);
+    //   })
+    //   .catch((e) => {
+    //     this._handleError(e);
+    //     if(callback) callback(null);
+    //   });
   }
 
   getMessages(channel, lessThanHash, greaterThanHash, amount, callback) {
@@ -115,14 +116,17 @@ class Orbit {
     if(lessThanHash) options.lt = lessThanHash;
     if(greaterThanHash) options.gte = greaterThanHash;
     const messages = this._channels[channel].db ? this._channels[channel].db.iterator(options).collect() : [];
+    console.log(JSON.stringify(messages, null, 2))
     if(callback) callback(channel, messages);
   }
 
   getPost(hash, callback) {
-    this.ipfs.object.get(hash)
+    console.log("!!!", hash)
+    this.ipfs.object.get(hash, { enc: 'base58' })
       .then((res) => {
+        console.log("--", JSON.parse(res.toJSON().Data))
         if(callback)
-          callback(null, JSON.parse(res.Data));
+          callback(null, JSON.parse(res.toJSON().Data));
       })
       .catch((e) => {
         this._handleError(e);
@@ -259,8 +263,8 @@ class Orbit {
   _handleSynced(channel, items) {
     logger.debug("channel synced", channel, items.length)
     this._channels[channel].state.syncing = false;
-    this.events.emit('channels.updated', this.getChannels());
-    this.events.emit('synced', channel, items)
+    // this.events.emit('channels.updated', this.getChannels());
+    // this.events.emit('synced', channel, items)
   }
 
   onSocketConnected(socket) {
