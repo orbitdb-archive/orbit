@@ -20,10 +20,11 @@ var NetworkStore = Reflux.createStore({
     this.orbit = orbit;
     this.orbit.events.on('network', (network) => {
       logger.info("orbit.event: network", network)
-      this.onUpdateNetwork(network)
+      this._updateNetwork(network)
     });
+    this._updateNetwork(null)
   },
-  onUpdateNetwork: function(network) {
+  _updateNetwork: function(network) {
     logger.debug("Received network state");
     if(!network) logger.debug("not connected to a network");
     this.network = network;

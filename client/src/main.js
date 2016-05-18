@@ -22,7 +22,6 @@ const dataPath = path.join(utils.getAppPath(), "/data");
 // if(!fs.existsSync(dataPath))
 //   fs.mkdirSync(dataPath);
 
-logger.debug("1");
 /* MAIN */
 const events = new EventEmitter();
 let ipfs, orbit;
@@ -57,10 +56,8 @@ const start = exports.start = () => {
     });
   };
 
-logger.debug("2");
   return ipfsDaemon()
     .then((res) => {
-logger.debug("3");
       ipfs = res;
       orbit = new Orbit(ipfs, events, { dataPath: dataPath });
       return;

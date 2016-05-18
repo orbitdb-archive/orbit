@@ -13,6 +13,8 @@ import UIActions from 'actions/UIActions';
 import ChannelActions from 'actions/ChannelActions';
 import Halogen from 'halogen';
 import 'styles/Channel.scss';
+import Logger from 'logplease';
+const logger = Logger.create('Channel', { color: Logger.Colors.Cyan });
 
 class Channel extends React.Component {
   constructor(props) {
@@ -42,6 +44,7 @@ class Channel extends React.Component {
 
   componentWillReceiveProps(nextProps) {
     if(nextProps.channel !== this.state.channelName) {
+      console.log("------>")
       this.setState({
         channelChanged: true,
         displayNewMessagesIcon: false,
@@ -49,7 +52,7 @@ class Channel extends React.Component {
         messages: []
       });
       UIActions.focusOnSendMessage();
-      this._onLoadStateChange(nextProps.channel, LoadingStateStore.queue);
+      this._onLoadStateChange(nextProps.channel, LoadingStateStore.state);
       this._onChannelStateChanged(nextProps.channel);
       ChannelActions.loadMessages(nextProps.channel);
     }
@@ -69,6 +72,7 @@ class Channel extends React.Component {
     this.stopListeningChannelState = ChannelActions.reachedChannelStart.listen(this._onReachedChannelStart.bind(this));
     this.unsubscribeFromErrors = UIActions.raiseError.listen(this._onError.bind(this));
     this.node = this.refs.MessagesView;
+    this._onLoadStateChange(this.state.channelName, LoadingStateStore.state);
   }
 
   _onChannelStateChanged(channelName) {
@@ -79,14 +83,19 @@ class Channel extends React.Component {
   }
 
   _onLoadStateChange(channel, state) {
+    if(!channel || !state)
+      return;
+
+    logger.debug("LOAD STATE", channel, state)
     const loadingState = state[channel];
-    // console.log("LOAD STATE", channel, state)
     if(loadingState) {
       const loading = Object.keys(loadingState).filter((f) => loadingState[f]);
       const loadingText = loadingState[_.last(loading)] ? loadingState[_.last(loading)].message : null;
+      logger.debug("STATE SET", loading.length > 0, loadingText)
       this.setState({ loading: loading.length > 0, loadingText: loadingText });
     } else {
-      this.setState({ loading: false, loadingText: "" });
+      logger.debug("NOT LOADING")
+      this.setState({ loading: false });
     }
   }
 
@@ -96,6 +105,7 @@ class Channel extends React.Component {
   }
 
   _onReachedChannelStart() {
+    logger.warn("REACHED CHANNEL START")
     this.setState({ reachedChannelStart: true });
   }
 
@@ -168,8 +178,12 @@ class Channel extends React.Component {
       this.setState({ channelChanged: false });
     }
 
-    if(this._shouldLoadMoreMessages())
-      this.loadOlderMessages();
+    // Wait for the render (paint) cycle to finish before checking.
+    // The DOM element sizes (ie. scrollHeight and clientHeight) are not updated until the paint cycle finishes.
+    window.requestAnimationFrame(() => {
+      if(this._shouldLoadMoreMessages())
+        this.loadOlderMessages();
+    });
   }
 
   _shouldLoadMoreMessages() {
@@ -253,7 +267,9 @@ class Channel extends React.Component {
               />;
     });
 
-    let channelStateText = this.state.loading && this.state.loadingText ? this.state.loadingText : `Loading messages...`;
+    // let channelStateText = this.state.loading && this.state.loadingText ? this.state.loadingText : `Loading messages...`;
+    let channelStateText = this.state.loadingText ? this.state.loadingText : `Loading messages...`;
+    console.log("=====================", this.state.loading, this.state.reachedChannelStart, this.state.loadingText);
     if(this.state.reachedChannelStart && !this.state.loading)
       channelStateText = `Beginning of # ${this.state.channelName}`;
 
