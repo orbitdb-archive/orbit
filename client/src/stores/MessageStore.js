@@ -25,29 +25,36 @@ const MessageStore = Reflux.createStore({
     this.posts = {}; // simple cache for message contents
     this._reset();
     this.stopListeningChannelUpdates = ChannelStore.listen((channels) => {
-      logger.debug("Channels state updated")
       const channel = channels.find((e) => e.name === this.currentChannel);
+      // logger.debug("Channels state updated for", channel)
       this._updateLoadingState(channel);
     });
   },
   onInitialize: function(orbit) {
     this.orbit = orbit;
     const self = this;
-    this.orbit.events.on('data', (channel, message) => {
+    this.orbit.events.on('data', (channel, hash) => {
       logger.info("New messages in #" + channel)
       self.loadMessages(channel, null, null, messagesBatchSize);
+    });
+    this.orbit.events.on('load', (channel) => {
+    });
+    this.orbit.events.on('ready', (channel) => {
+      this.channels[channel].canLoadMore = true;
+    });
+    this.orbit.events.on('sync', (channel) => {
     });
     this.orbit.events.on('synced', (channel, items) => {
       logger.info("Channel synced: #" + channel)
       self.channels[channel].canLoadMore = true;
       if(self.channels[channel] && !self.channels[channel].loading)
         self.loadMessages(channel, null, null, messagesBatchSize);
-    })
+    });
   },
   _updateLoadingState: function(channel) {
     if(channel) {
-      logger.debug("Update channel state");
-      console.log(channel);
+      logger.debug("Update channel state", channel);
+      // console.log(channel);
       this.channels[channel.name].isReady = !channel.state.loading && !channel.state.syncing;
       this.channels[channel.name].loading = channel.state.loading;
       this.channels[channel.name].syncing = channel.state.syncing;
@@ -114,13 +121,15 @@ const MessageStore = Reflux.createStore({
     // Handle DB loading state
     this.socket.on('load', (channel) => {
       // console.log("LOAD", channel);
+      // this.channels[channel].canLoadMore = false;
     });
     this.socket.on('ready', (channel) => {
       // console.log("READY", channel);
-      this.channels[channel].canLoadMore = true;
+      // this.channels[channel].canLoadMore = true;
     });
     this.socket.on('sync', (channel) => {
       // console.log("SYNC", channel);
+      // this.channels[channel].canLoadMore = false;
     });
     this.socket.on('synced', (channel, items) => {
       // console.log("SYNCED", channel, this.channels[channel]);
@@ -140,12 +149,13 @@ const MessageStore = Reflux.createStore({
   onJoinChannel: function(channel, password) {
     this._resetChannelState(this.currentChannel);
     this.channels[channel] = { messages: [], isReady: false, loading: false, canLoadMore: true };
+    this.currentChannel = channel;
   },
   onJoinedChannel: function(channel) {
     // console.log("JOINED", channel, this.channels)
-    this.currentChannel = channel;
-    const c = ChannelStore.channels.find((e) => e.name === this.currentChannel);
-    this._updateLoadingState(c);
+    // this.currentChannel = channel;
+    // const c = ChannelStore.channels.find((e) => e.name === this.currentChannel);
+    // this._updateLoadingState(c);
   },
   onLeaveChannel: function(channel: string) {
     this._resetChannelState(channel);
@@ -160,7 +170,7 @@ const MessageStore = Reflux.createStore({
     if(channel !== this.currentChannel)
       return;
 
-    if(!this.channels[channel].loading && this.channels[channel].canLoadMore) {
+    if(!this.channels[channel].loading && !this.channels[channel].syncing && this.channels[channel].canLoadMore) {
       logger.debug("load more messages from #" + channel);
       this.channels[channel].canLoadMore = true;
       this.loadMessages(channel, this.getOldestMessage(channel), null, messagesBatchSize);
@@ -218,6 +228,7 @@ const MessageStore = Reflux.createStore({
       this.channels[channel].canLoadMore = false;
       ChannelActions.reachedChannelStart();
     }
+    logger.debug("Messages added:", unique.length, ", oldest", this.getOldestMessage(channel), this.channels[channel].isReady, older, this.channels[channel].messages.length === 0);
   },
   _loadPost: function(channel: string, message) {
     const hasMentions = (text: string, mention: string) => {

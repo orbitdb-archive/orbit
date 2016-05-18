@@ -77,7 +77,6 @@ class LoginView extends React.Component{
 
     if(network !== '' && username !== '') {
       this.setState({ error: null, connecting: true, username: username, password: password });
-      console.log("UI connect");
       NetworkActions.connect(network, username, password);
     }
 

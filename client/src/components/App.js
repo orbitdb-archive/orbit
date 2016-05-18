@@ -54,7 +54,7 @@ const logger = Logger.create('App', { color: Logger.Colors.Red });
 Main.start().then((orbit) => {
   logger.info("Orbit started");
   AppActions.initialize(orbit);
-  NetworkActions.updateNetwork(null) // start the App
+  // NetworkActions.updateNetwork(null) // start the App
 })
 .catch((e) => {
   logger.error(e.message);
@@ -161,6 +161,7 @@ var App = React.createClass({
     }
     logger.debug("Join channel #" + channelName);
     NetworkActions.joinChannel(channelName, password);
+    AppActions.setCurrentChannel(channelName);
   },
   onJoinChannelError: function(channel, err) {
     if(!this.state.panelOpen) this.setState({ panelOpen: true });
@@ -172,7 +173,7 @@ var App = React.createClass({
     this.closePanel();
     document.title = `#${channel}`;
     logger.debug("Set title: " + document.title);
-    AppActions.setCurrentChannel(channel);
+    // AppActions.setCurrentChannel(channel);
   },
   // showChannel: function(channel) {
   // },
