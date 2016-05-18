@@ -62,7 +62,7 @@ class Orbit {
   getNetwork() {
     return this.orbit ? {
       name: this.orbit.network.name,
-      host: this.orbit.network.host,
+      host: this.orbit.network.publishers[0],
       user: this.orbit.user
     } : null;
   }
@@ -125,15 +125,13 @@ class Orbit {
     if(lessThanHash) options.lt = lessThanHash;
     if(greaterThanHash) options.gte = greaterThanHash;
     const messages = this._channels[channel].db ? this._channels[channel].db.iterator(options).collect() : [];
-    console.log(JSON.stringify(messages, null, 2))
+    // console.log(JSON.stringify(messages, null, 2))
     if(callback) callback(messages);
   }
 
   getPost(hash, callback) {
-    console.log("!!!", hash)
     this.ipfs.object.get(hash, { enc: 'base58' })
       .then((res) => {
-        console.log("--", JSON.parse(res.toJSON().Data))
         if(callback)
           callback(null, JSON.parse(res.toJSON().Data));
       })
@@ -169,7 +167,7 @@ class Orbit {
 
         // this.ipfs.add(filePath, { recursive: recursive }).then((hash) => {
         this.ipfs.add(filePath, { recursive: isDirectory }).then((hash) => {
-          logger.debug("H, " + JSON.stringify(hash));
+          // logger.debug("H, " + JSON.stringify(hash));
 
           if(isDirectory) {
             // FIXME: ipfs-api returns an empty dir name as the last hash, ignore this
