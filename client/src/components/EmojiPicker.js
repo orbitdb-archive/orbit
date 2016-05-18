@@ -88,11 +88,13 @@ class EmojiPicker extends React.Component {
         } else if (event.which === 38) {
             // Up arrow
             event.preventDefault();
-            this.cycleRow(-8);
+            const step = -this.props.elemsPerRow;
+            this.cycleRow(step);
         } else if (event.which === 40) {
             // Down arrow
             event.preventDefault();
-            this.cycleRow(8);
+            const step = this.props.elemsPerRow;
+            this.cycleRow(step);
         } else if (event.which === 13 || event.which === 32) {
             // Return or Space
             event.preventDefault();
@@ -118,7 +120,7 @@ class EmojiPicker extends React.Component {
 
       cycleRow(step) {
           const newIndex = this.state.highlightedIndex + step;
-          const elemsPerRow = 8;
+          const elemsPerRow = this.props.elemsPerRow;
           const offset = modulo(newIndex, elemsPerRow);
           const count = this.state.emojis.length;
           const numRows = Math.ceil(count/elemsPerRow);
@@ -153,7 +155,7 @@ class EmojiPicker extends React.Component {
 
       render() {
           return (
-              <div className="emoji-picker">
+              <div className="emoji-picker" style={{ width:this.props.elemsPerRow * 28 + 12 }}>
                   <EmojiList
                       emojis={this.state.emojis}
                       highlightedIndex={this.state.highlightedIndex}

@@ -80,6 +80,7 @@ class SendMessage extends React.Component {
   render() {
       const emojiPicker = this.state.emojiPickerActive ?
            <EmojiPicker ref='emojipicker'
+               elemsPerRow={8}
                filterText={this.state.lastWord}
                onClose={this.onCloseEmojiPicker.bind(this)}
                onSelectEmoji={this.onSelectEmoji.bind(this)}/> : <span/>

@@ -1,5 +1,4 @@
 .emoji-picker {
-  width: 238px;
   background: #fff;
   box-sizing: border-box;
   overflow: auto;
@@ -27,9 +26,10 @@
           }
       }
   }
-}
 
-.selected {
-    background-color: rgb(92, 92, 92);
-    border: 1px solid rgb(54, 54, 54);
+  .selected {
+      background-color: rgb(92, 92, 92);
+      border: 1px solid rgb(54, 54, 54);
+      padding: 3px;
+  }
 }
