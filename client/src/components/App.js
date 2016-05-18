@@ -50,31 +50,16 @@ const views = {
 
 const logger = Logger.create('App', { color: Logger.Colors.Red });
 
-Main.start()
-  .then((orbit) => {
-    logger.info("Orbit started");
-    // events.emit('socket.connected', { omg: "hello" })
-    // events.on('network', (network) => logger.info("On.Network", network));
-    // socket.on(ApiMessages.network.disconnect, () => orbit.disconnect());
-    // socket.on(ApiMessages.register, (host, username, password) => orbit.connect(host, username, password));
-    // socket.on(ApiMessages.channels.get, (cb) => orbit.getChannels(cb));
-    // socket.on(ApiMessages.channel.join, (channel, password, cb) => orbit.join(channel, password, cb));
-    // socket.on(ApiMessages.channel.part, (channel) => orbit.leave(channel));
-    // socket.on(ApiMessages.channel.messages, (channel, lessThanHash, greaterThanHash, amount, callback) => orbit.getMessages(channel, lessThanHash, greaterThanHash, amount, callback));
-    // socket.on(ApiMessages.post.get, (hash, callback) => orbit.getPost(hash, callback));
-    // socket.on(ApiMessages.user.get, (hash, cb) => orbit.getUser(hash, cb));
-    // socket.on(ApiMessages.message.send, (channel, message, cb) => orbit.sendMessage(channel, message, cb));
-    // socket.on(ApiMessages.file.add, (channel, filePath, cb) => orbit.addFile(channel, filePath, cb));
-    // socket.on(ApiMessages.directory.get, (hash, cb) => orbit.getDirectory(hash, cb));
-    // socket.on(ApiMessages.file.get, (hash, cb) => orbit.getFile(hash, cb));
-    // socket.on(ApiMessages.swarm.peers, (cb) => orbit.getSwarmPeers(cb));'
-    AppActions.initialize(orbit);
-    NetworkActions.updateNetwork(null)
-  })
-  .catch((e) => {
-    logger.error(e.message);
-    logger.error("Stack trace:\n", e.stack);
-  });
+/* ENTRY POINT */
+Main.start().then((orbit) => {
+  logger.info("Orbit started");
+  AppActions.initialize(orbit);
+  NetworkActions.updateNetwork(null) // start the App
+})
+.catch((e) => {
+  logger.error(e.message);
+  logger.error("Stack trace:\n", e.stack);
+});
 
 var App = React.createClass({
   getInitialState: function() {
