@@ -17,17 +17,22 @@ const filterEmojis = function(emojiList, word, amount) {
     .slice(0, amount);
 };
 
-const emojify = (emojis, highlightedIndex) => {
+const emojify = (emojis, highlightedIndex, onMouseEnter, onClick) => {
   const emojiOpts = { emojiType: 'emojione' };
   return emojis
     .map(e => ReactEmoji.emojify(e.shortname, emojiOpts))
-    .map((e, index) => <li key={index} className={index === highlightedIndex ? 'selected' : ''}>{e}</li>);
+    .map((e, index) => <li key={index}
+                           onMouseEnter={ e => { e.preventDefault(); onMouseEnter(index); }}
+                           onClick={ e => { e.preventDefault(); onClick(index); }}
+                           className={index === highlightedIndex ? 'selected' : ''}>{e}</li>);
 };
 
 const EmojiList = ({
     emojis,
-    highlightedIndex
-}) => <ul> { emojify(emojis, highlightedIndex) } </ul>
+    highlightedIndex,
+    onMouseEnter,
+    onClick
+}) => <ul> { emojify(emojis, highlightedIndex, onMouseEnter, onClick) } </ul>
 
 class EmojiPicker extends React.Component {
     constructor(props) {
@@ -100,6 +105,17 @@ class EmojiPicker extends React.Component {
           }
       }
 
+      onClick(index) {
+          this.setState({ highlightedIndex: index});
+          this.selectEmoji(index);
+          this.props.onClose();
+      }
+
+      onMouseEnter(index) {
+          this.setState({ highlightedIndex: index});
+          this.selectEmoji(index);
+      }
+
       cycleRow(step) {
           const newIndex = this.state.highlightedIndex + step;
           const elemsPerRow = 8;
@@ -140,7 +156,9 @@ class EmojiPicker extends React.Component {
               <div className="emoji-picker">
                   <EmojiList
                       emojis={this.state.emojis}
-                      highlightedIndex={this.state.highlightedIndex}/>
+                      highlightedIndex={this.state.highlightedIndex}
+                      onMouseEnter={this.onMouseEnter.bind(this)}
+                      onClick={this.onClick.bind(this)}/>
               </div>
           );
       }
