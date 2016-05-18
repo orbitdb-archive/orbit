@@ -3,12 +3,11 @@
 import Reflux from 'reflux';
 
 var AppActions = Reflux.createActions([
+  "initialize",
   "setLocation",
   "setCurrentChannel",
   "windowLostFocus",
   "windowOnFocus"
-  // "increaseUnreadMessagesCount",
-  // "increaseMentionsCount",
 ]);
 
 export default AppActions;
