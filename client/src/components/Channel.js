@@ -180,10 +180,11 @@ class Channel extends React.Component {
 
     // Wait for the render (paint) cycle to finish before checking.
     // The DOM element sizes (ie. scrollHeight and clientHeight) are not updated until the paint cycle finishes.
-    window.requestAnimationFrame(() => {
+    if(this.loadMoreTimeout) clearTimeout(this.loadMoreTimeout);
+    this.loadMoreTimeout = setTimeout(() => {
       if(this._shouldLoadMoreMessages())
         this.loadOlderMessages();
-    });
+    }, 20);
   }
 
   _shouldLoadMoreMessages() {
