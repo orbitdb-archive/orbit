@@ -53,6 +53,7 @@ class SendMessage extends React.Component {
       text.pop();
       text.push(emojiText);
       this.refs.message.value = text.join(' ');
+      this.refs.message.focus();
   }
 
   onInput() {
@@ -62,11 +63,13 @@ class SendMessage extends React.Component {
           this.setState({ emojiPickerActive: this.props.useEmojis });
       }
   }
+
   onKeyUp(event){
       if (this.state.emojiPickerActive) {
           this.refs.emojipicker.onKeyUp(event);
       }
   }
+
   onKeyDown(event) {
     this.autoComplete.onKeyDown(event, this.refs.message.value, UsersStore.users);
     if (this.state.emojiPickerActive) {
