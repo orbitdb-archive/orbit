@@ -28,69 +28,9 @@ let ipfs, orbit;
 
 const start = exports.start = () => {
   const startTime = new Date().getTime();
+  logger.info("Starting IPFS...");
 
-  const ipfsDaemon = () => {
-    logger.info("Starting IPFS...");
-
-    const ipfs = new IPFS();
-    return (new Promise((resolve, reject) => {
-      ipfs.init({}, (err) => {
-        if (err) {
-          if (err.message === 'repo already exists') {
-            return resolve();
-          }
-          return reject(err);
-        }
-        resolve();
-      })
-    }))
-      .then(() => {
-        return new Promise((resolve, reject) => {
-          ipfs.config.show((err, config) => {
-            if (err) return reject(err);
-            resolve(config);
-          });
-        });
-      })
-      .then((config) => {
-        return new Promise((resolve, reject) => {
-          config.Addresses.Swarm.push('/ip4/127.0.0.1/tcp/4002/ws')
-          ipfs.config.replace(config, (err) => {
-            if (err) return reject(err);
-            resolve();
-          });
-        });
-      })
-      .then(() => {
-        return new Promise((resolve, reject) => {
-          ipfs.goOnline(() => {
-            resolve();
-          });
-        });
-      })
-      .then(() => {
-        return ipfs;
-      });
-      // ipfsd.local((err, node) => {
-      //   if(err) reject(err);
-      //   if(node.initialized) {
-      //     node.startDaemon((err, ipfs) => {
-      //       if(err) reject(err);
-      //       resolve(ipfs);
-      //     });
-      //   } else {
-      //     node.init((err, res) => {
-      //       if(err) reject(err);
-      //       node.startDaemon((err, ipfs) => {
-      //         if(err) reject(err);
-      //         resolve(ipfs);
-      //       });
-      //     });
-      //   }
-      // });
-  };
-
-  return ipfsDaemon()
+  return utils.ipfsDaemon(IPFS, '/ip4/127.0.0.1/tcp/4002/ws')
     .then((res) => {
       ipfs = res;
       orbit = new Orbit(ipfs, events, { dataPath: dataPath });
@@ -107,6 +47,14 @@ const start = exports.start = () => {
       logger.info(`IPFS Node started: ${id.Addresses[1]}/ipfs/${id.ID}`);
       return;
     })
+    .then(() => new Promise((resolve, reject) => {
+      // TODO: make dynamic
+      ipfs.libp2p.swarm.connect(
+        '/ip4/127.0.0.1/tcp/5002/ws/ipfs/QmRU7qzc4nqxLECPFYWRr9yveUmKJjYQKLayQ6q3n6ntFm', (err) => {
+          if (err) return reject(err);
+          resolve();
+        });
+    }))
     // .then(() => HttpApi(ipfs, events))
     // .then((httpApi) => SocketApi(httpApi.socketServer, httpApi.server, events, orbit))
     // .then(() => SocketApi(null, null, events, orbit))
