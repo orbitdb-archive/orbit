@@ -9,9 +9,8 @@ var SocketApi = (socketServer, httpServer, events, orbit) => {
   logger.debug("Starting socket server");
 
   let socket = null;
-  // const io = socketIo(socketServer);
-  // socketServer.listen(httpServer);
-  const io = socketIo(80);
+  const io = socketIo(socketServer);
+  socketServer.listen(httpServer);
 
   const onNetwork = (orbit) => {
     if(socket) {
