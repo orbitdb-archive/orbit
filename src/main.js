@@ -1,14 +1,14 @@
 'use strict';
 
 
-// const fs           = require('fs');
+const fs           = require('fs');
 const path         = require('path');
 const EventEmitter = require('events').EventEmitter;
 const Logger       = require('logplease');
 const logger       = Logger.create("Orbit.Main", { color: Logger.Colors.Yellow });
 // const ipfsd        = require('ipfsd-ctl');
-// const SocketApi    = require('./api/SocketApi');
-// const HttpApi      = require('./api/HttpApi');
+const SocketApi    = require('./api/SocketApi');
+const HttpApi      = require('./api/HttpApi');
 const utils        = require('./utils');
 const Orbit        = require('./Orbit');
 const IPFS         = require('ipfs');
