@@ -244,6 +244,7 @@ const MessageStore = Reflux.createStore({
     this.onLoadPost(message.value, (err, post) => {
       UserActions.addUser(post.meta.from);
       if(post && post.content) {
+        console.log("POST", post)
         if(hasMentions(post.content.toLowerCase(), UserStore.user.username.toLowerCase()))
           NotificationActions.mention(channel, post.content);
       }

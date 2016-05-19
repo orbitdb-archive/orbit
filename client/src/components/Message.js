@@ -29,7 +29,7 @@ class Message extends React.Component {
 
         post.content.split(" ").forEach((word) => {
           const highlight = MentionHighlighter.highlight(word, this.props.highlightWords);
-          if(typeof highlight[0] !== 'string') {
+          if(typeof highlight[0] !== 'string' && this.props.highlightWords !== post.meta.from) {
             this.setState({ hasHighlights: true });
             NotificationActions.mention(this.state.channelName, post.content);
           }
@@ -55,7 +55,7 @@ class Message extends React.Component {
     let content = (<div>...</div>);
 
     if(post && post.meta.type === "text") {
-      content = <TextMessage text={post.content} useEmojis={this.props.useEmojis} highlightWords={this.props.highlightWords} key={post.hash}/>;
+      content = <TextMessage text={post.content} useEmojis={this.props.useEmojis} highlightWords={post.meta.from !== this.props.highlightWords ? this.props.highlightWords : ''} key={post.hash}/>;
     } else if(post && post.meta.type === "file") {
       content = <File hash={post.hash} name={post.name} size={post.size}/>;
     } else if(post && post.meta.type === "directory") {
