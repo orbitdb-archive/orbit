@@ -6,6 +6,7 @@ import Actions from "actions/UIActions";
 import AutoCompleter from "./AutoCompleter.js";
 import 'styles/SendMessage.scss';
 import UsersStore from 'stores/UsersStore';
+import TransitionGroup from "react-addons-css-transition-group";
 
 class SendMessage extends React.Component {
   constructor(props) {
@@ -73,11 +74,22 @@ class SendMessage extends React.Component {
 
   render() {
     const emojiPicker = this.state.emojiPickerActive ?
-    <EmojiPicker ref='emojipicker'
-      elemsPerRow={8}
-      filterText={this.state.lastWord}
-      onClose={this.onCloseEmojiPicker.bind(this)}
-      onSelectEmoji={this.onSelectEmoji.bind(this)}/> : <span/>
+      <TransitionGroup
+        component="div"
+        transitionName="emojiPreview"
+        transitionAppear={true}
+        transitionAppearTimeout={1000}
+        transitionEnterTimeout={0}
+        transitionLeaveTimeout={0}
+        >
+        <EmojiPicker ref='emojipicker'
+          elemsPerRow={8}
+          filterText={this.state.lastWord}
+          onClose={this.onCloseEmojiPicker.bind(this)}
+          onSelectEmoji={this.onSelectEmoji.bind(this)}/>
+      </TransitionGroup>
+      : <span/>
+
     return (
       <div className="SendMessage">
         <form onSubmit={this.sendMessage.bind(this)}>
