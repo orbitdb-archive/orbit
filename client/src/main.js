@@ -31,11 +31,46 @@ const start = exports.start = () => {
 
   const ipfsDaemon = () => {
     logger.info("Starting IPFS...");
-    return new Promise((resolve, reject) => {
-      const ipfs = new IPFS();
-      ipfs.goOnline(() => {
-        resolve(ipfs)
+
+    const ipfs = new IPFS();
+    return (new Promise((resolve, reject) => {
+      ipfs.init({}, (err) => {
+        if (err) {
+          if (err.message === 'repo already exists') {
+            return resolve();
+          }
+          return reject(err);
+        }
+        resolve();
       })
+    }))
+      .then(() => {
+        return new Promise((resolve, reject) => {
+          ipfs.config.show((err, config) => {
+            if (err) return reject(err);
+            resolve(config);
+          });
+        });
+      })
+      .then((config) => {
+        return new Promise((resolve, reject) => {
+          config.Addresses.Swarm.push('/ip4/127.0.0.1/tcp/4002/ws')
+          ipfs.config.replace(config, (err) => {
+            if (err) return reject(err);
+            resolve();
+          });
+        });
+      })
+      .then(() => {
+        return new Promise((resolve, reject) => {
+          ipfs.goOnline(() => {
+            resolve();
+          });
+        });
+      })
+      .then(() => {
+        return ipfs;
+      });
       // ipfsd.local((err, node) => {
       //   if(err) reject(err);
       //   if(node.initialized) {
@@ -53,13 +88,23 @@ const start = exports.start = () => {
       //     });
       //   }
       // });
-    });
   };
 
   return ipfsDaemon()
     .then((res) => {
       ipfs = res;
       orbit = new Orbit(ipfs, events, { dataPath: dataPath });
+    })
+    .then(() => {
+      return new Promise((resolve, reject) => {
+        ipfs.id((err, id) => {
+          if (err) return reject(err);
+          resolve(id);
+        });
+      });
+    })
+    .then((id) => {
+      logger.info(`IPFS Node started: ${id.Addresses[1]}/ipfs/${id.ID}`);
       return;
     })
     // .then(() => HttpApi(ipfs, events))
