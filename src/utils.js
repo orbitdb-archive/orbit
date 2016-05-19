@@ -44,8 +44,9 @@ const deleteDirectoryRecursive = (path) => {
 };
 exports.deleteDirectoryRecursive = deleteDirectoryRecursive;
 
-exports.ipfsDaemon = (IPFS, addr) => {
-  const ipfs = new IPFS('/tmp/orbit');
+exports.ipfsDaemon = (IPFS, addr, repo) => {
+  repo = repo || '/tmp/orbit';
+  const ipfs = new IPFS(repo);
   return (new Promise((resolve, reject) => {
     ipfs.init({}, (err) => {
       if (err) {
@@ -58,24 +59,20 @@ exports.ipfsDaemon = (IPFS, addr) => {
     })
   }))
     .then(() => new Promise((resolve, reject) => {
-      console.log('showing config')
       ipfs.config.show((err, config) => {
         if (err) return reject(err);
         resolve(config);
       });
     }))
     .then((config) => new Promise((resolve, reject) => {
-      config.Addresses.Swarm.push(addr)
-      console.log('trying to replace config')
+      config.Addresses.Swarm = [addr]
       ipfs.config.replace(config, (err) => {
-        console.log('replaced config', err)
         if (err) return reject(err);
         resolve();
       });
     }))
     .then(() => new Promise((resolve, reject) => {
       ipfs.goOnline(() => {
-        console.log('going online')
         resolve();
       });
     }))
