@@ -119,10 +119,10 @@ class Orbit {
   }
 
   getPost(hash, callback) {
-    this.ipfs.object.get(hash)
+    this.ipfs.object.get(hash, { enc: 'base58' })
       .then((res) => {
         if(callback)
-          callback(null, JSON.parse(res.Data));
+          callback(null, JSON.parse(res.toJSON().Data));
       })
       .catch((e) => {
         this._handleError(e);
