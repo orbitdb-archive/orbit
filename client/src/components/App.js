@@ -123,6 +123,9 @@ var App = React.createClass({
       channels.map( (c) => NetworkActions.joinChannel(c.name, ''));
     }
   },
+  _makeChannelsKey: function(username, networkName) {
+    return "anonet.app." + username + "." + networkName + ".channels";
+  },
   _showConnectView: function() {
     this.setState({ user: null });
     AppActions.setLocation("Connect");
@@ -163,20 +166,21 @@ var App = React.createClass({
     document.title = `#${channel}`;
     logger.debug("Set title: " + document.title);
     AppActions.setCurrentChannel(channel);
-
-    let channels = JSON.parse(localStorage.getItem( "anonet.app." + this.state.user.username + "." + this.state.networkName + ".channels")) || [];
+    const channelsKey = this._makeChannelsKey(this.state.user.username, this.state.networkName);
+    let channels = JSON.parse(localStorage.getItem(channelsKey)) || [];
     if(!_.some(channels, { name: channel })){
       channels.push({ name: channel });
-      localStorage.setItem("anonet.app." + this.state.user.username + "." + this.state.networkName + ".channels", JSON.stringify(channels));
+      localStorage.setItem(channelsKey, JSON.stringify(channels));
     }
   },
   onLeaveChannel: function(channel) {
-    let channels = JSON.parse(localStorage.getItem( "anonet.app." + this.state.user.username + "." + this.state.networkName + ".channels"));
+    const channelsKey = this._makeChannelsKey(this.state.user.username, this.state.networkName);
+    let channels = JSON.parse(localStorage.getItem(channelsKey));
     channels = channels.filter((c) => c.name !== channel);
     if (channels.length === 0)
-      localStorage.removeItem("anonet.app." + this.state.user.username + "." + this.state.networkName + ".channels");
+      localStorage.removeItem(channelsKey);
     else
-      localStorage.setItem("anonet.app." + this.state.user.username + "." + this.state.networkName + ".channels", JSON.stringify(channels));
+      localStorage.setItem(channelsKey, JSON.stringify(channels));
   },
   // showChannel: function(channel) {
   // },
