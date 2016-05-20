@@ -57,7 +57,11 @@ const start = exports.start = () => {
   };
 
   return ipfsDaemon()
-    .then((ipfs) => orbit = new Orbit(ipfs, events, { dataPath: dataPath }))
+    .then((res) => {
+      ipfs = res;
+      orbit = new Orbit(ipfs, events, { dataPath: dataPath });
+      return;
+    })
     // .then(() => HttpApi(ipfs, events))
     // .then((httpApi) => SocketApi(httpApi.socketServer, httpApi.server, events, orbit))
     // .then(() => SocketApi(null, null, events, orbit))
