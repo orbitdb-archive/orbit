@@ -46,7 +46,7 @@ const start = exports.start = () => {
       });
     })
     .then((id) => {
-      logger.info(`IPFS Node started: ${id.Addresses[1]}/ipfs/${id.ID}`);
+      logger.info(`IPFS Node started: ${id.Addresses}/ipfs/${id.ID}`);
       return;
     })
     .then(() => {
