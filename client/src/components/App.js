@@ -119,7 +119,7 @@ var App = React.createClass({
       AppActions.setLocation("Connect");
     } else {
       this.setState({ networkName: network.name });
-      const channels = JSON.parse(localStorage.getItem( "anonet.app." + network.user.username + "." + network.name + ".channels")) || [{ 'name': 'ipfs'}];
+      const channels = JSON.parse(localStorage.getItem( "anonet.app." + network.user.username + "." + network.name + ".channels")) || [];
       channels.forEach( (c) => NetworkActions.joinChannel(c.name, ''));
     }
   },
