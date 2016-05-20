@@ -67,6 +67,7 @@ var App = React.createClass({
     // UIActions.showChannel.listen(this.showChannel);
     NetworkActions.joinedChannel.listen(this.onJoinedChannel);
     NetworkActions.joinChannelError.listen(this.onJoinChannelError);
+    NetworkActions.leaveChannel.listen(this.onLeaveChannel);
     SocketActions.socketDisconnected.listen(this.onDaemonDisconnected);
 
     this.unsubscribeFromConnectionStore = ConnectionStore.listen(this.onDaemonConnected);
@@ -118,6 +119,8 @@ var App = React.createClass({
       AppActions.setLocation("Connect");
     } else {
       this.setState({ networkName: network.name });
+      const channels = JSON.parse(localStorage.getItem( "anonet.app." + network.user.username + "." + network.name + ".channels")) || [{ 'name': 'ipfs'}];
+      channels.map( (c) => NetworkActions.joinChannel(c.name, ''));
     }
   },
   _showConnectView: function() {
@@ -160,6 +163,20 @@ var App = React.createClass({
     document.title = `#${channel}`;
     logger.debug("Set title: " + document.title);
     AppActions.setCurrentChannel(channel);
+
+    let channels = JSON.parse(localStorage.getItem( "anonet.app." + this.state.user.username + "." + this.state.networkName + ".channels")) || [];
+    if(!_.some(channels, { name: channel })){
+      channels.push({ name: channel });
+      localStorage.setItem("anonet.app." + this.state.user.username + "." + this.state.networkName + ".channels", JSON.stringify(channels));
+    }
+  },
+  onLeaveChannel: function(channel) {
+    let channels = JSON.parse(localStorage.getItem( "anonet.app." + this.state.user.username + "." + this.state.networkName + ".channels"));
+    channels = channels.filter((c) => c.name !== channel);
+    if (channels.length === 0)
+      localStorage.removeItem("anonet.app." + this.state.user.username + "." + this.state.networkName + ".channels");
+    else
+      localStorage.setItem("anonet.app." + this.state.user.username + "." + this.state.networkName + ".channels", JSON.stringify(channels));
   },
   // showChannel: function(channel) {
   // },
