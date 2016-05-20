@@ -73,7 +73,7 @@ const start = exports.start = () => {
     .then(() => HttpApi(ipfs, events))
     .then((httpApi) => SocketApi(httpApi.socketServer, httpApi.server, events, orbit))
     .then(() => {
-      events.on('socket.connected', (s) => orbit.onSocketConnected(s));
+      // events.on('socket.connected', (s) => orbit.onSocketConnected(s));
       events.on('shutdown', () => orbit.disconnect()); // From index-native (electron)
       return;
     })
