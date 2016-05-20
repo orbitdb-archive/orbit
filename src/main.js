@@ -49,27 +49,27 @@ const start = exports.start = () => {
       logger.info(`IPFS Node started: ${id.Addresses}/ipfs/${id.ID}`);
       return;
     })
-    .then(() => {
-      // Wait for browser nodes to connect and dial back when they do
-      ipfs._libp2pNode.swarm.on('peer-mux-established', (peerInfo) => {
-        const id = peerInfo.id.toB58String();
-        logger.info('node connected', id);
-        const addr = peerInfo.multiaddrs
-                .filter((addr) => {
-                  return _.includes(addr.protoNames(), 'ws');
-                })[0];
-        let target = addr.encapsulate(multiaddr(`/ipfs/${id}`)).toString()
-        target = target.replace('0.0.0.0', '127.0.0.1')
+    // .then(() => {
+    //   // Wait for browser nodes to connect and dial back when they do
+    //   ipfs._libp2pNode.swarm.on('peer-mux-established', (peerInfo) => {
+    //     const id = peerInfo.id.toB58String();
+    //     logger.info('Peer connected:', id);
+    //     const addr = peerInfo.multiaddrs
+    //             .filter((addr) => {
+    //               return _.includes(addr.protoNames(), 'ws');
+    //             })[0];
+    //     let target = addr.encapsulate(multiaddr(`/ipfs/${id}`)).toString()
+    //     target = target.replace('0.0.0.0', '127.0.0.1')
 
-        ipfs.libp2p.swarm.connect(target, (err) => {
-          if (err) {
-            logger.error('failed to connect to', target, err.message);
-            return;
-          }
-          logger.info('connected back to', target)
-        })
-      });
-    })
+    //     ipfs.libp2p.swarm.connect(target, (err) => {
+    //       if (err) {
+    //         logger.error('failed to connect to', target, err.message);
+    //         return;
+    //       }
+    //       logger.info('connected back to', target)
+    //     })
+    //   });
+    // })
     .then(() => HttpApi(ipfs, events))
     .then((httpApi) => SocketApi(httpApi.socketServer, httpApi.server, events, orbit))
     .then(() => {

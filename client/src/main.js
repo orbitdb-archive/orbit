@@ -30,7 +30,7 @@ const start = exports.start = () => {
   const startTime = new Date().getTime();
   logger.info("Starting IPFS...");
 
-  return utils.ipfsDaemon(IPFS, '/ip4/127.0.0.1/tcp/4002/ws')
+  return utils.ipfsDaemon(IPFS, '/ip4/127.0.0.1/tcp/4002/ws', '/tmp/orbit-4-' + new Date().getTime())
     .then((res) => {
       ipfs = res;
       orbit = new Orbit(ipfs, events, { dataPath: dataPath });
@@ -47,22 +47,23 @@ const start = exports.start = () => {
       logger.info(`IPFS Node started: ${id.Addresses}/ipfs/${id.ID}`);
       return;
     })
-    .then(() => new Promise((resolve, reject) => {
-      // TODO: make dynamic
-      ipfs.libp2p.swarm.connect(
-        '/ip4/127.0.0.1/tcp/5002/ws/ipfs/QmXQPVWAsecQFPjEVFSYPKaYSyJGNLENyc6JziE5K3ZqCi',
-        // '/ip4/127.0.0.1/tcp/6002/ws/ipfs/QmXQPVWAsecQFPjEVFSYPKaYSyJGNLENyc6JziE5K3ZqCi',
-        // '/ip4/127.0.0.1/tcp/5002/ws/ipfs/QmRU7qzc4nqxLECPFYWRr9yveUmKJjYQKLayQ6q3n6ntFm',
-        (err) => {
-          if (err) return reject(err);
-          resolve();
-        });
-    }))
+    // .then(() => new Promise((resolve, reject) => {
+    //   // TODO: make dynamic
+    //   ipfs.libp2p.swarm.connect(
+    //     // '/ip4/127.0.0.1/tcp/5002/ws/ipfs/QmXQPVWAsecQFPjEVFSYPKaYSyJGNLENyc6JziE5K3ZqCi',
+    //     '/ip4/127.0.0.1/tcp/6002/ws/ipfs/QmYJtjAG4wNJB3rDf5kC8T7GGvp1EKyAVu8uJQ7SYo6Y2Y',
+    //     // '/ip4/127.0.0.1/tcp/6002/ws/ipfs/QmXQPVWAsecQFPjEVFSYPKaYSyJGNLENyc6JziE5K3ZqCi',
+    //     // '/ip4/127.0.0.1/tcp/5002/ws/ipfs/QmRU7qzc4nqxLECPFYWRr9yveUmKJjYQKLayQ6q3n6ntFm',
+    //     (err) => {
+    //       if (err) return reject(err);
+    //       resolve();
+    //     });
+    // }))
     // .then(() => HttpApi(ipfs, events))
     // .then((httpApi) => SocketApi(httpApi.socketServer, httpApi.server, events, orbit))
     // .then(() => SocketApi(null, null, events, orbit))
     .then(() => {
-      events.on('socket.connected', (s) => orbit.onSocketConnected(s));
+      // events.on('socket.connected', (s) => orbit.onSocketConnected(s));
       events.on('shutdown', () => orbit.disconnect()); // From index-native (electron)
       return;
     })

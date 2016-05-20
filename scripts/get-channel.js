@@ -19,7 +19,7 @@ logger.info(`GET CHANNEL ${channelName} as ${username}`)
 
 let ipfs, db;
 let run = (() => {
-  return utils.ipfsDaemon(IPFS, '/ip4/0.0.0.0/tcp/7002/ws', '/tmp/orbit-2')
+  return utils.ipfsDaemon(IPFS, '/ip4/0.0.0.0/tcp/7002/ws', '/tmp/orbit-3')
     .then((res) => ipfs = res)
     .then(() => {
       return new Promise((resolve, reject) => {
@@ -30,15 +30,15 @@ let run = (() => {
       });
     })
     .then((id) => {
-      logger.info(`IPFS Node started: ${id.Addresses[0]}/ipfs/${id.ID}`);
+      logger.info(`IPFS Node started: ${id.Addresses}/ipfs/${id.ID}`);
       return;
     })
     // .then(() => new Promise((resolve, reject) => {
     //   // TODO: make dynamic
     //   ipfs.libp2p.swarm.connect(
-    //     // '/ip4/127.0.0.1/tcp/6002/ws/ipfs/QmYJtjAG4wNJB3rDf5kC8T7GGvp1EKyAVu8uJQ7SYo6Y2Y',
-    //     // '/ip4/127.0.0.1/tcp/5002/ws/ipfs/QmXyFxpmbDddQ5hi4UEtb7d8raLdzPQunoHe3MwSSAyJoP',
-    //     '/ip4/127.0.0.1/tcp/5002/ws/ipfs/QmXQPVWAsecQFPjEVFSYPKaYSyJGNLENyc6JziE5K3ZqCi',
+    //     '/ip4/127.0.0.1/tcp/6002/ws/ipfs/QmYJtjAG4wNJB3rDf5kC8T7GGvp1EKyAVu8uJQ7SYo6Y2Y',
+    //     // '/ip4/127.0.0.1/tcp/4002/ws/ipfs/QmXyFxpmbDddQ5hi4UEtb7d8raLdzPQunoHe3MwSSAyJoP',
+    //     // '/ip4/127.0.0.1/tcp/5002/ws/ipfs/QmXQPVWAsecQFPjEVFSYPKaYSyJGNLENyc6JziE5K3ZqCi',
     //     // '/ip4/127.0.0.1/tcp/6002/ws/ipfs/QmXQPVWAsecQFPjEVFSYPKaYSyJGNLENyc6JziE5K3ZqCi',
     //     // '/ip4/127.0.0.1/tcp/5002/ws/ipfs/QmRU7qzc4nqxLECPFYWRr9yveUmKJjYQKLayQ6q3n6ntFm',
     //     (err) => {
@@ -51,7 +51,8 @@ let run = (() => {
       logger.debug("OrbitDB")
       orbit.events.on('load', () => logger.debug("loading history"))
       orbit.events.on('synced', () => {
-        logger.debug("ready!")
+        logger.debug("Database synced")
+        // logger.debug("ready!")
         let items = db.iterator({ limit: -1 })
           .collect()
           .map((f) => ipfs.object.get(f.payload.value, { enc: 'base58' }))

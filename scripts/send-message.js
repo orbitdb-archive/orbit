@@ -1,5 +1,6 @@
 'use strict';
 
+const _         = require('lodash')
 const OrbitDB   = require('orbit-db');
 const Post      = require('ipfs-post');
 const IPFS      = require('ipfs')
@@ -47,73 +48,72 @@ let ipfs, db;
       logger.info(`IPFS Node started: ${id.Addresses[0]}/ipfs/${id.ID}`);
       return;
     })
-    .then(() => {
-      // Wait for browser nodes to connect and dial back when they do
-      ipfs._libp2pNode.swarm.on('peer-mux-established', (peerInfo) => {
-        const id = peerInfo.id.toB58String();
-        logger.debug('node connected', id);
-        const addr = peerInfo.multiaddrs
-                .filter((addr) => {
-                  return _.includes(addr.protoNames(), 'ws');
-                })[0];
-        let target = addr.encapsulate(multiaddr(`/ipfs/${id}`)).toString()
-        target = target.replace('0.0.0.0', '127.0.0.1')
+    // .then(() => {
+    //   // Wait for browser nodes to connect and dial back when they do
+    //   ipfs._libp2pNode.swarm.on('peer-mux-established', (peerInfo) => {
+    //     const id = peerInfo.id.toB58String();
+    //     logger.debug('node connected', id);
+    //     const addr = peerInfo.multiaddrs
+    //             .filter((addr) => {
+    //               return _.includes(addr.protoNames(), 'ws');
+    //             })[0];
+    //     let target = addr.encapsulate(multiaddr(`/ipfs/${id}`)).toString()
+    //     target = target.replace('0.0.0.0', '127.0.0.1')
 
-        ipfs.libp2p.swarm.connect(target, (err) => {
-          if (err) {
-            logger.error('failed to connect to', target, err.message);
-            return;
-          }
-          logger.debug('connected back to', target)
-        })
-      });
-    })
+    //     ipfs.libp2p.swarm.connect(target, (err) => {
+    //       if (err) {
+    //         logger.error('failed to connect to', target, err.message);
+    //         return;
+    //       }
+    //       logger.debug('connected back to', target)
+    //     })
+    //   });
+    // })
     .then((res) => OrbitDB.connect(network, username, password, ipfs))
     .then((orbit) => {
       logger.debug("OrbitDB")
       orbit.events.on('load', () => logger.debug("loading history"))
       orbit.events.on('synced', () => {
-        logger.debug("ready!")
+        logger.debug("Database synced")
 
         function waitForUserInput() {
-          rl.question(username + "@" + channelName + "> ", function(answer) {
-            if (answer === "exit" || answer === "quit"){
-              rl.close();
-              process.exit(0);
-            } else {
-              const data = {
-                content: answer,
-                from: username
-              };
-              Post.create(ipfs, Post.Types.Message, data)
-                .then((post) => {
-                  return db.add(post.Hash)
-                })
-                .then(() => {
-                  let items = db.iterator({ limit: -1 })
-                    .collect()
-                    .map((f) => ipfs.object.get(f.payload.value, { enc: 'base58' }))
+          let items = db.iterator({ limit: -1 })
+            .collect()
+            .map((f) => ipfs.object.get(f.payload.value, { enc: 'base58' }))
 
-                  Promise.all(items).then((res) => {
-                    const events = res.map((f) => JSON.parse(f.toJSON().Data));
-                    logger.info("\n")
-                    logger.info("---------------------------------------------------")
-                    logger.info("Timestamp | Message | From")
-                    logger.info("---------------------------------------------------")
-                    events.map((e) => logger.info(`${e.meta.ts} | ${e.content} | ${e.meta.from}`));
-                    logger.info("---------------------------------------------------")
-                    // process.exit(0);
-                  });
-                })
-                .catch((e) => {
-                  throw e;
-                })
-              waitForUserInput();
-            }
+          Promise.all(items).then((res) => {
+            const events = res.map((f) => JSON.parse(f.toJSON().Data));
+            logger.info("---------------------------------------------------")
+            logger.info("Timestamp | Message | From")
+            logger.info("---------------------------------------------------")
+            events.map((e) => logger.info(`${e.meta.ts} | ${e.content} | ${e.meta.from}`));
+            logger.info("---------------------------------------------------")
+            // process.exit(0);
+
+            rl.question(username + "@" + channelName + "> ", function(answer) {
+              if (answer === "exit" || answer === "quit"){
+                rl.close();
+                process.exit(0);
+              } else {
+                const data = {
+                  content: answer,
+                  from: username
+                };
+                Post.create(ipfs, Post.Types.Message, data)
+                  .then((post) => {
+                    return db.add(post.Hash)
+                  })
+                  .catch((e) => {
+                    throw e;
+                  })
+                waitForUserInput();
+              }
+            });
           });
         }
 
         waitForUserInput();
+
         // const data = {
         //   content: message,
         //   from: username
