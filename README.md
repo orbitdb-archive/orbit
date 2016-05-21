@@ -4,7 +4,7 @@
 
 ***Warning: Orbit is very much work-in-progress. If something is not working, please let me know and I'll make sure to fix it.***
 
-All content (messages, files, metadata) are saved in IPFS as files or objects.
+All content (messages, files, metadata) is saved in IPFS as files or objects.
 
 There's currently a server (https://github.com/haadcode/orbit-server) that tracks the head (IPFS hash) of a linked list that enables traversing the history of a channel's messages. In future this will be replaced by IPNS.
 
@@ -14,108 +14,119 @@ There's currently a server (https://github.com/haadcode/orbit-server) that track
 ![Screenshot 2](https://raw.githubusercontent.com/haadcode/orbit/master/screenshots/screenshot3%202016-04-14.png)
 ![Screenshot 3](https://raw.githubusercontent.com/haadcode/orbit/master/screenshots/screenshot6%202016-04-17.png)
 
-## Requirements
-- Node.js v4.x.x
-- npm
+## Table of Contents
 
-For development
+- [Installation](#installation)
+  - [Requirements](#requirements)
+  - [Browser](#browser)
+    - [With Credentials](#with-credentials)
+  - [Application](#application)
+- [Development](#development)
+  - [UI Development](#ui-development)
+  - [Development in Electron](#development-in-electron)
+  - [Running your own network](#running-your-own-network)
+- [Contribute](#contribute)
+- [License](#license)
 
-- Following npm modules installed globally: grunt-cli, mocha, electron-prebuilt
-- g++, gcc, make (for building native modules)
-- python 2 (for building, some native modules need it, node-fibers perhaps?)
+## Installation
 
-## Run
+### Requirements
+
+To run Orbit, [Node.js v4.x.x](http://nodejs.org) and [npm](https://npmjs.com) are required prerequisites.
+
+In the current directory, run:
+
+		npm install
+
 ### Browser
-Install and run:
-```
-npm install
-node index.js
-```
 
-Open `http://localhost:3001` in your browser
+To use Orbit in the broswer, start the program by running:
 
-### App
-Build the native app:
-```
-npm install
-grunt build
-```
+		node index.js
 
-The builds are in `dist/`. Eg. on OSX, open the application from `dist/AnonymousNetworks-darwin-x64`.
+Then, open `http://localhost:3001` in your browser.
 
-Orbit uses [Electron](http://electron.atom.io/) to wrap the application in a native executable.
+#### With Credentials
 
-### Run Options
-#### Autologin
-Create a file called `user.json` and add your wanted credentials:
-```
+To autologin, create a file called `user.json` and add your wanted credentials:
+
+```json
 {
   "username": "haadcode",
   "password": "" // Not used atm
 }
 ```
 
-Start the program:
-```
-node index.js
-```
+### Application
 
-## Build
-Build all:
-```
-grunt build
-```
+To use Orbit as a native application, build it:
 
-Build for individual platforms:
-```
+		grunt build
+
+To build for individual platforms, run one of:
+
+```sh
 grunt build_nodejs_osx
 grunt build_nodejs_linux
 grunt build_native_osx
 grunt build_native_linux
 ```
 
-The builds are in `dist/`
+The builds are in `dist/`. Eg. on OSX, open the application from `dist/AnonymousNetworks-darwin-x64`.
 
-## UI Development
-Build distributable:
-```
+Orbit uses [Electron](http://electron.atom.io/) to wrap the application in a native executable.
+
+## Development
+
+The following npm modules must installed globally: `grunt-cli`, `mocha`, `electron-prebuilt`. TODO: Link.
+- g++, gcc, make (for building native modules)
+- python 2 (for building, some native modules need it, node-fibers perhaps?) TODO Clean up.
+
+### UI Development
+
+Build the distributable:
+
+```sh
 cd client/
 npm install
 grunt build
 ```
 
-Development:
-```
-node index
-```
+Then, run the main program:
 
-```
+	node index
+
+In a separate terminal, run:
+
+```sh
 cd client/
-(npm install)
+npm install
 grunt serve
 ```
 
 ### Development in Electron
-For UI development (webpack-dev-server in the Electron app).
+For UI development ([webpack-dev-server](TODO) in the Electron app), start the webpack dev server:
 
-Start the webpack dev server:
-```
+```sh
 cd client/
 grunt serve
 ```
 
 Start Electron:
-```
-ENV=dev ./node_modules/.bin/electron . 
-```
 
-Make sure you don't have the node.js version running and no client open the browser.
+		ENV=dev ./node_modules/.bin/electron . 
 
-## Run your own network
-Get https://github.com/haadcode/orbit-server and start the server, edit `./network.json` and point to appropriate url (eg. localhost:3006)
+Make sure the node.js version is not running, and that there is no client open in the browser.
 
-## Contributing
-Would be happy to accept PRs! If you want to work on something, it'd be good to talk beforehand to make sure nobody else is working on it. You can reach me on Twitter [@haadcode](https://twitter.com/haadcode) or on IRC #ipfs on Freenode.
+### Running your own network
+
+Get [orbit-server](https://github.com/haadcode/orbit-server) and start the server, edit `./network.json` and point to the appropriate url (eg. localhost:3006).
+
+## Contribute
+
+I would be happy to accept PRs and questions! [Open a new issue](https://github.com/haadcode/orbit/issues/new) if you have any questions.
+
+If you want to work on something, it'd be good to talk beforehand to make sure nobody else is working on it. You can also reach me on Twitter [@haadcode](https://twitter.com/haadcode) or on IRC #ipfs on Freenode.
 
 See [TODO](https://github.com/haadcode/orbit/blob/master/TODO.md) for ideas and tasks up for grabs.
 
