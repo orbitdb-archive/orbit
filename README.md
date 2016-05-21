@@ -1,10 +1,8 @@
 # Orbit
 
+> A ***distributed, peer-to-peer chat application built on [IPFS](http://ipfs.io)***.
+
 ***Warning: Orbit is very much work-in-progress. If something is not working, please let me know and I'll make sure to fix it.***
-
-## Introduction
-
-Orbit is a ***distributed, peer-to-peer chat application built on [IPFS](http://ipfs.io)***.
 
 All content (messages, files, metadata) are saved in IPFS as files or objects.
 
