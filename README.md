@@ -120,3 +120,7 @@ Get https://github.com/haadcode/orbit-server and start the server, edit `./netwo
 Would be happy to accept PRs! If you want to work on something, it'd be good to talk beforehand to make sure nobody else is working on it. You can reach me on Twitter [@haadcode](https://twitter.com/haadcode) or on IRC #ipfs on Freenode.
 
 See [TODO](https://github.com/haadcode/orbit/blob/master/TODO.md) for ideas and tasks up for grabs.
+
+## License
+
+[MIT © 2016 haadcode](LICENSE)
