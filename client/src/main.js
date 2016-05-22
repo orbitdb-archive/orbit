@@ -33,7 +33,7 @@ const start = exports.start = () => {
   return utils.ipfsDaemon(IPFS, '/ip4/127.0.0.1/tcp/4002/ws', '/tmp/orbit-4-' + new Date().getTime())
     .then((res) => {
       ipfs = res;
-      orbit = new Orbit(ipfs, events, { dataPath: dataPath });
+      orbit = new Orbit(ipfs, { dataPath: dataPath });
     })
     .then(() => {
       return new Promise((resolve, reject) => {
@@ -64,7 +64,7 @@ const start = exports.start = () => {
     // .then(() => SocketApi(null, null, events, orbit))
     .then(() => {
       // events.on('socket.connected', (s) => orbit.onSocketConnected(s));
-      events.on('shutdown', () => orbit.disconnect()); // From index-native (electron)
+      // events.on('shutdown', () => orbit.disconnect()); // From index-native (electron)
       return;
     })
     .then(() => {
