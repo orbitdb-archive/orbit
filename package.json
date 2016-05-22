@@ -26,8 +26,10 @@
     "grunt-contrib-clean": "^1.0.0",
     "grunt-contrib-copy": "^1.0.0",
     "grunt-electron": "^2.0.1",
+    "ipfs": "^0.7.0",
     "load-grunt-tasks": "^3.3.0",
-    "mocha": "^2.4.5"
+    "mocha": "^2.4.5",
+    "orbit-server": "^0.2.3"
   },
   "scripts": {
     "test": "mocha",

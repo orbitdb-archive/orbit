@@ -15,10 +15,10 @@ const defaultOptions = {
 };
 
 class Orbit {
-  constructor(ipfs, events, options) {
+  constructor(ipfs, options) {
     this.ipfs = ipfs;
-    this.orbit = null;
-    this.events = events;
+    this.events = new EventEmitter();
+    this.orbitdb = null;
     this.options = options || defaultOptions;
     this.options.cacheFile = path.join(this.options.dataPath, "/orbit-db-cache.json");
     this._channels = {};
@@ -28,59 +28,55 @@ class Orbit {
     const user = { username: username, password: password };
     logger.debug("Load cache from:", this.options.cacheFile);
     logger.info(`Connecting to network '${network}' as '${username}`);
-    OrbitDB.connect(network, user.username, user.password, this.ipfs)
+    return OrbitDB.connect(network, user.username, user.password, this.ipfs)
       .then((orbit) => {
-        this.orbit = orbit
-        this.orbit.events.on('data', this._handleMessage.bind(this));
-        this.orbit.events.on('load', this._handleStartLoading.bind(this));
-        this.orbit.events.on('ready', this._handleDatabaseReady.bind(this));
-        this.orbit.events.on('sync', this._handleSync.bind(this));
-        this.orbit.events.on('synced', this._handleSynced.bind(this));
+        this.orbitdb = orbit
+        this.orbitdb.events.on('data', this._handleMessage.bind(this));
+        this.orbitdb.events.on('load', this._handleStartLoading.bind(this));
+        this.orbitdb.events.on('ready', this._handleDatabaseReady.bind(this));
+        this.orbitdb.events.on('sync', this._handleSync.bind(this));
+        this.orbitdb.events.on('synced', this._handleSynced.bind(this));
         return;
       })
       .then(() => {
-        logger.info(`Connected to '${this.orbit.network.name}' at '${this.orbit.network.publishers[0]}' as '${user.username}`)
-        this.events.emit('network', this.orbit);
+        logger.info(`Connected to '${this.orbitdb.network.name}' at '${this.orbitdb.network.publishers[0]}' as '${user.username}`)
+        this.events.emit('network', this.network);
+        return;
       })
       .catch((e) => {
-        this.orbit = null;
-        this._handleError(e);
+        this.orbitdb = null;
+        throw e;
+        // this._handleError(e);
       });
   }
 
   disconnect() {
-    if(this.orbit) {
-      logger.warn(`Disconnected from '${this.orbit.network.name}' at '${this.orbit.network.publishers[0]}'`);
-      this.orbit.disconnect();
-      this.orbit = null;
+    if(this.orbitdb) {
+      logger.warn(`Disconnected from '${this.orbitdb.network.name}' at '${this.orbitdb.network.publishers[0]}'`);
+      this.orbitdb.disconnect();
+      this.orbitdb = null;
       this._channels = {};
-      this.events.emit('network', this.orbit);
+      this.events.emit('network', this.network);
     }
-  }
-
-  getChannels(callback) {
-    const channels = Object.keys(this._channels)
-      .map((f) => this._channels[f])
-      .map((f) => { return { name: f.name, password: f.password, db: f.db, state: f.state } });
-
-    if(callback) callback(channels);
-
-    return channels;
   }
 
   join(channel, password, callback) {
     logger.debug(`Join #${channel}`);
     if(!this._channels[channel]) {
       this._channels[channel] = { name: channel, password: password, db: null, state: { loading: true, syncing: true }};
-      this.orbit.eventlog(channel, { cacheFile: this.options.cacheFile }).then((db) => {
-        this._channels[channel].db = db;
-        this._channels[channel].state.loading = false;
-        this.events.emit('channels.updated', this.getChannels());
-      });
+      return this.orbitdb.eventlog(channel, { cacheFile: this.options.cacheFile })
+        .then((db) => {
+          this._channels[channel].db = db;
+          this._channels[channel].state.loading = false;
+          this.events.emit('channels.updated', this.channels);
+          return this.getChannels();
+        });
     } else {
-      this.events.emit('ready', channel);
+      // this.events.emit('ready', channel);
+      this.events.emit('channels.updated', this.channels);
     }
     if(callback) callback(null, channel)
+    return Promise.resolve(this.channels);
   }
 
   leave(channel) {
@@ -90,11 +86,24 @@ class Orbit {
       logger.debug("Left channel #" + channel);
     }
     this.events.emit('channels.updated', this.getChannels());
+    return this.channels;
+  }
+
+  get user() {
+    return this.orbitdb ? this.orbitdb.user : null;
+  }
+
+  get network() {
+    return this.orbitdb ? this.orbitdb.network : null;
+  }
+
+  get channels() {
+    return this.getChannels();
   }
 
   getUser(hash, callback) {
     // TODO: return user id from ipfs hash (user.id)
-    if(callback) callback(this.orbit.user.id);
+    if(callback) callback(this.orbitdb.user.id);
   }
 
   getSwarmPeers(callback) {
@@ -107,6 +116,15 @@ class Orbit {
         this._handleError(e);
         if(callback) callback(null);
       });
+  }
+
+  getChannels(callback) {
+    const channels = Object.keys(this._channels)
+      .map((f) => this._channels[f])
+      .map((f) => { return { name: f.name, password: f.password, db: f.db, state: f.state } });
+
+    if(callback) callback(channels);
+    return channels;
   }
 
   getMessages(channel, lessThanHash, greaterThanHash, amount, callback) {
@@ -134,7 +152,7 @@ class Orbit {
     logger.debug(`Send message to #${channel}: ${message}`);
     const data = {
       content: message,
-      from: this.orbit.user.id
+      from: this.orbitdb.user.id
     };
     Post.create(this.ipfs, Post.Types.Message, data)
       .then((post) => this._channels[channel].db.add(post.Hash))
@@ -186,7 +204,7 @@ class Orbit {
           name: filePath.split("/").pop(),
           hash: hash,
           size: size,
-          from: this.orbit.user.id
+          from: this.orbitdb.user.id
         };
 
         const type = isDirectory ? Post.Types.Directory : Post.Types.File;
@@ -216,14 +234,6 @@ class Orbit {
     })
   }
 
-  get user() {
-    return this.orbit.user;
-  }
-
-  get network() {
-    return this.orbit.network;
-  }
-
   _handleError(e) {
     logger.error(e.message);
     logger.debug("Stack trace:\n", e.stack);
@@ -238,33 +248,33 @@ class Orbit {
   _handleStartLoading(channel) {
     logger.debug("load channel", channel)
     this._channels[channel].state.loading = true;
-    this.events.emit('channels.updated', this.getChannels());
+    this.events.emit('state.updated', this.channels);
     this.events.emit('load', channel)
   }
 
   _handleDatabaseReady(db) {
     logger.debug("database ready", db.dbname)
     this._channels[db.dbname].state.loading = false;
-    this.events.emit('channels.updated', this.getChannels());
+    this.events.emit('state.updated', this.channels);
     this.events.emit('ready', db.dbname)
   }
 
   _handleSync(channel) {
     logger.debug("sync channel", channel)
     this._channels[channel].state.syncing = true;
-    this.events.emit('channels.updated', this.getChannels());
+    this.events.emit('state.updated', this.channels);
     this.events.emit('sync', channel)
   }
 
   _handleSynced(channel, items) {
     logger.debug("channel synced", channel, items.length)
     this._channels[channel].state.syncing = false;
-    this.events.emit('channels.updated', this.getChannels());
+    this.events.emit('state.updated', this.channels);
     this.events.emit('synced', channel, items)
   }
 
   onSocketConnected(socket) {
-    this.events.emit('network', this.orbit);
+    this.events.emit('network', this.orbitdb);
   }
 
 }
