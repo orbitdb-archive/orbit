@@ -76,7 +76,7 @@ OrbitServer.start();
 IpfsApis.forEach(function(ipfsApi) {
 
   describe('Orbit', function() {
-    this.timeout(1000);
+    // this.timeout(1000);
     // this.timeout(40000);
 
     let orbit, client, client2;
