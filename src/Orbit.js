@@ -3,7 +3,7 @@
 const fs           = require('fs');
 const path         = require('path');
 const EventEmitter = require('events').EventEmitter;
-const request      = require('request');
+// const request      = require('request');
 const OrbitDB      = require('orbit-db');
 const Post         = require('ipfs-post');
 const Logger       = require('logplease');
@@ -28,7 +28,7 @@ class Orbit {
     const user = { username: username, password: password };
     logger.debug("Load cache from:", this.options.cacheFile);
     logger.info(`Connecting to network '${network}' as '${username}`);
-    return OrbitDB.connect(network, user.username, user.password, this.ipfs)
+        return OrbitDB.connect(network, user.username, user.password, this.ipfs)
       .then((orbit) => {
         this.orbitdb = orbit
         this.orbitdb.events.on('data', this._handleMessage.bind(this));
@@ -39,7 +39,7 @@ class Orbit {
       })
       .then(() => {
         logger.info(`Connected to '${this.orbitdb.network.name}' at '${this.orbitdb.network.publishers[0]}' as '${user.username}`)
-        this.events.emit('network', this.network);
+        this.events.emit('network', this.network, this.user);
       })
   }
 
@@ -49,7 +49,7 @@ class Orbit {
       this.orbitdb.disconnect();
       this.orbitdb = null;
       this._channels = {};
-      this.events.emit('network', this.network);
+      this.events.emit('network', this.network, this.user);
     }
   }
 
@@ -62,10 +62,11 @@ class Orbit {
           this._channels[channel].db = db;
           this._channels[channel].state.loading = false;
           this.events.emit('channels.updated', this.channels);
+          if(callback) callback(null, channel)
           return this.getChannels();
         });
     } else {
-      // this.events.emit('ready', channel);
+      this.events.emit('ready', channel);
       this.events.emit('channels.updated', this.channels);
     }
     if(callback) callback(null, channel)
@@ -126,7 +127,7 @@ class Orbit {
     if(lessThanHash) options.lt = lessThanHash;
     if(greaterThanHash) options.gte = greaterThanHash;
     const messages = this._channels[channel].db ? this._channels[channel].db.iterator(options).collect() : [];
-    if(callback) callback(channel, messages);
+    if(callback) callback(messages);
   }
 
   getPost(hash, callback) {
@@ -220,11 +221,12 @@ class Orbit {
   }
 
   getFile(hash, callback) {
-    request('http://localhost:8080/ipfs/' + hash, function (error, response, body) {
-      if(!error && response.statusCode === 200) {
-        if(callback) callback(body);
-      }
-    })
+    // request('http://localhost:8080/ipfs/' + hash, function (error, response, body) {
+    //   if(!error && response.statusCode === 200) {
+        if(callback) callback(null);
+        // if(callback) callback(body);
+    //   }
+    // })
   }
 
   _handleError(e) {

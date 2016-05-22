@@ -132,8 +132,8 @@ var App = React.createClass({
       AppActions.setLocation("Connect");
     } else {
       this.setState({ networkName: network.name });
-      const channels = JSON.parse(localStorage.getItem( "anonet.app." + network.user.username + "." + network.name + ".channels")) || [];
-      channels.forEach( (c) => NetworkActions.joinChannel(c.name, ''));
+      // const channels = JSON.parse(localStorage.getItem( "anonet.app." + network.user.username + "." + network.name + ".channels")) || [];
+      // channels.forEach( (c) => NetworkActions.joinChannel(c.name, ''));
     }
   },
   _makeChannelsKey: function(username, networkName) {
@@ -179,12 +179,12 @@ var App = React.createClass({
     document.title = `#${channel}`;
     logger.debug("Set title: " + document.title);
     AppActions.setCurrentChannel(channel);
-    const channelsKey = this._makeChannelsKey(this.state.user.username, this.state.networkName);
-    let channels = JSON.parse(localStorage.getItem(channelsKey)) || [];
-    if(!_.some(channels, { name: channel })){
-      channels.push({ name: channel });
-      localStorage.setItem(channelsKey, JSON.stringify(channels));
-    }
+    // const channelsKey = this._makeChannelsKey(this.state.user.username, this.state.networkName);
+    // let channels = JSON.parse(localStorage.getItem(channelsKey)) || [];
+    // if(!_.some(channels, { name: channel })){
+    //   channels.push({ name: channel });
+    //   localStorage.setItem(channelsKey, JSON.stringify(channels));
+    // }
   },
   onLeaveChannel: function(channel) {
     const channelsKey = this._makeChannelsKey(this.state.user.username, this.state.networkName);
@@ -195,8 +195,6 @@ var App = React.createClass({
     else
       localStorage.setItem(channelsKey, JSON.stringify(channels));
   },
-  // showChannel: function(channel) {
-  // },
   openSettings: function() {
     this.closePanel();
     AppActions.setLocation("Settings");

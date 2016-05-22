@@ -53,8 +53,8 @@ const MessageStore = Reflux.createStore({
   },
   _updateLoadingState: function(channel) {
     if(channel) {
-      logger.debug("Update channel state", channel);
-      // console.log(channel);
+      logger.debug("Update channel state");
+      console.log(channel);
       this.channels[channel.name].isReady = !channel.state.loading && !channel.state.syncing;
       this.channels[channel.name].loading = channel.state.loading;
       this.channels[channel.name].syncing = channel.state.syncing;
@@ -244,7 +244,6 @@ const MessageStore = Reflux.createStore({
     this.onLoadPost(message.value, (err, post) => {
       UserActions.addUser(post.meta.from);
       if(post && post.content) {
-        console.log("POST", post)
         if(hasMentions(post.content.toLowerCase(), UserStore.user.username.toLowerCase()))
           NotificationActions.mention(channel, post.content);
       }

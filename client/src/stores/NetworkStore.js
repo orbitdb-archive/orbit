@@ -24,12 +24,12 @@ var NetworkStore = Reflux.createStore({
     });
     this._updateNetwork(null)
   },
-  _updateNetwork: function(network) {
+  _updateNetwork: function(network, user) {
     logger.debug("Received network state");
     if(!network) logger.debug("not connected to a network");
     this.network = network;
     this.trigger(this.network);
-    NetworkActions.updateUser(network ? network.user : null);
+    // NetworkActions.updateUser(network ? network.user : null);
   },
   onSocketConnected: function(socket) {
     logger.debug("connected");

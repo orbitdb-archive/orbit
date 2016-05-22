@@ -77,7 +77,7 @@ IpfsApis.forEach(function(ipfsApi) {
 
   describe('Orbit', function() {
     // this.timeout(1000);
-    // this.timeout(40000);
+    this.timeout(40000);
 
     let orbit, client, client2;
     let channel = 'orbit-test';
