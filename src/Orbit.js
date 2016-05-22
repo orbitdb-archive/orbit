@@ -36,18 +36,11 @@ class Orbit {
         this.orbitdb.events.on('ready', this._handleDatabaseReady.bind(this));
         this.orbitdb.events.on('sync', this._handleSync.bind(this));
         this.orbitdb.events.on('synced', this._handleSynced.bind(this));
-        return;
       })
       .then(() => {
         logger.info(`Connected to '${this.orbitdb.network.name}' at '${this.orbitdb.network.publishers[0]}' as '${user.username}`)
         this.events.emit('network', this.network);
-        return;
       })
-      .catch((e) => {
-        this.orbitdb = null;
-        throw e;
-        // this._handleError(e);
-      });
   }
 
   disconnect() {
@@ -121,7 +114,7 @@ class Orbit {
   getChannels(callback) {
     const channels = Object.keys(this._channels)
       .map((f) => this._channels[f])
-      .map((f) => { return { name: f.name, password: f.password, db: f.db, state: f.state } });
+      // .map((f) => { return { name: f.name, password: f.password, db: f.db, state: f.state } });
 
     if(callback) callback(channels);
     return channels;
