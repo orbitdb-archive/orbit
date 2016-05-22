@@ -28,46 +28,43 @@ let ipfs, orbit;
 
 const start = exports.start = () => {
   const startTime = new Date().getTime();
+  logger.info("Starting IPFS...");
 
-  const ipfsDaemon = () => {
-    logger.info("Starting IPFS...");
-    return new Promise((resolve, reject) => {
-      const ipfs = new IPFS();
-      ipfs.goOnline(() => {
-        resolve(ipfs)
-      })
-      // ipfsd.local((err, node) => {
-      //   if(err) reject(err);
-      //   if(node.initialized) {
-      //     node.startDaemon((err, ipfs) => {
-      //       if(err) reject(err);
-      //       resolve(ipfs);
-      //     });
-      //   } else {
-      //     node.init((err, res) => {
-      //       if(err) reject(err);
-      //       node.startDaemon((err, ipfs) => {
-      //         if(err) reject(err);
-      //         resolve(ipfs);
-      //       });
-      //     });
-      //   }
-      // });
-    });
-  };
-
-  return ipfsDaemon()
+  return utils.ipfsDaemon(IPFS, '/ip4/127.0.0.1/tcp/4002/ws', '/tmp/orbit-4-' + new Date().getTime())
     .then((res) => {
       ipfs = res;
-      orbit = new Orbit(ipfs, events, { dataPath: dataPath });
+      orbit = new Orbit(ipfs, { dataPath: dataPath });
+    })
+    .then(() => {
+      return new Promise((resolve, reject) => {
+        ipfs.id((err, id) => {
+          if (err) return reject(err);
+          resolve(id);
+        });
+      });
+    })
+    .then((id) => {
+      logger.info(`IPFS Node started: ${id.Addresses}/ipfs/${id.ID}`);
       return;
     })
+    // .then(() => new Promise((resolve, reject) => {
+    //   // TODO: make dynamic
+    //   ipfs.libp2p.swarm.connect(
+    //     // '/ip4/127.0.0.1/tcp/5002/ws/ipfs/QmXQPVWAsecQFPjEVFSYPKaYSyJGNLENyc6JziE5K3ZqCi',
+    //     '/ip4/127.0.0.1/tcp/6002/ws/ipfs/QmYJtjAG4wNJB3rDf5kC8T7GGvp1EKyAVu8uJQ7SYo6Y2Y',
+    //     // '/ip4/127.0.0.1/tcp/6002/ws/ipfs/QmXQPVWAsecQFPjEVFSYPKaYSyJGNLENyc6JziE5K3ZqCi',
+    //     // '/ip4/127.0.0.1/tcp/5002/ws/ipfs/QmRU7qzc4nqxLECPFYWRr9yveUmKJjYQKLayQ6q3n6ntFm',
+    //     (err) => {
+    //       if (err) return reject(err);
+    //       resolve();
+    //     });
+    // }))
     // .then(() => HttpApi(ipfs, events))
     // .then((httpApi) => SocketApi(httpApi.socketServer, httpApi.server, events, orbit))
     // .then(() => SocketApi(null, null, events, orbit))
     .then(() => {
-      events.on('socket.connected', (s) => orbit.onSocketConnected(s));
-      events.on('shutdown', () => orbit.disconnect()); // From index-native (electron)
+      // events.on('socket.connected', (s) => orbit.onSocketConnected(s));
+      // events.on('shutdown', () => orbit.disconnect()); // From index-native (electron)
       return;
     })
     .then(() => {

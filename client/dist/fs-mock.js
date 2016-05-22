@@ -19,7 +19,6 @@ module.exports = {
     return;
   },
   exists: function(path, cb) {
-    console.log("fs-mock", path)
     cb(null, false);
   }
 }
