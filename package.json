@@ -1,8 +1,12 @@
 {
   "name": "orbit",
   "version": "2.1.0",
-  "description": "Distributed, p2p chat built on IPFS",
+  "description": "A distributed, peer-to-peer chat application built on [IPFS](http://ipfs.io).",
   "main": "index-native.js",
+  "bugs": {
+    "url": "https://github.com/haadcode/orbit/issues"
+  },
+  "homepage": "https://github.com/haadcode/orbit",
   "dependencies": {
     "asyncawait": "^1.0.3",
     "bluebird": "^3.3.5",
@@ -34,6 +38,13 @@
     "test": "mocha",
     "start": "node index"
   },
+  "keywords": [
+    "orbit",
+    "p2p",
+    "ipfs",
+    "chat",
+    "electron"
+  ],
   "repository": {
     "type": "git",
     "url": "https://github.com/haadcode/orbit.git"
