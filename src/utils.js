@@ -71,11 +71,11 @@ exports.ipfsDaemon = (IPFS, addr, repo) => {
         resolve();
       });
     }))
-    .then(() => new Promise((resolve, reject) => {
-      ipfs.goOnline(() => {
-        resolve();
-      });
-    }))
+    // .then(() => new Promise((resolve, reject) => {
+    //   ipfs.goOnline(() => {
+    //     resolve();
+    //   });
+    // }))
     .then(() => {
       return ipfs;
     });
