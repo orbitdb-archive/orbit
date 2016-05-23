@@ -20,36 +20,38 @@ const password = '';
 
 let ipfs, ipfsDaemon;
 const IpfsApis = [
-// {
-//   // js-ipfs
-//   start: () => {
-//     return new Promise((resolve, reject) => {
-//       const ipfs = new IPFS('/tmp/orbit-tests');
-//       ipfs.init({}, (err) => {
-//         if(err) {
-//           if(err.message === 'repo already exists')
-//             return resolve(ipfs);
-//           return reject(err);
-//         }
-//         ipfs.goOnline((err) => {
-//           if(err) reject(err)
-//           resolve(ipfs)
-//         });
-//       });
-//     });
-//   },
-//   // stop: () => Promise.resolve()
-//   stop: () => new Promise((resolve, reject) => {
-//     if(!ipfs._bitswap && !ipfs._libp2pNode)
-//       resolve();
-//     ipfs.goOffline((err) => {
-//       if(err) console.log("Error", err)
-//       resolve();
-//     })
-//   })
-// },
+{
+  // js-ipfs
+  name: 'js-ipfs',
+  start: () => {
+    return new Promise((resolve, reject) => {
+      const ipfs = new IPFS('/tmp/orbit-tests');
+      ipfs.init({}, (err) => {
+        if(err) {
+          if(err.message === 'repo already exists')
+            return resolve(ipfs);
+          return reject(err);
+        }
+        ipfs.goOnline((err) => {
+          if(err) reject(err)
+          resolve(ipfs)
+        });
+      });
+    });
+  },
+  // stop: () => Promise.resolve()
+  stop: () => new Promise((resolve, reject) => {
+    if(!ipfs._bitswap && !ipfs._libp2pNode)
+      resolve();
+    ipfs.goOffline((err) => {
+      if(err) console.log("Error", err)
+      resolve();
+    })
+  })
+},
 {
   // js-ipfs-api via local daemon
+  name: 'js-ipfs-api',
   start: () => {
     return new Promise((resolve, reject) => {
       // ipfsd.disposableApi({ ipfsPath: '/tmp/ooo111'}, (err, ipfs) => {
@@ -75,7 +77,7 @@ OrbitServer.start();
 
 IpfsApis.forEach(function(ipfsApi) {
 
-  describe('Orbit', function() {
+  describe('Orbit with ' + ipfsApi.name, function() {
     // this.timeout(1000);
     this.timeout(40000);
 
