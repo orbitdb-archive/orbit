@@ -8,7 +8,6 @@
     "cors": "^2.7.1",
     "du": "^0.1.0",
     "express": "^4.13.4",
-    "ipfs": "^0.5.0",
     "ipfs-post": "https://github.com/haadcode/ipfs-post",
     "ipfsd-ctl": "^0.14.0",
     "lodash": "^4.8.2",
