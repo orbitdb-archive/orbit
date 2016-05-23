@@ -48,7 +48,7 @@ class Channel extends React.Component {
       this.setState({
         channelChanged: true,
         displayNewMessagesIcon: false,
-        reachedChannelStart: false,
+        // reachedChannelStart: false,
         messages: []
       });
       UIActions.focusOnSendMessage();

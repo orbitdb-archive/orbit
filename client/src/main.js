@@ -35,18 +35,18 @@ const start = exports.start = () => {
       ipfs = res;
       orbit = new Orbit(ipfs, { dataPath: dataPath });
     })
-    .then(() => {
-      return new Promise((resolve, reject) => {
-        ipfs.id((err, id) => {
-          if (err) return reject(err);
-          resolve(id);
-        });
-      });
-    })
-    .then((id) => {
-      logger.info(`IPFS Node started: ${id.Addresses}/ipfs/${id.ID}`);
-      return;
-    })
+    // .then(() => {
+    //   return new Promise((resolve, reject) => {
+    //     ipfs.id((err, id) => {
+    //       if (err) return reject(err);
+    //       resolve(id);
+    //     });
+    //   });
+    // })
+    // .then((id) => {
+    //   logger.info(`IPFS Node started: ${id.Addresses}/ipfs/${id.ID}`);
+    //   return;
+    // })
     // .then(() => new Promise((resolve, reject) => {
     //   // TODO: make dynamic
     //   ipfs.libp2p.swarm.connect(
