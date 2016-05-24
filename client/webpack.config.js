@@ -82,6 +82,6 @@ module.exports = {
     tls: '{}',
     // fs: '{}',
     'require-dir': '{}',
-    kdirp: '{}'
+    mkdirp: '{}'
   }
 };
