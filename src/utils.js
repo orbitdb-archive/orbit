@@ -47,36 +47,113 @@ exports.deleteDirectoryRecursive = deleteDirectoryRecursive;
 exports.ipfsDaemon = (IPFS, addr, repo) => {
   repo = repo || '/tmp/orbit';
   const ipfs = new IPFS(repo);
-  return (new Promise((resolve, reject) => {
+  return new Promise((resolve, reject) => {
     ipfs.init({}, (err) => {
       if (err) {
         if (err.message === 'repo already exists') {
+          console.log(repo, err.message)
           return resolve();
         }
         return reject(err);
       }
       resolve();
     })
-  }))
-    .then(() => new Promise((resolve, reject) => {
-      ipfs.config.show((err, config) => {
-        if (err) return reject(err);
-        resolve(config);
+  })
+  .then(() => {
+    return new Promise((resolve, reject) => {
+      ipfs.goOnline(() => {
+        resolve(ipfs);
       });
-    }))
-    .then((config) => new Promise((resolve, reject) => {
-      config.Addresses.Swarm = [addr]
+    });
+  })
+  .then(() => {
+    return new Promise((resolve, reject) => {
+      ipfs.id((err, id) => {
+        console.log(err, id)
+        if (err) return reject(err);
+        resolve(id);
+      });
+    });
+  })
+  .then((id) => new Promise((resolve, reject) => {
+    ipfs.config.show((err, config) => {
+      if (err) return reject(err);
+      // resolve(config);
+      console.log("config", config)
+      console.log(">>>>", addr + `/ipfs/${id.ID}`);
+      const signallingServer = '/libp2p-webrtc-star/ip4/127.0.0.1/tcp/9090/ws'
+      config.Addresses.Swarm = [`${signallingServer}/ipfs/${id.ID}`];
       ipfs.config.replace(config, (err) => {
         if (err) return reject(err);
         resolve();
       });
-    }))
-    // .then(() => new Promise((resolve, reject) => {
-    //   ipfs.goOnline(() => {
-    //     resolve();
-    //   });
-    // }))
-    .then(() => {
-      return ipfs;
     });
-};
+  }))
+  .then(() => {
+    return ipfs;
+  })
+  // .then((config) => new Promise((resolve, reject) => {
+  //   config.Addresses.Swarm = [addr]
+  //   ipfs.config.replace(config, (err) => {
+  //     if (err) return reject(err);
+  //     resolve();
+  //   });
+  // }))
+  // .then(() => {
+  //   return new Promise((resolve, reject) => {
+  //     ipfs.goOnline(() => {
+  //       resolve(ipfs);
+  //     });
+  //   });
+  // })
+}
+  // return Promise.resolve(ipfs);
+  // return (new Promise((resolve, reject) => {
+  //   ipfs.init({}, (err) => {
+  //     if (err) {
+  //       if (err.message === 'repo already exists') {
+  //         console.log(repo, err.message)
+  //         return resolve();
+  //       }
+  //       return reject(err);
+  //     }
+  //     resolve();
+  //   })
+  // .then(() => {
+  //   return new Promise((resolve, reject) => {
+  //     ipfs.id((err, id) => {
+  //       console.log(err, id)
+  //       if (err) return reject(err);
+  //       resolve(id);
+  //     });
+  //   });
+  // })
+  // .then((id) => new Promise((resolve, reject) => {
+  //   ipfs.config.show((err, config) => {
+  //     if (err) return reject(err);
+  //     // resolve(config);
+  //     // console.log("ID", id)
+  //     // console.log(">>>>", addr + `/ipfs/${id.ID}`);
+  //     config.Addresses.Swarm = [addr]
+  //     ipfs.config.replace(config, (err) => {
+  //       if (err) return reject(err);
+  //       resolve();
+  //     });
+  //   });
+  // }))
+  // .then((config) => new Promise((resolve, reject) => {
+  //   config.Addresses.Swarm = [addr]
+  //   ipfs.config.replace(config, (err) => {
+  //     if (err) return reject(err);
+  //     resolve();
+  //   });
+  // }))
+  // .then(() => new Promise((resolve, reject) => {
+  //   ipfs.goOnline(() => {
+  //     resolve();
+  //   });
+  // }))
+  // .then(() => {
+  //   return ipfs;
+  // });
+// };
