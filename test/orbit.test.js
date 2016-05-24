@@ -51,31 +51,31 @@ const IpfsApis = [
     })
   })
 },
-// {
-//   // js-ipfs-api via local daemon
-//   name: 'js-ipfs-api',
-//   start: () => {
-//     return new Promise((resolve, reject) => {
-//       // ipfsd.disposableApi({ ipfsPath: '/tmp/ooo111'}, (err, ipfs) => {
-//       //   if(err) reject(err);
-//       //   resolve(ipfs);
-//       // });
-//       ipfsd.local((err, node) => {
-//         if(err) reject(err);
-//         ipfsDaemon = node;
-//         ipfsDaemon.startDaemon((err, ipfs) => {
-//           if(err) reject(err);
-//           resolve(ipfs);
-//         });
-//       });
-//     });
-//   },
-//   stop: () => Promise.resolve()
-//   // stop: () => new Promise((resolve, reject) => ipfsDaemon.stopDaemon(resolve)) // for use with local daemon
-// }
+{
+  // js-ipfs-api via local daemon
+  name: 'js-ipfs-api',
+  start: () => {
+    return new Promise((resolve, reject) => {
+      // ipfsd.disposableApi({ ipfsPath: '/tmp/ooo111'}, (err, ipfs) => {
+      //   if(err) reject(err);
+      //   resolve(ipfs);
+      // });
+      ipfsd.local((err, node) => {
+        if(err) reject(err);
+        ipfsDaemon = node;
+        ipfsDaemon.startDaemon((err, ipfs) => {
+          if(err) reject(err);
+          resolve(ipfs);
+        });
+      });
+    });
+  },
+  stop: () => Promise.resolve()
+  // stop: () => new Promise((resolve, reject) => ipfsDaemon.stopDaemon(resolve)) // for use with local daemon
+}
 ];
 
-// OrbitServer.start();
+OrbitServer.start();
 
 IpfsApis.forEach(function(ipfsApi) {
 
@@ -101,6 +101,7 @@ IpfsApis.forEach(function(ipfsApi) {
     });
 
     after((done) => {
+      if(orbit) orbit.disconnect();
       ipfsApi.stop()
         .then(done)
         .catch((e) => {
@@ -315,9 +316,9 @@ IpfsApis.forEach(function(ipfsApi) {
     });
 
     describe('getters', function() {
-      describe('returns', function() {
+      describe('return', function() {
         before((done) => {
-          orbit = new Orbit(ipfs);
+          orbit = new Orbit(ipfs, { cacheFile: null });
           orbit.connect(network, username, password).then(done).catch(done)
         });
 
@@ -339,7 +340,7 @@ IpfsApis.forEach(function(ipfsApi) {
         });
 
         it('channels', () => {
-          const channel = 'test1';
+          const channel = 'test2';
           return orbit.join(channel).then(() => {
             assert.equal(orbit.channels.length, 1);
             assert.equal(orbit.channels[0].name, channel);
@@ -350,7 +351,7 @@ IpfsApis.forEach(function(ipfsApi) {
 
       describe('defaults', function() {
         before(() => {
-          orbit = new Orbit(ipfs);
+          orbit = new Orbit(ipfs, { cacheFile: null });
         });
 
         it('no users', () => {
@@ -367,12 +368,16 @@ IpfsApis.forEach(function(ipfsApi) {
 
     describe('getChannels', function() {
       beforeEach((done) => {
-        orbit = new Orbit(ipfs);
+        orbit = new Orbit(ipfs, { cacheFile: null });
         orbit.connect(network, username, password).then(done)
       });
 
       afterEach(() => {
         orbit.disconnect();
+      });
+
+      it('returns no channels', () => {
+        assert.equal(orbit.getChannels().length, 0);
       });
 
       it('returns one channel after join', () => {
@@ -428,6 +433,23 @@ IpfsApis.forEach(function(ipfsApi) {
           });
       });
 
+      it('has a callback', (done) => {
+        const channel = 'test1';
+        const content = 'hello1';
+        orbit.join(channel).then(() => {
+          orbit.sendMessage(channel, content, (err, message) => {
+            assert.notEqual(message.Post, null);
+            assert.equal(message.Hash.startsWith('Qm'), true);
+            assert.equal(message.Post.content, content);
+            assert.equal(message.Post.meta.type, "text");
+            assert.equal(message.Post.meta.size, 15);
+            assert.notEqual(message.Post.meta.ts, null);
+            assert.equal(message.Post.meta.from, username);
+            done();
+          });
+        });
+      });
+
       it('Post was added to IPFS', () => {
         const channel = 'test1';
         const content = 'hello1';
@@ -459,6 +481,7 @@ IpfsApis.forEach(function(ipfsApi) {
             assert.equal(messages[0].next.length, 0);
           });
       });
+
 
     });
 
@@ -498,6 +521,136 @@ IpfsApis.forEach(function(ipfsApi) {
     //     });
     //   });
     // });
+
+    describe('event handling', function() {
+      beforeEach((done) => {
+        orbit = new Orbit(ipfs, { cacheFile: null });
+        orbit.connect(network, username, password).then(done)
+      });
+
+      afterEach(() => {
+        orbit.disconnect();
+      });
+
+      it('emits \'data\'', (done) => {
+        const channel = 'test1';
+        orbit.events.on('data', (channelName, messageHash) => {
+          assert.equal(channelName, channel);
+          assert.equal(messageHash.startsWith('Qm'), true);
+          done();
+        });
+        orbit.join(channel).then(() => orbit.sendMessage(channel, 'hello'));
+      });
+
+      it('emits \'load\'', (done) => {
+        const channel = 'test1';
+        orbit.events.on('load', (channelName) => {
+          assert.equal(channelName, channel);
+          done();
+        });
+        orbit.join(channel);
+      });
+
+      it('emits \'state.updated\' on load', (done) => {
+        const channel = 'test1';
+        orbit.events.once('state.updated', (channels) => {
+          assert.equal(channels.length, 1);
+          assert.equal(channels[0].db, null);
+          assert.equal(channels[0].state.loading, true);
+          assert.equal(channels[0].state.syncing, true);
+          done();
+        });
+        orbit.join(channel);
+      });
+
+      it('emits \'ready\'', (done) => {
+        const channel = 'test1';
+        orbit.events.on('ready', (channelName) => {
+          assert.equal(channelName, channel);
+          done();
+        });
+        orbit.join(channel);
+      });
+
+      it('emits \'state.updated\' on ready', (done) => {
+        const channel = 'test1';
+        orbit.events.on('ready', () => {
+          orbit.events.on('state.updated', (channels) => {
+            assert.equal(channels.length, 1);
+            assert.equal(channels[0].db, null);
+            assert.equal(channels[0].state.loading, false);
+            assert.equal(channels[0].state.syncing, true);
+            done();
+          });
+        });
+        orbit.join(channel);
+      });
+
+      it('emits \'sync\' on load', (done) => {
+        const channel = 'test1';
+        orbit.events.on('sync', (channelName) => {
+          assert.equal(channelName, channel);
+          done();
+        });
+        orbit.join(channel);
+      });
+
+      it('emits \'state.updated\' on sync', (done) => {
+        const channel = 'test1';
+        orbit.join(channel)
+          .then(() => {
+            orbit.events.removeAllListeners('state.updated');
+            orbit.events.on('sync', (channelName) => {
+              orbit.events.on('state.updated', (channels) => {
+                assert.equal(channels.length, 1);
+                assert.notEqual(channels[0].db, null);
+                assert.equal(channels[0].state.loading, false);
+                assert.equal(channels[0].state.syncing, true);
+                done();
+              });
+            });
+          });
+      });
+
+      it('emits \'sync\'', (done) => {
+        const channel = 'test1';
+        orbit.join(channel).then(() => {
+          orbit.events.on('sync', (channelName) => {
+            assert.equal(channelName, channel);
+            done();
+          });
+        });
+      });
+
+      it('emits \'state.updated\' on synced', (done) => {
+        const channel = 'test1';
+        orbit.join(channel).then(() => {
+            orbit.events.removeAllListeners('state.updated');
+            orbit.events.on('synced', (channelName) => {
+              orbit.events.on('state.updated', (channels) => {
+                assert.equal(channels.length, 1);
+                assert.notEqual(channels[0].db, null);
+                assert.equal(channels[0].state.loading, false);
+                assert.equal(channels[0].state.syncing, false);
+                done();
+              });
+            });
+        });
+      });
+
+      it('emits \'synced\' after sync', (done) => {
+        const channel = 'test1';
+        orbit.events.on('synced', (channelName) => {
+          orbit.events.removeAllListeners('synced');
+          orbit.events.on('synced', (channelName, items) => {
+            assert.equal(channelName, channel);
+            done();
+          });
+          orbit.sendMessage(channel, 'hello');
+        });
+        orbit.join(channel);
+      });
+    });
 
   });
 });

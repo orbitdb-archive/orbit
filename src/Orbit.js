@@ -149,6 +149,10 @@ class Orbit {
 
   sendMessage(channel, message, callback) {
     logger.debug(`Send message to #${channel}: ${message}`);
+
+    if(!this._channels[channel] || !this._channels[channel].db)
+      return Promise.resolve();
+
     const data = {
       content: message,
       from: this.orbitdb.user.id
@@ -159,7 +163,7 @@ class Orbit {
       .then(() => this._channels[channel].db.add(post.Hash))
       .then((hash) => {
         if(callback)
-          callback(null);
+          callback(null, post);
         return post;
       })
       .catch((e) => {
@@ -238,8 +242,8 @@ class Orbit {
   }
 
   _handleError(e) {
-    logger.error(e.message);
-    logger.debug("Stack trace:\n", e.stack);
+    logger.error(e);
+    logger.error("Stack trace:\n", e.stack);
     this.events.emit('orbit.error', e.message);
   }
 
@@ -253,8 +257,8 @@ class Orbit {
     logger.debug("load channel", channel);
     if(this._channels[channel]) {
       this._channels[channel].state.loading = true;
-      this.events.emit('state.updated', this.channels);
       this.events.emit('load', channel);
+      this.events.emit('state.updated', this.channels);
     }
   }
 
@@ -262,8 +266,8 @@ class Orbit {
     logger.debug("database ready", db.dbname);
     if(this._channels[db.dbname]) {
       this._channels[db.dbname].state.loading = false;
-      this.events.emit('state.updated', this.channels);
       this.events.emit('ready', db.dbname);
+      this.events.emit('state.updated', this.channels);
     }
   }
 
@@ -271,8 +275,8 @@ class Orbit {
     logger.debug("sync channel", channel);
     if(this._channels[channel]) {
       this._channels[channel].state.syncing = true;
-      this.events.emit('state.updated', this.channels);
       this.events.emit('sync', channel);
+      this.events.emit('state.updated', this.channels);
     }
   }
 
@@ -280,8 +284,8 @@ class Orbit {
     logger.debug("channel synced", channel, items.length);
     if(this._channels[channel]) {
       this._channels[channel].state.syncing = false;
-      this.events.emit('state.updated', this.channels);
       this.events.emit('synced', channel, items);
+      this.events.emit('state.updated', this.channels);
     }
   }
 
