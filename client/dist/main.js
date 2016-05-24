@@ -12,6 +12,7 @@ const utils        = require('../../src/utils');
 const Orbit        = require('../../src/Orbit');
 // const IPFS         = require('ipfs');
 const IPFS = require('exports?Ipfs!ipfs/dist/index.js')
+const multiaddr = require('multiaddr');
 
 var ENV = process.env["ENV"] || "release";
 logger.debug("Running in '" + ENV + "' mode");
@@ -30,23 +31,48 @@ const start = exports.start = () => {
   const startTime = new Date().getTime();
   logger.info("Starting IPFS...");
 
-  return utils.ipfsDaemon(IPFS, '/ip4/127.0.0.1/tcp/4002/ws', '/tmp/orbit-4-' + new Date().getTime())
+  // return utils.ipfsDaemon(IPFS, '/libp2p-webrtc-star/ip4/127.0.0.1/tcp/15555/ws', '/tmp/orbit-4-' + new Date().getTime())
+  // return utils.ipfsDaemon(IPFS, '/libp2p-webrtc-star/ip4/127.0.0.1/tcp/9090/ws', '/tmp/orbit-777a-')
+  // return utils.ipfsDaemon(IPFS, `/ip4/127.0.0.1/tcp/600${Math.floor((Math.random() * 10))}/ws`, '/tmp/orbit-4a-')
+  return utils.ipfsDaemon(IPFS, `/ip4/127.0.0.1/tcp/0/ws`, '/tmp/orbit-4a-' + new Date().getTime())
     .then((res) => {
       ipfs = res;
       orbit = new Orbit(ipfs, { dataPath: dataPath });
     })
-    // .then(() => {
-    //   return new Promise((resolve, reject) => {
-    //     ipfs.id((err, id) => {
+    .then(() => {
+      return new Promise((resolve, reject) => {
+        ipfs.id((err, id) => {
+          if (err) return reject(err);
+          resolve(id);
+        });
+      });
+    })
+    .then((id) => {
+      logger.info(`IPFS Node started: ${id.Addresses}/ipfs/${id.ID}`);
+      return id;
+    })
+    .then((id) => new Promise((resolve, reject) => {
+      ipfs.config.show((err, config) => {
+        if (err) return reject(err);
+        console.log("config22", config)
+        resolve();
+      });
+    }))
+    // .then((id) => new Promise((resolve, reject) => {
+    //   ipfs.config.show((err, config) => {
+    //     if (err) return reject(err);
+    //     // resolve(config);
+    //     console.log(config)
+    //     console.log("ID", id)
+    //     const addr = `/libp2p-webrtc-star/ip4/0.0.0.0/tcp/9090/ws/ipfs/${id.ID}`;
+    //     console.log(">>>>", addr);
+    //     config.Addresses.Swarm.push(addr);
+    //     ipfs.config.replace(config, (err) => {
     //       if (err) return reject(err);
-    //       resolve(id);
+    //       resolve();
     //     });
     //   });
-    // })
-    // .then((id) => {
-    //   logger.info(`IPFS Node started: ${id.Addresses}/ipfs/${id.ID}`);
-    //   return;
-    // })
+    // }))
     // .then(() => new Promise((resolve, reject) => {
     //   // TODO: make dynamic
     //   ipfs.libp2p.swarm.connect(
@@ -68,6 +94,11 @@ const start = exports.start = () => {
       return;
     })
     .then(() => {
+      setInterval(() => {
+        ipfs.libp2p.swarm.peers((peers, poors) => {
+          console.log("PEERS", peers, poors)
+        })
+      }, 1000)
       // auto-login if there's a user.json file
       // var userFile = path.join(path.resolve(utils.getAppPath(), "user.json"));
       // if(fs.existsSync(userFile)) {
