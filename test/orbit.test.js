@@ -9,6 +9,8 @@ const IPFS    = require('ipfs')
 // const OrbitDB = require('../src/OrbitDB');
 const OrbitServer = require('orbit-server/src/server');
 const Orbit = require('../src/Orbit');
+const EventStore = require('orbit-db-eventstore');
+const Post         = require('ipfs-post');
 
 // Mute logging
 require('logplease').setLogLevel('ERROR');
@@ -49,31 +51,31 @@ const IpfsApis = [
     })
   })
 },
-{
-  // js-ipfs-api via local daemon
-  name: 'js-ipfs-api',
-  start: () => {
-    return new Promise((resolve, reject) => {
-      // ipfsd.disposableApi({ ipfsPath: '/tmp/ooo111'}, (err, ipfs) => {
-      //   if(err) reject(err);
-      //   resolve(ipfs);
-      // });
-      ipfsd.local((err, node) => {
-        if(err) reject(err);
-        ipfsDaemon = node;
-        ipfsDaemon.startDaemon((err, ipfs) => {
-          if(err) reject(err);
-          resolve(ipfs);
-        });
-      });
-    });
-  },
-  stop: () => Promise.resolve()
-  // stop: () => new Promise((resolve, reject) => ipfsDaemon.stopDaemon(resolve)) // for use with local daemon
-}
+// {
+//   // js-ipfs-api via local daemon
+//   name: 'js-ipfs-api',
+//   start: () => {
+//     return new Promise((resolve, reject) => {
+//       // ipfsd.disposableApi({ ipfsPath: '/tmp/ooo111'}, (err, ipfs) => {
+//       //   if(err) reject(err);
+//       //   resolve(ipfs);
+//       // });
+//       ipfsd.local((err, node) => {
+//         if(err) reject(err);
+//         ipfsDaemon = node;
+//         ipfsDaemon.startDaemon((err, ipfs) => {
+//           if(err) reject(err);
+//           resolve(ipfs);
+//         });
+//       });
+//     });
+//   },
+//   stop: () => Promise.resolve()
+//   // stop: () => new Promise((resolve, reject) => ipfsDaemon.stopDaemon(resolve)) // for use with local daemon
+// }
 ];
 
-OrbitServer.start();
+// OrbitServer.start();
 
 IpfsApis.forEach(function(ipfsApi) {
 
@@ -188,7 +190,7 @@ IpfsApis.forEach(function(ipfsApi) {
 
     describe('join', function() {
       beforeEach((done) => {
-        orbit = new Orbit(ipfs);
+        orbit = new Orbit(ipfs, { cacheFile: null });
         orbit.connect(network, username, password).then(done)
       });
 
@@ -278,7 +280,7 @@ IpfsApis.forEach(function(ipfsApi) {
 
     describe('leave', function() {
       beforeEach((done) => {
-        orbit = new Orbit(ipfs);
+        orbit = new Orbit(ipfs, { cacheFile: null });
         orbit.connect(network, username, password).then(done)
       });
 
@@ -300,6 +302,15 @@ IpfsApis.forEach(function(ipfsApi) {
           });
           const channels = orbit.leave(channel);
         });
+      });
+
+      it('emits \'channels.updated\' event after calling leave if channels doesn\'t exist', () => {
+        const channel = 'test1';
+        orbit.events.on('channels.updated', (channels) => {
+          assert.equal(channels.length, 0);
+          assert.equal(orbit._channels[channel], null);
+        });
+        orbit.leave(channel);
       });
     });
 
@@ -353,6 +364,140 @@ IpfsApis.forEach(function(ipfsApi) {
         });
       });
     });
+
+    describe('getChannels', function() {
+      beforeEach((done) => {
+        orbit = new Orbit(ipfs);
+        orbit.connect(network, username, password).then(done)
+      });
+
+      afterEach(() => {
+        orbit.disconnect();
+      });
+
+      it('returns one channel after join', () => {
+        const channel = 'test1';
+        return orbit.join(channel).then((channels) => {
+          assert.equal(orbit.getChannels().length, 1);
+        });
+      });
+
+      it('has a callback', () => {
+        const channel = 'test1';
+        return orbit.join(channel).then((channels) => {
+          orbit.getChannels((channels) => {
+            assert.equal(channels.length, 1);
+          });
+        });
+      });
+
+      it('returns the channels in the correct format', () => {
+        const channel = 'test1';
+        return orbit.join(channel).then(() => {
+          const channels = orbit.getChannels();
+          assert.equal(channels[0].name, channel);
+          assert.equal(channels[0].password, null);
+          assert.equal(Object.prototype.isPrototypeOf(channels[0].db, EventStore), true);
+        });
+      });
+    });
+
+    describe('sendMessage', function() {
+      beforeEach((done) => {
+        orbit = new Orbit(ipfs, { cacheFile: null });
+        orbit.connect(network, username, password).then(done)
+      });
+
+      afterEach(() => {
+        orbit.disconnect();
+      });
+
+      it('returns a Post', () => {
+        const channel = 'test1';
+        const content = 'hello1';
+        return orbit.join(channel)
+          .then(() => orbit.sendMessage(channel, content))
+          .then((message) => {
+            assert.notEqual(message.Post, null);
+            assert.equal(message.Hash.startsWith('Qm'), true);
+            assert.equal(message.Post.content, content);
+            assert.equal(message.Post.meta.type, "text");
+            assert.equal(message.Post.meta.size, 15);
+            assert.notEqual(message.Post.meta.ts, null);
+            assert.equal(message.Post.meta.from, username);
+          });
+      });
+
+      it('Post was added to IPFS', () => {
+        const channel = 'test1';
+        const content = 'hello1';
+        return orbit.join(channel)
+          .then(() => orbit.sendMessage(channel, content))
+          .then((message) => orbit.getPost(message.Hash))
+          .then((data) => {
+            assert.equal(data.content, content);
+            assert.equal(data.meta.type, "text");
+            assert.equal(data.meta.size, 15);
+            assert.notEqual(data.meta.ts, null);
+            assert.equal(data.meta.from, username);
+          });
+      });
+
+      it('sends a message to a channel', () => {
+        const channel = 'test1';
+        const content = 'hello1';
+        return orbit.join(channel)
+          .then(() => orbit.sendMessage(channel, content))
+          .then((message) => {
+            const messages = orbit.getMessages(channel);
+            assert.equal(messages.length, 1);
+            assert.equal(messages[0].payload.op, 'ADD');
+            assert.equal(messages[0].payload.value, message.Hash);
+            assert.notEqual(messages[0].payload.meta, null);
+            assert.notEqual(messages[0].payload.meta.ts, null);
+            assert.equal(messages[0].hash.startsWith('Qm'), true);
+            assert.equal(messages[0].next.length, 0);
+          });
+      });
+
+    });
+
+    // describe('getMessages', function() {
+    //   beforeEach((done) => {
+    //     orbit = new Orbit(ipfs);
+    //     orbit.connect(network, username, password).then(done)
+    //   });
+
+    //   afterEach(() => {
+    //     orbit.disconnect();
+    //   });
+
+    //   it('returns one channel after join', () => {
+    //     const channel = 'test1';
+    //     return orbit.join(channel).then((channels) => {
+    //       assert.equal(orbit.getChannels().length, 1);
+    //     });
+    //   });
+
+    //   it('has a callback', () => {
+    //     const channel = 'test1';
+    //     return orbit.join(channel).then((channels) => {
+    //       orbit.getChannels((channels) => {
+    //         assert.equal(channels.length, 1);
+    //       });
+    //     });
+    //   });
+
+    //   it('returns the channels in the correct format', () => {
+    //     const channel = 'test1';
+    //     return orbit.join(channel).then(() => {
+    //       const channels = orbit.getChannels();
+    //       assert.equal(channels[0].name, channel);
+    //       assert.equal(channels[0].password, null);
+    //       assert.equal(Object.prototype.isPrototypeOf(channels[0].db, EventStore), true);
+    //     });
+    //   });
+    // });
 
   });
 });

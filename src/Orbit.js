@@ -20,7 +20,8 @@ class Orbit {
     this.events = new EventEmitter();
     this.orbitdb = null;
     this.options = options || defaultOptions;
-    this.options.cacheFile = path.join(this.options.dataPath, "/orbit-db-cache.json");
+    if(this.options.cacheFile === undefined)
+      this.options.cacheFile = path.join(this.options.dataPath, "/orbit-db-cache.json");
     this._channels = {};
   }
 
@@ -123,18 +124,22 @@ class Orbit {
 
   getMessages(channel, lessThanHash, greaterThanHash, amount, callback) {
     logger.debug(`Get messages from #${channel}: ${lessThanHash}, ${greaterThanHash}, ${amount}`)
-    let options = { limit: amount };
+    let options = { limit: amount || 1 };
     if(lessThanHash) options.lt = lessThanHash;
     if(greaterThanHash) options.gte = greaterThanHash;
-    const messages = this._channels[channel].db ? this._channels[channel].db.iterator(options).collect() : [];
+    const messages = this._channels[channel] && this._channels[channel].db
+      ? this._channels[channel].db.iterator(options).collect()
+      : [];
     if(callback) callback(messages);
+    return messages;
   }
 
   getPost(hash, callback) {
-    this.ipfs.object.get(hash, { enc: 'base58' })
+    return this.ipfs.object.get(hash, { enc: 'base58' })
       .then((res) => {
         if(callback)
           callback(null, JSON.parse(res.toJSON().Data));
+        return JSON.parse(res.toJSON().Data);
       })
       .catch((e) => {
         this._handleError(e);
@@ -148,11 +153,14 @@ class Orbit {
       content: message,
       from: this.orbitdb.user.id
     };
-    Post.create(this.ipfs, Post.Types.Message, data)
-      .then((post) => this._channels[channel].db.add(post.Hash))
+    let post;
+    return Post.create(this.ipfs, Post.Types.Message, data)
+      .then((res) => post = res)
+      .then(() => this._channels[channel].db.add(post.Hash))
       .then((hash) => {
         if(callback)
           callback(null);
+        return post;
       })
       .catch((e) => {
         this._handleError(e);
@@ -236,36 +244,45 @@ class Orbit {
   }
 
   _handleMessage(channel, message) {
-    logger.debug("new entry in database", channel, message)
-    this.events.emit('data', channel, message);
+    logger.debug("new entry in database", channel, message);
+    if(this._channels[channel])
+      this.events.emit('data', channel, message);
   }
 
   _handleStartLoading(channel) {
-    logger.debug("load channel", channel)
-    this._channels[channel].state.loading = true;
-    this.events.emit('state.updated', this.channels);
-    this.events.emit('load', channel)
+    logger.debug("load channel", channel);
+    if(this._channels[channel]) {
+      this._channels[channel].state.loading = true;
+      this.events.emit('state.updated', this.channels);
+      this.events.emit('load', channel);
+    }
   }
 
   _handleDatabaseReady(db) {
-    logger.debug("database ready", db.dbname)
-    this._channels[db.dbname].state.loading = false;
-    this.events.emit('state.updated', this.channels);
-    this.events.emit('ready', db.dbname)
+    logger.debug("database ready", db.dbname);
+    if(this._channels[db.dbname]) {
+      this._channels[db.dbname].state.loading = false;
+      this.events.emit('state.updated', this.channels);
+      this.events.emit('ready', db.dbname);
+    }
   }
 
   _handleSync(channel) {
-    logger.debug("sync channel", channel)
-    this._channels[channel].state.syncing = true;
-    this.events.emit('state.updated', this.channels);
-    this.events.emit('sync', channel)
+    logger.debug("sync channel", channel);
+    if(this._channels[channel]) {
+      this._channels[channel].state.syncing = true;
+      this.events.emit('state.updated', this.channels);
+      this.events.emit('sync', channel);
+    }
   }
 
   _handleSynced(channel, items) {
-    logger.debug("channel synced", channel, items.length)
-    this._channels[channel].state.syncing = false;
-    this.events.emit('state.updated', this.channels);
-    this.events.emit('synced', channel, items)
+    logger.debug("channel synced", channel, items.length);
+    if(this._channels[channel]) {
+      this._channels[channel].state.syncing = false;
+      this.events.emit('state.updated', this.channels);
+      this.events.emit('synced', channel, items);
+    }
   }
 
   onSocketConnected(socket) {
