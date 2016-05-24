@@ -245,6 +245,7 @@ class Orbit {
     logger.error(e);
     logger.error("Stack trace:\n", e.stack);
     this.events.emit('orbit.error', e.message);
+    throw e;
   }
 
   _handleMessage(channel, message) {
