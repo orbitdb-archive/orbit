@@ -81,7 +81,7 @@ exports.ipfsDaemon = (IPFS, addr, repo) => {
       // resolve(config);
       console.log("config", config)
       console.log(">>>>", addr + `/ipfs/${id.ID}`);
-      const signallingServer = '/libp2p-webrtc-star/ip4/127.0.0.1/tcp/9090/ws'
+      const signallingServer = '/libp2p-webrtc-star/ip4/178.62.241.75/tcp/9090/ws'
       config.Addresses.Swarm = [`${signallingServer}/ipfs/${id.ID}`];
       ipfs.config.replace(config, (err) => {
         if (err) return reject(err);
