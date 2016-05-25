@@ -29,7 +29,7 @@ class Orbit {
     const user = { username: username, password: password };
     logger.debug("Load cache from:", this.options.cacheFile);
     logger.info(`Connecting to network '${network}' as '${username}`);
-        return OrbitDB.connect(network, user.username, user.password, this.ipfs)
+    return OrbitDB.connect(network, user.username, user.password, this.ipfs)
       .then((orbit) => {
         this.orbitdb = orbit
         this.orbitdb.events.on('data', this._handleMessage.bind(this));
