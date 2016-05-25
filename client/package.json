@@ -16,7 +16,7 @@
     "highlight.js": "^9.4.0",
     "ipfs": "^0.10.1",
     "lodash": "^4.12.0",
-    "logplease": "^1.2.6",
+    "logplease": "^1.2.7",
     "normalize.css": "~4.1.1",
     "object-assign": "^4.1.0",
     "pleasejs": "^0.4.2",
