@@ -26,7 +26,7 @@ module.exports = {
   },
   plugins: [
     new webpack.optimize.DedupePlugin(),
-    // new webpack.optimize.UglifyJsPlugin(),
+    new webpack.optimize.UglifyJsPlugin(),
     // new webpack.optimize.OccurenceOrderPlugin(),
     new webpack.optimize.AggressiveMergingPlugin(),
     new webpack.NoErrorsPlugin()
@@ -62,17 +62,25 @@ module.exports = {
       exclude: /node_modules/,
       loader: 'babel',
       // query: {
-      //   presets: require.resolve('babel-preset-es2015'),
-      //   plugins: require.resolve('babel-plugin-transform-runtime')
+      //   presets: ['es2015'],
+      //   plugins: ['transform-runtime']
       // }
+      query: {
+        presets: require.resolve('babel-preset-es2015'),
+        plugins: require.resolve('babel-plugin-transform-runtime')
+      }
     }, {
       test: /\.js$/,
-      include: /node_modules\/(hoek|qs|wreck|boom|ipfs-.+)/,
+      include: /node_modules\/(hoek|qs|wreck|boom|ipfs-.+|logplease|orbit-db.+|crdts)/,
       loader: 'babel',
       // query: {
-      //   presets: require.resolve('babel-preset-es2015'),
-      //   plugins: require.resolve('babel-plugin-transform-runtime')
+      //   presets: ['es2015'],
+      //   plugins: ['transform-runtime']
       // }
+      query: {
+        presets: require.resolve('babel-preset-es2015'),
+        plugins: require.resolve('babel-plugin-transform-runtime')
+      }
     }, {
       test: /\.css$/,
       loader: 'style-loader!css-loader'

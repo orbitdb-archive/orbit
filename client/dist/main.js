@@ -31,9 +31,7 @@ const start = exports.start = () => {
   const startTime = new Date().getTime();
   logger.info("Starting IPFS...");
 
-  // return utils.ipfsDaemon(IPFS, '/libp2p-webrtc-star/ip4/127.0.0.1/tcp/15555/ws', '/tmp/orbit-4-' + new Date().getTime())
-  // return utils.ipfsDaemon(IPFS, '/libp2p-webrtc-star/ip4/127.0.0.1/tcp/9090/ws', '/tmp/orbit-777a-')
-  // return utils.ipfsDaemon(IPFS, `/ip4/127.0.0.1/tcp/600${Math.floor((Math.random() * 10))}/ws`, '/tmp/orbit-4a-')
+  // return utils.ipfsDaemon(IPFS, `/ip4/127.0.0.1/tcp/0/ws`, '/tmp/orbit-4a-' + new Date().getTime())
   return utils.ipfsDaemon(IPFS, `/ip4/127.0.0.1/tcp/0/ws`, '/tmp/orbit-4a-' + new Date().getTime())
     .then((res) => {
       ipfs = res;
@@ -95,8 +93,8 @@ const start = exports.start = () => {
     })
     .then(() => {
       setInterval(() => {
-        ipfs.libp2p.swarm.peers((peers, poors) => {
-          console.log("PEERS", peers, poors)
+        ipfs.libp2p.swarm.peers((err, peers) => {
+          console.log("PEERS", err, peers)
         })
       }, 1000)
       // auto-login if there's a user.json file
