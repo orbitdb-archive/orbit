@@ -101,16 +101,22 @@ class Orbit {
     if(callback) callback(this.orbitdb.user.id);
   }
 
-  getSwarmPeers(callback) {
-    this.ipfs.swarm.peers()
-      .then((peers) => {
-        if(callback)
-          callback(peers.Strings);
+  getSwarmPeers() {
+    // js-ipfs
+    if(this.ipfs.libp2p.swarm.peers) {
+      return new Promise((resolve, reject) => {
+        this.ipfs.libp2p.swarm.peers((err, peers) => {
+          if(err) reject(err);
+          resolve(peers);
+        });
       })
-      .catch((e) => {
-        this._handleError(e);
-        if(callback) callback(null);
-      });
+      .then((peers) => Object.keys(peers).map((e) => peers[e].multiaddrs[0].toString()));
+    } else {
+      // js-ipfs-api
+      return this.ipfs.swarm.peers
+        .then((peers) => peers.Strings)
+        .catch((e) => this._handleError(e))
+    }
   }
 
   getChannels(callback) {
