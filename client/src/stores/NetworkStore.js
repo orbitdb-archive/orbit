@@ -63,7 +63,7 @@ var NetworkStore = Reflux.createStore({
   },
   onGetPeers: function(callback) {
     // logger.debug("swarm.get");
-    this.orbit.getSwarmPeers().then(callback);
+    if(this.orbit) this.orbit.getSwarmPeers().then(callback);
     if(this.socket) this.socket.emit('swarm.get', callback);
   }
 });
