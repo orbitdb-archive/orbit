@@ -95,8 +95,8 @@ const start = exports.start = () => {
     })
     .then(() => {
       setInterval(() => {
-        ipfs.libp2p.swarm.peers((peers, poors) => {
-          console.log("PEERS", peers, poors)
+        ipfs.libp2p.swarm.peers((err, peers) => {
+          console.log("PEERS", err, peers)
         })
       }, 1000)
       // auto-login if there's a user.json file
