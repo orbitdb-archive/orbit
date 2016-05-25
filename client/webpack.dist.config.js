@@ -3,6 +3,18 @@
 const webpack = require('webpack');
 const path = require('path');
 
+const babel = {
+  "plugins": [
+    "transform-regenerator",
+    "syntax-async-functions",
+    "syntax-async-generators",
+    "transform-async-to-generator",
+    "syntax-flow",
+    "transform-flow-strip-types"
+  ].map((p) => require.resolve('babel-plugin-' + p)),
+  "presets": ["es2015", "stage-0", "stage-3", "react"].map((p) => require.resolve('babel-preset-' + p))
+}
+
 module.exports = {
   output: {
     publicPath: '/assets/',
@@ -12,7 +24,6 @@ module.exports = {
   debug: false,
   devtool: false,
   entry: [
-    // 'babel-polyfill',
     './src/components/App.js'
   ],
   node: {
@@ -26,8 +37,9 @@ module.exports = {
   },
   plugins: [
     new webpack.optimize.DedupePlugin(),
-    new webpack.optimize.UglifyJsPlugin(),
-    // new webpack.optimize.OccurenceOrderPlugin(),
+    new webpack.optimize.UglifyJsPlugin({
+      mangle: false
+    }),
     new webpack.optimize.AggressiveMergingPlugin(),
     new webpack.NoErrorsPlugin()
   ],
@@ -52,35 +64,16 @@ module.exports = {
     }
   },
   module: {
-    // preLoaders: [{
-    //   test: /\.(js|jsx)$/,
-    //   exclude: /node_modules/,
-    //   loader: 'eslint-loader'
-    // }],
     loaders: [{
       test: /\.(js|jsx)$/,
       exclude: /node_modules/,
       loader: 'babel',
-      // query: {
-      //   presets: ['es2015'],
-      //   plugins: ['transform-runtime']
-      // }
-      query: {
-        presets: require.resolve('babel-preset-es2015'),
-        plugins: require.resolve('babel-plugin-transform-runtime')
-      }
+      query: babel
     }, {
       test: /\.js$/,
-      include: /node_modules\/(hoek|qs|wreck|boom|ipfs-.+|logplease|orbit-db.+|crdts)/,
+      include: /node_modules\/(hoek|qs|wreck|boom|ipfs-.+|logplease|orbit|crdts)/,
       loader: 'babel',
-      // query: {
-      //   presets: ['es2015'],
-      //   plugins: ['transform-runtime']
-      // }
-      query: {
-        presets: require.resolve('babel-preset-es2015'),
-        plugins: require.resolve('babel-plugin-transform-runtime')
-      }
+      query: babel
     }, {
       test: /\.css$/,
       loader: 'style-loader!css-loader'
