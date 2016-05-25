@@ -75,5 +75,10 @@
     "url-loader": "~0.5.7",
     "webpack": "^2.1.0-beta.7",
     "webpack-dev-server": "^2.1.0-beta.0"
+  },
+  "scripts": {
+    "dev": "./node_modules/.bin/grunt serve",
+    "build": "./node_modules/.bin/grunt build",
+    "publish": "ipfs add -r dist/"
   }
 }
