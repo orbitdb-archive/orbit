@@ -11,7 +11,7 @@
     "ipfs-post": "https://github.com/haadcode/ipfs-post",
     "ipfsd-ctl": "^0.14.0",
     "lodash": "^4.8.2",
-    "logplease": "^1.2.6",
+    "logplease": "^1.2.7",
     "method-override": "^2.3.5",
     "mime": "^1.3.4",
     "orbit-db": "^0.9.5",
