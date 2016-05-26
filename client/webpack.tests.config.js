@@ -17,15 +17,14 @@ const babel = {
 
 module.exports = {
   output: {
-    filename: 'bundle.js',
-    path: __dirname
+    filename: 'tests.bundle.js',
+    path: 'test/'
   },
   cache: false,
   debug: true,
   devtool: 'sourcemap',
   entry: [
-    require.resolve('babel-polyfill'),
-    './test/tests.bundle.js'
+    './test/orbit.test.js'
   ],
   node: {
     console: false,
@@ -37,19 +36,14 @@ module.exports = {
     reasons: true
   },
   resolveLoader: {
-    modules: [
-      'node_modules',
-      path.join(__dirname, 'node_modules')
-    ],
+    root: path.join(__dirname, 'node_modules')
   },
   resolve: {
-    // extensions: ['', '.js', '.jsx'],
-    modules: [
-      'node_modules',
+    modulesDirectories: [
       path.join(__dirname, 'node_modules')
     ],
     alias: {
-      // fs: require.resolve('./src/fs-mock'),
+      fs: require.resolve('./src/fs-mock'),
       'node_modules': path.join(__dirname + '/node_modules'),
       'app': __dirname + '/src/app/',
       'styles': __dirname + '/src/styles',
@@ -61,19 +55,14 @@ module.exports = {
     }
   },
   module: {
-    // preLoaders: [{
-    //   test: /\.(js|jsx)$/,
-    //   exclude: /node_modules/,
-    //   loader: 'eslint-loader'
-    // }],
     loaders: [{
       test: /\.(js|jsx)$/,
       exclude: /node_modules/,
-      loader: 'babel',
-      query: babel
+      loader: 'babel'
     }, {
       test: /\.js$/,
-      include: /node_modules\/(hoek|qs|wreck|boom|ipfs-.+|logplease|orbit|crdts)/,
+      // include: /node_modules\/(hoek|qs|wreck|boom|ipfs-.+|logplease|orbit|crdts)/,
+      include: /node_modules\/(hoek|qs|wreck|boom)/,
       loader: 'babel',
       query: babel
     }, {
@@ -94,13 +83,9 @@ module.exports = {
       loader: 'transform?brfs'
     }]
   },
-  plugins: [
-    new webpack.HotModuleReplacementPlugin()
-  ],
   externals: {
     net: '{}',
     tls: '{}',
-    fs: '{}',
     'require-dir': '{}',
     mkdirp: '{}'
   }

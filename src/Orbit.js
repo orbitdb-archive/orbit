@@ -8,6 +8,7 @@ const OrbitDB      = require('orbit-db');
 const Post         = require('ipfs-post');
 const Logger       = require('logplease');
 const logger       = Logger.create("Orbit.Orbit", { color: Logger.Colors.Green });
+// Logger.setLogLevel('ERROR');
 const utils        = require('./utils');
 
 const defaultOptions = {

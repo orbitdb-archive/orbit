@@ -1,19 +1,17 @@
 'use strict';
 
-// const _       = require('lodash');
-// const fs      = require('fs');
-const path    = require('path');
-const assert  = require('assert');
-// const ipfsd   = require('ipfsd-ctl');
-const IPFS    = require('ipfs')
-// const OrbitDB = require('../src/OrbitDB');
+const _           = require('lodash');
+const path        = require('path');
+const assert      = require('assert');
+const IPFS        = require('exports?Ipfs!ipfs/dist/index.js');
+const EventStore  = require('orbit-db-eventstore');
+const Post        = require('ipfs-post');
+const Orbit       = require('../../src/Orbit');
 // const OrbitServer = require('orbit-server/src/server');
-// const Orbit = require('../../src/Orbit');
-// const EventStore = require('orbit-db-eventstore');
-// const Post         = require('ipfs-post');
 
 // Mute logging
-require('logplease').setLogLevel('ERROR');
+const Logger = require('logplease');
+Logger.setLogLevel('ERROR');
 
 // Orbit
 const network = 'Qmeh6ktQ1YFKksugJb59vBxG51xXoEvjBZXRK3DdrF3mNj';
@@ -81,7 +79,8 @@ IpfsApis.forEach(function(ipfsApi) {
 
   describe('Orbit with ' + ipfsApi.name, function() {
     // this.timeout(1000);
-    this.timeout(40000);
+    this.timeout(5000);
+    // this.timeout(40000);
 
     let orbit, client, client2;
     let channel = 'orbit-test';
