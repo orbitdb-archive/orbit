@@ -12,7 +12,7 @@ const utils        = require('../../src/utils');
 const Orbit        = require('../../src/Orbit');
 // const IPFS         = require('ipfs');
 const IPFS = require('exports?Ipfs!ipfs/dist/index.js')
-const multiaddr = require('multiaddr');
+// const multiaddr = require('multiaddr');
 
 var ENV = process.env["ENV"] || "release";
 logger.debug("Running in '" + ENV + "' mode");
@@ -25,7 +25,7 @@ const dataPath = path.join(utils.getAppPath(), "/data");
 
 /* MAIN */
 const events = new EventEmitter();
-let ipfs, orbit;
+let ipfs, orbit, peerId;
 
 const start = exports.start = (id) => {
   const startTime = new Date().getTime();
@@ -45,46 +45,38 @@ const start = exports.start = (id) => {
         });
       });
     })
-    .then((peerId) => {
+    .then((res) => {
+      peerId = res;
       // logger.info(`IPFS Node started: ${id.Addresses}/ipfs/${id.ID}`);
       console.log();
       console.log(`Orbit-${id} started:`);
       console.log(peerId.Addresses[0]);
-      console.log(peerId.Addresses[1]);
       console.log();
-      return peerId;
+      return;
     })
-    .then((id) => new Promise((resolve, reject) => {
-      ipfs.config.show((err, config) => {
-        if (err) return reject(err);
-        // console.log("config22", JSON.stringify(config.Addresses.Swarm, null, 2));
-        resolve();
-      });
-    }))
     // .then(() => HttpApi(ipfs, events))
     // .then((httpApi) => SocketApi(httpApi.socketServer, httpApi.server, events, orbit))
     // .then(() => SocketApi(null, null, events, orbit))
-    .then(() => {
-      setInterval(() => {
-        ipfs.libp2p.swarm.peers((err, peers) => {
-          // console.log("PEERS", err, peers)
-          // console.log("PEERS for Bot" + id + ": " + Object.keys(peers).join(", "));
-        })
-      }, 1000)
-      // auto-login if there's a user.json file
-      // var userFile = path.join(path.resolve(utils.getAppPath(), "user.json"));
-      // if(fs.existsSync(userFile)) {
-      //   const user = JSON.parse(fs.readFileSync(userFile));
-      //   logger.debug(`Using credentials from '${userFile}'`);
-      //   logger.debug(`Registering as '${user.username}'`);
-      //   const network = 'QmRB8x6aErtKTFHDNRiViixSKYwW1DbfcvJHaZy1hnRzLM';
-      //   return orbit.connect(network, user.username, user.password);
-      // }
-      return;
-    })
+    // .then(() => {
+    //   setInterval(() => {
+    //     ipfs.libp2p.swarm.peers((err, peers) => {
+    //       // console.log("PEERS", err, peers)
+    //     })
+    //   }, 1000);
+    //   // auto-login if there's a user.json file
+    //   // var userFile = path.join(path.resolve(utils.getAppPath(), "user.json"));
+    //   // if(fs.existsSync(userFile)) {
+    //   //   const user = JSON.parse(fs.readFileSync(userFile));
+    //   //   logger.debug(`Using credentials from '${userFile}'`);
+    //   //   logger.debug(`Registering as '${user.username}'`);
+    //   //   const network = 'QmRB8x6aErtKTFHDNRiViixSKYwW1DbfcvJHaZy1hnRzLM';
+    //   //   return orbit.connect(network, user.username, user.password);
+    //   // }
+    //   // return;
+    // })
     .then(() => {
       const endTime = new Date().getTime();
       logger.debug('Startup time: ' + (endTime - startTime) + "ms");
-      return orbit;
+      return { orbit: orbit, peerId: peerId };
     })
 };
