@@ -48,9 +48,9 @@ const start = exports.start = (id) => {
     .then((res) => {
       peerId = res;
       // logger.info(`IPFS Node started: ${id.Addresses}/ipfs/${id.ID}`);
-      console.log();
-      console.log(`Orbit-${id} started:`);
-      console.log(peerId.Addresses[0]);
+      // console.log();
+      console.log(`Orbit-${id} ^^^^^^^`);
+      // console.log(peerId.Addresses[0]);
       console.log();
       return;
     })

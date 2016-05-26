@@ -64,10 +64,11 @@ describe('Orbit Skynet', function() {
           console.log(`${bot.name}'s peers:`);
           peers.forEach((e) => console.log(e));
           console.log();
-          // const botIds = bots.map((e) => e.peerId).filter((e) => e !== bot.peerId);
+          const botIds = bots.map((e) => e.peerId.ID).filter((e) => e !== bot.peerId.ID);
           assert.equal(peers.length, 2);
-          // assert.equal(peers[0] === botsId[0] || peers[0] === botsId[1], true);
-          // assert.equal(peers[1] === botsId[0] || peers[1] === botsId[1], true);
+          peers = peers.map((e) => e.split("/").pop());
+          assert.equal(peers[0] === botIds[0] || peers[0] === botIds[1], true);
+          assert.equal(peers[1] === botIds[0] || peers[1] === botIds[1], true);
         });
       }))
       .then((res) => done())
