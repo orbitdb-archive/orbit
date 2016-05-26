@@ -15,6 +15,8 @@ module.exports = function(config) {
 
     reporters: ['mocha'],
 
+    browserNoActivityTimeout: 100000,
+
     files: [
       'test/orbit.test.js',
     ],
