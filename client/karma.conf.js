@@ -3,18 +3,6 @@
 const webpack = require('webpack');
 const path = require('path');
 
-const babel = {
-  "plugins": [
-    "transform-regenerator",
-    "syntax-async-functions",
-    "syntax-async-generators",
-    "transform-async-to-generator",
-    "syntax-flow",
-    "transform-flow-strip-types"
-  ].map((p) => require.resolve('babel-plugin-' + p)),
-  "presets": ["es2015", "stage-0", "stage-3", "react"].map((p) => require.resolve('babel-preset-' + p))
-};
-
 const webpackConf = require('./webpack.dist.config.js');
 
 module.exports = function(config) {
@@ -40,6 +28,5 @@ module.exports = function(config) {
     webpackMiddleware: {
       // noInfo: true
     }
-
   });
 };

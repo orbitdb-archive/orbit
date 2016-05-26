@@ -47,7 +47,6 @@ module.exports = {
     root: path.join(__dirname, 'node_modules')
   },
   resolve: {
-    // extensions: ['', '.js', '.jsx'],
     modulesDirectories: [
       path.join(__dirname, 'node_modules')
     ],

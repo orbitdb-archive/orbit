@@ -61,7 +61,6 @@ module.exports = {
       loader: 'babel'
     }, {
       test: /\.js$/,
-      // include: /node_modules\/(hoek|qs|wreck|boom|ipfs-.+|logplease|orbit|crdts)/,
       include: /node_modules\/(hoek|qs|wreck|boom)/,
       loader: 'babel',
       query: babel
@@ -77,10 +76,6 @@ module.exports = {
     }, {
       test: /\.json$/,
       loader: 'json'
-    }],
-    postLoaders: [{
-      test: /\.js$/,
-      loader: 'transform?brfs'
     }]
   },
   externals: {
