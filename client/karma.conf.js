@@ -1,84 +1,177 @@
 'use strict';
 
-var path = require('path');
+const webpack = require('webpack');
+const path = require('path');
 
-module.exports = function (config) {
+const babel = {
+  "plugins": [
+    "transform-regenerator",
+    "syntax-async-functions",
+    "syntax-async-generators",
+    "transform-async-to-generator",
+    "syntax-flow",
+    "transform-flow-strip-types"
+  ].map((p) => require.resolve('babel-plugin-' + p)),
+  "presets": ["es2015", "stage-0", "stage-3", "react"].map((p) => require.resolve('babel-preset-' + p))
+};
+
+const webpackConf = require('./webpack.dist.config.js');
+
+module.exports = function(config) {
   config.set({
-    basePath: '',
-    frameworks: ['jasmine'],
-    files: [
-      'test/helpers/pack/**/*.js',
-      'test/helpers/react/**/*.js',
-      'test/spec/components/**/*.js',
-      'test/spec/stores/**/*.js',
-      'test/spec/actions/**/*.js'
-    ],
-    preprocessors: {
-      'test/helpers/createComponent.js': ['webpack'],
-      'test/spec/components/**/*.js': ['webpack'],
-      'test/spec/components/**/*.jsx': ['webpack'],
-      'test/spec/stores/**/*.js': ['webpack'],
-      'test/spec/actions/**/*.js': ['webpack']
-    },
-    webpack: {
-      cache: true,
-      module: {
-        loaders: [{
-          test: /\.gif/,
-          loader: 'url-loader?limit=10000&mimetype=image/gif'
-        }, {
-          test: /\.jpg/,
-          loader: 'url-loader?limit=10000&mimetype=image/jpg'
-        }, {
-          test: /\.png/,
-          loader: 'url-loader?limit=10000&mimetype=image/png'
-        }, {
-          test: /\.(js|jsx)$/,
-          loader: 'babel-loader',
-          exclude: /node_modules/
-        }, {
-          test: /\.scss/,
-          loader: 'style-loader!css-loader!sass-loader?outputStyle=expanded'
-        }, {
-          test: /\.css$/,
-          loader: 'style-loader!css-loader'
-        }, {
-          test: /\.woff/,
-          loader: 'url-loader?limit=10000&mimetype=application/font-woff'
-        }, {
-          test: /\.woff2/,
-          loader: 'url-loader?limit=10000&mimetype=application/font-woff2'
-        }]
-      },
-      resolve: {
-        alias: {
-          'styles': path.join(process.cwd(), './src/styles/'),
-          'components': path.join(process.cwd(), './src/components/'),
-          'stores': '../../../src/stores/',
-          'actions': '../../../src/actions/',
-          'helpers': path.join(process.cwd(), './test/helpers/')
-        }
-      }
-    },
-    webpackMiddleware: {
-      noInfo: true,
-      stats: {
-        colors: true
-      }
-    },
-    exclude: [],
-    port: 8080,
-    logLevel: config.LOG_INFO,
-    colors: true,
-    autoWatch: false,
-    browsers: ['PhantomJS'],
+    singleRun: false,
+
+    frameworks: ['mocha'],
+
+    browsers: ['Chrome'],
+
     reporters: ['dots'],
-    captureTimeout: 60000,
-    singleRun: true,
-    plugins: [
-        require('karma-webpack'),
-        require('karma-jasmine'),
-        require('karma-phantomjs-launcher')
-    ]
+
+    files: [
+      // './node_modules/phantomjs-polyfill/bind-polyfill.js',
+      'test/tests.bundle.js',
+      // 'test/tests.js'
+    ],
+
+    preprocessors: {
+      './test/tests.bundle.js': ['webpack']
+      // 'test/*.js': ['webpack']
+    },
+
+    webpack: require('./webpack.tests.config.js'),
+    // webpack: {
+    //   // output: {
+    //   //   publicPath: '/test/',
+    //   //   path: 'test/assets/',
+    //   //   filename: 'tests.js'
+    //   // },
+    //   entry: [
+    //     'test/orbit.test.js'
+    //   ],
+    //   // stats: {
+    //   //   colors: true,
+    //   //   reasons: true
+    //   // },
+    //   node: {
+    //     console: false,
+    //     process: 'mock',
+    //     Buffer: 'buffer'
+    //   },
+    //   // resolveLoader: {
+    //   //   root: path.join(__dirname, 'node_modules')
+    //   // },
+    //   cache: false,
+    //   // debug: true,
+    //   // devtool: 'sourcemap',
+    //   module: webpackConf.module,
+    //   resolve: webpackConf.resolve,
+    //   resolveLoader: webpackConf.resolveLoader,
+    //   externals: webpackConf.externals,
+    //   // resolve: {
+    //   //   // extensions: ['', '.js', '.jsx'],
+    //   //   modulesDirectories: [
+    //   //     'node_modules',
+    //   //     path.join(__dirname, 'node_modules')
+    //   //   ],
+    //   //   alias: {
+    //   //     fs: require.resolve('./src/fs-mock'),
+    //   //     'node_modules': path.join(__dirname + '/node_modules'),
+    //   //     'app': __dirname + '/src/app/',
+    //   //     'styles': __dirname + '/src/styles',
+    //   //     'mixins': __dirname + '/src/mixins',
+    //   //     'components': __dirname + '/src/components/',
+    //   //     'stores': __dirname + '/src/stores/',
+    //   //     'actions': __dirname + '/src/actions/',
+    //   //     'utils': __dirname + '/src/utils/'
+    //   //   }
+    //   // },
+    //   // module: {
+    //   //   loaders: [{
+    //   //     test: /\.(js|jsx)$/,
+    //   //     exclude: /node_modules/,
+    //   //     loader: 'babel',
+    //   //     query: babel
+    //   //   }, {
+    //   //     test: /\.js$/,
+    //   //     include: /node_modules\/(hoek|qs|wreck|boom|ipfs-.+|logplease|orbit|crdts)/,
+    //   //     // include: /node_modules\/(hoek|qs|wreck|boom)/,
+    //   //     loader: 'babel',
+    //   //     query: babel
+    //   //   }, {
+    //   //     test: /\.scss/,
+    //   //     loader: 'style-loader!css-loader!sass-loader?outputStyle=expanded'
+    //   //   }, {
+    //   //     test: /\.css$/,
+    //   //     loader: 'style-loader!css-loader'
+    //   //   }, {
+    //   //     test: /\.(png|jpg|woff|woff2)$/,
+    //   //     loader: 'url-loader?limit=8192'
+    //   //   }, {
+    //   //     test: /\.json$/,
+    //   //     loader: 'json'
+    //   //   }]
+    //   // }
+    // },
+
+    // webpack: {
+    //   // webpack configuration
+    //   // resolveLoader: {
+    //   //   root: path.join(__dirname, 'node_modules')
+    //   // },
+    //   module: {
+    //     loaders: [{
+    //       test: /\.(js|jsx)$/,
+    //       exclude: /node_modules/,
+    //       loader: 'babel',
+    //       query: babel
+    //     }, {
+    //       test: /\.js$/,
+    //       include: /node_modules\/(hoek|qs|wreck|boom)/,
+    //       loader: 'babel',
+    //       query: babel
+    //     }, {
+    //       test: /\.scss/,
+    //       loader: 'style-loader!css-loader!sass-loader?outputStyle=expanded'
+    //     }, {
+    //       test: /\.css$/,
+    //       loader: 'style-loader!css-loader'
+    //     }, {
+    //       test: /\.(png|jpg|woff|woff2)$/,
+    //       loader: 'url-loader?limit=8192'
+    //     }, {
+    //       test: /\.json$/,
+    //       loader: 'json'
+    //     }]
+    //   }
+    //   // resolve: {
+    //   //   modulesDirectories: [
+    //   //     'node_modules',
+    //   //     path.join(__dirname, 'node_modules')
+    //   //   ],
+    //   //   alias: {
+    //   //     fs: require.resolve('./src/fs-mock'),
+    //   //     'node_modules': path.join(__dirname + '/node_modules'),
+    //   //     'app': __dirname + '/src/app/',
+    //   //     'styles': __dirname + '/src/styles',
+    //   //     'mixins': __dirname + '/src/mixins',
+    //   //     'components': __dirname + '/src/components/',
+    //   //     'stores': __dirname + '/src/stores/',
+    //   //     'actions': __dirname + '/src/actions/',
+    //   //     'utils': __dirname + '/src/utils/'
+    //   //   }
+    //   // }
+    //   // externals: {
+    //   //   net: '{}',
+    //   //   tls: '{}',
+    //   //   'require-dir': '{}',
+    //   //   mkdirp: '{}'
+    //   // },
+    // },
+
+    webpackMiddleware: {
+      // webpack-dev-middleware configuration
+      noInfo: true
+    }
+
   });
 };
