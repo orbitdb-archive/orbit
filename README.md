@@ -13,23 +13,28 @@
 
 *If you don't have npm v3.x installed, you can install it from npm with `npm install npm3 -g` and run the npm commands described in this document with `npm3` instead of `npm`.*
 
-#### Setup and Run
+### Installation
 ```
 git clone -b js-ipfs https://github.com/haadcode/orbit
 cd orbit/
 npm install
+```
+
+### Run
+```
 cd client/
 npm install
 npm run dev
 ```
 
-#### Test
+### Test
 ```
 cd client/
+npm install
 npm test
 ```
 
-#### Build
+### Build
 ```
 cd client/
 npm install
@@ -38,7 +43,7 @@ npm run build
 
 This will update the files in `dist/`.
 
-#### Publish
+### Publish
 
 **In order to publish, you must have ipfs daemon running locally**
 
