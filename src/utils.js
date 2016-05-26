@@ -46,6 +46,7 @@ exports.deleteDirectoryRecursive = deleteDirectoryRecursive;
 
 exports.ipfsDaemon = (IPFS, addr, repo) => {
   repo = repo || '/tmp/orbit';
+  console.log("IPFS Path: " + repo);
   const ipfs = new IPFS(repo);
   return new Promise((resolve, reject) => {
     ipfs.init({}, (err) => {
@@ -66,10 +67,19 @@ exports.ipfsDaemon = (IPFS, addr, repo) => {
       });
     });
   })
+  .then((id) => {
+    return new Promise((resolve, reject) => {
+      ipfs.config.show((err, config) => {
+        if (err) return reject(err);
+        // console.log("config1", JSON.stringify(config))
+        resolve(config);
+      });
+    });
+  })
   .then(() => {
     return new Promise((resolve, reject) => {
       ipfs.id((err, id) => {
-        console.log(err, id)
+        // console.log(err, id)
         if (err) return reject(err);
         resolve(id);
       });
@@ -78,17 +88,61 @@ exports.ipfsDaemon = (IPFS, addr, repo) => {
   .then((id) => new Promise((resolve, reject) => {
     ipfs.config.show((err, config) => {
       if (err) return reject(err);
-      // resolve(config);
-      console.log("config", config)
-      console.log(">>>>", addr + `/ipfs/${id.ID}`);
+      // console.log(">>>>", addr + `/ipfs/${id.ID}`);
       const signallingServer = '/libp2p-webrtc-star/ip4/178.62.241.75/tcp/9090/ws'
-      config.Addresses.Swarm = [`${signallingServer}/ipfs/${id.ID}`];
+      // const signallingServer = '/libp2p-webrtc-star/ip4/0.0.0.0/tcp/9090/ws'
+      config.Addresses.Swarm = [`${addr}/ipfs/${id.ID}`, `${signallingServer}/ipfs/${id.ID}`];
       ipfs.config.replace(config, (err) => {
         if (err) return reject(err);
         resolve();
       });
     });
   }))
+  .then(() => {
+    return new Promise((resolve, reject) => {
+      ipfs.goOffline(resolve);
+    });
+  })
+  .then(() => {
+    return new Promise((resolve, reject) => {
+      ipfs.goOnline(() => {
+        resolve(ipfs);
+      });
+    });
+  })
+  .then(() => {
+    return new Promise((resolve, reject) => {
+      ipfs.id((err, id) => {
+        // console.log(err, id)
+        if (err) return reject(err);
+        resolve(id);
+      });
+    });
+  })
+  .then((id) => {
+    return new Promise((resolve, reject) => {
+      ipfs.config.show((err, config) => {
+        if (err) return reject(err);
+        // console.log("config2", JSON.stringify(config))
+        resolve(config);
+      });
+    });
+  })
+  // .then((id) => new Promise((resolve, reject) => {
+  //   ipfs.config.show((err, config) => {
+  //     if (err) return reject(err);
+  //     // resolve(config);
+  //     // console.log("config", config)
+  //     // console.log(">>>>", addr + `/ipfs/${id.ID}`);
+  //     // const signallingServer = '/libp2p-webrtc-star/ip4/178.62.241.75/tcp/9090/ws'
+  //     const signallingServer = '/libp2p-webrtc-star/ip4/0.0.0.0/tcp/9090/ws'
+  //     config.Addresses.Swarm = [`${addr}/ipfs/${id.ID}`, `${signallingServer}/ipfs/${id.ID}`];
+  //     ipfs.config.replace(config, (err) => {
+  //       if (err) return reject(err);
+  //       resolve();
+  //     });
+  //   });
+  // }))
   .then(() => {
     return ipfs;
   })

@@ -23,11 +23,20 @@ npm install
 npm run dev
 ```
 
+#### Test
+```
+cd client/
+npm test
+```
+
 #### Build
 ```
 cd client/
+npm install
 npm run build
 ```
+
+This will update the files in `dist/`.
 
 #### Publish
 
