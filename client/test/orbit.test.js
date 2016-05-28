@@ -33,8 +33,14 @@ describe('Orbit Skynet', function() {
 
   before(function (done) {
     const promises = bots.map((bot) => {
-      return Main.start(bot.id)
+      return new Promise((resolve, reject) => {
+        Main.start(bot.id)
         .then((res) => Object.assign(bot, res))
+        .then((res) => {
+          setTimeout(() => resolve(res), 1000);
+        })
+        .catch(reject);
+      });
     });
 
     Promise.all(promises)

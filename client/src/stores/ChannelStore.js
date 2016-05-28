@@ -65,6 +65,7 @@ var ChannelStore = Reflux.createStore({
     // }
 
     // this.socket.emit("channel.join", channel, password, (err, res) => {
+    logger.debug("Join channel #" + channel);
     this.orbit.join(channel, password, (err, res) => {
       logger.debug("joined channel", channel, res);
       if(!err) {

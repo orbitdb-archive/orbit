@@ -12,6 +12,7 @@ import SocketActions from 'actions/SocketActions';
 import NetworkActions from 'actions/NetworkActions';
 import NotificationActions from 'actions/NotificationActions';
 import ChannelActions from 'actions/ChannelActions';
+import SkynetActions from 'actions/SkynetActions';
 
 import AppStateStore from 'stores/AppStateStore';
 import UserStore from 'stores/UserStore';
@@ -39,6 +40,7 @@ import 'styles/Scrollbars.scss';
 import 'highlight.js/styles/hybrid.css';
 
 import Main from '../main';
+import Protolol from '../assets/protolol';
 
 const views = {
   "Index": "/",
@@ -50,15 +52,49 @@ const views = {
 
 const logger = Logger.create('App', { color: Logger.Colors.Red });
 
+let orbit;
+
 /* ENTRY POINT */
-Main.start().then((orbit) => {
-  logger.info("Orbit started");
-  AppActions.initialize(orbit);
-  NetworkActions.updateNetwork(null) // start the App
-})
-.catch((e) => {
-  logger.error(e.message);
-  logger.error("Stack trace:\n", e.stack);
+// Main.start().then((res) => {
+//   logger.info("Orbit started");
+//   logger.debug("PeerId:", res.peerId.ID);
+//   orbit = res.orbit;
+//   AppActions.initialize(orbit);
+//   NetworkActions.updateNetwork(null) // start the App
+// })
+// .catch((e) => {
+//   logger.error(e.message);
+//   logger.error("Stack trace:\n", e.stack);
+// });
+
+var Skynet = React.createClass({
+  componentDidMount: function() {
+    const delay = (this.props.params.delay ? this.props.params.delay : 2) * 1000;
+    const username = this.props.params.username ? this.props.params.username : "DefaultBot";
+
+    setTimeout(() => {
+      Main.start(username).then((res) => {
+        logger.info("Orbit started");
+        logger.debug("PeerId:", res.peerId.ID);
+        orbit = res.orbit;
+        AppActions.initialize(orbit);
+        NetworkActions.updateNetwork(null) // start the App
+        // console.log(this.props.params, this.props.query);
+        SkynetActions.start(username);
+      })
+      .catch((e) => {
+        logger.error(e.message);
+        logger.error("Stack trace:\n", e.stack);
+      });
+    }, delay);
+  },
+  render: function() {
+    return (
+      <div className="Skynet">
+      Loading Skynet...
+      </div>
+    );
+  }
 });
 
 var App = React.createClass({
@@ -74,8 +110,14 @@ var App = React.createClass({
     };
   },
   componentDidMount: function() {
+    // console.log("------------------------------")
+    // console.log(this.props.params, this.props.query);
+    // if(this.props.params.username)
+    //   orbit.connect(null, this.props.params.username, '');
+
     document.title = 'Orbit';
 
+    SkynetActions.start.listen((username) => orbit.connect(null, username, ''));
     UIActions.joinChannel.listen(this.joinChannel);
     // UIActions.showChannel.listen(this.showChannel);
     NetworkActions.joinedChannel.listen(this.onJoinedChannel);
@@ -132,8 +174,8 @@ var App = React.createClass({
       AppActions.setLocation("Connect");
     } else {
       this.setState({ networkName: network.name });
-      // const channels = JSON.parse(localStorage.getItem( "anonet.app." + network.user.username + "." + network.name + ".channels")) || [];
-      // channels.forEach( (c) => NetworkActions.joinChannel(c.name, ''));
+      const channels = JSON.parse(localStorage.getItem( "anonet.app." + this.state.user.username + "." + network.name + ".channels")) || ["skynet"];
+      channels.forEach( (c) => NetworkActions.joinChannel(c, ''));
     }
   },
   _makeChannelsKey: function(username, networkName) {
@@ -185,6 +227,16 @@ var App = React.createClass({
     //   channels.push({ name: channel });
     //   localStorage.setItem(channelsKey, JSON.stringify(channels));
     // }
+    if(channel === "skynet") {
+      ChannelActions.sendMessage("skynet", "/me was summoned");
+      setInterval(() => {
+        const i = Math.floor((Math.random() * Protolol.length));
+        const line = Protolol[i].split(' ');
+        line.splice(0, 1); // remove "@name"
+        const text = line.join(" ").replace('#protolol', ''); // remove '#protolol'
+        ChannelActions.sendMessage("skynet", text);
+      }, 20000);
+    }
   },
   onLeaveChannel: function(channel) {
     const channelsKey = this._makeChannelsKey(this.state.user.username, this.state.networkName);
@@ -261,6 +313,7 @@ var App = React.createClass({
 render(
   <Router history={hashHistory}>
     <Route path="/" component={App}>
+      <Route path="skynet/:username/:delay" component={Skynet}/>
       <Route path="channel/:channel" component={ChannelView}/>
       <Route path="settings" component={SettingsView}/>
       <Route path="swarm" component={SwarmView}/>

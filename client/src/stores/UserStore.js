@@ -20,6 +20,9 @@ var UserStore = Reflux.createStore({
       this._updateUser(user)
     });
   },
+  onUpdateUser: function(user) {
+    this._updateUser(user);
+  },
   _updateUser: function(user) {
     logger.debug("received user");
     console.log(user);

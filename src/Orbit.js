@@ -42,6 +42,7 @@ class Orbit {
       .then(() => {
         logger.info(`Connected to '${this.orbitdb.network.name}' at '${this.orbitdb.network.publishers[0]}' as '${user.username}`)
         this.events.emit('network', this.network, this.user);
+        return this;
       })
   }
 

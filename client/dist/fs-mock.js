@@ -20,5 +20,8 @@ module.exports = {
   },
   exists: function(path, cb) {
     cb(null, false);
+  },
+  readFileSync(path, options) {
+    return;
   }
 }
