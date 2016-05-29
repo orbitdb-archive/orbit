@@ -120,7 +120,7 @@ class Channel extends React.Component {
     clearTimeout(this.scrollTimer);
     this.unsubscribeFromMessageStore();
     this.unsubscribeFromErrors();
-    this.stopListeningLoadingState();
+    // this.stopListeningLoadingState();
     this.stopListeningChannelState();
     this.stopListeningChannelUpdates();
     this.setState({ messages: [] });

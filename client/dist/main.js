@@ -28,9 +28,10 @@ const events = new EventEmitter();
 let ipfs, orbit, peerId;
 
 const start = exports.start = (id) => {
+  // if(!id) id = 0;
+  if(!id) id = new Date().getTime();
   const startTime = new Date().getTime();
   logger.info("Starting IPFS...");
-
   // return utils.ipfsDaemon(IPFS, `/ip4/127.0.0.1/tcp/900${id}/ws`, '/tmp/orbit-skynet-bot-' + new Date().getTime())
   return utils.ipfsDaemon(IPFS, `/ip4/127.0.0.1/tcp/900${id}/ws`, '/tmp/orbit-skynet-bot-' + id)
     .then((res) => {

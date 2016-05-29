@@ -37,9 +37,9 @@ module.exports = {
   },
   plugins: [
     new webpack.optimize.DedupePlugin(),
-    new webpack.optimize.UglifyJsPlugin({
-      mangle: false
-    }),
+    // new webpack.optimize.UglifyJsPlugin({
+    //   mangle: false
+    // }),
     new webpack.optimize.AggressiveMergingPlugin(),
     new webpack.NoErrorsPlugin()
   ],
