@@ -29,7 +29,7 @@ let ipfs, orbit, peerId;
 
 const start = exports.start = (id) => {
   // if(!id) id = 0;
-  if(!id) id = new Date().getTime();
+  if(!id) id = "abc";//new Date().getTime();
   const startTime = new Date().getTime();
   logger.info("Starting IPFS...");
   // return utils.ipfsDaemon(IPFS, `/ip4/127.0.0.1/tcp/900${id}/ws`, '/tmp/orbit-skynet-bot-' + new Date().getTime())
