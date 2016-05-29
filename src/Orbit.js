@@ -59,7 +59,7 @@ class Orbit {
   join(channel, password, callback) {
     logger.debug(`Join #${channel}`);
     if(!this._channels[channel]) {
-      this._channels[channel] = { name: channel, password: password, db: null, state: { loading: true, syncing: true }};
+      this._channels[channel] = { name: channel, password: password, db: null, state: { loading: true, syncing: 0 }};
       return this.orbitdb.eventlog(channel, { cacheFile: this.options.cacheFile })
         .then((db) => {
           this._channels[channel].db = db;
@@ -142,17 +142,10 @@ class Orbit {
     return messages;
   }
 
-  getPost(hash, callback) {
+  getPost(hash) {
     return this.ipfs.object.get(hash, { enc: 'base58' })
-      .then((res) => {
-        if(callback)
-          callback(null, JSON.parse(res.toJSON().Data));
-        return JSON.parse(res.toJSON().Data);
-      })
-      .catch((e) => {
-        this._handleError(e);
-        if(callback) callback(e.message, null);
-      });
+      .then((res) => JSON.parse(res.toJSON().Data))
+      .catch((e) => this._handleError(e));
   }
 
   sendMessage(channel, message, callback) {
@@ -283,7 +276,7 @@ class Orbit {
   _handleSync(channel) {
     logger.debug("sync channel", channel);
     if(this._channels[channel]) {
-      this._channels[channel].state.syncing = true;
+      this._channels[channel].state.syncing += 1;
       this.events.emit('sync', channel);
       this.events.emit('state.updated', this.channels);
     }
@@ -292,7 +285,7 @@ class Orbit {
   _handleSynced(channel, items) {
     logger.debug("channel synced", channel, items.length);
     if(this._channels[channel]) {
-      this._channels[channel].state.syncing = false;
+      this._channels[channel].state.syncing -= 1;
       this.events.emit('synced', channel, items);
       this.events.emit('state.updated', this.channels);
     }

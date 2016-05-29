@@ -52,7 +52,7 @@ class Channel extends React.Component {
         messages: []
       });
       UIActions.focusOnSendMessage();
-      this._onLoadStateChange(nextProps.channel, LoadingStateStore.state);
+      // this._onLoadStateChange(nextProps.channel, LoadingStateStore.state);
       this._onChannelStateChanged(nextProps.channel);
       ChannelActions.loadMessages(nextProps.channel);
     }
@@ -68,38 +68,43 @@ class Channel extends React.Component {
   componentDidMount() {
     this.stopListeningChannelUpdates = ChannelStore.listen((channels) => this._onChannelStateChanged(this.state.channelName));
     this.unsubscribeFromMessageStore = MessageStore.listen(this.onNewMessages.bind(this));
-    this.stopListeningLoadingState = LoadingStateStore.listen((state) => this._onLoadStateChange(this.state.channelName, state));
+    // this.stopListeningLoadingState = LoadingStateStore.listen((state) => this._onLoadStateChange(this.state.channelName, state));
     this.unsubscribeFromErrors = UIActions.raiseError.listen(this._onError.bind(this));
     this.node = this.refs.MessagesView;
-    this._onLoadStateChange(this.state.channelName, LoadingStateStore.state);
+    // this._onLoadStateChange(this.state.channelName, LoadingStateStore.state);
   }
 
   _onChannelStateChanged(channelName) {
-    const channel = ChannelStore.channels.find((e) => e.name === channelName);
-    if(channel) {
-      this.setState({ loading: channel.state.loading });
+    if(channelName === this.state.channelName) {
+      const channel = ChannelStore.channels.find((e) => e.name === channelName);
+      if(channel) {
+        const loading = (channel.state.loading || channel.state.syncing > 0);
+        const text = loading ? 'Syncing...' : '';
+        this.setState({ loading: loading, loadingText: text });
+      }
     }
   }
 
-  _onLoadStateChange(channel, state) {
-    if(!channel || !state)
-      return;
+  // _onLoadStateChange(channel, state) {
+  //   if(!channel || !state)
+  //     return;
 
-    // logger.debug("LOAD STATE")
-    // console.log(channel);
-    // console.log(state);
+  //   // logger.debug("LOAD STATE")
+  //   // console.log(channel);
+  //   // console.log(state);
 
-    const loadingState = state[channel];
-    if(loadingState) {
-      const loading = Object.keys(loadingState).filter((f) => loadingState[f]);
-      const loadingText = loadingState[_.last(loading)] ? loadingState[_.last(loading)].message : null;
-      logger.debug("STATE SET", loading.length > 0, loadingText)
-      this.setState({ loading: loading.length > 0, loadingText: loadingText });
-    } else {
-      logger.debug("NOT LOADING")
-      this.setState({ loading: false });
-    }
-  }
+  //   const loadingState = state[channel];
+  //   if(loadingState) {
+  //     const loading = Object.keys(loadingState).filter((f) => loadingState[f]);
+  //     const loadingText = loadingState[_.last(loading)] ? loadingState[_.last(loading)].message : null;
+  //     logger.debug("STATE SET", loading.length > 0, loadingText)
+  //     console.log(loadingState)
+  //     this.setState({ loadingText: loadingText });
+  //   } else {
+  //     logger.debug("NOT LOADING")
+  //     this.setState({ loading: false });
+  //   }
+  // }
 
   _onError(errorMessage) {
     console.error("Channel:", errorMessage);

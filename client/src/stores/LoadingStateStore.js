@@ -29,6 +29,7 @@ var LoadingStateStore = Reflux.createStore({
     // TODO
   },
   onStopLoading: function(id, action) {
+    console.log("STOP LOADING", id, action);
     if(this.state[id] && this.state[id][action]) {
       // this.state[id][action].loading = false;
       delete this.state[id][action];

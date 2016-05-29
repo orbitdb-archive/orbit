@@ -70,7 +70,7 @@ let orbit;
 var Skynet = React.createClass({
   componentDidMount: function() {
     const delay = (this.props.params.delay ? this.props.params.delay : 2) * 1000;
-    const username = this.props.params.username ? this.props.params.username : "DefaultBot";
+    const username = this.props.params.username ? this.props.params.username : 0;
 
     setTimeout(() => {
       Main.start(username).then((res) => {
@@ -79,7 +79,6 @@ var Skynet = React.createClass({
         orbit = res.orbit;
         AppActions.initialize(orbit);
         NetworkActions.updateNetwork(null) // start the App
-        // console.log(this.props.params, this.props.query);
         SkynetActions.start(username);
       })
       .catch((e) => {
@@ -114,6 +113,20 @@ var App = React.createClass({
     // console.log(this.props.params, this.props.query);
     // if(this.props.params.username)
     //   orbit.connect(null, this.props.params.username, '');
+
+    if(!orbit) {
+      Main.start().then((res) => {
+        logger.info("Orbit started");
+        logger.debug("PeerId:", res.peerId.ID);
+        orbit = res.orbit;
+        AppActions.initialize(orbit);
+        NetworkActions.updateNetwork(null) // start the App
+      })
+      .catch((e) => {
+        logger.error(e.message);
+        logger.error("Stack trace:\n", e.stack);
+      });
+    }
 
     document.title = 'Orbit';
 
@@ -174,7 +187,7 @@ var App = React.createClass({
       AppActions.setLocation("Connect");
     } else {
       this.setState({ networkName: network.name });
-      const channels = JSON.parse(localStorage.getItem( "anonet.app." + this.state.user.username + "." + network.name + ".channels")) || ["skynet"];
+      const channels = JSON.parse(localStorage.getItem( "anonet.app." + this.state.user.username + "." + network.name + ".channels")) || ["skynet2"];
       channels.forEach( (c) => NetworkActions.joinChannel(c, ''));
     }
   },
@@ -228,14 +241,14 @@ var App = React.createClass({
     //   localStorage.setItem(channelsKey, JSON.stringify(channels));
     // }
     if(channel === "skynet") {
-      ChannelActions.sendMessage("skynet", "/me was summoned");
-      setInterval(() => {
-        const i = Math.floor((Math.random() * Protolol.length));
-        const line = Protolol[i].split(' ');
-        line.splice(0, 1); // remove "@name"
-        const text = line.join(" ").replace('#protolol', ''); // remove '#protolol'
-        ChannelActions.sendMessage("skynet", text);
-      }, 20000);
+      // ChannelActions.sendMessage("skynet", "/me was summoned");
+      // setInterval(() => {
+      //   const i = Math.floor((Math.random() * Protolol.length));
+      //   const line = Protolol[i].split(' ');
+      //   line.splice(0, 1); // remove "@name"
+      //   const text = line.join(" ").replace('#protolol', ''); // remove '#protolol'
+      //   ChannelActions.sendMessage("skynet", text);
+      // }, 2000);
     }
   },
   onLeaveChannel: function(channel) {
