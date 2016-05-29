@@ -84,6 +84,7 @@
   },
   "scripts": {
     "test": "./node_modules/.bin/karma start --single-run=true",
+    "test:dev": "./node_modules/.bin/karma start",
     "dev": "./node_modules/.bin/grunt serve",
     "build": "./node_modules/.bin/grunt build",
     "publish": "ipfs add -r dist/"

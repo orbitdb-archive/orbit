@@ -89,8 +89,8 @@ exports.ipfsDaemon = (IPFS, addr, repo) => {
     ipfs.config.show((err, config) => {
       if (err) return reject(err);
       // console.log(">>>>", addr + `/ipfs/${id.ID}`);
-      const signallingServer = '/libp2p-webrtc-star/ip4/178.62.241.75/tcp/9090/ws'
-      // const signallingServer = '/libp2p-webrtc-star/ip4/0.0.0.0/tcp/9090/ws'
+      // const signallingServer = '/libp2p-webrtc-star/ip4/178.62.241.75/tcp/9090/ws'
+      const signallingServer = '/libp2p-webrtc-star/ip4/0.0.0.0/tcp/9090/ws' // localhost
       // config.Addresses.Swarm = [`${addr}/ipfs/${id.ID}`, `${signallingServer}/ipfs/${id.ID}`];
       config.Addresses.Swarm = [`${signallingServer}/ipfs/${id.ID}`];
       ipfs.config.replace(config, (err) => {
