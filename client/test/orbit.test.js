@@ -26,29 +26,30 @@ const createBots = (prefix, amount) => {
 };
 
 describe('Orbit Skynet', function() {
-  this.timeout(60000);
+  this.timeout(600000);
 
-  const amount = 3;
-  let bots = createBots('Orbit', amount);
+  const botCount = 2;
+  let bots = createBots('Orbit', botCount);
 
   before(function (done) {
     const promises = bots.map((bot) => {
       return new Promise((resolve, reject) => {
-        Main.start(bot.id)
-        .then((res) => Object.assign(bot, res))
-        .then((res) => {
-          setTimeout(() => resolve(res), 1000);
-        })
-        .catch(reject);
+        Main.start(new Date().getTime())
+        // Main.start(bot.id)
+          .then((res) => Object.assign(bot, res))
+          .then((res) => {
+            setTimeout(() => resolve(res), 1000);
+          })
+          .catch(reject);
       });
     });
 
     Promise.all(promises)
       .then((res) => {
         bots = res;
-        assert.equal(bots.length, amount);
-        console.log("Waiting 1 seconds for the peers to connect...")
-        setTimeout(done, 1000);
+        assert.equal(bots.length, botCount);
+        console.log("Waiting 3 seconds for the peers to connect...")
+        setTimeout(done, 3000);
       })
       .catch((e) => {
         console.log(e.stack);
@@ -87,12 +88,22 @@ describe('Orbit Skynet', function() {
     it.only('sends messages', (done) => {
       const network = 'QmRB8x6aErtKTFHDNRiViixSKYwW1DbfcvJHaZy1hnRzLM';
       const channel = "hithere" + new Date().getTime();
-      let doneCount = 3 * bots.length;
+      const howManyMessages = 50;
+      let doneCount = howManyMessages;// * bots.length;
       console.log();
-      Promise.all(bots.map((bot) => {
+      Promise.all(bots.map((bot, index) => {
         let receivedMessagesCount = 0;
+        bot.orbit.events.on('sync', (channelName) => {
+          console.log(bot.name + " started syncing", channelName);
+        });
+        if(index === 1) {
+          bot.orbit.events.on('message', (channelName, hash) => {
+            console.log(bot.name + " received new head from pubsub", hash);
+          });
+        }
         bot.orbit.events.on('synced', (channelName, items) => {
-          // console.log(bot.name + "@" + channelName + ": " + items.length);
+          console.log(bot.name + " synced " + channelName + " with " + items.length + " new items");
+          console.log("Message:", items[0].payload.value);
         });
         return bot.orbit.connect(network, bot.name, '')
           .then(() => bot.orbit.join(channel))
@@ -104,20 +115,23 @@ describe('Orbit Skynet', function() {
         res.forEach((bot, index) => {
           // Send messages at an interval
           let sentMessagesCount = 0;
-          let timer = setInterval(() => {
-            if(sentMessagesCount < 3) {
-              sentMessagesCount ++;
-              allMessagesCount ++;
-              const message = `Hello world ${sentMessagesCount} from ${bot.name}`;
-              console.log(message);
-              bot.orbit.sendMessage(channel, message);
-            }
-          }, 3000 + (index * 500));
+          setTimeout(() => {
+            setInterval(() => {
+              if(sentMessagesCount < howManyMessages && index === 0) {
+                sentMessagesCount ++;
+                allMessagesCount ++;
+                const message = `Hello world ${sentMessagesCount} from ${bot.name}`;
+                bot.orbit.sendMessage(channel, message).then((res) => {
+                  console.log(bot.name, res.Post.content, res.Hash);
+                });
+              }
+            }, 3000);
+          // }, (index * 1000))
+          }, 1000)
 
           // Check the results
           setInterval(() => {
-            // console.log(allMessagesCount)
-            if(allMessagesCount === doneCount) {
+            if(allMessagesCount === doneCount && index === 1) {
               setInterval(() => {
                 const messages = bot.orbit.getMessages(channel, null, null, 100);
                 // console.log(bot.name + ">" + JSON.stringify(messages, null, 2));
@@ -132,6 +146,7 @@ describe('Orbit Skynet', function() {
               }, 5000);
             }
           }, 1000)
+
         });
       })
     });

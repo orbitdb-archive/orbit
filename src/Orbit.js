@@ -33,6 +33,7 @@ class Orbit {
     return OrbitDB.connect(network, user.username, user.password, this.ipfs)
       .then((orbit) => {
         this.orbitdb = orbit
+        this.orbitdb.events.on('message', this._handleMessage2.bind(this));
         this.orbitdb.events.on('data', this._handleMessage.bind(this));
         this.orbitdb.events.on('load', this._handleStartLoading.bind(this));
         this.orbitdb.events.on('ready', this._handleDatabaseReady.bind(this));
@@ -253,6 +254,12 @@ class Orbit {
     logger.debug("new entry in database", channel, message);
     if(this._channels[channel])
       this.events.emit('data', channel, message);
+  }
+
+  _handleMessage2(channel, message) {
+    logger.debug("new entry from network", channel, message);
+    if(this._channels[channel])
+      this.events.emit('message', channel, message);
   }
 
   _handleStartLoading(channel) {
