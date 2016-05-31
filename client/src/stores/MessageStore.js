@@ -30,6 +30,21 @@ const MessageStore = Reflux.createStore({
       if(channel)
       this._updateLoadingState(channel);
     });
+
+    // debug
+    const s = (channel, text) => {
+      return new Promise((resolve, reject) => {
+        set
+      });
+    };
+    window.send = (amount, interval) => {
+      let i = 0;
+      let timer = setInterval(() => {
+        this.onSendMessage(this.currentChannel, "hello " + i);
+        i ++;
+        if(i === amount) clearInterval(timer);
+      }, interval);
+    };
   },
   onInitialize: function(orbit) {
     this.orbit = orbit;
@@ -71,7 +86,7 @@ const MessageStore = Reflux.createStore({
         UIActions.stopLoading(channel.name, "loadhistory");
       }
 
-      if(channel.state.syncing > 0) {
+      if(channel.state.syncing) {
         UIActions.startLoading(channel.name, "sync", "Syncing...");
         if(this.syncTimeout[channel.name]) clearTimeout(this.syncTimeout[channel.name]);
         this.syncTimeout[channel.name] = setTimeout(() => {
@@ -270,7 +285,7 @@ const MessageStore = Reflux.createStore({
       callback(null, this.posts[hash]);
     }
   },
-  onSendMessage: function(channel: string, text: string, callback) {
+  onSendMessage: function(channel: string, text: string) {
     // if(!this.socket)
     //   return;
     logger.debug("--> send message" + text);

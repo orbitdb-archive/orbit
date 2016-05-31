@@ -78,7 +78,7 @@ class Channel extends React.Component {
     if(channelName === this.state.channelName) {
       const channel = ChannelStore.channels.find((e) => e.name === channelName);
       if(channel) {
-        const loading = (channel.state.loading || channel.state.syncing > 0);
+        const loading = (channel.state.loading || channel.state.syncing);
         const text = loading ? 'Syncing...' : '';
         this.setState({ loading: loading, loadingText: text });
       }
