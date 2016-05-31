@@ -44,8 +44,11 @@ const deleteDirectoryRecursive = (path) => {
 };
 exports.deleteDirectoryRecursive = deleteDirectoryRecursive;
 
-exports.ipfsDaemon = (IPFS, addr, repo) => {
+exports.ipfsDaemon = (IPFS, repo, signalServerAddress) => {
+  console.log("2", repo, signalServerAddress);
   repo = repo || '/tmp/orbit';
+  console.log("Signalling server: " + signalServerAddress);
+  signalServerAddress = signalServerAddress || '0.0.0.0';
   console.log("IPFS Path: " + repo);
   const ipfs = new IPFS(repo);
   return new Promise((resolve, reject) => {
@@ -90,7 +93,7 @@ exports.ipfsDaemon = (IPFS, addr, repo) => {
       if (err) return reject(err);
       // console.log(">>>>", addr + `/ipfs/${id.ID}`);
       // const signallingServer = '/libp2p-webrtc-star/ip4/178.62.241.75/tcp/9090/ws'
-      const signallingServer = '/libp2p-webrtc-star/ip4/0.0.0.0/tcp/9090/ws' // localhost
+      const signallingServer = `/libp2p-webrtc-star/ip4/${signalServerAddress}/tcp/9090/ws`; // localhost
       // config.Addresses.Swarm = [`${addr}/ipfs/${id.ID}`, `${signallingServer}/ipfs/${id.ID}`];
       config.Addresses.Swarm = [`${signallingServer}/ipfs/${id.ID}`];
       ipfs.config.replace(config, (err) => {

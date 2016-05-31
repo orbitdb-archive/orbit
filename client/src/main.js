@@ -27,13 +27,13 @@ const dataPath = path.join(utils.getAppPath(), "/data");
 const events = new EventEmitter();
 let ipfs, orbit, peerId;
 
-const start = exports.start = (id) => {
+const start = exports.start = (id, repositoryPath, signalServerAddress) => {
   // if(!id) id = 0;
   if(!id) id = 0;//new Date().getTime();
   const startTime = new Date().getTime();
   logger.info("Starting IPFS...");
   // return utils.ipfsDaemon(IPFS, `/ip4/127.0.0.1/tcp/900${id}/ws`, '/tmp/orbit-skynet-bot-' + new Date().getTime())
-  return utils.ipfsDaemon(IPFS, `/ip4/127.0.0.1/tcp/900${id}/ws`, '/tmp/orbit-skynet-bot-' + id)
+  return utils.ipfsDaemon(IPFS, repositoryPath, signalServerAddress)
     .then((res) => {
       ipfs = res;
       orbit = new Orbit(ipfs, { dataPath: dataPath });

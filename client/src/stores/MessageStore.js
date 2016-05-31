@@ -218,7 +218,7 @@ const MessageStore = Reflux.createStore({
       unique.reverse().forEach((f) => this._loadPost(channel, f.payload));
 
       // Sort by timestamp
-      // this.channels[channel].messages = _.sortBy(this.channels[channel].messages, (e) => e.payload.meta.ts);
+      this.channels[channel].messages = _.sortBy(this.channels[channel].messages, (e) => e.payload.meta.ts);
 
       NotificationActions.newMessage(channel);
       this.trigger(channel, this.channels[channel].messages);

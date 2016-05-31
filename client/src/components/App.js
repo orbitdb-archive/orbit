@@ -73,7 +73,7 @@ var Skynet = React.createClass({
     const username = this.props.params.username ? this.props.params.username : 0;
 
     setTimeout(() => {
-      Main.start(username).then((res) => {
+      Main.start(username, '/tmp/orbit-demo-' + username, '127.0.0.1').then((res) => {
         logger.info("Orbit started");
         logger.debug("PeerId:", res.peerId.ID);
         orbit = res.orbit;
@@ -115,7 +115,7 @@ var App = React.createClass({
     //   orbit.connect(null, this.props.params.username, '');
 
     if(!orbit) {
-      Main.start().then((res) => {
+      Main.start(null, '/tmp/orbit-demo', '178.62.241.75').then((res) => {
         logger.info("Orbit started");
         logger.debug("PeerId:", res.peerId.ID);
         orbit = res.orbit;
