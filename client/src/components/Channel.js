@@ -25,7 +25,7 @@ class Channel extends React.Component {
       channelName: null,
       messages: [],
       loading: true,
-      loadingText: 'Connecting...',
+      loadingText: '',
       reachedChannelStart: true,
       channelMode: "Public",
       error: null,
@@ -75,11 +75,14 @@ class Channel extends React.Component {
   }
 
   _onChannelStateChanged(channelName) {
+    logger.debug("CHANNEL STATE CHANGED", channelName);
     if(channelName === this.state.channelName) {
       const channel = ChannelStore.channels.find((e) => e.name === channelName);
+      logger.debug(channel);
       if(channel) {
-        const loading = (channel.state.loading || channel.state.syncing);
+        const loading = (channel.state.loading || channel.state.syncing > 0);
         const text = loading ? 'Syncing...' : '';
+        logger.debug(loading, text);
         this.setState({ loading: loading, loadingText: text });
       }
     }

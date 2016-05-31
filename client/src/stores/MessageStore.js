@@ -86,7 +86,8 @@ const MessageStore = Reflux.createStore({
         UIActions.stopLoading(channel.name, "loadhistory");
       }
 
-      if(channel.state.syncing) {
+      if(channel.state.syncing > 0 && !this.syncTimeout[channel.name]) {
+        logger.debug("Syncing");
         UIActions.startLoading(channel.name, "sync", "Syncing...");
         if(this.syncTimeout[channel.name]) clearTimeout(this.syncTimeout[channel.name]);
         this.syncTimeout[channel.name] = setTimeout(() => {
@@ -116,7 +117,7 @@ const MessageStore = Reflux.createStore({
     if(channel) {
       this.channels[channel].isReady = false;
       this.channels[channel].loading = false;
-      this.channels[channel].syncing = false;
+      // this.channels[channel].syncing = false;
       this.channels[channel].canLoadMore = true;
     }
   },
@@ -182,11 +183,11 @@ const MessageStore = Reflux.createStore({
       this.trigger(channel, this.channels[channel].messages);
   },
   onLoadMoreMessages: function(channel: string) {
-    // console.log("TRY LOAD", channel, this.currentChannel, this.channels[channel].loading, this.channels[channel].syncing, this.channels[channel].canLoadMore, this.channels[channel].isReady)
+    console.log("TRY LOAD", channel, this.currentChannel)
     if(channel !== this.currentChannel)
       return;
 
-    if(!this.channels[channel].loading && !this.channels[channel].syncing && this.channels[channel].canLoadMore) {
+    if(!this.channels[channel].loading && this.channels[channel].canLoadMore) {
       logger.debug("load more messages from #" + channel);
       this.channels[channel].canLoadMore = true;
       this.loadMessages(channel, this.getOldestMessage(channel), null, messagesBatchSize);
