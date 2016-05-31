@@ -45,7 +45,7 @@ const deleteDirectoryRecursive = (path) => {
 exports.deleteDirectoryRecursive = deleteDirectoryRecursive;
 
 exports.ipfsDaemon = (IPFS, repo, signalServerAddress) => {
-  console.log("2", repo, signalServerAddress);
+  // console.log("2", repo, signalServerAddress);
   repo = repo || '/tmp/orbit';
   console.log("Signalling server: " + signalServerAddress);
   signalServerAddress = signalServerAddress || '0.0.0.0';

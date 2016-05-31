@@ -49,7 +49,8 @@ describe('Orbit Skynet', function() {
     // });
 
     Promise.map(bots, (bot) => {
-      return Main.start(new Date().getTime()).then((res) => Object.assign(bot, res))
+      const id = new Date().getTime();
+      return Main.start(id, '/tmp/orbit-test' + id, '0.0.0.0').then((res) => Object.assign(bot, res))
     }, { concurrency: 1 }).then((res) => {
       bots = res;
       assert.equal(bots.length, botCount);

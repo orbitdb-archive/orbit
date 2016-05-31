@@ -60,7 +60,7 @@ class Orbit {
   join(channel, password, callback) {
     logger.debug(`Join #${channel}`);
     if(!this._channels[channel]) {
-      this._channels[channel] = { name: channel, password: password, db: null, state: { loading: true, syncing: 0 }};
+      this._channels[channel] = { name: channel, password: password, db: null, state: { loading: true, syncing: true }};
       return this.orbitdb.eventlog(channel, { cacheFile: this.options.cacheFile })
         .then((db) => {
           this._channels[channel].db = db;
@@ -283,7 +283,7 @@ class Orbit {
   _handleSync(channel) {
     logger.debug("sync channel", channel);
     if(this._channels[channel]) {
-      this._channels[channel].state.syncing += 1;
+      this._channels[channel].state.syncing = true;
       this.events.emit('sync', channel);
       this.events.emit('state.updated', this.channels);
     }
@@ -292,7 +292,7 @@ class Orbit {
   _handleSynced(channel, items) {
     logger.debug("channel synced", channel, items.length);
     if(this._channels[channel]) {
-      this._channels[channel].state.syncing -= 1;
+      this._channels[channel].state.syncing = false;
       this.events.emit('synced', channel, items);
       this.events.emit('state.updated', this.channels);
     }
