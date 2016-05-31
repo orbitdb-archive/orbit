@@ -109,13 +109,14 @@ var App = React.createClass({
     };
   },
   componentDidMount: function() {
-    // console.log("------------------------------")
+    console.log("------------------------------", this.props, this.props.location.query.local)
     // console.log(this.props.params, this.props.query);
-    // if(this.props.params.username)
     //   orbit.connect(null, this.props.params.username, '');
 
+    const signalServerAddress = this.props.location.query.local ? '0.0.0.0' : '178.62.241.75';
+
     if(!orbit) {
-      Main.start(null, '/tmp/orbit-demo', '178.62.241.75').then((res) => {
+      Main.start(null, '/tmp/orbit-demo', signalServerAddress).then((res) => {
         logger.info("Orbit started");
         logger.debug("PeerId:", res.peerId.ID);
         orbit = res.orbit;
