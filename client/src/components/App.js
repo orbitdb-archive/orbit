@@ -116,7 +116,7 @@ var App = React.createClass({
     const signalServerAddress = this.props.location.query.local ? '0.0.0.0' : '178.62.241.75';
 
     if(!orbit) {
-      Main.start(null, '/tmp/orbit-demo', signalServerAddress).then((res) => {
+      Main.start(null, '/tmp/orbit-demo-2-', signalServerAddress).then((res) => {
         logger.info("Orbit started");
         logger.debug("PeerId:", res.peerId.ID);
         orbit = res.orbit;

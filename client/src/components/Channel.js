@@ -24,9 +24,9 @@ class Channel extends React.Component {
       channelChanged: true,
       channelName: null,
       messages: [],
-      loading: true,
+      loading: false,
       loadingText: '',
-      reachedChannelStart: true,
+      reachedChannelStart: false,
       channelMode: "Public",
       error: null,
       dragEnter: false,
@@ -44,16 +44,18 @@ class Channel extends React.Component {
   }
 
   componentWillReceiveProps(nextProps) {
+    logger.debug("PROPS CHANGED", nextProps, this.state.channelName);
     if(nextProps.channel !== this.state.channelName) {
       this.setState({
         channelChanged: true,
         displayNewMessagesIcon: false,
-        // reachedChannelStart: false,
+        loading: true,
+        reachedChannelStart: false,
         messages: []
       });
       UIActions.focusOnSendMessage();
       // this._onLoadStateChange(nextProps.channel, LoadingStateStore.state);
-      this._onChannelStateChanged(nextProps.channel);
+      // this._onChannelStateChanged(nextProps.channel);
       ChannelActions.loadMessages(nextProps.channel);
     }
 
@@ -63,10 +65,12 @@ class Channel extends React.Component {
       appSettings: nextProps.appSettings,
       theme: nextProps.theme
     });
+
+    this._updateLoadingState(nextProps.channelInfo);
   }
 
   componentDidMount() {
-    this.stopListeningChannelUpdates = ChannelStore.listen((channels) => this._onChannelStateChanged(this.state.channelName));
+    this.stopListeningChannelUpdates = ChannelStore.listen(this._onChannelStateChanged.bind(this));
     this.unsubscribeFromMessageStore = MessageStore.listen(this.onNewMessages.bind(this));
     // this.stopListeningLoadingState = LoadingStateStore.listen((state) => this._onLoadStateChange(this.state.channelName, state));
     this.unsubscribeFromErrors = UIActions.raiseError.listen(this._onError.bind(this));
@@ -74,18 +78,31 @@ class Channel extends React.Component {
     // this._onLoadStateChange(this.state.channelName, LoadingStateStore.state);
   }
 
-  _onChannelStateChanged(channelName) {
-    logger.debug("CHANNEL STATE CHANGED", channelName);
-    if(channelName === this.state.channelName) {
-      const channel = ChannelStore.channels.find((e) => e.name === channelName);
-      logger.debug(channel);
-      if(channel) {
-        const loading = (channel.state.loading || channel.state.syncing > 0);
-        const text = loading ? 'Syncing...' : '';
-        logger.debug(loading, text);
-        this.setState({ loading: loading, loadingText: text });
-      }
-    }
+  _updateLoadingState(channel) {
+    logger.debug("CHANNEL STATE CHANGED", channel, this.state.channelName);
+    const loading = (channel.state.loading || channel.state.syncing > 0);
+    const text = loading ? 'Syncing...' : '';
+    logger.debug(loading, text);
+    this.setState({ loading: loading, loadingText: text });
+  }
+
+  _onChannelStateChanged(channels) {
+    const channelInfo = channels.find((e) => e.name === this.state.channelName);
+    // logger.debug("Channels state updated for", channel)
+    if(channelInfo)
+      this._updateLoadingState(channelInfo);
+    // logger.debug("CHANNEL STATE CHANGED", channelName, this.state.channelName);
+    // if(channelName === this.state.channelName) {
+    //   const channel = ChannelStore.channels.find((e) => e.name === channelName);
+    //   logger.debug("-- next")
+    //   // logger.debug(channel);
+    //   if(channel) {
+    //     const loading = (channel.state.loading || channel.state.syncing > 0);
+    //     const text = loading ? 'Syncing...' : '';
+    //     logger.debug(loading, text);
+    //     this.setState({ loading: loading, loadingText: text });
+    //   }
+    // }
   }
 
   // _onLoadStateChange(channel, state) {
@@ -279,7 +296,7 @@ class Channel extends React.Component {
     });
 
     // let channelStateText = this.state.loading && this.state.loadingText ? this.state.loadingText : `Loading messages...`;
-    let channelStateText = this.state.loadingText ? this.state.loadingText : `Loading messages...`;
+    let channelStateText = this.state.loadingText ? this.state.loadingText : `???`;
     if(this.state.reachedChannelStart && !this.state.loading)
       channelStateText = `Beginning of # ${this.state.channelName}`;
 

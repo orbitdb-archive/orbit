@@ -24,21 +24,21 @@ class ChannelView extends React.Component {
   componentDidMount() {
     UserActions.getUser((user) => this.setState({ user: user}));
     SettingsActions.get((settings) => this.setState({ appSettings: settings }));
-    this.unsubscribeFromChannelMode = ChannelActions.channelModeUpdated.listen((channel, modes) => {
-      var c = _.cloneDeep(this.state.channel);
-      c.modes = modes;
-      this.setState({ channel: c });
-    });
+    // this.unsubscribeFromChannelMode = ChannelActions.channelModeUpdated.listen((channel, modes) => {
+    //   var c = _.cloneDeep(this.state.channel);
+    //   c.modes = modes;
+    //   this.setState({ channel: c });
+    // });
 
     this.setState({ channel: ChannelStore.get(this.state.channelName) });
   }
 
   componentWillUnmount() {
-    this.unsubscribeFromChannelMode();
+    // this.unsubscribeFromChannelMode();
   }
 
   componentWillReceiveProps(nextProps) {
-    this.setState({ channelName: nextProps.params.channel, channel: {} });
+    this.setState({ channelName: nextProps.params.channel, channel: ChannelStore.get(nextProps.params.channel) });
     SettingsActions.get((settings) => this.setState({ appSettings: settings }));
   }
 
