@@ -109,7 +109,7 @@ var App = React.createClass({
     };
   },
   componentDidMount: function() {
-    console.log("------------------------------", this.props, this.props.location.query.local)
+    // console.log("------------------------------", this.props, this.props.location.query.local)
     // console.log(this.props.params, this.props.query);
     //   orbit.connect(null, this.props.params.username, '');
 

@@ -174,15 +174,19 @@ class Orbit {
       });
   }
 
-  addFile(channel, filePath, callback) {
+  addFile(channel, filePath, buffer) {
+    console.log("!!!!!!!!!!!!!", typeof filePath === 'string')
+    console.log(channel, filePath);
+
     const addToIpfs = (ipfs, filePath, isDirectory) => {
       return new Promise((resolve, reject) => {
-        if(!fs.existsSync(filePath))
-          throw "File not found at '" + filePath + "'";
+        // if(!fs.existsSync(filePath))
+        //   throw "File not found at '" + filePath + "'";
 
         // this.ipfs.add(filePath, { recursive: recursive }).then((hash) => {
-        this.ipfs.add(filePath, { recursive: isDirectory }).then((hash) => {
-          logger.debug("H, " + JSON.stringify(hash));
+        const data = buffer ? new Buffer(buffer) : filePath;
+        this.ipfs.files.add(data).then((hash) => {
+          // logger.debug("H, " + JSON.stringify(hash));
 
           if(isDirectory) {
             // FIXME: ipfs-api returns an empty dir name as the last hash, ignore this
@@ -191,20 +195,22 @@ class Orbit {
 
             resolve(hash[hash.length-1].Hash);
           } else {
-            resolve(hash[0].Hash);
+            resolve(hash[0].path);
           }
         });
       });
     }
 
     logger.info("Adding file from path '" + filePath + "'");
-    let isDirectory = false, size = -1, hash;
-    utils.isDirectory(filePath)
-      // .then((res) => isDirectory = res)
-    addToIpfs(this.ipfs, filePath, utils.isDirectory(filePath))
+    let isDirectory = false;
+    let size = buffer ? buffer.byteLength : -1;
+    let hash;
+    // utils.isDirectory(filePath)
+    // addToIpfs(this.ipfs, filePath, utils.isDirectory(filePath))
+    return addToIpfs(this.ipfs, filePath, isDirectory)
       .then((res) => hash = res)
-      .then(() => utils.getFileSize(filePath))
-      .then((res) => size = res)
+      // .then(() => utils.getFileSize(filePath))
+      // .then((res) => size = res)
       .then(() => {
         logger.info("Added local file '" + filePath + "' as " + hash);
 
@@ -216,10 +222,8 @@ class Orbit {
         };
 
         const type = isDirectory ? Post.Types.Directory : Post.Types.File;
-        Post.create(this.ipfs, type, data).then((post) => {
-          this._channels[channel].db.add(post.Hash).then((hash) => {
-            if(callback) callback(null);
-          });
+        return Post.create(this.ipfs, type, data).then((post) => {
+          return this._channels[channel].db.add(post.Hash);
         });
       });
   }

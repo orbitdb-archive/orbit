@@ -70,7 +70,7 @@ module.exports = {
       query: babel
     }, {
       test: /\.js$/,
-      include: /node_modules\/(hoek|qs|wreck|boom|ipfs-.+|logplease|orbit|crdts)/,
+      include: /node_modules\/(hoek|qs|wreck|boom|ipfs-.+)/,
       loader: 'babel',
       query: babel
     }, {
@@ -90,7 +90,6 @@ module.exports = {
   externals: {
     du: '{}',
     net: '{}',
-    // fs: '{}',
     tls: '{}',
     console: '{}',
     'require-dir': '{}',

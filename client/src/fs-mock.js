@@ -21,6 +21,9 @@ module.exports = {
   exists: function(path, cb) {
     cb(null, false);
   },
+  existsSync: function (path) {
+    return false;
+  },
   readFileSync(path, options) {
     return;
   }

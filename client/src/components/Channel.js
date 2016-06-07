@@ -44,7 +44,7 @@ class Channel extends React.Component {
   }
 
   componentWillReceiveProps(nextProps) {
-    logger.debug("PROPS CHANGED", nextProps, this.state.channelName);
+    // logger.debug("PROPS CHANGED", nextProps, this.state.channelName);
     if(nextProps.channel !== this.state.channelName) {
       this.setState({
         channelChanged: true,
@@ -79,11 +79,13 @@ class Channel extends React.Component {
   }
 
   _updateLoadingState(channel) {
-    logger.debug("CHANNEL STATE CHANGED", channel, this.state.channelName);
-    const loading = (channel.state.loading || channel.state.syncing > 0);
-    const text = loading ? 'Syncing...' : '';
-    logger.debug(loading, text);
-    this.setState({ loading: loading, loadingText: text });
+    if(channel) {
+      // logger.debug("CHANNEL STATE CHANGED", channel, this.state.channelName);
+      const loading = (channel.state.loading || channel.state.syncing > 0);
+      const text = loading ? 'Syncing...' : '';
+      logger.debug(loading, text);
+      this.setState({ loading: loading, loadingText: text });
+    }
   }
 
   _onChannelStateChanged(channels) {
@@ -169,9 +171,9 @@ class Channel extends React.Component {
       ChannelActions.sendMessage(this.state.channelName, text);
   }
 
-  sendFile(filePath: string) {
-    if(filePath !== '')
-      ChannelActions.addFile(this.state.channelName, filePath);
+  sendFile(filePath: string, buffer) {
+    if(filePath !== '' || buffer !== null)
+      ChannelActions.addFile(this.state.channelName, filePath, buffer);
   }
 
   loadOlderMessages() {
@@ -222,10 +224,17 @@ class Channel extends React.Component {
     this.setState({ dragEnter: false });
     console.log('Dropped files: ', files);
     files.forEach((file) => {
-      if(file.path)
+      if(file.path) {
         this.sendFile(file.path);
-      else
-        console.error("File upload not yet implemented in browser. Try the electron app.");
+      } else {
+        const reader = new FileReader();
+        reader.onload = (event) => {
+          console.log(file, event);
+          this.sendFile(file.name, event.target.result)
+        };
+        reader.readAsArrayBuffer(file);
+        // console.error("File upload not yet implemented in browser. Try the electron app.");
+      }
     });
     UIActions.focusOnSendMessage();
   }
