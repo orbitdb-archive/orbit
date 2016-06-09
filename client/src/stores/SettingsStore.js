@@ -15,7 +15,7 @@ var defaultSettings = {
   colorifyUsernames: true,
   spacing: 0.1,
   font: 'Lato',
-  monospaceFont: 'Cousine',
+  monospaceFont: 'Roboto Mono',
   useMonospaceFont: false
 };
 
