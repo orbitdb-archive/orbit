@@ -1,12 +1,12 @@
 'use strict';
 
 import React from 'react';
-import TransitionGroup from "react-addons-css-transition-group"; //eslint-disable-line
+import TransitionGroup from "react-addons-css-transition-group";
 import NetworkStore from 'stores/NetworkStore';
 import NetworkActions from "actions/NetworkActions";
-import BackgroundAnimation from 'components/BackgroundAnimation'; //eslint-disable-line
+import BackgroundAnimation from 'components/BackgroundAnimation';
 import Themes from 'app/Themes';
-import Halogen from 'halogen'; //eslint-disable-line
+import Halogen from 'halogen';
 import 'styles/LoginView.scss';
 
 var maxNicknameLength = 32;

@@ -14,6 +14,9 @@ var defaultSettings = {
   useEmojis: true,
   colorifyUsernames: true,
   spacing: 0.1,
+  font: 'Lato',
+  monospaceFont: 'Cousine',
+  useMonospaceFont: false
 };
 
 var SettingsStore = Reflux.createStore({
@@ -37,6 +40,9 @@ var SettingsStore = Reflux.createStore({
       this.settings.colorifyUsernames = (this.settings.colorifyUsernames !== undefined) ? this.settings.colorifyUsernames : defaultSettings.colorifyUsernames;
       this.settings.theme = this.settings.theme || defaultSettings.theme;
       this.settings.spacing = this.settings.spacing || defaultSettings.spacing;
+      this.settings.font = this.settings.font || defaultSettings.font;
+      this.settings.monospaceFont = this.settings.monospaceFont || defaultSettings.monospaceFont;
+      this.settings.useMonospaceFont = this.settings.useMonospaceFont || defaultSettings.useMonospaceFont;
 
       // Save the defaults for this user
       localStorage.setItem("anonet.app." + this.username + ".settings", JSON.stringify(this.settings));

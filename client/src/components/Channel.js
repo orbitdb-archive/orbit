@@ -300,14 +300,19 @@ class Channel extends React.Component {
                 highlightWords={this.state.username}
                 colorifyUsername={this.state.appSettings.colorifyUsernames}
                 useEmojis={this.state.appSettings.useEmojis}
-                spacing={this.state.appSettings.spacing}
+                style={{
+                  fontFamily: this.state.appSettings.useMonospaceFont ? this.state.appSettings.monospaceFont : this.state.appSettings.font,
+                  fontSize: this.state.appSettings.useMonospaceFont ? '0.9em' : '1.0em',
+                  fontWeight: this.state.appSettings.useMonospaceFont ? '100' : '300',
+                  padding: this.state.appSettings.spacing,
+                }}
               />;
     });
 
     // let channelStateText = this.state.loading && this.state.loadingText ? this.state.loadingText : `Loading messages...`;
     let channelStateText = this.state.loadingText ? this.state.loadingText : `???`;
     if(this.state.reachedChannelStart && !this.state.loading)
-      channelStateText = `Beginning of # ${this.state.channelName}`;
+      channelStateText = `Beginning of #${this.state.channelName}`;
 
     messages.unshift(<div className="firstMessage" key="firstMessage" onClick={this.loadOlderMessages.bind(this)}>{channelStateText}</div>);
 

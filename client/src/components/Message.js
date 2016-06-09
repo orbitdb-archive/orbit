@@ -65,7 +65,7 @@ class Message extends React.Component {
     return (
       <div
         className={className}
-        style={{ padding: this.props.spacing + "em"}}
+        style={this.props.style}
         onDragEnter={this.onDragEnter.bind(this)}>
         <span className="Timestamp">{ts}</span>
         <User userId={this.state.post ? this.state.post.meta.from : null} colorify={this.props.colorifyUsername} highlight={this.state.isCommand}/>
