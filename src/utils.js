@@ -1,7 +1,7 @@
 'use strict';
 
-var fs      = require('fs');
-var du      = require('du');
+const fs = require('fs');
+const du = require('du');
 
 exports.getUserHome = () => {
   return process.env[(process.platform == 'win32') ? 'USERPROFILE' : 'HOME'];
@@ -44,11 +44,12 @@ const deleteDirectoryRecursive = (path) => {
 };
 exports.deleteDirectoryRecursive = deleteDirectoryRecursive;
 
+// TODO: move to its own file 'IpfsJsDaemon'
+// TODO: create 'IpfsGoDaemon' for js-ipfs-api
 exports.ipfsDaemon = (IPFS, repo, signalServerAddress) => {
-  // console.log("2", repo, signalServerAddress);
   repo = repo || '/tmp/orbit';
-  console.log("Signalling server: " + signalServerAddress);
   signalServerAddress = signalServerAddress || '0.0.0.0';
+  console.log("Signalling server: " + signalServerAddress);
   console.log("IPFS Path: " + repo);
   const ipfs = new IPFS(repo);
   return new Promise((resolve, reject) => {
@@ -56,25 +57,22 @@ exports.ipfsDaemon = (IPFS, repo, signalServerAddress) => {
       if (err) {
         if (err.message === 'repo already exists') {
           console.log(repo, err.message)
-          return resolve();
+          resolve();
         }
-        return reject(err);
+        reject(err);
       }
       resolve();
     })
   })
   .then(() => {
     return new Promise((resolve, reject) => {
-      ipfs.goOnline(() => {
-        resolve(ipfs);
-      });
+      ipfs.goOnline(() => resolve(ipfs));
     });
   })
   .then((id) => {
     return new Promise((resolve, reject) => {
       ipfs.config.show((err, config) => {
         if (err) return reject(err);
-        // console.log("config1", JSON.stringify(config))
         resolve(config);
       });
     });
@@ -82,7 +80,6 @@ exports.ipfsDaemon = (IPFS, repo, signalServerAddress) => {
   .then(() => {
     return new Promise((resolve, reject) => {
       ipfs.id((err, id) => {
-        // console.log(err, id)
         if (err) return reject(err);
         resolve(id);
       });
@@ -91,10 +88,7 @@ exports.ipfsDaemon = (IPFS, repo, signalServerAddress) => {
   .then((id) => new Promise((resolve, reject) => {
     ipfs.config.show((err, config) => {
       if (err) return reject(err);
-      // console.log(">>>>", addr + `/ipfs/${id.ID}`);
-      // const signallingServer = '/libp2p-webrtc-star/ip4/178.62.241.75/tcp/9090/ws'
       const signallingServer = `/libp2p-webrtc-star/ip4/${signalServerAddress}/tcp/9090/ws`; // localhost
-      // config.Addresses.Swarm = [`${addr}/ipfs/${id.ID}`, `${signallingServer}/ipfs/${id.ID}`];
       config.Addresses.Swarm = [`${signallingServer}/ipfs/${id.ID}`];
       ipfs.config.replace(config, (err) => {
         if (err) return reject(err);
@@ -109,15 +103,12 @@ exports.ipfsDaemon = (IPFS, repo, signalServerAddress) => {
   })
   .then(() => {
     return new Promise((resolve, reject) => {
-      ipfs.goOnline(() => {
-        resolve(ipfs);
-      });
+      ipfs.goOnline(() => resolve(ipfs));
     });
   })
   .then(() => {
     return new Promise((resolve, reject) => {
       ipfs.id((err, id) => {
-        // console.log(err, id)
         if (err) return reject(err);
         resolve(id);
       });
@@ -127,12 +118,9 @@ exports.ipfsDaemon = (IPFS, repo, signalServerAddress) => {
     return new Promise((resolve, reject) => {
       ipfs.config.show((err, config) => {
         if (err) return reject(err);
-        // console.log("config2", JSON.stringify(config))
         resolve(config);
       });
     });
   })
-  .then(() => {
-    return ipfs;
-  })
+  .then(() => ipfs)
 }

@@ -5,14 +5,9 @@ const path         = require('path');
 const EventEmitter = require('events').EventEmitter;
 const Logger       = require('logplease');
 const logger       = Logger.create("Orbit.Main", { color: Logger.Colors.Yellow });
-// const ipfsd        = require('ipfsd-ctl');
-// const SocketApi    = require('../../src/api/SocketApi');
-// const HttpApi      = require('./api/HttpApi');
 const utils        = require('../../src/utils');
 const Orbit        = require('../../src/Orbit');
-// const IPFS         = require('ipfs');
 const IPFS = require('exports?Ipfs!ipfs/dist/index.js')
-// const multiaddr = require('multiaddr');
 
 var ENV = process.env["ENV"] || "release";
 logger.debug("Running in '" + ENV + "' mode");
@@ -28,11 +23,9 @@ const events = new EventEmitter();
 let ipfs, orbit, peerId;
 
 const start = exports.start = (id, repositoryPath, signalServerAddress) => {
-  // if(!id) id = 0;
   if(!id) id = 0;//new Date().getTime();
   const startTime = new Date().getTime();
   logger.info("Starting IPFS...");
-  // return utils.ipfsDaemon(IPFS, `/ip4/127.0.0.1/tcp/900${id}/ws`, '/tmp/orbit-skynet-bot-' + new Date().getTime())
   return utils.ipfsDaemon(IPFS, repositoryPath, signalServerAddress)
     .then((res) => {
       ipfs = res;
@@ -50,9 +43,9 @@ const start = exports.start = (id, repositoryPath, signalServerAddress) => {
       peerId = res;
       // logger.info(`IPFS Node started: ${id.Addresses}/ipfs/${id.ID}`);
       // console.log();
-      console.log(`Orbit-${id} ^^^^^^^`);
+      // console.log(`Orbit-${id} ^^^^^^^`);
       // console.log(peerId.Addresses[0]);
-      console.log();
+      // console.log();
       return;
     })
     // .then(() => HttpApi(ipfs, events))
