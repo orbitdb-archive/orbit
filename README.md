@@ -1,6 +1,8 @@
 # Orbit
 
-***Warning: Orbit is very much work-in-progress. If something is not working, please let me know and I'll make sure to fix it.***
+***Current work is happenig in: https://github.com/haadcode/orbit/tree/js-ipfs***
+
+*Warning: Orbit is very much work-in-progress. If something is not working, please let me know and I'll make sure to fix it.*
 
 ## Introduction
 
