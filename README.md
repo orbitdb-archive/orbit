@@ -1,10 +1,34 @@
 # Orbit
 
-***Current work is happenig in: https://github.com/haadcode/orbit/tree/js-ipfs***
+[![](https://img.shields.io/badge/made%20by-Protocol%20Labs-blue.svg?style=flat-square)](http://ipn.io)
+[![](https://img.shields.io/badge/project-IPFS-blue.svg?style=flat-square)](http://ipfs.io/)
+[![](https://img.shields.io/badge/freenode-%23ipfs-blue.svg?style=flat-square)](http://webchat.freenode.net/?channels=%23ipfs)
+[![standard-readme compliant](https://img.shields.io/badge/standard--readme-OK-green.svg?style=flat-square)](https://github.com/RichardLitt/standard-readme)
 
-*Warning: Orbit is very much work-in-progress. If something is not working, please let me know and I'll make sure to fix it.*
+> Distributed peer-to-peer chat application on IPFS.
 
-## Introduction
+***Current work is happening in: https://github.com/haadcode/orbit/tree/js-ipfs***
+
+***Warning: Orbit is very much work-in-progress. If something is not working, please let me know and I'll make sure to fix it.***
+
+## Table of Contents
+
+- [Background](#background)
+- [Install](#install)
+  - [Requirements](#requirements)
+- [Usage](#usage)
+  - [Browser](#browser)
+  - [App](#app)
+  - [Run Options](#run-options)
+    - [Autologin](#autologin)
+- [Build](#build)
+- [UI Development](#ui-development)
+  - [Development in Electron](#development-in-electron)
+- [Run your own network](#run-your-own-network)
+- [Contributing](#contributing)
+- [License](#license)
+
+## Background
 
 Orbit is a ***distributed, peer-to-peer chat application built on [IPFS](http://ipfs.io)***.
 
@@ -18,82 +42,109 @@ There's currently a server (https://github.com/haadcode/orbit-server) that track
 ![Screenshot 2](https://raw.githubusercontent.com/haadcode/orbit/master/screenshots/screenshot3%202016-04-14.png)
 ![Screenshot 3](https://raw.githubusercontent.com/haadcode/orbit/master/screenshots/screenshot6%202016-04-17.png)
 
-## Requirements
-- Node.js v4.x.x
-- npm
+## Install
 
-For development
+First, clone this repository locally. Then:
 
-- Following npm modules installed globally: grunt-cli, mocha, electron-prebuilt
+```bash
+npm install
+```
+
+### Requirements
+- [Node.js v4.x.x](http://nodejs.org/)
+- [npm](https://npmjs.com)
+
+For development:
+
+The following npm modules must be installed globally: [grunt-cli](https://www.npmjs.com/package/grunt-cli), [mocha](https://www.npmjs.com/package/mocha), [electron-prebuilt](https://www.npmjs.com/package/electron-prebuilt). These can be installed by running:
+
+```bash
+npm i -g grunt-cli mocha electron-prebuilt
+```
+
+As well, you will need:
 - g++, gcc, make (for building native modules)
 - python 2 (for building, some native modules need it, node-fibers perhaps?)
 
-## Run
+## Usage
+
+Orbit can be run either in the browser or as a native app.
+
 ### Browser
-Install and run:
-```
-npm install
+
+```bash
 node index.js
 ```
 
-Open `http://localhost:3001` in your browser
+Open `http://localhost:3001` in your browser.
 
 ### App
+
 Build the native app:
-```
-npm install
+
+```bash
 grunt build
 ```
 
-The builds are in `dist/`. Eg. on OSX, open the application from `dist/AnonymousNetworks-darwin-x64`.
+The builds are in `dist/`. For example, on OSX, open the application from `dist/AnonymousNetworks-darwin-x64`.
 
 Orbit uses [Electron](http://electron.atom.io/) to wrap the application in a native executable.
 
 ### Run Options
+
 #### Autologin
+
 Create a file called `user.json` and add your wanted credentials:
-```
+
+```json
 {
   "username": "haadcode",
   "password": "" // Not used atm
 }
 ```
 
-Start the program:
-```
+Then, start the program:
+
+```bash
 node index.js
 ```
 
 ## Build
-Build all:
-```
+
+Run these commands from inside the local repository. Build all:
+
+```bash
 grunt build
 ```
 
 Build for individual platforms:
-```
+
+```bash
 grunt build_nodejs_osx
 grunt build_nodejs_linux
 grunt build_native_osx
 grunt build_native_linux
 ```
 
-The builds are in `dist/`
+The builds are in the `dist/` folder.
 
 ## UI Development
+
 Build distributable:
-```
+
+```bash
 cd client/
 npm install
 grunt build
 ```
 
 Development:
-```
+
+```bash
 node index
 ```
 
-```
+```bash
 cd client/
 (npm install)
 grunt serve
@@ -103,22 +154,30 @@ grunt serve
 For UI development (webpack-dev-server in the Electron app).
 
 Start the webpack dev server:
-```
+
+```bash
 cd client/
 grunt serve
 ```
 
 Start Electron:
-```
+
+```bash
 ENV=dev ./node_modules/.bin/electron . 
 ```
 
-Make sure you don't have the node.js version running and no client open the browser.
+Make sure you don't have the node.js version running, and that the client is not open in the browser.
 
 ## Run your own network
-Get https://github.com/haadcode/orbit-server and start the server, edit `./network.json` and point to appropriate url (eg. localhost:3006)
+
+Get [orbit-server](https://github.com/haadcode/orbit-server) and start the server, edit `./network.json` and point to the appropriate url (eg. `localhost:3006`).
 
 ## Contributing
-Would be happy to accept PRs! If you want to work on something, it'd be good to talk beforehand to make sure nobody else is working on it. You can reach me on Twitter [@haadcode](https://twitter.com/haadcode) or on IRC #ipfs on Freenode.
+
+I would be happy to accept PRs! If you want to work on something, it'd be good to talk beforehand to make sure nobody else is working on it. You can reach me on Twitter [@haadcode](https://twitter.com/haadcode) or on IRC #ipfs on Freenode. Or, [open an issue](https://github.com/haadcode/orbit/issues/new) - check the [existing ones](https://github.com/haadcode/orbit/issues) to make sure work isn't being duplicated.
 
 See [TODO](https://github.com/haadcode/orbit/blob/master/TODO.md) for ideas and tasks up for grabs.
+
+## License
+
+Copyright (c) 2015 haadcode
