@@ -8,7 +8,7 @@ import ChannelStore from 'stores/ChannelStore';
 import AppStateStore from 'stores/AppStateStore';
 import NetworkActions from 'actions/NetworkActions';
 import BackgroundAnimation from 'components/BackgroundAnimation'; //eslint-disable-line
-import Halogen from 'halogen'; //eslint-disable-line
+import Spinner from 'components/Spinner';
 import 'styles/ChannelsPanel.scss';
 import 'styles/RecentChannels.scss';
 
@@ -87,17 +87,11 @@ class ChannelsPanel extends React.Component {
   }
 
   render() {
-    var headerStyle = this.state.currentChannel ? "header" : "header no-close";
-    var color = 'rgba(140, 80, 220, 1)';
-    var loadingIcon   = this.state.loading ? (
-      <div className="loadingIcon" style={this.state.theme}>
-        <Halogen.MoonLoader color={color} size="32px"/>
-      </div>
-    ) : "";
+    const headerStyle = this.state.currentChannel ? "header" : "header no-close";
+    const channelsHeaderStyle = this.state.openChannels.length > 0 ? "panelHeader" : "hidden";
+    const openChannels = this.state.openChannels.length > 0 ? this.state.openChannels.map((f) => this._renderChannel(f)) : [];
+    const channelJoinInputStyle = !this.state.loading ? "joinChannelInput" : "joinChannelInput invisible";
 
-    var channelsHeaderStyle = this.state.openChannels.length > 0 ? "panelHeader" : "hidden";
-    var openChannels = this.state.openChannels.length > 0 ? this.state.openChannels.map((f) => this._renderChannel(f)) : [];
-    var channelJoinInputStyle = !this.state.loading ? "joinChannelInput" : "joinChannelInput invisible";
 
     return (
       <div>
@@ -136,7 +130,7 @@ class ChannelsPanel extends React.Component {
 
             <div className="username">{this.state.username}</div>
 
-            {loadingIcon}
+            <Spinner isLoading={this.state.loading} color="rgba(140, 80, 220, 1)" size="32px" />
 
             <TransitionGroup
               component="div"
