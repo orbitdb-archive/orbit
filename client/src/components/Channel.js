@@ -2,16 +2,14 @@
 
 import _ from 'lodash';
 import React from 'react';
-import TransitionGroup from "react-addons-css-transition-group";
 import Message from 'components/Message';
-import SendMessage from 'components/SendMessage';
+import ChannelControls from 'components/ChannelControls';
 import Dropzone from 'react-dropzone';
 import MessageStore from 'stores/MessageStore';
 import ChannelStore from 'stores/ChannelStore';
 import LoadingStateStore from 'stores/LoadingStateStore';
 import UIActions from 'actions/UIActions';
 import ChannelActions from 'actions/ChannelActions';
-import Halogen from 'halogen';
 import 'styles/Channel.scss';
 import Logger from 'logplease';
 const logger = Logger.create('Channel', { color: Logger.Colors.Cyan });
@@ -272,25 +270,6 @@ class Channel extends React.Component {
 
   render() {
     const theme = this.state.theme;
-    const channelMode = (<div className={"statusMessage"} style={theme}>{this.state.channelMode}</div>);
-
-    const controlsBar = (
-      <TransitionGroup
-        component="div"
-        transitionName="controlsAnimation"
-        transitionAppear={true}
-        transitionAppearTimeout={1000}
-        transitionEnterTimeout={0}
-        transitionLeaveTimeout={0}
-        >
-        <div className="Controls" key="controls">
-          <SendMessage onSendMessage={this.sendMessage.bind(this)} key="SendMessage" theme={theme} useEmojis={this.state.appSettings.useEmojis}/>
-          <Dropzone className="dropzone2" onDrop={this.onDrop.bind(this)} key="dropzone2">
-            <div className="icon flaticon-tool490" style={theme} key="icon"/>
-          </Dropzone>
-        </div>
-      </TransitionGroup>
-    );
 
     const messages = this.state.messages.map((e) => {
       return <Message
@@ -337,22 +316,21 @@ class Channel extends React.Component {
       </div>
     ) : (<span></span>);
 
-    const loadingIcon = this.state.loading ? (
-      <div className="loadingBar">
-        <Halogen.MoonLoader className="loadingIcon" color="rgba(255, 255, 255, 0.7)" size="16px"/>
-      </div>
-    ) : "";
-
     return (
       <div className="Channel flipped" onDragEnter={this.onDragEnter.bind(this)}>
         <div className="Messages" ref="MessagesView" onScroll={this.onScroll.bind(this)} >
           {messages}
         </div>
         {showNewMessageNotification}
-        {controlsBar}
+        <ChannelControls
+          onSendMessage={this.sendMessage.bind(this)}
+          onSendFiles={this.onDrop.bind(this)}
+          isLoading={this.state.loading}
+          channelMode={this.state.channelMode}
+          appSettings={this.state.appSettings}
+          theme={theme}
+        />
         {fileDrop}
-        {loadingIcon}
-        {channelMode}
       </div>
     );
   }
