@@ -4,6 +4,7 @@ import _ from 'lodash';
 import React from 'react';
 import Message from 'components/Message';
 import ChannelControls from 'components/ChannelControls';
+import NewMessageNotification from 'components/NewMessageNotification';
 import Dropzone from 'react-dropzone';
 import MessageStore from 'stores/MessageStore';
 import ChannelStore from 'stores/ChannelStore';
@@ -29,7 +30,6 @@ class Channel extends React.Component {
       error: null,
       dragEnter: false,
       username: props.user ? props.user.username : '',
-      displayNewMessagesIcon: false,
       unreadMessages: 0,
       appSettings: props.appSettings,
       theme: props.theme
@@ -46,7 +46,7 @@ class Channel extends React.Component {
     if(nextProps.channel !== this.state.channelName) {
       this.setState({
         channelChanged: true,
-        displayNewMessagesIcon: false,
+        unreadMessages: 0,
         loading: true,
         reachedChannelStart: false,
         messages: []
@@ -156,7 +156,6 @@ class Channel extends React.Component {
       && this.state.messages.length > 0 && _.last(messages).payload.meta.ts > _.last(this.state.messages).payload.meta.ts
       && this.node.scrollHeight > 0) {
       this.setState({
-        displayNewMessagesIcon: true,
         unreadMessages: this.state.unreadMessages + 1
       });
     }
@@ -259,7 +258,9 @@ class Channel extends React.Component {
     // If we scrolled to the bottom, hide the "new messages" label
     this.node = this.refs.MessagesView;
     if(this.node.scrollHeight - this.node.scrollTop - 10 <= this.node.clientHeight) {
-      this.setState({ displayNewMessagesIcon: false, unreadMessages: 0 });
+      this.setState({
+        unreadMessages: 0
+      });
     }
   }
 
@@ -310,26 +311,21 @@ class Channel extends React.Component {
       </Dropzone>
     ) : "";
 
-    const showNewMessageNotification = this.state.displayNewMessagesIcon ? (
-      <div className="newMessagesBar" onClick={this.onScrollToBottom.bind(this)}>
-        There are <span className="newMessagesNumber">{this.state.unreadMessages}</span> new messages
-      </div>
-    ) : (<span></span>);
-
     return (
       <div className="Channel flipped" onDragEnter={this.onDragEnter.bind(this)}>
         <div className="Messages" ref="MessagesView" onScroll={this.onScroll.bind(this)} >
           {messages}
         </div>
-        {showNewMessageNotification}
+        <NewMessageNotification
+          onClick={this.onScrollToBottom.bind(this)}
+          unreadMessages={this.state.unreadMessages} />
         <ChannelControls
           onSendMessage={this.sendMessage.bind(this)}
           onSendFiles={this.onDrop.bind(this)}
           isLoading={this.state.loading}
           channelMode={this.state.channelMode}
           appSettings={this.state.appSettings}
-          theme={theme}
-        />
+          theme={theme} />
         {fileDrop}
       </div>
     );
