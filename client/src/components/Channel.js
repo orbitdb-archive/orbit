@@ -269,64 +269,70 @@ class Channel extends React.Component {
     this.node.scrollTop = this.node.scrollHeight + this.node.clientHeight;
   }
 
-  render() {
-    const theme = this.state.theme;
-
-    const messages = this.state.messages.map((e) => {
-      return <Message
-                message={e.payload}
-                key={e.hash}
-                onDragEnter={this.onDragEnter.bind(this)}
-                highlightWords={this.state.username}
-                colorifyUsername={this.state.appSettings.colorifyUsernames}
-                useEmojis={this.state.appSettings.useEmojis}
-                style={{
-                  fontFamily: this.state.appSettings.useMonospaceFont ? this.state.appSettings.monospaceFont : this.state.appSettings.font,
-                  fontSize: this.state.appSettings.useMonospaceFont ? '0.9em' : '1.0em',
-                  fontWeight: this.state.appSettings.useMonospaceFont ? '100' : '300',
-                  padding: this.state.appSettings.spacing,
-                }}
-              />;
-    });
-
-    // let channelStateText = this.state.loading && this.state.loadingText ? this.state.loadingText : `Loading messages...`;
-    let channelStateText = this.state.loadingText ? this.state.loadingText : `???`;
-    if(this.state.reachedChannelStart && !this.state.loading)
-      channelStateText = `Beginning of #${this.state.channelName}`;
-
-    messages.unshift(<div className="firstMessage" key="firstMessage" onClick={this.loadOlderMessages.bind(this)}>{channelStateText}</div>);
-
-    const fileDrop = this.state.dragEnter ? (
-      <Dropzone
-        className="dropzone"
-        activeClassName="dropzoneActive"
-        disableClick={true}
-        onDrop={this.onDrop.bind(this)}
+  renderMessages() {
+    const { messages, username, channelName, loading, loadingText, reachedChannelStart, appSettings } = this.state;
+    const { colorifyUsernames, useEmojis, useMonospaceFont, font, monospaceFont, spacing } = appSettings;
+    const elements = messages.map(message => (
+      <Message
+        message={message.payload}
+        key={message.hash}
         onDragEnter={this.onDragEnter.bind(this)}
-        onDragLeave={this.onDragLeave.bind(this)}
-        style={theme}
-        key="dropzone"
-        >
-        <div ref="dropLabel" style={theme}>Add files to #{this.state.channelName}</div>
-      </Dropzone>
-    ) : "";
+        highlightWords={username}
+        colorifyUsername={colorifyUsernames}
+        useEmojis={useEmojis}
+        style={{
+          fontFamily: useMonospaceFont ? monospaceFont : font,
+          fontSize: useMonospaceFont ? '0.9em' : '1.0em',
+          fontWeight: useMonospaceFont ? '100' : '300',
+          padding: spacing,
+        }}
+      />
+    ));
+    elements.unshift(
+      <div className="firstMessage" key="firstMessage" onClick={this.loadOlderMessages.bind(this)}>
+        {reachedChannelStart && !loading ? `Beginning of #${channelName}` : loadingText || '???'}
+      </div>
+    );
+    return elements;
+  }
 
+  renderFileDrop() {
+    const { theme, dragEnter, channelName } = this.state;
+    if (dragEnter) {
+      return (
+        <Dropzone
+          className="dropzone"
+          activeClassName="dropzoneActive"
+          disableClick={true}
+          onDrop={this.onDrop.bind(this)}
+          onDragEnter={this.onDragEnter.bind(this)}
+          onDragLeave={this.onDragLeave.bind(this)}
+          style={theme} >
+            <div ref="dropLabel" style={theme}>Add files to #{channelName}</div>
+        </Dropzone>
+      );
+    }
+    return null;
+  }
+
+  render() {
+    const { unreadMessages, loading, channelMode, appSettings, theme } = this.state;
     return (
       <div className="Channel flipped" onDragEnter={this.onDragEnter.bind(this)}>
-        <div className="Messages" ref="MessagesView" onScroll={this.onScroll.bind(this)} >
-          {messages}
+        <div className="Messages" ref="MessagesView" onScroll={this.onScroll.bind(this)}>
+          {this.renderMessages()}
         </div>
         <NewMessageNotification
           onClick={this.onScrollToBottom.bind(this)}
-          unreadMessages={this.state.unreadMessages} />
+          unreadMessages={unreadMessages} />
         <ChannelControls
           onSendMessage={this.sendMessage.bind(this)}
           onSendFiles={this.onDrop.bind(this)}
-          isLoading={this.state.loading}
-          channelMode={this.state.channelMode}
-          appSettings={this.state.appSettings}
+          isLoading={loading}
+          channelMode={channelMode}
+          appSettings={appSettings}
           theme={theme} />
-        {fileDrop}
+        {this.renderFileDrop()}
       </div>
     );
   }
