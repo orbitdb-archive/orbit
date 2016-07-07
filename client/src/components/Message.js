@@ -8,6 +8,7 @@ import TextMessage from "components/TextMessage";
 import Directory from "components/Directory";
 import ChannelActions from 'actions/ChannelActions';
 import NotificationActions from 'actions/NotificationActions';
+import { getFormattedTime } from '../utils/utils.js';
 import "styles/Message.scss";
 
 class Message extends React.Component {
@@ -18,6 +19,7 @@ class Message extends React.Component {
       post: null,
       hasHighlights: false,
       isCommand: false,
+      formattedTime: getFormattedTime(props.message.meta.ts),
     };
   }
 
@@ -71,14 +73,11 @@ class Message extends React.Component {
 
   render() {
     const { message, colorifyUsername, style, onDragEnter } = this.props;
-    const { post, isCommand, hasHighlights } = this.state;
+    const { post, isCommand, hasHighlights, formattedTime } = this.state;
     const className = hasHighlights ? "Message highlighted" : "Message";
-    const safeTime = (time) => ("0" + time).slice(-2);
-    const date = new Date(message.meta.ts);
-    const time = safeTime(date.getHours()) + ":" + safeTime(date.getMinutes()) + ":" + safeTime(date.getSeconds());
     return (
       <div className={className} style={style} onDragEnter={onDragEnter}>
-        <span className="Timestamp">{time}</span>
+        <span className="Timestamp">{formattedTime}</span>
         <User
           userId={post ? post.meta.from : null}
           colorify={colorifyUsername}
