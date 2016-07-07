@@ -16,21 +16,31 @@ const logger = Logger.create('Clipboard', { color: Logger.Colors.Magenta });
 function readUTF8String(bytes) {
   let i = 0;
   let string = '';
-  if (bytes.slice(0, 3) == '\xEF\xBB\xBF') {
+
+  // Remove UTF-8 BOM header, if present
+  const UTF8_BOM_HEADER = '\xef\xbb\xbf';
+  if (bytes.slice(0, 3) == UTF8_BOM_HEADER) {
     i = 3;
   }
+
+  // Convert UTF-8 encoded codepoints to JS string
+  // See https://en.wikipedia.org/wiki/UTF-8#Description
   for (; i < bytes.byteLength; i++) {
     const byte1 = bytes[i];
     if (byte1 < 0x80) {
+      // U+0000 .. U+007F
       string += String.fromCharCode(byte1);
     } else if (byte1 >= 0xc2 && byte1 < 0xe0) {
+      // U+0080 .. U+07FF
       const byte2 = bytes[++i];
       string += String.fromCharCode(((byte1 & 0x1f) << 6) + (byte2 & 0x3f));
     } else if (byte1 >= 0xe0 && byte1 < 0xf0) {
+      // U+0800 .. U+FFFF
       const byte2 = bytes[++i];
       const byte3 = bytes[++i];
       string += String.fromCharCode(((byte1 & 0xff) << 12) + ((byte2 & 0x3f) << 6) + (byte3 & 0x3f));
     } else if (byte1 >= 0xf0 && byte1 < 0xf5) {
+      // U+10000 .. U+1FFFFF
       const byte2 = bytes[++i];
       const byte3 = bytes[++i];
       const byte4 = bytes[++i];
@@ -38,6 +48,7 @@ function readUTF8String(bytes) {
       string += String.fromCharCode((codepoint >> 10) + 0xd800, (codepoint & 0x3ff) + 0xdc00);
     }
   }
+
   return string;
 }
 
