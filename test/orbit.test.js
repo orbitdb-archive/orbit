@@ -13,10 +13,10 @@ const EventStore = require('orbit-db-eventstore');
 const Post         = require('ipfs-post');
 
 // Mute logging
-require('logplease').setLogLevel('ERROR');
+// require('logplease').setLogLevel('ERROR');
 
 // Orbit
-const network = 'Qmeh6ktQ1YFKksugJb59vBxG51xXoEvjBZXRK3DdrF3mNj';
+const network = 'localhost:3333';
 const username = 'testrunner';
 const password = '';
 
@@ -51,37 +51,37 @@ const IpfsApis = [
     })
   })
 },
-{
-  // js-ipfs-api via local daemon
-  name: 'js-ipfs-api',
-  start: () => {
-    return new Promise((resolve, reject) => {
-      ipfsd.disposableApi((err, ipfs) => {
-        if(err) reject(err);
-        resolve(ipfs);
-      });
-      // ipfsd.local((err, node) => {
-      //   if(err) reject(err);
-      //   ipfsDaemon = node;
-      //   ipfsDaemon.startDaemon((err, ipfs) => {
-      //     if(err) reject(err);
-      //     resolve(ipfs);
-      //   });
-      // });
-    });
-  },
-  stop: () => Promise.resolve()
-  // stop: () => new Promise((resolve, reject) => ipfsDaemon.stopDaemon(resolve)) // for use with local daemon
-}
+// {
+//   // js-ipfs-api via local daemon
+//   name: 'js-ipfs-api',
+//   start: () => {
+//     return new Promise((resolve, reject) => {
+//       ipfsd.disposableApi((err, ipfs) => {
+//         if(err) reject(err);
+//         resolve(ipfs);
+//       });
+//       // ipfsd.local((err, node) => {
+//       //   if(err) reject(err);
+//       //   ipfsDaemon = node;
+//       //   ipfsDaemon.startDaemon((err, ipfs) => {
+//       //     if(err) reject(err);
+//       //     resolve(ipfs);
+//       //   });
+//       // });
+//     });
+//   },
+//   stop: () => Promise.resolve()
+//   // stop: () => new Promise((resolve, reject) => ipfsDaemon.stopDaemon(resolve)) // for use with local daemon
+// }
 ];
 
-OrbitServer.start();
+// OrbitServer.start();
 
 IpfsApis.forEach(function(ipfsApi) {
 
   describe('Orbit with ' + ipfsApi.name, function() {
-    // this.timeout(1000);
-    this.timeout(40000);
+    this.timeout(2000);
+    // this.timeout(40000);
 
     let orbit, client, client2;
     let channel = 'orbit-test';
@@ -147,7 +147,7 @@ IpfsApis.forEach(function(ipfsApi) {
             assert.notEqual(e, null);
             assert.equal(orbit.orbitdb, null);
             // assert.equal(e.message, 'Invalid Key'); // js-ipfs
-            assert.equal(e.message, 'invalid ipfs ref path'); // js-ipfs-api
+            assert.equal(e.message, "Connection refused to Pubsub at 'abc:undefined'"); // js-ipfs-api
           })
       });
 
@@ -192,7 +192,9 @@ IpfsApis.forEach(function(ipfsApi) {
     describe('join', function() {
       beforeEach((done) => {
         orbit = new Orbit(ipfs, { cacheFile: null });
-        orbit.connect(network, username, password).then(done)
+        orbit.connect(network, username, password)
+          .then((res) => done())
+          .catch(done)
       });
 
       afterEach(() => {
@@ -207,7 +209,7 @@ IpfsApis.forEach(function(ipfsApi) {
           assert.equal(channels[0].password, null);
           assert.notEqual(channels[0].db, null);
           assert.equal(channels[0].state.loading, false);
-          assert.equal(channels[0].state.syncing, true);
+          assert.equal(channels[0].state.syncing, 0);
           assert.notEqual(orbit._channels[channel], null);
         });
       });
@@ -222,7 +224,7 @@ IpfsApis.forEach(function(ipfsApi) {
             assert.equal(channels[0].password, null);
             assert.notEqual(channels[0].db, null);
             assert.equal(channels[0].state.loading, false);
-            assert.equal(channels[0].state.syncing, true);
+            assert.equal(channels[0].state.syncing, 0);
           });
       });
 
@@ -236,12 +238,12 @@ IpfsApis.forEach(function(ipfsApi) {
             assert.equal(channels[0].name, channel1);
             assert.equal(channels[0].password, null);
             assert.equal(channels[0].state.loading, false);
-            assert.equal(channels[0].state.syncing, true);
+            assert.equal(channels[0].state.syncing, 0);
             assert.notEqual(channels[0].db, null);
             assert.equal(channels[1].name, channel2);
             assert.equal(channels[1].password, null);
             assert.equal(channels[1].state.loading, false);
-            assert.equal(channels[1].state.syncing, true);
+            assert.equal(channels[1].state.syncing, 0);
             assert.notEqual(channels[1].db, null);
           });
       });
@@ -254,7 +256,7 @@ IpfsApis.forEach(function(ipfsApi) {
           assert.equal(channels[0].password, null);
           assert.notEqual(channels[0].db, null);
           assert.equal(channels[0].state.loading, false);
-          assert.equal(channels[0].state.syncing, true);
+          assert.equal(channels[0].state.syncing, 0);
           assert.notEqual(orbit._channels[channel], null);
           done();
         });
@@ -269,7 +271,7 @@ IpfsApis.forEach(function(ipfsApi) {
             assert.equal(channels[0].password, null);
             assert.notEqual(channels[0].db, null);
             assert.equal(channels[0].state.loading, false);
-            assert.equal(channels[0].state.syncing, true);
+            assert.equal(channels[0].state.syncing, 0);
             assert.notEqual(orbit._channels[channel], null);
             assert.equal(channels.length, 1);
             done();
@@ -282,7 +284,9 @@ IpfsApis.forEach(function(ipfsApi) {
     describe('leave', function() {
       beforeEach((done) => {
         orbit = new Orbit(ipfs, { cacheFile: null });
-        orbit.connect(network, username, password).then(done)
+        orbit.connect(network, username, password)
+          .then((res) => done())
+          .catch(done)
       });
 
       it('leaves a channel', () => {
@@ -319,7 +323,9 @@ IpfsApis.forEach(function(ipfsApi) {
       describe('return', function() {
         before((done) => {
           orbit = new Orbit(ipfs, { cacheFile: null });
-          orbit.connect(network, username, password).then(done).catch(done)
+          orbit.connect(network, username, password)
+            .then((res) => done())
+            .catch(done)
         });
 
         after(() => {
@@ -369,7 +375,9 @@ IpfsApis.forEach(function(ipfsApi) {
     describe('getChannels', function() {
       beforeEach((done) => {
         orbit = new Orbit(ipfs, { cacheFile: null });
-        orbit.connect(network, username, password).then(done)
+        orbit.connect(network, username, password)
+          .then((res) => done())
+          .catch(done)
       });
 
       afterEach(() => {
@@ -410,7 +418,9 @@ IpfsApis.forEach(function(ipfsApi) {
     describe('sendMessage', function() {
       beforeEach((done) => {
         orbit = new Orbit(ipfs, { cacheFile: null });
-        orbit.connect(network, username, password).then(done)
+        orbit.connect(network, username, password)
+          .then((res) => done())
+          .catch(done)
       });
 
       afterEach(() => {
@@ -525,7 +535,9 @@ IpfsApis.forEach(function(ipfsApi) {
     describe('event handling', function() {
       beforeEach((done) => {
         orbit = new Orbit(ipfs, { cacheFile: null });
-        orbit.connect(network, username, password).then(done)
+        orbit.connect(network, username, password)
+          .then((res) => done())
+          .catch(done)
       });
 
       afterEach(() => {
@@ -557,7 +569,7 @@ IpfsApis.forEach(function(ipfsApi) {
           assert.equal(channels.length, 1);
           assert.equal(channels[0].db, null);
           assert.equal(channels[0].state.loading, true);
-          assert.equal(channels[0].state.syncing, true);
+          assert.equal(channels[0].state.syncing, 0);
           done();
         });
         orbit.join(channel);
@@ -579,7 +591,7 @@ IpfsApis.forEach(function(ipfsApi) {
             assert.equal(channels.length, 1);
             assert.equal(channels[0].db, null);
             assert.equal(channels[0].state.loading, false);
-            assert.equal(channels[0].state.syncing, true);
+            assert.equal(channels[0].state.syncing, 0);
             done();
           });
         });
@@ -605,7 +617,7 @@ IpfsApis.forEach(function(ipfsApi) {
                 assert.equal(channels.length, 1);
                 assert.notEqual(channels[0].db, null);
                 assert.equal(channels[0].state.loading, false);
-                assert.equal(channels[0].state.syncing, true);
+                assert.equal(channels[0].state.syncing, 1);
                 done();
               });
             });
@@ -625,16 +637,16 @@ IpfsApis.forEach(function(ipfsApi) {
       it('emits \'state.updated\' on synced', (done) => {
         const channel = 'test1';
         orbit.join(channel).then(() => {
-            orbit.events.removeAllListeners('state.updated');
-            orbit.events.on('synced', (channelName) => {
-              orbit.events.on('state.updated', (channels) => {
-                assert.equal(channels.length, 1);
-                assert.notEqual(channels[0].db, null);
-                assert.equal(channels[0].state.loading, false);
-                assert.equal(channels[0].state.syncing, false);
-                done();
-              });
+          orbit.events.removeAllListeners('state.updated');
+          orbit.events.on('synced', (channelName) => {
+            orbit.events.on('state.updated', (channels) => {
+              assert.equal(channels.length, 1);
+              assert.notEqual(channels[0].db, null);
+              assert.equal(channels[0].state.loading, false);
+              assert.equal(channels[0].state.syncing, 0);
+              done();
             });
+          });
         });
       });
 
