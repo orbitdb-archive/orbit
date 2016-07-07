@@ -19,17 +19,17 @@
     "socket.io": "^1.4.6"
   },
   "devDependencies": {
-    "asyncawait": "^1.0.3",
+    "asyncawait": "^1.0.6",
     "electron-prebuilt": "0.34.1",
     "grunt": "^1.0.1",
     "grunt-chmod": "^1.1.1",
     "grunt-contrib-clean": "^1.0.0",
     "grunt-contrib-copy": "^1.0.0",
     "grunt-electron": "^2.0.1",
-    "ipfs": "^0.11.0",
+    "ipfs": "^0.14.1",
     "load-grunt-tasks": "^3.3.0",
     "mocha": "^2.4.5",
-    "orbit-db-eventstore": "0.0.11",
+    "orbit-db-eventstore": "0.0.16",
     "orbit-server": "^0.2.3"
   },
   "scripts": {
@@ -40,6 +40,9 @@
   "repository": {
     "type": "git",
     "url": "https://github.com/haadcode/orbit.git"
+  },
+  "bugs": {
+    "url": "https://github.com/haadcode/orbit/issues"
   },
   "readme": "README.md",
   "author": "Haad",
