@@ -51,37 +51,39 @@ const IpfsApis = [
     })
   })
 },
-// {
-//   // js-ipfs-api via local daemon
-//   name: 'js-ipfs-api',
-//   start: () => {
-//     return new Promise((resolve, reject) => {
-//       ipfsd.disposableApi((err, ipfs) => {
-//         if(err) reject(err);
-//         resolve(ipfs);
-//       });
-//       // ipfsd.local((err, node) => {
-//       //   if(err) reject(err);
-//       //   ipfsDaemon = node;
-//       //   ipfsDaemon.startDaemon((err, ipfs) => {
-//       //     if(err) reject(err);
-//       //     resolve(ipfs);
-//       //   });
-//       // });
-//     });
-//   },
-//   stop: () => Promise.resolve()
-//   // stop: () => new Promise((resolve, reject) => ipfsDaemon.stopDaemon(resolve)) // for use with local daemon
-// }
+{
+  // js-ipfs-api via local daemon
+  name: 'js-ipfs-api',
+  start: () => {
+    return new Promise((resolve, reject) => {
+      ipfsd.disposableApi((err, ipfs) => {
+        if(err) reject(err);
+        resolve(ipfs);
+      });
+      // ipfsd.local((err, node) => {
+      //   if(err) reject(err);
+      //   ipfsDaemon = node;
+      //   ipfsDaemon.startDaemon((err, ipfs) => {
+      //     if(err) reject(err);
+      //     resolve(ipfs);
+      //   });
+      // });
+    });
+  },
+  stop: () => Promise.resolve()
+  // stop: () => new Promise((resolve, reject) => ipfsDaemon.stopDaemon(resolve)) // for use with local daemon
+}
 ];
 
-// OrbitServer.start();
+OrbitServer.start();
 
 IpfsApis.forEach(function(ipfsApi) {
 
   describe('Orbit with ' + ipfsApi.name, function() {
-    this.timeout(2000);
-    // this.timeout(40000);
+    if(ipfsApi.name === 'js-ipfs')
+      this.timeout(10000);
+    else
+      this.timeout(40000);
 
     let orbit, client, client2;
     let channel = 'orbit-test';
@@ -101,13 +103,17 @@ IpfsApis.forEach(function(ipfsApi) {
     });
 
     after((done) => {
-      if(orbit) orbit.disconnect();
-      ipfsApi.stop()
-        .then(done)
-        .catch((e) => {
-          console.log(e.stack);
-          assert.equal(e, null);
-        });
+      if(orbit)
+        orbit.disconnect();
+
+      if(ipfs) {
+        ipfsApi.stop()
+          .then(done)
+          .catch((e) => {
+            console.log(e.stack);
+            assert.equal(e, null);
+          });
+      }
     });
 
     describe('constructor', function() {
@@ -427,19 +433,22 @@ IpfsApis.forEach(function(ipfsApi) {
         orbit.disconnect();
       });
 
-      it('returns a Post', () => {
+      it('returns a Post', (done) => {
         const channel = 'test1';
         const content = 'hello1';
         return orbit.join(channel)
           .then(() => orbit.sendMessage(channel, content))
           .then((message) => {
-            assert.notEqual(message.Post, null);
-            assert.equal(message.Hash.startsWith('Qm'), true);
-            assert.equal(message.Post.content, content);
-            assert.equal(message.Post.meta.type, "text");
-            assert.equal(message.Post.meta.size, 15);
-            assert.notEqual(message.Post.meta.ts, null);
-            assert.equal(message.Post.meta.from, username);
+            setTimeout(() => {
+              assert.notEqual(message.Post, null);
+              assert.equal(message.Hash.startsWith('Qm'), true);
+              assert.equal(message.Post.content, content);
+              assert.equal(message.Post.meta.type, "text");
+              assert.equal(message.Post.meta.size, 15);
+              assert.notEqual(message.Post.meta.ts, null);
+              assert.equal(message.Post.meta.from, username);
+              done();
+            }, 1000);
           });
       });
 
@@ -448,19 +457,21 @@ IpfsApis.forEach(function(ipfsApi) {
         const content = 'hello1';
         orbit.join(channel).then(() => {
           orbit.sendMessage(channel, content, (err, message) => {
-            assert.notEqual(message.Post, null);
-            assert.equal(message.Hash.startsWith('Qm'), true);
-            assert.equal(message.Post.content, content);
-            assert.equal(message.Post.meta.type, "text");
-            assert.equal(message.Post.meta.size, 15);
-            assert.notEqual(message.Post.meta.ts, null);
-            assert.equal(message.Post.meta.from, username);
-            done();
+            setTimeout(() => {
+              assert.notEqual(message.Post, null);
+              assert.equal(message.Hash.startsWith('Qm'), true);
+              assert.equal(message.Post.content, content);
+              assert.equal(message.Post.meta.type, "text");
+              assert.equal(message.Post.meta.size, 15);
+              assert.notEqual(message.Post.meta.ts, null);
+              assert.equal(message.Post.meta.from, username);
+              done();
+            }, 1000);
           });
         });
       });
 
-      it('Post was added to IPFS', () => {
+      it('Post was added to IPFS', (done) => {
         const channel = 'test1';
         const content = 'hello1';
         return orbit.join(channel)
@@ -472,6 +483,7 @@ IpfsApis.forEach(function(ipfsApi) {
             assert.equal(data.meta.size, 15);
             assert.notEqual(data.meta.ts, null);
             assert.equal(data.meta.from, username);
+            done();
           });
       });
 
