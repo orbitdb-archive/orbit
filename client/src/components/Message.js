@@ -30,7 +30,7 @@ class Message extends React.Component {
         if (post.content.startsWith('/me')) {
           state.isCommand = true;
         }
-        post.content.split(' ').forEach(word => {
+        post.content.split(' ').forEach((word) => {
           const highlight = MentionHighlighter.highlight(word, this.props.highlightWords);
           if(typeof highlight[0] !== 'string' && this.props.highlightWords !== post.meta.from) {
             state.hasHighlights = true;

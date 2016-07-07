@@ -80,7 +80,7 @@ class File extends React.Component {
       previewContent: 'Loading...',
     }, () => {
       if (this.state.showPreview) {
-        ChannelActions.loadFile(this.props.hash, blob => {
+        ChannelActions.loadFile(this.props.hash, (blob) => {
           let previewContent = 'Unable to display file.';
           if (blob) {
             const url = window.URL.createObjectURL(blob);

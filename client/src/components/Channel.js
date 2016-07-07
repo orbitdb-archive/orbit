@@ -272,7 +272,7 @@ class Channel extends React.Component {
   renderMessages() {
     const { messages, username, channelName, loading, loadingText, reachedChannelStart, appSettings } = this.state;
     const { colorifyUsernames, useEmojis, useMonospaceFont, font, monospaceFont, spacing } = appSettings;
-    const elements = messages.map(message => (
+    const elements = messages.map((message) => (
       <Message
         message={message.payload}
         key={message.hash}

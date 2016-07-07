@@ -341,7 +341,7 @@ const MessageStore = Reflux.createStore({
   },
   onLoadFile: function(hash, cb) {
     if(!this.socket) {
-      this.orbit.getFile(hash).then(cb).catch(err => cb(null));
+      this.orbit.getFile(hash).then(cb).catch((err) => cb(null));
       return;
     }
 
