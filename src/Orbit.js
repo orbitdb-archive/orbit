@@ -3,16 +3,15 @@
 const fs           = require('fs');
 const path         = require('path');
 const EventEmitter = require('events').EventEmitter;
-// const request      = require('request');
 const OrbitDB      = require('orbit-db');
 const Post         = require('ipfs-post');
 const Logger       = require('logplease');
 const logger       = Logger.create("Orbit.Orbit", { color: Logger.Colors.Green });
-Logger.setLogLevel('ERROR');
 const utils        = require('./utils');
 
 const defaultOptions = {
-  dataPath: path.join(utils.getAppPath(), "/data")
+  cacheFile: path.join(utils.getAppPath(), "/data", "/orbit-db-cache.json"),
+  maxHistory: 64 // how many messages to retrieve from history on joining a channel
 };
 
 class Orbit {
@@ -20,10 +19,12 @@ class Orbit {
     this.ipfs = ipfs;
     this.events = new EventEmitter();
     this.orbitdb = null;
-    this.options = options || defaultOptions;
-    if(this.options.cacheFile === undefined)
-      this.options.cacheFile = path.join(this.options.dataPath, "/orbit-db-cache.json");
     this._channels = {};
+    this._peers = [];
+
+    this.options = {};
+    Object.assign(this.options, defaultOptions);
+    Object.assign(this.options, options);
   }
 
   connect(network, username, password) {
@@ -39,6 +40,11 @@ class Orbit {
         this.orbitdb.events.on('ready', this._handleDatabaseReady.bind(this));
         this.orbitdb.events.on('sync', this._handleSync.bind(this));
         this.orbitdb.events.on('synced', this._handleSynced.bind(this));
+
+        // Get peers from libp2p and update the local peers array
+        setInterval(() => {
+          this._updateSwarmPeers().then((peers) => this._peers = peers);
+        }, 1000);
       })
       .then(() => {
         logger.info(`Connected to '${this.orbitdb.network.name}' at '${this.orbitdb.network.publishers[0]}' as '${user.username}`)
@@ -57,23 +63,26 @@ class Orbit {
     }
   }
 
-  join(channel, password, callback) {
+  join(channel, password) {
     logger.debug(`Join #${channel}`);
     if(!this._channels[channel]) {
       this._channels[channel] = { name: channel, password: password, db: null, state: { loading: true, syncing: 0 }};
-      return this.orbitdb.eventlog(channel, { cacheFile: this.options.cacheFile })
+      const options = {
+        cacheFile: this.options.cacheFile,
+        maxHistory: this.options.maxHistory
+      };
+
+      return this.orbitdb.eventlog(channel, options)
         .then((db) => {
           this._channels[channel].db = db;
           this._channels[channel].state.loading = false;
           this.events.emit('channels.updated', this.channels);
-          if(callback) callback(null, channel)
-          return this.getChannels();
+          return this.channels;
         });
     } else {
       this.events.emit('ready', channel);
       this.events.emit('channels.updated', this.channels);
     }
-    if(callback) callback(null, channel)
     return Promise.resolve(this.channels);
   }
 
@@ -83,7 +92,7 @@ class Orbit {
       delete this._channels[channel];
       logger.debug("Left channel #" + channel);
     }
-    this.events.emit('channels.updated', this.getChannels());
+    this.events.emit('channels.updated', this.channels);
     return this.channels;
   }
 
@@ -96,7 +105,49 @@ class Orbit {
   }
 
   get channels() {
-    return this.getChannels();
+    return Object.keys(this._channels).map((f) => this._channels[f]);
+  }
+
+  get peers() {
+    return this._peers;
+  }
+
+  send(channel, message) {
+    logger.debug(`Send message to #${channel}: ${message}`);
+
+    const db = this._channels[channel] && this._channels[channel].db ? this._channels[channel].db : null;
+    if(!db) return Promise.reject(`Not joined on #${channel}`);
+
+    const data = {
+      content: message,
+      from: this.orbitdb.user.id
+    };
+
+    let post;
+    return Post.create(this.ipfs, Post.Types.Message, data)
+      .then((res) => post = res)
+      .then(() => {
+        // console.log("POST", post)
+        return db.add(post.Hash)
+      })
+      .then((hash) => post)
+  }
+
+  get(channel, lessThanHash, greaterThanHash, amount) {
+    logger.debug(`Get messages from #${channel}: ${lessThanHash}, ${greaterThanHash}, ${amount}`)
+
+    const db = this._channels[channel] && this._channels[channel].db ? this._channels[channel].db : null;
+    if(!db) throw `Not joined on #${channel}`;
+
+    let options = {
+      limit: amount || 1,
+      lt: lessThanHash || null,
+      gte: greaterThanHash || null
+    };
+    // let options = { limit: amount || 1 };
+    // if(lessThanHash) options.lt = lessThanHash;
+    // if(greaterThanHash) options.gte = greaterThanHash;
+    return db.iterator(options).collect();
   }
 
   getUser(hash, callback) {
@@ -104,74 +155,10 @@ class Orbit {
     if(callback) callback(this.orbitdb.user.id);
   }
 
-  getSwarmPeers() {
-    // js-ipfs
-    if(this.ipfs.libp2p.swarm.peers) {
-      return new Promise((resolve, reject) => {
-        this.ipfs.libp2p.swarm.peers((err, peers) => {
-          if(err) reject(err);
-          resolve(peers);
-        });
-      })
-      .then((peers) => Object.keys(peers).map((e) => peers[e].multiaddrs[0].toString()));
-    } else {
-      // js-ipfs-api
-      return this.ipfs.swarm.peers
-        .then((peers) => peers.Strings)
-        .catch((e) => this._handleError(e))
-    }
-  }
-
-  getChannels(callback) {
-    const channels = Object.keys(this._channels)
-      .map((f) => this._channels[f])
-      // .map((f) => { return { name: f.name, password: f.password, db: f.db, state: f.state } });
-
-    if(callback) callback(channels);
-    return channels;
-  }
-
-  getMessages(channel, lessThanHash, greaterThanHash, amount, callback) {
-    logger.debug(`Get messages from #${channel}: ${lessThanHash}, ${greaterThanHash}, ${amount}`)
-    let options = { limit: amount || 1 };
-    if(lessThanHash) options.lt = lessThanHash;
-    if(greaterThanHash) options.gte = greaterThanHash;
-    const messages = this._channels[channel] && this._channels[channel].db
-      ? this._channels[channel].db.iterator(options).collect()
-      : [];
-    if(callback) callback(messages);
-    return messages;
-  }
-
   getPost(hash) {
     return this.ipfs.object.get(hash, { enc: 'base58' })
       .then((res) => JSON.parse(res.toJSON().Data))
       .catch((e) => this._handleError(e));
-  }
-
-  sendMessage(channel, message, callback) {
-    logger.debug(`Send message to #${channel}: ${message}`);
-
-    if(!this._channels[channel] || !this._channels[channel].db)
-      return Promise.resolve();
-
-    const data = {
-      content: message,
-      from: this.orbitdb.user.id
-    };
-    let post;
-    return Post.create(this.ipfs, Post.Types.Message, data)
-      .then((res) => post = res)
-      .then(() => this._channels[channel].db.add(post.Hash))
-      .then((hash) => {
-        if(callback)
-          callback(null, post);
-        return post;
-      })
-      .catch((e) => {
-        this._handleError(e);
-        if(callback) callback(e.message);
-      });
   }
 
   addFile(channel, filePath, buffer) {
@@ -247,6 +234,10 @@ class Orbit {
     // })
   }
 
+  onSocketConnected(socket) {
+    this.events.emit('network', this.orbitdb);
+  }
+
   _handleError(e) {
     logger.error(e);
     logger.error("Stack trace:\n", e.stack);
@@ -303,8 +294,26 @@ class Orbit {
     }
   }
 
-  onSocketConnected(socket) {
-    this.events.emit('network', this.orbitdb);
+  _updateSwarmPeers() {
+    if(this.ipfs.libp2p && this.ipfs.libp2p.swarm.peers) {
+      // js-ipfs
+      return new Promise((resolve, reject) => {
+        this.ipfs.libp2p.swarm.peers((err, peers) => {
+          if(err) reject(err);
+          resolve(peers);
+        });
+      })
+      .then((peers) => Object.keys(peers).map((e) => peers[e].multiaddrs[0].toString()))
+    } else {
+      // js-ipfs-api
+      return new Promise((resolve, reject) => {
+        return this.ipfs.swarm.peers((err, res) => {
+          if(err) reject(err);
+          resolve(res);
+        });
+      })
+      .then((peers) => peers.Strings)
+    }
   }
 
 }

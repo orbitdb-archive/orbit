@@ -199,7 +199,7 @@ const MessageStore = Reflux.createStore({
     logger.debug("--> GET MESSAGES #" + channel + ", " + olderThanHash + " " + newerThanHash  + " " + amount);
     this.channels[channel].loading = true;
     UIActions.startLoading(channel, "loadmessages", "Loading messages...");
-    this.orbit.getMessages(channel, olderThanHash, newerThanHash, amount, (messages) => {
+    this.orbit.get(channel, olderThanHash, newerThanHash, amount, (messages) => {
       this._addMessages(channel, messages, olderThanHash !== null);
       this.channels[channel].loading = false;
       UIActions.stopLoading(channel, "loadmessages");
@@ -291,7 +291,7 @@ const MessageStore = Reflux.createStore({
     //   return;
     logger.debug("--> send message" + text);
     UIActions.startLoading(channel, "send");
-    this.orbit.sendMessage(channel, text, (err) => {
+    this.orbit.send(channel, text, (err) => {
     // this.socket.emit('message.send', channel, text, (err) => {
       if(err) {
         logger.warn("Couldn't send message: " + err.toString());

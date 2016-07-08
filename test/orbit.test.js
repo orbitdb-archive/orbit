@@ -13,7 +13,7 @@ const EventStore = require('orbit-db-eventstore');
 const Post         = require('ipfs-post');
 
 // Mute logging
-// require('logplease').setLogLevel('ERROR');
+require('logplease').setLogLevel('ERROR');
 
 // Orbit
 const network = 'localhost:3333';
@@ -80,10 +80,7 @@ OrbitServer.start();
 IpfsApis.forEach(function(ipfsApi) {
 
   describe('Orbit with ' + ipfsApi.name, function() {
-    if(ipfsApi.name === 'js-ipfs')
-      this.timeout(10000);
-    else
-      this.timeout(40000);
+    this.timeout(10000);
 
     let orbit, client, client2;
     let channel = 'orbit-test';
@@ -95,37 +92,38 @@ IpfsApis.forEach(function(ipfsApi) {
           ipfs = res;
           done();
         })
-        .catch((e) => {
-          console.log(e.stack);
-          assert.equal(e, null);
-          done();
-        });
+        .catch(done);
     });
 
     after((done) => {
       if(orbit)
         orbit.disconnect();
 
+      orbit = null;
+
       if(ipfs) {
         ipfsApi.stop()
           .then(done)
-          .catch((e) => {
-            console.log(e.stack);
-            assert.equal(e, null);
-          });
+          .catch(done);
       }
     });
 
     describe('constructor', function() {
-      it('creates an instance', (done) => {
+      it('creates an instance', () => {
         orbit = new Orbit(ipfs);
         assert.notEqual(orbit, null);
         assert.notEqual(orbit.ipfs, null);
         assert.equal(orbit.orbitdb, null);
-        assert.notEqual(orbit.options.dataPath, null);
+        assert.equal(orbit.options.maxHistory, 64);
         assert.notEqual(orbit.options.cacheFile, null);
         assert.equal(Object.keys(orbit._channels).length, 0);
-        done();
+      });
+
+      it('creates an instance with options', () => {
+        orbit = new Orbit(ipfs, { cacheFile: null, maxHistory: 0 });
+        assert.equal(orbit.orbitdb, null);
+        assert.equal(orbit.options.maxHistory, 0);
+        assert.equal(orbit.options.cacheFile, null);
       });
     });
 
@@ -346,18 +344,28 @@ IpfsApis.forEach(function(ipfsApi) {
 
         it('network', () => {
           assert.notEqual(orbit.network, null);
-          // assert.equal(orbit.network.name, 'localhost dev network');
           assert.equal(orbit.network.publishers.length, 1);
-          // assert.equal(orbit.network.publishers[0], 'localhost:3333');
         });
 
-        it('channels', () => {
-          const channel = 'test2';
-          return orbit.join(channel).then(() => {
-            assert.equal(orbit.channels.length, 1);
-            assert.equal(orbit.channels[0].name, channel);
-            assert.equal(orbit.channels[0].name, channel);
-          })
+        describe('channels', function() {
+          it('returns a joined channel', () => {
+            const channel = 'test2';
+            return orbit.join(channel).then(() => {
+              assert.equal(orbit.channels.length, 1);
+              assert.equal(orbit.channels[0].name, channel);
+            })
+          });
+
+          it('returns the channels in the format', () => {
+            const channel = 'test1';
+            return orbit.join(channel).then(() => {
+              const channels = orbit.channels;
+              assert.equal(orbit.channels.length, 2);
+              assert.equal(channels[1].name, channel);
+              assert.equal(channels[1].password, null);
+              assert.equal(Object.prototype.isPrototypeOf(channels[1].db, EventStore), true);
+            });
+          });
         });
       });
 
@@ -378,9 +386,9 @@ IpfsApis.forEach(function(ipfsApi) {
       });
     });
 
-    describe('getChannels', function() {
+    describe('send', function() {
       beforeEach((done) => {
-        orbit = new Orbit(ipfs, { cacheFile: null });
+        orbit = new Orbit(ipfs, { cacheFile: null, maxHistory: 0 });
         orbit.connect(network, username, password)
           .then((res) => done())
           .catch(done)
@@ -390,54 +398,32 @@ IpfsApis.forEach(function(ipfsApi) {
         orbit.disconnect();
       });
 
-      it('returns no channels', () => {
-        assert.equal(orbit.getChannels().length, 0);
-      });
-
-      it('returns one channel after join', () => {
+      it('sends a message to a channel', (done) => {
         const channel = 'test1';
-        return orbit.join(channel).then((channels) => {
-          assert.equal(orbit.getChannels().length, 1);
-        });
-      });
-
-      it('has a callback', () => {
-        const channel = 'test1';
-        return orbit.join(channel).then((channels) => {
-          orbit.getChannels((channels) => {
-            assert.equal(channels.length, 1);
-          });
-        });
-      });
-
-      it('returns the channels in the correct format', () => {
-        const channel = 'test1';
-        return orbit.join(channel).then(() => {
-          const channels = orbit.getChannels();
-          assert.equal(channels[0].name, channel);
-          assert.equal(channels[0].password, null);
-          assert.equal(Object.prototype.isPrototypeOf(channels[0].db, EventStore), true);
-        });
-      });
-    });
-
-    describe('sendMessage', function() {
-      beforeEach((done) => {
-        orbit = new Orbit(ipfs, { cacheFile: null });
-        orbit.connect(network, username, password)
-          .then((res) => done())
+        const content = 'hello1';
+        orbit.join(channel)
+          .then(() => orbit.send(channel, content))
+          .then((message) => {
+            setTimeout(() => {
+              const messages = orbit.get(channel);
+              assert.equal(messages.length, 1);
+              assert.equal(messages[0].payload.op, 'ADD');
+              assert.equal(messages[0].payload.value, message.Hash);
+              assert.notEqual(messages[0].payload.meta, null);
+              assert.notEqual(messages[0].payload.meta.ts, null);
+              assert.equal(messages[0].hash.startsWith('Qm'), true);
+              assert.equal(messages[0].next.length, 0);
+              done();
+            }, 1000);
+          })
           .catch(done)
-      });
-
-      afterEach(() => {
-        orbit.disconnect();
       });
 
       it('returns a Post', (done) => {
         const channel = 'test1';
         const content = 'hello1';
-        return orbit.join(channel)
-          .then(() => orbit.sendMessage(channel, content))
+        orbit.join(channel)
+          .then(() => orbit.send(channel, content))
           .then((message) => {
             setTimeout(() => {
               assert.notEqual(message.Post, null);
@@ -449,102 +435,76 @@ IpfsApis.forEach(function(ipfsApi) {
               assert.equal(message.Post.meta.from, username);
               done();
             }, 1000);
-          });
-      });
-
-      it('has a callback', (done) => {
-        const channel = 'test1';
-        const content = 'hello1';
-        orbit.join(channel).then(() => {
-          orbit.sendMessage(channel, content, (err, message) => {
-            setTimeout(() => {
-              assert.notEqual(message.Post, null);
-              assert.equal(message.Hash.startsWith('Qm'), true);
-              assert.equal(message.Post.content, content);
-              assert.equal(message.Post.meta.type, "text");
-              assert.equal(message.Post.meta.size, 15);
-              assert.notEqual(message.Post.meta.ts, null);
-              assert.equal(message.Post.meta.from, username);
-              done();
-            }, 1000);
-          });
-        });
+          })
+          .catch(done)
       });
 
       it('Post was added to IPFS', (done) => {
         const channel = 'test1';
         const content = 'hello1';
-        return orbit.join(channel)
-          .then(() => orbit.sendMessage(channel, content))
+        orbit.join(channel)
+          .then(() => orbit.send(channel, content))
           .then((message) => orbit.getPost(message.Hash))
           .then((data) => {
-            assert.equal(data.content, content);
-            assert.equal(data.meta.type, "text");
-            assert.equal(data.meta.size, 15);
-            assert.notEqual(data.meta.ts, null);
-            assert.equal(data.meta.from, username);
-            done();
-          });
+            setTimeout(() => {
+              assert.equal(data.content, content);
+              assert.equal(data.meta.type, "text");
+              assert.equal(data.meta.size, 15);
+              assert.notEqual(data.meta.ts, null);
+              assert.equal(data.meta.from, username);
+              done();
+            }, 1000);
+          })
+          .catch(done)
       });
-
-      it('sends a message to a channel', () => {
-        const channel = 'test1';
-        const content = 'hello1';
-        return orbit.join(channel)
-          .then(() => orbit.sendMessage(channel, content))
-          .then((message) => {
-            const messages = orbit.getMessages(channel);
-            assert.equal(messages.length, 1);
-            assert.equal(messages[0].payload.op, 'ADD');
-            assert.equal(messages[0].payload.value, message.Hash);
-            assert.notEqual(messages[0].payload.meta, null);
-            assert.notEqual(messages[0].payload.meta.ts, null);
-            assert.equal(messages[0].hash.startsWith('Qm'), true);
-            assert.equal(messages[0].next.length, 0);
-          });
-      });
-
-
     });
 
-    // describe('getMessages', function() {
-    //   beforeEach((done) => {
-    //     orbit = new Orbit(ipfs);
-    //     orbit.connect(network, username, password).then(done)
-    //   });
+    describe('get', function() {
+      beforeEach((done) => {
+        orbit = new Orbit(ipfs, { cacheFile: null, maxHistory: 0 });
+        orbit.connect(network, username, password)
+          .then((res) => done())
+          .catch(done)
+      });
 
-    //   afterEach(() => {
-    //     orbit.disconnect();
-    //   });
+      afterEach(() => {
+        orbit.disconnect();
+      });
 
-    //   it('returns one channel after join', () => {
-    //     const channel = 'test1';
-    //     return orbit.join(channel).then((channels) => {
-    //       assert.equal(orbit.getChannels().length, 1);
-    //     });
-    //   });
+      it('returns the latest message', (done) => {
+        const channel = 'test1';
+        const ts = new Date().getTime();
+        const content = 'hello' + ts;
+        orbit.join(channel)
+          .then(() => orbit.send(channel, content))
+          .then((message) => {
+            setTimeout(() => {
+              const messages = orbit.get(channel, null, null, 10);
+              assert.equal(messages.length, 1);
+              assert.equal(messages[0].payload.op, 'ADD');
+              assert.equal(messages[0].payload.value, message.Hash);
+              assert.notEqual(messages[0].payload.meta, null);
+              assert.notEqual(messages[0].payload.meta.ts, null);
+              assert.equal(messages[0].hash.startsWith('Qm'), true);
+              assert.equal(messages[0].next.length, 0);
+              done();
+            }, 1000);
+          })
+          .catch(done)
+      });
 
-    //   it('has a callback', () => {
-    //     const channel = 'test1';
-    //     return orbit.join(channel).then((channels) => {
-    //       orbit.getChannels((channels) => {
-    //         assert.equal(channels.length, 1);
-    //       });
-    //     });
-    //   });
+      it('throws an error if trying to get from a channel that hasn\'t been joined', (done) => {
+        const channel = 'test1';
+        try {
+          const messages = orbit.get(channel);
+        } catch(e) {
+          assert.equal(e, `Not joined on #${channel}`);
+          done();
+        }
+      });
+    });
 
-    //   it('returns the channels in the correct format', () => {
-    //     const channel = 'test1';
-    //     return orbit.join(channel).then(() => {
-    //       const channels = orbit.getChannels();
-    //       assert.equal(channels[0].name, channel);
-    //       assert.equal(channels[0].password, null);
-    //       assert.equal(Object.prototype.isPrototypeOf(channels[0].db, EventStore), true);
-    //     });
-    //   });
-    // });
-
-    describe('event handling', function() {
+    describe('events', function() {
       beforeEach((done) => {
         orbit = new Orbit(ipfs, { cacheFile: null });
         orbit.connect(network, username, password)
@@ -563,7 +523,7 @@ IpfsApis.forEach(function(ipfsApi) {
           assert.equal(messageHash.startsWith('Qm'), true);
           done();
         });
-        orbit.join(channel).then(() => orbit.sendMessage(channel, 'hello'));
+        orbit.join(channel).then(() => orbit.send(channel, 'hello'));
       });
 
       it('emits \'load\'', (done) => {
@@ -670,7 +630,7 @@ IpfsApis.forEach(function(ipfsApi) {
             assert.equal(channelName, channel);
             done();
           });
-          orbit.sendMessage(channel, 'hello');
+          orbit.send(channel, 'hello');
         });
         orbit.join(channel);
       });
