@@ -48,7 +48,8 @@ class Orbit {
       })
       .then(() => {
         logger.info(`Connected to '${this.orbitdb.network.name}' at '${this.orbitdb.network.publishers[0]}' as '${user.username}`)
-        this.events.emit('network', this.network, this.user);
+        // this.events.emit('network', this.network, this.user);
+        this.events.emit('connected', this.network, this.user);
         return this;
       })
   }
@@ -59,7 +60,7 @@ class Orbit {
       this.orbitdb.disconnect();
       this.orbitdb = null;
       this._channels = {};
-      this.events.emit('network', this.network, this.user);
+      this.events.emit('disconnected', this.network, this.user);
     }
   }
 
@@ -234,9 +235,9 @@ class Orbit {
     // })
   }
 
-  onSocketConnected(socket) {
-    this.events.emit('network', this.orbitdb);
-  }
+  // onSocketConnected(socket) {
+  //   this.events.emit('network', this.orbitdb);
+  // }
 
   _handleError(e) {
     logger.error(e);

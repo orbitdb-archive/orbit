@@ -130,7 +130,7 @@ IpfsApis.forEach(function(ipfsApi) {
     describe('connect', function() {
       it('connects to a network', (done) => {
         orbit = new Orbit(ipfs);
-        return orbit.connect(network, username, password)
+        orbit.connect(network, username, password)
           .then((res) => {
             assert.notEqual(orbit.orbitdb, null);
             assert.equal(orbit.orbitdb.events.listenerCount('data'), 1);
@@ -139,7 +139,7 @@ IpfsApis.forEach(function(ipfsApi) {
             assert.equal(orbit.orbitdb.events.listenerCount('sync'), 1);
             assert.equal(orbit.orbitdb.events.listenerCount('synced'), 1);
             orbit.disconnect();
-            return done();
+            done();
           })
           .catch(done)
       });
@@ -155,36 +155,42 @@ IpfsApis.forEach(function(ipfsApi) {
           })
       });
 
-      it('emits \'network\' event when connected to a network', (done) => {
+      it('emits \'connected\' event when connected to a network', (done) => {
         orbit = new Orbit(ipfs);
-        orbit.events.on('network', (networkInfo) => {
+        orbit.events.on('connected', (networkInfo, userInfo) => {
           assert.notEqual(networkInfo, null);
-          // assert.equal(networkInfo.name, 'localhost dev network');
+          assert.notEqual(userInfo, null);
+          assert.equal(networkInfo.name, 'Orbit DEV Network');
           assert.equal(networkInfo.publishers.length, 1);
-          // assert.equal(networkInfo.publishers[0], 'localhost:3333');
+          assert.equal(networkInfo.publishers[0], 'localhost:3333');
+          assert.equal(userInfo.username, username);
+          assert.equal(userInfo.id, username);
           done();
         });
-        return orbit.connect(network, username, password)
+        return orbit.connect(network, username, password).catch(done)
       });
     });
 
     describe('disconnect', function() {
-      it('disconnects from a network', () => {
+      it('disconnects from a network', (done) => {
         orbit = new Orbit(ipfs);
-        return orbit.connect(network, username, password)
+        orbit.connect(network, username, password)
           .then((res) => {
             orbit.disconnect();
             assert.equal(orbit.orbitdb, null);
             assert.equal(_.isEqual(orbit._channels, {}), true);
+            done();
           })
+          .catch(done)
       });
 
-      it('emits \'network\' event when disconnected from a network', (done) => {
+      it('emits \'disconnected\' event when disconnected from a network', (done) => {
         orbit = new Orbit(ipfs);
         orbit.connect(network, username, password)
           .then(() => {
-            orbit.events.on('network', (networkInfo) => {
+            orbit.events.on('disconnected', (networkInfo, userInfo) => {
               assert.equal(networkInfo, null);
+              assert.equal(userInfo, null);
               done();
             });
           })
