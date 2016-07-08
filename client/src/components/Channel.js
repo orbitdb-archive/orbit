@@ -168,9 +168,9 @@ class Channel extends React.Component {
       ChannelActions.sendMessage(this.state.channelName, text);
   }
 
-  sendFile(filePath: string, buffer, mimeType = 'application/octet-binary') {
+  sendFile(filePath: string, buffer, meta) {
     if(filePath !== '' || buffer !== null)
-      ChannelActions.addFile(this.state.channelName, filePath, buffer, mimeType);
+      ChannelActions.addFile(this.state.channelName, filePath, buffer, meta);
   }
 
   loadOlderMessages() {
@@ -219,15 +219,15 @@ class Channel extends React.Component {
 
   onDrop(files) {
     this.setState({ dragEnter: false });
-    console.log('Dropped files: ', files);
     files.forEach((file) => {
       if(file.path) {
         this.sendFile(file.path);
       } else {
         const reader = new FileReader();
         reader.onload = (event) => {
-          console.log(file, event);
-          this.sendFile(file.name, event.target.result, file.type);
+          this.sendFile(file.name, event.target.result, {
+            mimeType: file.type,
+          });
         };
         reader.readAsArrayBuffer(file);
         // console.error("File upload not yet implemented in browser. Try the electron app.");

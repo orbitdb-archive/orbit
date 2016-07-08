@@ -174,7 +174,7 @@ class Orbit {
       });
   }
 
-  addFile(channel, filePath, buffer, mimeType = 'application/octet-binary') {
+  addFile(channel, filePath, buffer, meta) {
     console.log("!!!!!!!!!!!!!", typeof filePath === 'string')
     console.log(channel, filePath);
 
@@ -219,7 +219,7 @@ class Orbit {
           hash: hash,
           size: size,
           from: this.orbitdb.user.id,
-          mimeType,
+          meta: meta,
         };
 
         const type = isDirectory ? Post.Types.Directory : Post.Types.File;

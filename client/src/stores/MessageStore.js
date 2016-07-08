@@ -300,10 +300,10 @@ const MessageStore = Reflux.createStore({
       UIActions.stopLoading(channel, "send");
     });
   },
-  onAddFile: function(channel: string, filePath: string, buffer, mimeType) {
-    logger.debug(`--> add file: ${channel} ${filePath} ${mimeType} ${buffer !== null}`);
+  onAddFile: function(channel: string, filePath: string, buffer, meta) {
+    logger.debug(`--> add file: ${channel} ${filePath} ${buffer !== null}`);
     if(!this.socket) {
-      this.orbit.addFile(channel, filePath, buffer, mimeType);
+      this.orbit.addFile(channel, filePath, buffer, meta);
     } else {
       UIActions.startLoading(channel, "file");
       this.socket.emit('file.add', channel, filePath, (err) => {
