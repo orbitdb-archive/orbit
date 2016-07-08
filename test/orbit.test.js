@@ -305,6 +305,15 @@ IpfsApis.forEach(function(ipfsApi) {
         }).catch(done);
       });
 
+      it('throws an error when channel is not specified', (done) => {
+        orbit.join()
+          .then((post) => done(new Error("Channel was not specified!")))
+          .catch((e) => {
+            assert.equal(e.toString(), `Channel not specified`);
+            done();
+          })
+      });
+
       // it('emits \'ready\' event after joining an existing channel', (done) => {
       //   const channel = 'test1';
       //   orbit.join(channel).then(() => {
@@ -333,38 +342,59 @@ IpfsApis.forEach(function(ipfsApi) {
           .catch(done)
       });
 
-      it('leaves a channel', () => {
+      it('leaves a channel', (done) => {
         const channel = 'test1';
-        return orbit.join(channel).then(() => {
+        orbit.join(channel).then(() => {
           orbit.leave(channel);
           const channels = orbit.channels;
           assert.equal(channels.length, 0);
           assert.equal(orbit.channels[channel], null);
+          done();
         });
       });
 
-      it('emits \'left\' event after leaving channel', () => {
+      it('emits \'left\' event after leaving channel', (done) => {
         const channel = 'test1';
-        return orbit.join(channel).then(() => {
+        orbit.join(channel).then(() => {
           orbit.events.on('left', (channelName) => {
             assert.equal(channelName, channel);
             assert.equal(orbit.channels.length, 0);
+            done();
           });
           orbit.leave(channel);
         });
       });
 
-      it('emits \'left\' event after calling leave if channels doesn\'t exist', () => {
+      it('emits \'left\' event after calling leave if channels hasn\'t been joined', (done) => {
         const channel = 'test1';
         orbit.events.on('left', (channelName) => {
           assert.equal(channelName, channel);
           assert.equal(orbit.channels.length, 0);
+          done();
         });
         orbit.leave(channel);
       });
     });
 
     describe('getters', function() {
+      describe('defaults', function() {
+        before(() => {
+          orbit = new Orbit(ipfs, { cacheFile: null });
+        });
+
+        it('no users', () => {
+          assert.equal(orbit.user, null);
+        });
+        it('no network', () => {
+          assert.equal(orbit.network, null);
+        });
+        it('no channels', () => {
+          assert.equal(orbit.channels.length, 0);
+        });
+        it('no peers', () => {
+          assert.equal(orbit.peers.length, 0);
+        });
+      });
       describe('return', function() {
         before((done) => {
           orbit = new Orbit(ipfs, { cacheFile: null });
@@ -388,6 +418,10 @@ IpfsApis.forEach(function(ipfsApi) {
           assert.equal(orbit.network.publishers.length, 1);
         });
 
+        it.skip('peers', () => {
+          // TODO
+        });
+
         describe('channels', function() {
           it('returns a joined channel', () => {
             const channel = 'test2';
@@ -397,7 +431,7 @@ IpfsApis.forEach(function(ipfsApi) {
             })
           });
 
-          it('returns the channels in the format', () => {
+          it('returns the channels in correcy format', () => {
             const channel = 'test1';
             return orbit.join(channel).then(() => {
               const channels = orbit.channels;
@@ -405,24 +439,10 @@ IpfsApis.forEach(function(ipfsApi) {
               assert.equal(channels[1].name, channel);
               assert.equal(channels[1].password, null);
               assert.equal(Object.prototype.isPrototypeOf(channels[1].db, EventStore), true);
+              assert.equal(channels[1].state.loading, false);
+              assert.equal(channels[1].state.syncing, 0);
             });
           });
-        });
-      });
-
-      describe('defaults', function() {
-        before(() => {
-          orbit = new Orbit(ipfs, { cacheFile: null });
-        });
-
-        it('no users', () => {
-          assert.equal(orbit.user, null);
-        });
-        it('no network', () => {
-          assert.equal(orbit.network, null);
-        });
-        it('no channels', () => {
-          assert.equal(orbit.channels.length, 0);
         });
       });
     });
@@ -497,6 +517,51 @@ IpfsApis.forEach(function(ipfsApi) {
             }, 1000);
           })
           .catch(done)
+      });
+
+      it('throws an error when trying to send a message to channel that hasn\'t been joined', (done) => {
+        const channel = 'test1';
+        const content = 'hello1';
+        orbit.send(channel, content)
+          .then((post) => done(new Error(`Not joined on #${channel} but the message was sent!`)))
+          .catch((e) => {
+            assert.equal(e.toString(), `Can't send the message, not joined on #${channel}`);
+            done();
+          })
+      });
+
+      it('throws an error when trying to send an empty message', (done) => {
+        const channel = 'test1';
+        const content = '';
+        orbit.join(channel)
+          .then(() => orbit.send(channel, content))
+          .then((post) => done(new Error("Empty message was sent!")))
+          .catch((e) => {
+            assert.equal(e.toString(), `Can't send an empty message`);
+            done();
+          })
+      });
+
+      it('throws an error when message is not specified', (done) => {
+        const channel = 'test1';
+        orbit.join(channel, null)
+          .then(() => orbit.send(channel))
+          .then((post) => done(new Error("Empty message was sent!")))
+          .catch((e) => {
+            assert.equal(e.toString(), `Can't send an empty message`);
+            done();
+          })
+      });
+
+      it('throws an error when channel is not specified', (done) => {
+        const channel = 'test1';
+        orbit.join(channel)
+          .then(() => orbit.send())
+          .then((post) => done(new Error("Channel was not specified!")))
+          .catch((e) => {
+            assert.equal(e.toString(), `Channel not specified`);
+            done();
+          })
       });
     });
 

@@ -21,11 +21,30 @@ class Orbit {
     this.orbitdb = null;
     this._channels = {};
     this._peers = [];
-
     this.options = {};
     Object.assign(this.options, defaultOptions);
     Object.assign(this.options, options);
   }
+
+  /* Properties */
+
+  get user() {
+    return this.orbitdb ? this.orbitdb.user : null;
+  }
+
+  get network() {
+    return this.orbitdb ? this.orbitdb.network : null;
+  }
+
+  get channels() {
+    return Object.keys(this._channels).map((f) => this._channels[f]);
+  }
+
+  get peers() {
+    return this._peers;
+  }
+
+  /* Public methods */
 
   connect(network, username, password) {
     const user = { username: username, password: password };
@@ -65,6 +84,9 @@ class Orbit {
   }
 
   join(channel, password) {
+    if(!channel || channel === '')
+      return Promise.reject(`Channel not specified`);
+
     logger.debug(`Join #${channel}`);
 
     if(this._channels[channel]) {
@@ -99,27 +121,19 @@ class Orbit {
     this.events.emit('left', channel);
   }
 
-  get user() {
-    return this.orbitdb ? this.orbitdb.user : null;
-  }
-
-  get network() {
-    return this.orbitdb ? this.orbitdb.network : null;
-  }
-
-  get channels() {
-    return Object.keys(this._channels).map((f) => this._channels[f]);
-  }
-
-  get peers() {
-    return this._peers;
-  }
-
   send(channel, message) {
-    logger.debug(`Send message to #${channel}: ${message}`);
+    if(!channel || channel === '')
+      return Promise.reject(`Channel not specified`);
+
+    if(!message || message === '')
+      return Promise.reject(`Can't send an empty message`);
 
     const db = this._channels[channel] && this._channels[channel].db ? this._channels[channel].db : null;
-    if(!db) return Promise.reject(`Not joined on #${channel}`);
+
+    if(!db)
+      return Promise.reject(`Can't send the message, not joined on #${channel}`);
+
+    logger.debug(`Send message to #${channel}: ${message}`);
 
     const data = {
       content: message,
@@ -129,10 +143,7 @@ class Orbit {
     let post;
     return Post.create(this.ipfs, Post.Types.Message, data)
       .then((res) => post = res)
-      .then(() => {
-        // console.log("POST", post)
-        return db.add(post.Hash)
-      })
+      .then(() => db.add(post.Hash))
       .then((hash) => post)
   }
 
@@ -147,9 +158,7 @@ class Orbit {
       lt: lessThanHash || null,
       gte: greaterThanHash || null
     };
-    // let options = { limit: amount || 1 };
-    // if(lessThanHash) options.lt = lessThanHash;
-    // if(greaterThanHash) options.gte = greaterThanHash;
+
     return db.iterator(options).collect();
   }
 
@@ -240,6 +249,8 @@ class Orbit {
   // onSocketConnected(socket) {
   //   this.events.emit('network', this.orbitdb);
   // }
+
+  /* Private methods */
 
   _handleError(e) {
     logger.error(e);
