@@ -60,14 +60,20 @@ class Orbit {
       this.orbitdb.disconnect();
       this.orbitdb = null;
       this._channels = {};
-      this.events.emit('disconnected', this.network, this.user);
+      this.events.emit('disconnected');
     }
   }
 
   join(channel, password) {
     logger.debug(`Join #${channel}`);
     if(!this._channels[channel]) {
-      this._channels[channel] = { name: channel, password: password, db: null, state: { loading: true, syncing: 0 }};
+      this._channels[channel] = {
+        name: channel,
+        password: password,
+        db: null,
+        state: { loading: true, syncing: 0 }
+      };
+
       const options = {
         cacheFile: this.options.cacheFile,
         maxHistory: this.options.maxHistory
@@ -77,12 +83,12 @@ class Orbit {
         .then((db) => {
           this._channels[channel].db = db;
           this._channels[channel].state.loading = false;
-          this.events.emit('channels.updated', this.channels);
+          this.events.emit('joined', channel);
           return this.channels;
         });
     } else {
       this.events.emit('ready', channel);
-      this.events.emit('channels.updated', this.channels);
+      this.events.emit('joined', channel);
     }
     return Promise.resolve(this.channels);
   }
@@ -93,8 +99,7 @@ class Orbit {
       delete this._channels[channel];
       logger.debug("Left channel #" + channel);
     }
-    this.events.emit('channels.updated', this.channels);
-    return this.channels;
+    this.events.emit('left', channel);
   }
 
   get user() {
