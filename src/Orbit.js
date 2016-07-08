@@ -148,10 +148,10 @@ class Orbit {
   }
 
   get(channel, lessThanHash, greaterThanHash, amount) {
-    logger.debug(`Get messages from #${channel}: ${lessThanHash}, ${greaterThanHash}, ${amount}`)
-
     const db = this._channels[channel] && this._channels[channel].db ? this._channels[channel].db : null;
     if(!db) throw `Not joined on #${channel}`;
+
+    logger.debug(`Get messages from #${channel}: ${lessThanHash}, ${greaterThanHash}, ${amount}`)
 
     let options = {
       limit: amount || 1,

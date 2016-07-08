@@ -19,7 +19,7 @@
     "socket.io": "^1.4.6"
   },
   "devDependencies": {
-    "asyncawait": "^1.0.6",
+    "bluebird": "^3.4.1",
     "electron-prebuilt": "0.34.1",
     "grunt": "^1.0.1",
     "grunt-chmod": "^1.1.1",
