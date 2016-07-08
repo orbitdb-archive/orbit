@@ -8,7 +8,7 @@
     "cors": "^2.7.1",
     "du": "^0.1.0",
     "express": "^4.13.4",
-    "ipfs-post": "^0.0.3",
+    "ipfs-post": "^0.0.4",
     "ipfsd-ctl": "^0.14.0",
     "lodash": "^4.8.2",
     "logplease": "^1.2.7",
