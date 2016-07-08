@@ -1,16 +1,15 @@
 'use strict';
 
-const _       = require('lodash');
-const fs      = require('fs');
-const path    = require('path');
-const assert  = require('assert');
-const ipfsd   = require('ipfsd-ctl');
-const IPFS    = require('ipfs')
-// const OrbitDB = require('../src/OrbitDB');
+const _           = require('lodash');
+const fs          = require('fs');
+const path        = require('path');
+const assert      = require('assert');
+const ipfsd       = require('ipfsd-ctl');
+const IPFS        = require('ipfs')
 const OrbitServer = require('orbit-server/src/server');
-const Orbit = require('../src/Orbit');
-const EventStore = require('orbit-db-eventstore');
-const Post         = require('ipfs-post');
+const EventStore  = require('orbit-db-eventstore');
+const Post        = require('ipfs-post');
+const Orbit       = require('../src/Orbit');
 
 // Mute logging
 require('logplease').setLogLevel('ERROR');
@@ -213,7 +212,9 @@ IpfsApis.forEach(function(ipfsApi) {
 
       it('joins a new channel', () => {
         const channel = 'test1';
-        return orbit.join(channel).then((channels) => {
+        return orbit.join(channel).then((result) => {
+          const channels = orbit.channels;
+          assert.equal(result, true);
           assert.equal(channels.length, 1);
           assert.equal(channels[0].name, channel);
           assert.equal(channels[0].password, null);
@@ -228,7 +229,9 @@ IpfsApis.forEach(function(ipfsApi) {
         const channel = 'test1';
         return orbit.join(channel)
           .then(() => orbit.join(channel))
-          .then((channels) => {
+          .then((result) => {
+            const channels = orbit.channels;
+            assert.equal(result, false);
             assert.equal(channels.length, 1);
             assert.equal(channels[0].name, channel);
             assert.equal(channels[0].password, null);
@@ -243,7 +246,9 @@ IpfsApis.forEach(function(ipfsApi) {
         const channel2 = 'test2';
         return orbit.join(channel1)
           .then(() => orbit.join(channel2))
-          .then((channels) => {
+          .then((result) => {
+            const channels = orbit.channels;
+            assert.equal(result, true);
             assert.equal(channels.length, 2);
             assert.equal(channels[0].name, channel1);
             assert.equal(channels[0].password, null);
@@ -255,6 +260,22 @@ IpfsApis.forEach(function(ipfsApi) {
             assert.equal(channels[1].state.loading, false);
             assert.equal(channels[1].state.syncing, 0);
             assert.notEqual(channels[1].db, null);
+          });
+      });
+
+      it('returns \'true\' when a new channel was joined', () => {
+        const channel = 'test1';
+        return orbit.join(channel).then((result) => {
+          assert.equal(result, true);
+        });
+      });
+
+      it('returns \'false\' when an excisting channel was joined', () => {
+        const channel = 'test1';
+        return orbit.join(channel)
+          .then(() => orbit.join(channel))
+          .then((result) => {
+            assert.equal(result, false);
           });
       });
 
@@ -275,24 +296,33 @@ IpfsApis.forEach(function(ipfsApi) {
         orbit.join(channel).catch(done);
       });
 
-      it('emits \'joined\' event after joining an existing channel', (done) => {
+      it('doesn\'t emit \'joined\' event after joining an existing channel', (done) => {
         const channel = 'test1';
         orbit.join(channel).then(() => {
-          orbit.events.on('joined', (channelName) => {
-            const channels = orbit.channels;
-            assert.equal(channelName, channel);
-            assert.equal(channels[0].name, channel);
-            assert.equal(channels[0].password, null);
-            assert.notEqual(channels[0].db, null);
-            assert.equal(channels[0].state.loading, false);
-            assert.equal(channels[0].state.syncing, 0);
-            assert.notEqual(orbit._channels[channel], null);
-            assert.equal(channels.length, 1);
-            done();
-          });
+          setTimeout(() => done(), 1000);
+          orbit.events.on('joined', () => done(new Error("'joined' event was emitted")));
           orbit.join(channel);
         }).catch(done);
       });
+
+      // it('emits \'ready\' event after joining an existing channel', (done) => {
+      //   const channel = 'test1';
+      //   orbit.join(channel).then(() => {
+      //     orbit.events.on('ready', (channelName) => {
+      //       const channels = orbit.channels;
+      //       assert.equal(channelName, channel);
+      //       assert.equal(channels[0].name, channel);
+      //       assert.equal(channels[0].password, null);
+      //       assert.notEqual(channels[0].db, null);
+      //       assert.equal(channels[0].state.loading, false);
+      //       assert.equal(channels[0].state.syncing, 0);
+      //       assert.notEqual(orbit._channels[channel], null);
+      //       assert.equal(channels.length, 1);
+      //       done();
+      //     });
+      //     orbit.join(channel);
+      //   }).catch(done);
+      // });
     });
 
     describe('leave', function() {

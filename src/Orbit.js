@@ -66,31 +66,28 @@ class Orbit {
 
   join(channel, password) {
     logger.debug(`Join #${channel}`);
-    if(!this._channels[channel]) {
-      this._channels[channel] = {
-        name: channel,
-        password: password,
-        db: null,
-        state: { loading: true, syncing: 0 }
-      };
 
-      const options = {
-        cacheFile: this.options.cacheFile,
-        maxHistory: this.options.maxHistory
-      };
-
-      return this.orbitdb.eventlog(channel, options)
-        .then((db) => {
-          this._channels[channel].db = db;
-          this._channels[channel].state.loading = false;
-          this.events.emit('joined', channel);
-          return this.channels;
-        });
-    } else {
-      this.events.emit('ready', channel);
-      this.events.emit('joined', channel);
+    if(this._channels[channel]) {
+      // this.events.emit('ready', channel);
+      return Promise.resolve(false);
     }
-    return Promise.resolve(this.channels);
+
+    this._channels[channel] = {
+      name: channel,
+      password: password,
+      db: null,
+      state: { loading: true, syncing: 0 }
+    };
+
+    const dbOptions = {
+      cacheFile: this.options.cacheFile,
+      maxHistory: this.options.maxHistory
+    };
+
+    return this.orbitdb.eventlog(channel, dbOptions)
+      .then((db) => this._channels[channel].db = db)
+      .then(() => this.events.emit('joined', channel))
+      .then(() => true)
   }
 
   leave(channel) {
@@ -264,7 +261,7 @@ class Orbit {
   }
 
   _handleStartLoading(channel) {
-    logger.debug("load channel", channel);
+    logger.debug("load channel", channel, this._channels);
     if(this._channels[channel]) {
       this._channels[channel].state.loading = true;
       this.events.emit('load', channel);
