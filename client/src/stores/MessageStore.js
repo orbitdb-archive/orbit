@@ -300,11 +300,11 @@ const MessageStore = Reflux.createStore({
       UIActions.stopLoading(channel, "send");
     });
   },
-  onAddFile: function(channel: string, filePath: string, buffer) {
-    logger.debug("--> add file: " + filePath + buffer !== null);
-    this.orbit.addFile(channel, filePath, buffer);
-
-    if(this.socket) {
+  onAddFile: function(channel: string, filePath: string, buffer, meta) {
+    logger.debug(`--> add file: ${channel} ${filePath} ${buffer !== null}`);
+    if(!this.socket) {
+      this.orbit.addFile(channel, filePath, buffer, meta);
+    } else {
       UIActions.startLoading(channel, "file");
       this.socket.emit('file.add', channel, filePath, (err) => {
         if(err) {
@@ -340,8 +340,10 @@ const MessageStore = Reflux.createStore({
     }
   },
   onLoadFile: function(hash, cb) {
-    if(!this.socket)
+    if(!this.socket) {
+      this.orbit.getFile(hash).then(cb).catch((err) => cb(null));
       return;
+    }
 
     if(hash) {
       this.socket.emit('file.get', hash, (result) => {
