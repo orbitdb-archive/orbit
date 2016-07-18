@@ -224,9 +224,11 @@ class Channel extends React.Component {
     this.setState({ dragEnter: false });
     console.log('Dropped files: ', files);
     files.forEach((file) => {
+      // Electron can return a path of a directory
       if(file.path) {
         this.sendFile(file.path);
       } else {
+        // In browsers, read the files returned by the event
         const reader = new FileReader();
         reader.onload = (event) => {
           console.log(file, event);

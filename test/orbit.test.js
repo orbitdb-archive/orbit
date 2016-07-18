@@ -22,35 +22,35 @@ const password = '';
 
 let ipfs, ipfsDaemon;
 const IpfsApis = [
-{
-  // js-ipfs
-  name: 'js-ipfs',
-  start: () => {
-    return new Promise((resolve, reject) => {
-      const ipfs = new IPFS('/tmp/orbit-tests');
-      ipfs.init({}, (err) => {
-        if(err) {
-          if(err.message === 'repo already exists')
-            return resolve(ipfs);
-          return reject(err);
-        }
-        ipfs.goOnline((err) => {
-          if(err) reject(err)
-          resolve(ipfs)
-        });
-      });
-    });
-  },
-  // stop: () => Promise.resolve()
-  stop: () => new Promise((resolve, reject) => {
-    if(!ipfs._bitswap && !ipfs._libp2pNode)
-      resolve();
-    ipfs.goOffline((err) => {
-      if(err) console.log("Error", err)
-      resolve();
-    })
-  })
-},
+// {
+//   // js-ipfs
+//   name: 'js-ipfs',
+//   start: () => {
+//     return new Promise((resolve, reject) => {
+//       const ipfs = new IPFS('/tmp/orbit-tests');
+//       ipfs.init({}, (err) => {
+//         if(err) {
+//           if(err.message === 'repo already exists')
+//             return resolve(ipfs);
+//           return reject(err);
+//         }
+//         ipfs.goOnline((err) => {
+//           if(err) reject(err)
+//           resolve(ipfs)
+//         });
+//       });
+//     });
+//   },
+//   // stop: () => Promise.resolve()
+//   stop: () => new Promise((resolve, reject) => {
+//     if(!ipfs._bitswap && !ipfs._libp2pNode)
+//       resolve();
+//     ipfs.goOffline((err) => {
+//       if(err) console.log("Error", err)
+//       resolve();
+//     })
+//   })
+// },
 {
   // js-ipfs-api via local daemon
   name: 'js-ipfs-api',
@@ -635,6 +635,115 @@ IpfsApis.forEach(function(ipfsApi) {
           done();
         }
       });
+    });
+
+    describe('getPost', function() {
+      const channel = 'test1';
+      const content = 'hello' + new Date().getTime();
+      let message;
+
+      beforeEach((done) => {
+        orbit = new Orbit(ipfs, { cacheFile: null, maxHistory: 0 });
+        orbit.connect(network, username, password)
+          .then((res) => orbit.join(channel))
+          .then(() => orbit.send(channel, content))
+          .then((res) => message = res)
+          .then(() => done())
+          .catch(done)
+      });
+
+      afterEach(() => {
+        orbit.disconnect();
+      });
+
+      it('returns a Post', (done) => {
+        orbit.join(channel)
+          .then(() => orbit.getPost(message.Hash))
+          .then((data) => {
+            setTimeout(() => {
+
+              assert.equal(data.content, content);
+              assert.equal(data.meta.type, "text");
+              assert.equal(data.meta.size, 15);
+              assert.notEqual(data.meta.ts, null);
+              assert.equal(data.meta.from, username);
+              done();
+            }, 1000);
+          })
+          .catch(done)
+      });
+
+      it('throws an error when trying to get a Post with invalid hash', (done) => {
+        orbit.getPost("Qm...Foo")
+          .catch((e) => {
+            assert.equal(e.message, "invalid ipfs ref path");
+            done();
+          })
+      });
+
+      // Enable this test when ipfs can timeout
+      it.skip('throws an error when Post doesn\'t exist', (done) => {
+        orbit.getPost("QmQMhG5f8PPPaxYWhFPZxteEZfCMpCv9k4WmRd8VdTN7p2")
+          .catch((e) => {
+            assert.equal(e.message, "invalid ipfs ref path");
+            done();
+          })
+      });
+    });
+
+    describe('addFile', function() {
+      const channel = 'test1';
+
+      beforeEach((done) => {
+        orbit = new Orbit(ipfs, { cacheFile: null, maxHistory: 0 });
+        orbit.connect(network, username, password)
+          .then((res) => orbit.join(channel))
+          .then(() => done())
+          .catch(done)
+      });
+
+      afterEach(() => {
+        orbit.disconnect();
+      });
+
+      it('adds a file', (done) => {
+        const filename = 'mocha.opts';
+        orbit.join(channel)
+          .then(() => orbit.addFile(channel, path.join(process.cwd(), '/test' , filename)))
+          .then((res) => {
+            assert.notEqual(res.Post, null);
+            assert.equal(res.Hash.startsWith('Qm'), true);
+            assert.equal(res.Post.name, filename);
+            assert.equal(res.Post.size, 68);
+            assert.equal(Object.keys(res.Post.meta).length, 4);
+            assert.equal(res.Post.meta.size, 68);
+            assert.equal(res.Post.meta.from, username);
+            assert.notEqual(res.Post.meta.ts, null);
+            done();
+          })
+          .catch(done)
+      });
+
+      it.skip('adds a directory recursively', (done) => {
+        done();
+      });
+
+      it.skip('throws an error if channel parameter is not given', (done) => {
+        done();
+      });
+
+      it.skip('throws an error if channel parameter is not given', (done) => {
+        done();
+      });
+
+      it.skip('throws an error if filePath parameter is not given', (done) => {
+        done();
+      });
+
+      it.skip('throws an error if not joined on channel', (done) => {
+        done();
+      });
+
     });
 
     describe('events', function() {

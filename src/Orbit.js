@@ -53,6 +53,8 @@ class Orbit {
     return OrbitDB.connect(network, user.username, user.password, this.ipfs)
       .then((orbit) => {
         this.orbitdb = orbit
+
+        // Subscribe to database events
         this.orbitdb.events.on('message', this._handleMessage2.bind(this));
         this.orbitdb.events.on('data', this._handleMessage.bind(this));
         this.orbitdb.events.on('load', this._handleStartLoading.bind(this));
@@ -162,22 +164,28 @@ class Orbit {
     return db.iterator(options).collect();
   }
 
-  getUser(hash, callback) {
-    // TODO: return user id from ipfs hash (user.id)
-    if(callback) callback(this.orbitdb.user.id);
-  }
-
   getPost(hash) {
     return this.ipfs.object.get(hash, { enc: 'base58' })
       .then((res) => JSON.parse(res.toJSON().Data))
-      .catch((e) => this._handleError(e));
   }
 
-  addFile(channel, filePath, buffer) {
-    console.log("!!!!!!!!!!!!!", typeof filePath === 'string')
-    console.log(channel, filePath);
+  // TODO: tests for everything below
 
-    const addToIpfs = (ipfs, filePath, isDirectory) => {
+  addFile(channel, filePath) {
+    if(!channel || channel === '')
+      return Promise.reject(`Channel not specified`);
+
+    if(!filePath || filePath === '')
+      return Promise.reject(`Path not specified`);
+
+    const isBuffer = typeof filePath === 'string';
+    const db = this._channels[channel] && this._channels[channel].db ? this._channels[channel].db : null;
+
+    if(!db)
+      return Promise.reject(`Can't send the message, not joined on #${channel}`);
+
+    const addToIpfsJs = (ipfs, filePath, isDirectory) => {
+      // TODO
       return new Promise((resolve, reject) => {
         // if(!fs.existsSync(filePath))
         //   throw "File not found at '" + filePath + "'";
@@ -186,7 +194,6 @@ class Orbit {
         const data = buffer ? new Buffer(buffer) : filePath;
         this.ipfs.files.add(data).then((hash) => {
           // logger.debug("H, " + JSON.stringify(hash));
-
           if(isDirectory) {
             // FIXME: ipfs-api returns an empty dir name as the last hash, ignore this
             if(hash[hash.length-1].Name === '')
@@ -198,43 +205,52 @@ class Orbit {
           }
         });
       });
-    }
+    };
+
+    const addToIpfsGo = (ipfs, filePath, isDirectory) => {
+      return new Promise((resolve, reject) => {
+        if(!fs.existsSync(filePath))
+          throw `File not found: ${filePath}`;
+
+        this.ipfs.add(filePath, { recursive: isDirectory })
+          .then((hash) => {
+            logger.debug("H, " + JSON.stringify(hash));
+            if(isDirectory) {
+              // FIXME: ipfs-api returns an empty dir name as the last hash, ignore this
+              if(hash[hash.length-1].Name === '')
+                resolve(hash[hash.length-2].Hash);
+
+              resolve(hash[hash.length-1].Hash);
+            } else {
+              resolve(hash[0].Hash);
+            }
+          });
+      });
+    };
 
     logger.info("Adding file from path '" + filePath + "'");
-    let isDirectory = false;
-    let size = buffer ? buffer.byteLength : -1;
-    let hash;
-    // utils.isDirectory(filePath)
-    // addToIpfs(this.ipfs, filePath, utils.isDirectory(filePath))
-    return addToIpfs(this.ipfs, filePath, isDirectory)
+    let hash, post, size;
+    let isDirectory = isBuffer ? utils.isDirectory(filePath) : false;
+    const add = isBuffer ? addToIpfsGo : addToIpfsJs;
+    return add(this.ipfs, filePath, isDirectory)
       .then((res) => hash = res)
-      // .then(() => utils.getFileSize(filePath))
-      // .then((res) => size = res)
+      .then(() => isBuffer ? utils.getFileSize(filePath) : buffer.byteLength)
+      .then((res) => size = res)
+      .then(() => logger.info("Added local file '" + filePath + "' as " + hash))
       .then(() => {
-        logger.info("Added local file '" + filePath + "' as " + hash);
-
+        // Create a post and add it to the channel
+        const type = isDirectory ? Post.Types.Directory : Post.Types.File;
         const data = {
           name: filePath.split("/").pop(),
           hash: hash,
           size: size,
           from: this.orbitdb.user.id
         };
-
-        const type = isDirectory ? Post.Types.Directory : Post.Types.File;
-        return Post.create(this.ipfs, type, data).then((post) => {
-          return this._channels[channel].db.add(post.Hash);
-        });
-      });
-  }
-
-  getDirectory(hash, callback) {
-    this.ipfs.ls(hash).then((result) => {
-      if(result.Objects && callback)
-        callback(result.Objects[0].Links);
-    }).catch((e) => {
-      this._handleError(e);
-      if(callback) callback(null);
-    });
+        return Post.create(this.ipfs, type, data);
+      })
+      .then((res) => post = res)
+      .then(() => db.add(post))
+      .then(() => post)
   }
 
   getFile(hash, callback) {
@@ -246,9 +262,15 @@ class Orbit {
     // })
   }
 
-  // onSocketConnected(socket) {
-  //   this.events.emit('network', this.orbitdb);
-  // }
+  getDirectory(hash, callback) {
+    this.ipfs.ls(hash).then((result) => {
+      if(result.Objects && callback)
+        callback(result.Objects[0].Links);
+    }).catch((e) => {
+      this._handleError(e);
+      if(callback) callback(null);
+    });
+  }
 
   /* Private methods */
 
