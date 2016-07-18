@@ -74,6 +74,7 @@ module.exports = {
     new webpack.HotModuleReplacementPlugin()
   ],
   externals: {
+    du: '{}',
     net: '{}',
     tls: '{}',
     'require-dir': '{}',
