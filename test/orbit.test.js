@@ -56,18 +56,18 @@ const IpfsApis = [
   name: 'js-ipfs-api',
   start: () => {
     return new Promise((resolve, reject) => {
-      // ipfsd.disposableApi((err, ipfs) => {
-      //   if(err) reject(err);
-      //   resolve(ipfs);
-      // });
-      ipfsd.local((err, node) => {
+      ipfsd.disposableApi((err, ipfs) => {
         if(err) reject(err);
-        ipfsDaemon = node;
-        ipfsDaemon.startDaemon((err, ipfs) => {
-          if(err) reject(err);
-          resolve(ipfs);
-        });
+        resolve(ipfs);
       });
+      // ipfsd.local((err, node) => {
+      //   if(err) reject(err);
+      //   ipfsDaemon = node;
+      //   ipfsDaemon.startDaemon((err, ipfs) => {
+      //     if(err) reject(err);
+      //     resolve(ipfs);
+      //   });
+      // });
     });
   },
   stop: () => Promise.resolve()
@@ -779,7 +779,6 @@ IpfsApis.forEach(function(ipfsApi) {
             done();
           })
       });
-
     });
 
     describe('getFile', function() {
@@ -812,6 +811,38 @@ IpfsApis.forEach(function(ipfsApi) {
               assert.equal(data, contents.toString());
               done();
             });
+          })
+          .catch(done)
+      });
+    });
+
+    describe('getDirectory', function() {
+      const channel = 'test1';
+      const directory = 'assets';
+      const filePath = path.join(process.cwd(), directory);
+      let hash;
+
+      beforeEach((done) => {
+        orbit = new Orbit(ipfs, { cacheFile: null, maxHistory: 0 });
+        orbit.connect(network, username, password)
+          .then(() => orbit.join(channel))
+          .then(() => orbit.addFile(channel, filePath))
+          .then((res) => hash = res.Post.hash)
+          .then(() => done())
+          .catch(done)
+      });
+
+      afterEach(() => {
+        orbit.disconnect();
+      });
+
+      it('returns a directory', (done) => {
+        orbit.getDirectory(hash)
+          .then((res) => {
+            assert.notEqual(res, null);
+            assert.equal(res.length, 3);
+            assert.equal(Object.keys(res[0]).length, 4);
+            done();
           })
           .catch(done)
       });

@@ -250,26 +250,21 @@ class Orbit {
 
 
   getFile(hash) {
-    return new Promise((resolve, reject) => {
-      const stream = request('http://localhost:8080/ipfs/' + hash);
-      resolve(stream);
-    });
+    // Use if .cat doesn't seem to work
+    // return new Promise((resolve, reject) => {
+    //   const stream = request('http://localhost:8080/ipfs/' + hash);
+    //   resolve(stream);
+    // });
+    return this.ipfs.cat(hash);
   }
 
-  // TODO: tests for everything below
-
-  getDirectory(hash, callback) {
-    this.ipfs.ls(hash).then((result) => {
-      if(result.Objects && callback)
-        callback(result.Objects[0].Links);
-    }).catch((e) => {
-      this._handleError(e);
-      if(callback) callback(null);
-    });
+  getDirectory(hash) {
+    return this.ipfs.ls(hash).then((res) => res.Objects[0].Links);
   }
 
   /* Private methods */
 
+  // TODO: tests for everything below
   _handleError(e) {
     logger.error(e);
     logger.error("Stack trace:\n", e.stack);
