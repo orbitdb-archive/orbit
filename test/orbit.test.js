@@ -56,18 +56,18 @@ const IpfsApis = [
   name: 'js-ipfs-api',
   start: () => {
     return new Promise((resolve, reject) => {
-      ipfsd.disposableApi((err, ipfs) => {
-        if(err) reject(err);
-        resolve(ipfs);
-      });
-      // ipfsd.local((err, node) => {
+      // ipfsd.disposableApi((err, ipfs) => {
       //   if(err) reject(err);
-      //   ipfsDaemon = node;
-      //   ipfsDaemon.startDaemon((err, ipfs) => {
-      //     if(err) reject(err);
-      //     resolve(ipfs);
-      //   });
+      //   resolve(ipfs);
       // });
+      ipfsd.local((err, node) => {
+        if(err) reject(err);
+        ipfsDaemon = node;
+        ipfsDaemon.startDaemon((err, ipfs) => {
+          if(err) reject(err);
+          resolve(ipfs);
+        });
+      });
     });
   },
   stop: () => Promise.resolve()
@@ -780,6 +780,41 @@ IpfsApis.forEach(function(ipfsApi) {
           })
       });
 
+    });
+
+    describe('getFile', function() {
+      const channel = 'test1';
+      const filename = 'mocha.opts';
+      const filePath = path.join(process.cwd(), '/test' , filename);
+      let hash;
+
+      beforeEach((done) => {
+        orbit = new Orbit(ipfs, { cacheFile: null, maxHistory: 0 });
+        orbit.connect(network, username, password)
+          .then(() => orbit.join(channel))
+          .then(() => orbit.addFile(channel, filePath))
+          .then((res) => hash = res.Post.hash)
+          .then(() => done())
+          .catch(done)
+      });
+
+      afterEach(() => {
+        orbit.disconnect();
+      });
+
+      it('returns the contents of a file', (done) => {
+        orbit.getFile(hash)
+          .then((res) => {
+            let data = '';
+            res.on('data', (chunk) => data += chunk)
+            res.on('end', () => {
+              const contents = fs.readFileSync(filePath);
+              assert.equal(data, contents.toString());
+              done();
+            });
+          })
+          .catch(done)
+      });
     });
 
     describe('events', function() {

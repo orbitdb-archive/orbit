@@ -8,6 +8,7 @@ const Post         = require('ipfs-post');
 const Logger       = require('logplease');
 const logger       = Logger.create("Orbit.Orbit", { color: Logger.Colors.Green });
 const utils        = require('./utils');
+const request      = require('request');
 
 const defaultOptions = {
   cacheFile: path.join(utils.getAppPath(), "/data", "/orbit-db-cache.json"),
@@ -247,16 +248,15 @@ class Orbit {
       .then(() => post)
   }
 
-  // TODO: tests for everything below
 
-  getFile(hash, callback) {
-    // request('http://localhost:8080/ipfs/' + hash, function (error, response, body) {
-    //   if(!error && response.statusCode === 200) {
-        if(callback) callback(null);
-        // if(callback) callback(body);
-    //   }
-    // })
+  getFile(hash) {
+    return new Promise((resolve, reject) => {
+      const stream = request('http://localhost:8080/ipfs/' + hash);
+      resolve(stream);
+    });
   }
+
+  // TODO: tests for everything below
 
   getDirectory(hash, callback) {
     this.ipfs.ls(hash).then((result) => {

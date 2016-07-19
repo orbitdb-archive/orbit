@@ -1,7 +1,8 @@
 # TODO
 
-- use browserfs
 - refactor Orbit.js to work independently, fix the methods/events/properties
+- buffering for add/get files
+- orbit-db: use browserfs for Cache
 - create gimme-ipfs-daemon to handle js-ipfs vs. go-ipfs
 - media player component for js-ipfs
 - integrate with ES6 compatible Reflux (after they merge)
