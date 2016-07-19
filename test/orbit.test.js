@@ -83,7 +83,7 @@ IpfsApis.forEach(function(ipfsApi) {
     this.timeout(10000);
 
     let orbit, client, client2;
-    let channel = 'orbit-test';
+    let channel = 'orbit-tests';
     // const cacheFile = path.join(process.cwd(), '/test', 'orbit-db-test-cache.json');
 
     before(function (done) {
@@ -212,7 +212,6 @@ IpfsApis.forEach(function(ipfsApi) {
       });
 
       it('joins a new channel', () => {
-        const channel = 'test1';
         return orbit.join(channel).then((result) => {
           const channels = orbit.channels;
           assert.equal(result, true);
@@ -227,7 +226,6 @@ IpfsApis.forEach(function(ipfsApi) {
       });
 
       it('joins an existing channel', () => {
-        const channel = 'test1';
         return orbit.join(channel)
           .then(() => orbit.join(channel))
           .then((result) => {
@@ -243,15 +241,14 @@ IpfsApis.forEach(function(ipfsApi) {
       });
 
       it('joins another new channel', () => {
-        const channel1 = 'test1';
         const channel2 = 'test2';
-        return orbit.join(channel1)
+        return orbit.join(channel)
           .then(() => orbit.join(channel2))
           .then((result) => {
             const channels = orbit.channels;
             assert.equal(result, true);
             assert.equal(channels.length, 2);
-            assert.equal(channels[0].name, channel1);
+            assert.equal(channels[0].name, channel);
             assert.equal(channels[0].password, null);
             assert.equal(channels[0].state.loading, false);
             assert.equal(channels[0].state.syncing, 0);
@@ -265,14 +262,12 @@ IpfsApis.forEach(function(ipfsApi) {
       });
 
       it('returns \'true\' when a new channel was joined', () => {
-        const channel = 'test1';
         return orbit.join(channel).then((result) => {
           assert.equal(result, true);
         });
       });
 
       it('returns \'false\' when an excisting channel was joined', () => {
-        const channel = 'test1';
         return orbit.join(channel)
           .then(() => orbit.join(channel))
           .then((result) => {
@@ -281,7 +276,6 @@ IpfsApis.forEach(function(ipfsApi) {
       });
 
       it('emits \'joined\' event after joining a new channel', (done) => {
-        const channel = 'test1';
         orbit.events.once('joined', (channelName) => {
           const channels = orbit.channels;
           assert.equal(channelName, channel);
@@ -298,7 +292,6 @@ IpfsApis.forEach(function(ipfsApi) {
       });
 
       it('doesn\'t emit \'joined\' event after joining an existing channel', (done) => {
-        const channel = 'test1';
         orbit.join(channel).then(() => {
           setTimeout(() => done(), 1000);
           orbit.events.on('joined', () => done(new Error("'joined' event was emitted")));
@@ -344,7 +337,6 @@ IpfsApis.forEach(function(ipfsApi) {
       });
 
       it('leaves a channel', (done) => {
-        const channel = 'test1';
         orbit.join(channel).then(() => {
           orbit.leave(channel);
           const channels = orbit.channels;
@@ -355,7 +347,6 @@ IpfsApis.forEach(function(ipfsApi) {
       });
 
       it('emits \'left\' event after leaving channel', (done) => {
-        const channel = 'test1';
         orbit.join(channel).then(() => {
           orbit.events.on('left', (channelName) => {
             assert.equal(channelName, channel);
@@ -367,7 +358,6 @@ IpfsApis.forEach(function(ipfsApi) {
       });
 
       it('emits \'left\' event after calling leave if channels hasn\'t been joined', (done) => {
-        const channel = 'test1';
         orbit.events.on('left', (channelName) => {
           assert.equal(channelName, channel);
           assert.equal(orbit.channels.length, 0);
@@ -425,15 +415,14 @@ IpfsApis.forEach(function(ipfsApi) {
 
         describe('channels', function() {
           it('returns a joined channel', () => {
-            const channel = 'test2';
-            return orbit.join(channel).then(() => {
+            const channel2 = 'test2';
+            return orbit.join(channel2).then(() => {
               assert.equal(orbit.channels.length, 1);
-              assert.equal(orbit.channels[0].name, channel);
+              assert.equal(orbit.channels[0].name, channel2);
             })
           });
 
           it('returns the channels in correcy format', () => {
-            const channel = 'test1';
             return orbit.join(channel).then(() => {
               const channels = orbit.channels;
               assert.equal(orbit.channels.length, 2);
@@ -461,7 +450,6 @@ IpfsApis.forEach(function(ipfsApi) {
       });
 
       it('sends a message to a channel', (done) => {
-        const channel = 'test1';
         const content = 'hello1';
         orbit.join(channel)
           .then(() => orbit.send(channel, content))
@@ -482,7 +470,6 @@ IpfsApis.forEach(function(ipfsApi) {
       });
 
       it('returns a Post', (done) => {
-        const channel = 'test1';
         const content = 'hello' + new Date().getTime();
         orbit.join(channel)
           .then(() => orbit.send(channel, content))
@@ -503,7 +490,6 @@ IpfsApis.forEach(function(ipfsApi) {
       });
 
       it('Post was added to IPFS', (done) => {
-        const channel = 'test1';
         const content = 'hello' + new Date().getTime();
         orbit.join(channel)
           .then(() => orbit.send(channel, content))
@@ -522,7 +508,6 @@ IpfsApis.forEach(function(ipfsApi) {
       });
 
       it('throws an error when channel is not specified', (done) => {
-        const channel = 'test1';
         orbit.join(channel)
           .then(() => orbit.send())
           .then((post) => done(new Error("Channel was not specified!")))
@@ -544,7 +529,6 @@ IpfsApis.forEach(function(ipfsApi) {
       });
 
       it('throws an error when trying to send an empty message', (done) => {
-        const channel = 'test1';
         const content = '';
         orbit.join(channel)
           .then(() => orbit.send(channel, content))
@@ -556,7 +540,6 @@ IpfsApis.forEach(function(ipfsApi) {
       });
 
       it('throws an error when message is not specified', (done) => {
-        const channel = 'test1';
         orbit.join(channel, null)
           .then(() => orbit.send(channel))
           .then((post) => done(new Error("Empty message was sent!")))
@@ -580,7 +563,6 @@ IpfsApis.forEach(function(ipfsApi) {
       });
 
       it('returns the latest message', (done) => {
-        const channel = 'test1';
         const ts = new Date().getTime();
         const content = 'hello' + ts;
         orbit.join(channel)
@@ -602,7 +584,6 @@ IpfsApis.forEach(function(ipfsApi) {
       });
 
       it('returns all messages in the right order', (done) => {
-        const channel = 'test12345';
         const content = 'hello';
         orbit.join(channel)
           .then(() => {
@@ -627,7 +608,6 @@ IpfsApis.forEach(function(ipfsApi) {
       });
 
       it('throws an error if trying to get from a channel that hasn\'t been joined', (done) => {
-        const channel = 'test1';
         try {
           const messages = orbit.get(channel);
         } catch(e) {
@@ -638,7 +618,6 @@ IpfsApis.forEach(function(ipfsApi) {
     });
 
     describe('getPost', function() {
-      const channel = 'test1';
       const content = 'hello' + new Date().getTime();
       let message;
 
@@ -692,8 +671,6 @@ IpfsApis.forEach(function(ipfsApi) {
     });
 
     describe('addFile', function() {
-      const channel = 'test1';
-
       beforeEach((done) => {
         orbit = new Orbit(ipfs, { cacheFile: null, maxHistory: 0 });
         orbit.connect(network, username, password)
@@ -782,7 +759,6 @@ IpfsApis.forEach(function(ipfsApi) {
     });
 
     describe('getFile', function() {
-      const channel = 'test1';
       const filename = 'mocha.opts';
       const filePath = path.join(process.cwd(), '/test' , filename);
       let hash;
@@ -817,7 +793,6 @@ IpfsApis.forEach(function(ipfsApi) {
     });
 
     describe('getDirectory', function() {
-      const channel = 'test1';
       const directory = 'assets';
       const filePath = path.join(process.cwd(), directory);
       let hash;
@@ -860,8 +835,16 @@ IpfsApis.forEach(function(ipfsApi) {
         orbit.disconnect();
       });
 
+      it('emits \'message\'', (done) => {
+        orbit.events.on('message', (channelName, messageHash) => {
+          assert.equal(channelName, channel);
+          assert.equal(messageHash.startsWith('Qm'), true);
+          done();
+        });
+        orbit.join(channel).then(() => orbit.send(channel, 'hello'));
+      });
+
       it('emits \'data\'', (done) => {
-        const channel = 'test1';
         orbit.events.on('data', (channelName, messageHash) => {
           assert.equal(channelName, channel);
           assert.equal(messageHash.startsWith('Qm'), true);
@@ -871,7 +854,6 @@ IpfsApis.forEach(function(ipfsApi) {
       });
 
       it('emits \'load\'', (done) => {
-        const channel = 'test1';
         orbit.events.on('load', (channelName) => {
           assert.equal(channelName, channel);
           done();
@@ -879,9 +861,8 @@ IpfsApis.forEach(function(ipfsApi) {
         orbit.join(channel);
       });
 
-      it('emits \'state.updated\' on load', (done) => {
-        const channel = 'test1';
-        orbit.events.once('state.updated', (channels) => {
+      it('emits \'update\' on load', (done) => {
+        orbit.events.once('update', (channels) => {
           assert.equal(channels.length, 1);
           assert.equal(channels[0].db, null);
           assert.equal(channels[0].state.loading, true);
@@ -892,7 +873,6 @@ IpfsApis.forEach(function(ipfsApi) {
       });
 
       it('emits \'ready\'', (done) => {
-        const channel = 'test1';
         orbit.events.on('ready', (channelName) => {
           assert.equal(channelName, channel);
           done();
@@ -900,10 +880,9 @@ IpfsApis.forEach(function(ipfsApi) {
         orbit.join(channel);
       });
 
-      it('emits \'state.updated\' on ready', (done) => {
-        const channel = 'test1';
+      it('emits \'update\' on ready', (done) => {
         orbit.events.on('ready', () => {
-          orbit.events.on('state.updated', (channels) => {
+          orbit.events.on('update', (channels) => {
             assert.equal(channels.length, 1);
             assert.equal(channels[0].db, null);
             assert.equal(channels[0].state.loading, false);
@@ -915,7 +894,6 @@ IpfsApis.forEach(function(ipfsApi) {
       });
 
       it('emits \'sync\' on load', (done) => {
-        const channel = 'test1';
         orbit.events.on('sync', (channelName) => {
           assert.equal(channelName, channel);
           done();
@@ -923,13 +901,12 @@ IpfsApis.forEach(function(ipfsApi) {
         orbit.join(channel);
       });
 
-      it('emits \'state.updated\' on sync', (done) => {
-        const channel = 'test1';
+      it('emits \'update\' on sync', (done) => {
         orbit.join(channel)
           .then(() => {
-            orbit.events.removeAllListeners('state.updated');
+            orbit.events.removeAllListeners('update');
             orbit.events.on('sync', (channelName) => {
-              orbit.events.on('state.updated', (channels) => {
+              orbit.events.on('update', (channels) => {
                 assert.equal(channels.length, 1);
                 assert.notEqual(channels[0].db, null);
                 assert.equal(channels[0].state.loading, false);
@@ -941,7 +918,6 @@ IpfsApis.forEach(function(ipfsApi) {
       });
 
       it('emits \'sync\'', (done) => {
-        const channel = 'test1';
         orbit.join(channel).then(() => {
           orbit.events.on('sync', (channelName) => {
             assert.equal(channelName, channel);
@@ -950,12 +926,11 @@ IpfsApis.forEach(function(ipfsApi) {
         });
       });
 
-      it('emits \'state.updated\' on synced', (done) => {
-        const channel = 'test1';
+      it('emits \'update\' on synced', (done) => {
         orbit.join(channel).then(() => {
-          orbit.events.removeAllListeners('state.updated');
+          orbit.events.removeAllListeners('update');
           orbit.events.on('synced', (channelName) => {
-            orbit.events.on('state.updated', (channels) => {
+            orbit.events.on('update', (channels) => {
               assert.equal(channels.length, 1);
               assert.notEqual(channels[0].db, null);
               assert.equal(channels[0].state.loading, false);
@@ -967,7 +942,6 @@ IpfsApis.forEach(function(ipfsApi) {
       });
 
       it('emits \'synced\' after sync', (done) => {
-        const channel = 'test1';
         orbit.events.on('synced', (channelName) => {
           orbit.events.removeAllListeners('synced');
           orbit.events.on('synced', (channelName, items) => {
