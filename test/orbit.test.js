@@ -697,7 +697,6 @@ IpfsApis.forEach(function(ipfsApi) {
       beforeEach((done) => {
         orbit = new Orbit(ipfs, { cacheFile: null, maxHistory: 0 });
         orbit.connect(network, username, password)
-          // .then((res) => orbit.join(channel))
           .then(() => done())
           .catch(done)
       });
@@ -773,7 +772,7 @@ IpfsApis.forEach(function(ipfsApi) {
           })
       });
 
-      it.only('throws an error if not joined on channel', (done) => {
+      it('throws an error if not joined on channel', (done) => {
         orbit.addFile(channel, 'hello')
           .catch((e) => {
             assert.equal(e, `Can't send the message, not joined on #${channel}`);

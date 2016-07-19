@@ -169,8 +169,6 @@ class Orbit {
       .then((res) => JSON.parse(res.toJSON().Data))
   }
 
-  // TODO: tests for everything below
-
   addFile(channel, filePath) {
     if(!channel || channel === '')
       return Promise.reject(`Channel not specified`);
@@ -183,8 +181,6 @@ class Orbit {
 
     if(!db)
       return Promise.reject(`Can't send the message, not joined on #${channel}`);
-
-    console.log(db)
 
     const addToIpfsJs = (ipfs, filePath, isDirectory) => {
       // TODO
@@ -212,7 +208,7 @@ class Orbit {
 
         this.ipfs.add(filePath, { recursive: isDirectory })
           .then((hash) => {
-            // logger.debug("H, " + JSON.stringify(hash));
+            // logger.debug("Added: " + JSON.stringify(hash));
             if(isDirectory) {
               // ipfs-api returns an empty dir name as the last hash, ignore this
               if(hash[hash.length-1].Name === '')
@@ -250,6 +246,8 @@ class Orbit {
       .then(() => db.add(post))
       .then(() => post)
   }
+
+  // TODO: tests for everything below
 
   getFile(hash, callback) {
     // request('http://localhost:8080/ipfs/' + hash, function (error, response, body) {
