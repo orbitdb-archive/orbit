@@ -8,7 +8,6 @@ const Menu   = require('menu');
 const path   = require('path');
 const Logger = require('logplease');
 const logger = Logger.create("Orbit.Index-Native");
-const utils  = require('orbit-common/lib/utils');
 const main   = require('./src/main');
 
 require('crash-reporter').start();
@@ -89,7 +88,11 @@ app.on('ready', () => {
       else
         mainWindow.loadUrl('file://' + __dirname + '/client/dist/index.html');
 
-      mainWindow.webContents.session.setDownloadPath(path.resolve(utils.getUserHome() + '/Downloads'))
+      const getUserHome = () => {
+        return process.env[(process.platform == 'win32') ? 'USERPROFILE' : 'HOME'];
+      };
+
+      mainWindow.webContents.session.setDownloadPath(path.resolve(getUserHome() + '/Downloads'))
 
       mainWindow.on('closed', () => {
         mainWindow = null;

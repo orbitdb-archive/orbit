@@ -7,7 +7,6 @@ class AutoCompleter {
   }
 
   onKeyDown(event, inputText, sourceWords) {
-    console.log("UPDATE")
     if(event.which === 9) {
       event.preventDefault();
 

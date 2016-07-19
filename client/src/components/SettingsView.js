@@ -1,9 +1,10 @@
 'use strict';
 
 import React from 'react';
-import TransitionGroup from "react-addons-css-transition-group"; //eslint-disable-line
+import TransitionGroup from "react-addons-css-transition-group";
 import SettingsStore from 'stores/SettingsStore';
 import SettingsActions from 'actions/SettingsActions';
+import BackgroundAnimation from 'components/BackgroundAnimation';
 import Themes from 'app/Themes';
 import 'styles/SettingsView.scss';
 
@@ -54,11 +55,18 @@ class SettingsView extends React.Component {
       var description = this.state.descriptions[key] || "";
 
       var field = typeof value === 'boolean' ? (
-        <div style={this.state.theme} >
-          <input type="checkbox" checked={value} onChange={this.changeBooleanSetting.bind(this, key)}/>
+        <div style={this.state.theme}>
+          <input type="checkbox"
+                 checked={value}
+                 onChange={this.changeBooleanSetting.bind(this, key)}
+          />
         </div>
       ) : (
-        <input style={this.state.theme} type="text" defaultValue={value} onChange={this.changeStringSetting.bind(this, key)}/>
+        <input style={this.state.theme}
+               type="text"
+               defaultValue={value}
+               onChange={this.changeStringSetting.bind(this, key)}
+        />
       );
 
       return (
@@ -82,6 +90,7 @@ class SettingsView extends React.Component {
     return (
       <div className="SettingsView">
         {list}
+        <BackgroundAnimation size={256} theme={this.state.theme} style={{opacity: 0.5}}/>
       </div>
     );
   }

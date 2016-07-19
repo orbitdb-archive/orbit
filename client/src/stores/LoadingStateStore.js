@@ -6,33 +6,35 @@ import UIActions from 'actions/UIActions';
 var LoadingStateStore = Reflux.createStore({
   listenables: [UIActions],
   init: function() {
-    this.queue = {};
+    this.state = {};
   },
   onStartLoading: function(id, action, message, progress) {
     // console.log("LoadingStateStore - start loading:", id, action, message, progress);
-    if(!this.queue[id])
-      this.queue[id] = {};
+    const old = this.state[id] ? this.state[id][action] : null;
 
-    this.queue[id][action] = {
+    if(!this.state[id])
+      this.state[id] = {};
+
+    this.state[id][action] = {
       loading: true,
       message: message,
       progress: progress
     };
 
-    this.trigger(this.queue);
+    // if(old)
+      this.trigger(this.state);
   },
   onUpdateLoading: function(id, action, progress) {
     // console.log("LoadingStateStore - update loading:", id, action, progress);
     // TODO
   },
   onStopLoading: function(id, action) {
-    // console.log("LoadingStateStore - stop loading:", id, action);
-    if(this.queue[id] && this.queue[id][action]) {
-      this.queue[id][action].loading = false;
-      delete this.queue[id][action];
+    // console.log("STOP LOADING", id, action);
+    if(this.state[id] && this.state[id][action]) {
+      // this.state[id][action].loading = false;
+      delete this.state[id][action];
+      this.trigger(this.state);
     }
-
-    this.trigger(this.queue);
   }
 });
 

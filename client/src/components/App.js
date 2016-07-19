@@ -11,6 +11,8 @@ import UIActions from "actions/UIActions";
 import SocketActions from 'actions/SocketActions';
 import NetworkActions from 'actions/NetworkActions';
 import NotificationActions from 'actions/NotificationActions';
+import ChannelActions from 'actions/ChannelActions';
+import SkynetActions from 'actions/SkynetActions';
 
 import AppStateStore from 'stores/AppStateStore';
 import UserStore from 'stores/UserStore';
@@ -37,6 +39,9 @@ import 'styles/App.scss';
 import 'styles/Scrollbars.scss';
 import 'highlight.js/styles/hybrid.css';
 
+import Main from '../main';
+import Protolol from '../assets/protolol';
+
 const views = {
   "Index": "/",
   "Settings": "/settings",
@@ -47,8 +52,51 @@ const views = {
 
 const logger = Logger.create('App', { color: Logger.Colors.Red });
 
+let orbit;
+
+/* ENTRY POINT */
+// Main.start().then((res) => {
+//   logger.info("Orbit started");
+//   logger.debug("PeerId:", res.peerId.ID);
+//   orbit = res.orbit;
+//   AppActions.initialize(orbit);
+//   NetworkActions.updateNetwork(null) // start the App
+// })
+// .catch((e) => {
+//   logger.error(e.message);
+//   logger.error("Stack trace:\n", e.stack);
+// });
+
+var Skynet = React.createClass({
+  componentDidMount: function() {
+    const delay = (this.props.params.delay ? this.props.params.delay : 2) * 1000;
+    const username = this.props.params.username ? this.props.params.username : 0;
+
+    setTimeout(() => {
+      Main.start(username, '/tmp/orbit-demo-' + username, '127.0.0.1').then((res) => {
+        logger.info("Orbit started");
+        logger.debug("PeerId:", res.peerId.ID);
+        orbit = res.orbit;
+        AppActions.initialize(orbit);
+        NetworkActions.updateNetwork(null) // start the App
+        SkynetActions.start(username);
+      })
+      .catch((e) => {
+        logger.error(e.message);
+        logger.error("Stack trace:\n", e.stack);
+      });
+    }, delay);
+  },
+  render: function() {
+    return (
+      <div className="Skynet">
+      Loading Skynet...
+      </div>
+    );
+  }
+});
+
 var App = React.createClass({
-  // mixins: [History],
   getInitialState: function() {
     return {
       panelOpen: false,
@@ -61,15 +109,37 @@ var App = React.createClass({
     };
   },
   componentDidMount: function() {
+    // console.log("------------------------------", this.props, this.props.location.query.local)
+    // console.log(this.props.params, this.props.query);
+    //   orbit.connect(null, this.props.params.username, '');
+
+    const signalServerAddress = this.props.location.query.local ? '0.0.0.0' : '178.62.241.75';
+
+    if(!orbit) {
+      Main.start(null, '/tmp/orbit-demo-2-', signalServerAddress).then((res) => {
+        logger.info("Orbit started");
+        logger.debug("PeerId:", res.peerId.ID);
+        orbit = res.orbit;
+        AppActions.initialize(orbit);
+        NetworkActions.updateNetwork(null) // start the App
+      })
+      .catch((e) => {
+        logger.error(e.message);
+        logger.error("Stack trace:\n", e.stack);
+      });
+    }
+
     document.title = 'Orbit';
 
+    SkynetActions.start.listen((username) => orbit.connect(null, username, ''));
     UIActions.joinChannel.listen(this.joinChannel);
-    UIActions.showChannel.listen(this.showChannel);
+    // UIActions.showChannel.listen(this.showChannel);
     NetworkActions.joinedChannel.listen(this.onJoinedChannel);
     NetworkActions.joinChannelError.listen(this.onJoinChannelError);
+    NetworkActions.leaveChannel.listen(this.onLeaveChannel);
     SocketActions.socketDisconnected.listen(this.onDaemonDisconnected);
 
-    this.unsubscribeFromConnectionStore = ConnectionStore.listen(this.onDaemonConnected);
+    // this.unsubscribeFromConnectionStore = ConnectionStore.listen(this.onDaemonConnected);
     this.unsubscribeFromNetworkStore = NetworkStore.listen(this.onNetworkUpdated);
     this.unsubscribeFromUserStore = UserStore.listen(this.onUserUpdated);
     this.stopListeningAppState = AppStateStore.listen(this._handleAppStateChange);
@@ -78,13 +148,13 @@ var App = React.createClass({
     });
 
     window.onblur = () => {
-      AppActions.windowLostFocus();
-      logger.debug("Lost focus!");
+      // AppActions.windowLostFocus();
+      // logger.debug("Lost focus!");
     };
 
     window.onfocus = () => {
-      AppActions.windowOnFocus();
-      logger.debug("Got focus!");
+      // AppActions.windowOnFocus();
+      // logger.debug("Got focus!");
     };
   },
   _handleAppStateChange: function(state) {
@@ -118,7 +188,12 @@ var App = React.createClass({
       AppActions.setLocation("Connect");
     } else {
       this.setState({ networkName: network.name });
+      const channels = JSON.parse(localStorage.getItem( "anonet.app." + this.state.user.username + "." + network.name + ".channels")) || [];
+      channels.forEach( (c) => NetworkActions.joinChannel(c, ''));
     }
+  },
+  _makeChannelsKey: function(username, networkName) {
+    return "anonet.app." + username + "." + networkName + ".channels";
   },
   _showConnectView: function() {
     this.setState({ user: null });
@@ -154,15 +229,37 @@ var App = React.createClass({
     this.setState({ joiningToChannel: channel, requirePassword: true} );
   },
   onJoinedChannel: function(channel) {
-    logger.debug("Join channel #" + channel, ChannelStore.channels);
-    const channelInfo = ChannelStore.get(channel);
-    this.showChannel(channelInfo.name);
-  },
-  showChannel: function(channel) {
+    logger.debug("Joined channel #" + channel);
+    // this.showChannel(channel);
     this.closePanel();
     document.title = `#${channel}`;
     logger.debug("Set title: " + document.title);
     AppActions.setCurrentChannel(channel);
+    // const channelsKey = this._makeChannelsKey(this.state.user.username, this.state.networkName);
+    // let channels = JSON.parse(localStorage.getItem(channelsKey)) || [];
+    // if(!_.some(channels, { name: channel })){
+    //   channels.push({ name: channel });
+    //   localStorage.setItem(channelsKey, JSON.stringify(channels));
+    // }
+    if(channel === "skynet") {
+      // ChannelActions.sendMessage("skynet", "/me was summoned");
+      // setInterval(() => {
+      //   const i = Math.floor((Math.random() * Protolol.length));
+      //   const line = Protolol[i].split(' ');
+      //   line.splice(0, 1); // remove "@name"
+      //   const text = line.join(" ").replace('#protolol', ''); // remove '#protolol'
+      //   ChannelActions.sendMessage("skynet", text);
+      // }, 2000);
+    }
+  },
+  onLeaveChannel: function(channel) {
+    const channelsKey = this._makeChannelsKey(this.state.user.username, this.state.networkName);
+    let channels = JSON.parse(localStorage.getItem(channelsKey));
+    channels = channels.filter((c) => c.name !== channel);
+    if (channels.length === 0)
+      localStorage.removeItem(channelsKey);
+    else
+      localStorage.setItem(channelsKey, JSON.stringify(channels));
   },
   openSettings: function() {
     this.closePanel();
@@ -230,6 +327,7 @@ var App = React.createClass({
 render(
   <Router history={hashHistory}>
     <Route path="/" component={App}>
+      <Route path="skynet/:username/:delay" component={Skynet}/>
       <Route path="channel/:channel" component={ChannelView}/>
       <Route path="settings" component={SettingsView}/>
       <Route path="swarm" component={SwarmView}/>

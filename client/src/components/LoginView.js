@@ -1,12 +1,12 @@
 'use strict';
 
 import React from 'react';
-import TransitionGroup from "react-addons-css-transition-group"; //eslint-disable-line
+import TransitionGroup from "react-addons-css-transition-group";
 import NetworkStore from 'stores/NetworkStore';
 import NetworkActions from "actions/NetworkActions";
-import BackgroundAnimation from 'components/BackgroundAnimation'; //eslint-disable-line
+import BackgroundAnimation from 'components/BackgroundAnimation';
 import Themes from 'app/Themes';
-import Halogen from 'halogen'; //eslint-disable-line
+import Halogen from 'halogen';
 import 'styles/LoginView.scss';
 
 var maxNicknameLength = 32;
@@ -56,7 +56,7 @@ class LoginView extends React.Component{
   }
 
   componentWillUnmount() {
-    window.removeEventListener('resize', this.onResize);
+    window.removeEventListener('resize', this.onResize.bind(this));
     this.unsubscribeFromNetworkStore();
   }
 
@@ -77,7 +77,6 @@ class LoginView extends React.Component{
 
     if(network !== '' && username !== '') {
       this.setState({ error: null, connecting: true, username: username, password: password });
-      console.log("UI connect");
       NetworkActions.connect(network, username, password);
     }
 
@@ -100,7 +99,7 @@ class LoginView extends React.Component{
     var form = !this.state.connecting ? (
       <TransitionGroup transitionName="loginScreenAnimation" transitionAppear={true} component="div" className="inputs" transitionAppearTimeout={5000} transitionEnterTimeout={5000} transitionLeaveTimeout={5000}>
         <div className="row">
-          <span className="label">Network</span><input type="text" ref="network" defaultValue="178.62.241.75:3333" style={this.state.theme}/>
+          <span className="label">Network</span><input type="text" ref="network" defaultValue="QmRB8x6aErtKTFHDNRiViixSKYwW1DbfcvJHaZy1hnRzLM" style={this.state.theme}/>
         </div>
         <div className="row">
           <span className="label">Nickname</span>

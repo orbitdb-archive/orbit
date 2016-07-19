@@ -68,7 +68,7 @@ class TextMessage extends React.Component {
     let finalText = ReactAutolink.autolink(this.state.text, { target: "_blank", rel: "nofollow", key: Math.random() });
     finalText = this._highlight(finalText);
     finalText = this.state.useEmojis ? this._emojify(finalText) : finalText;
-    finalText = this._ipfsfy(finalText);
+    // finalText = this._ipfsfy(finalText);
 
     const content = (
       <TransitionGroup

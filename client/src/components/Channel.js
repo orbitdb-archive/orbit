@@ -2,16 +2,19 @@
 
 import _ from 'lodash';
 import React from 'react';
-import TransitionGroup from "react-addons-css-transition-group"; //eslint-disable-line
-import Message from 'components/Message'; //eslint-disable-line
-import SendMessage from 'components/SendMessage'; //eslint-disable-line
-import Dropzone from 'react-dropzone'; //eslint-disable-line
+import TransitionGroup from "react-addons-css-transition-group";
+import Message from 'components/Message';
+import SendMessage from 'components/SendMessage';
+import Dropzone from 'react-dropzone';
 import MessageStore from 'stores/MessageStore';
+import ChannelStore from 'stores/ChannelStore';
 import LoadingStateStore from 'stores/LoadingStateStore';
 import UIActions from 'actions/UIActions';
 import ChannelActions from 'actions/ChannelActions';
-import Halogen from 'halogen'; //eslint-disable-line
+import Halogen from 'halogen';
 import 'styles/Channel.scss';
+import Logger from 'logplease';
+const logger = Logger.create('Channel', { color: Logger.Colors.Cyan });
 
 class Channel extends React.Component {
   constructor(props) {
@@ -19,10 +22,10 @@ class Channel extends React.Component {
 
     this.state = {
       channelChanged: true,
-      channelName: props.channel,
+      channelName: null,
       messages: [],
       loading: false,
-      loadingText: 'Syncing...',
+      loadingText: '',
       reachedChannelStart: false,
       channelMode: "Public",
       error: null,
@@ -37,17 +40,23 @@ class Channel extends React.Component {
     this.scrollTimer = null;
     this.topMargin = 120;
     this.bottomMargin = 20;
+    this.stopListeningChannelState = ChannelActions.reachedChannelStart.listen(this._onReachedChannelStart.bind(this));
   }
 
   componentWillReceiveProps(nextProps) {
+    // logger.debug("PROPS CHANGED", nextProps, this.state.channelName);
     if(nextProps.channel !== this.state.channelName) {
       this.setState({
         channelChanged: true,
         displayNewMessagesIcon: false,
-        reachedChannelStart: false
+        loading: true,
+        reachedChannelStart: false,
+        messages: []
       });
       UIActions.focusOnSendMessage();
-      this._getMessages(nextProps.channel);
+      // this._onLoadStateChange(nextProps.channel, LoadingStateStore.state);
+      // this._onChannelStateChanged(nextProps.channel);
+      ChannelActions.loadMessages(nextProps.channel);
     }
 
     this.setState({
@@ -56,21 +65,68 @@ class Channel extends React.Component {
       appSettings: nextProps.appSettings,
       theme: nextProps.theme
     });
+
+    this._updateLoadingState(nextProps.channelInfo);
   }
 
-  _getMessages(channel) {
-    const messages = MessageStore.getMessages(channel);
-    this.setState({ messages: messages });
+  componentDidMount() {
+    this.stopListeningChannelUpdates = ChannelStore.listen(this._onChannelStateChanged.bind(this));
+    this.unsubscribeFromMessageStore = MessageStore.listen(this.onNewMessages.bind(this));
+    // this.stopListeningLoadingState = LoadingStateStore.listen((state) => this._onLoadStateChange(this.state.channelName, state));
+    this.unsubscribeFromErrors = UIActions.raiseError.listen(this._onError.bind(this));
+    this.node = this.refs.MessagesView;
+    // this._onLoadStateChange(this.state.channelName, LoadingStateStore.state);
   }
 
-  _onLoadStateChange(state) {
-    const loadingState = state[this.state.channelName];
-    if(loadingState) {
-      const loading = Object.keys(loadingState).filter((f) => loadingState[f] && loadingState[f].loading);
-      const loadingText = loadingState[loading[0]] ? loadingState[loading[0]].message : null;
-      this.setState({ loading: loading.length > 0, loadingText: loadingText });
+  _updateLoadingState(channel) {
+    if(channel) {
+      // logger.debug("CHANNEL STATE CHANGED", channel, this.state.channelName);
+      const loading = (channel.state.loading || channel.state.syncing > 0);
+      const text = loading ? 'Syncing...' : '';
+      logger.debug(loading, text);
+      this.setState({ loading: loading, loadingText: text });
     }
   }
+
+  _onChannelStateChanged(channels) {
+    const channelInfo = channels.find((e) => e.name === this.state.channelName);
+    // logger.debug("Channels state updated for", channel)
+    if(channelInfo)
+      this._updateLoadingState(channelInfo);
+    // logger.debug("CHANNEL STATE CHANGED", channelName, this.state.channelName);
+    // if(channelName === this.state.channelName) {
+    //   const channel = ChannelStore.channels.find((e) => e.name === channelName);
+    //   logger.debug("-- next")
+    //   // logger.debug(channel);
+    //   if(channel) {
+    //     const loading = (channel.state.loading || channel.state.syncing > 0);
+    //     const text = loading ? 'Syncing...' : '';
+    //     logger.debug(loading, text);
+    //     this.setState({ loading: loading, loadingText: text });
+    //   }
+    // }
+  }
+
+  // _onLoadStateChange(channel, state) {
+  //   if(!channel || !state)
+  //     return;
+
+  //   // logger.debug("LOAD STATE")
+  //   // console.log(channel);
+  //   // console.log(state);
+
+  //   const loadingState = state[channel];
+  //   if(loadingState) {
+  //     const loading = Object.keys(loadingState).filter((f) => loadingState[f]);
+  //     const loadingText = loadingState[_.last(loading)] ? loadingState[_.last(loading)].message : null;
+  //     logger.debug("STATE SET", loading.length > 0, loadingText)
+  //     console.log(loadingState)
+  //     this.setState({ loadingText: loadingText });
+  //   } else {
+  //     logger.debug("NOT LOADING")
+  //     this.setState({ loading: false });
+  //   }
+  // }
 
   _onError(errorMessage) {
     console.error("Channel:", errorMessage);
@@ -78,27 +134,17 @@ class Channel extends React.Component {
   }
 
   _onReachedChannelStart() {
+    logger.warn("REACHED CHANNEL START")
     this.setState({ reachedChannelStart: true });
-  }
-
-  componentDidMount() {
-    this._getMessages(this.state.channelName);
-
-    this.unsubscribeFromMessageStore = MessageStore.listen(this.onNewMessages.bind(this));
-    this.stopListeningLoadingState = LoadingStateStore.listen(this._onLoadStateChange.bind(this));
-    this.stopListeningChannelState = ChannelActions.reachedChannelStart.listen(this._onReachedChannelStart.bind(this));
-    this.unsubscribeFromErrors = UIActions.raiseError.listen(this._onError.bind(this));
-
-    this.node = this.refs.MessagesView;
-    this.loadOlderMessages();
   }
 
   componentWillUnmount() {
     clearTimeout(this.scrollTimer);
     this.unsubscribeFromMessageStore();
     this.unsubscribeFromErrors();
-    this.stopListeningLoadingState();
+    // this.stopListeningLoadingState();
     this.stopListeningChannelState();
+    this.stopListeningChannelUpdates();
     this.setState({ messages: [] });
   }
 
@@ -109,7 +155,7 @@ class Channel extends React.Component {
     this.node = this.refs.MessagesView;
     if(this.node.scrollHeight - this.node.scrollTop + this.bottomMargin > this.node.clientHeight
       && this.node.scrollHeight > this.node.clientHeight + 1
-      && this.state.messages.length > 0 && _.last(messages).meta.ts > _.last(this.state.messages).meta.ts
+      && this.state.messages.length > 0 && _.last(messages).payload.meta.ts > _.last(this.state.messages).payload.meta.ts
       && this.node.scrollHeight > 0) {
       this.setState({
         displayNewMessagesIcon: true,
@@ -125,14 +171,15 @@ class Channel extends React.Component {
       ChannelActions.sendMessage(this.state.channelName, text);
   }
 
-  sendFile(filePath: string) {
-    if(filePath !== '')
-      ChannelActions.addFile(this.state.channelName, filePath);
+  sendFile(filePath: string, buffer) {
+    if(filePath !== '' || buffer !== null)
+      ChannelActions.addFile(this.state.channelName, filePath, buffer);
   }
 
   loadOlderMessages() {
-    if(!this.state.loading)
+    if(!this.state.loading) {
       ChannelActions.loadMoreMessages(this.state.channelName);
+    }
   }
 
   componentWillUpdate() {
@@ -160,8 +207,13 @@ class Channel extends React.Component {
       this.setState({ channelChanged: false });
     }
 
-    if(this._shouldLoadMoreMessages())
-      this.loadOlderMessages();
+    // Wait for the render (paint) cycle to finish before checking.
+    // The DOM element sizes (ie. scrollHeight and clientHeight) are not updated until the paint cycle finishes.
+    if(this.loadMoreTimeout) clearTimeout(this.loadMoreTimeout);
+    this.loadMoreTimeout = setTimeout(() => {
+      if(this._shouldLoadMoreMessages())
+        this.loadOlderMessages();
+    }, 20);
   }
 
   _shouldLoadMoreMessages() {
@@ -172,10 +224,19 @@ class Channel extends React.Component {
     this.setState({ dragEnter: false });
     console.log('Dropped files: ', files);
     files.forEach((file) => {
-      if(file.path)
+      // Electron can return a path of a directory
+      if(file.path) {
         this.sendFile(file.path);
-      else
-        console.error("File upload not yet implemented in browser. Try the electron app.");
+      } else {
+        // In browsers, read the files returned by the event
+        const reader = new FileReader();
+        reader.onload = (event) => {
+          console.log(file, event);
+          this.sendFile(file.name, event.target.result)
+        };
+        reader.readAsArrayBuffer(file);
+        // console.error("File upload not yet implemented in browser. Try the electron app.");
+      }
     });
     UIActions.focusOnSendMessage();
   }
@@ -225,7 +286,7 @@ class Channel extends React.Component {
         transitionLeaveTimeout={0}
         >
         <div className="Controls" key="controls">
-          <SendMessage onSendMessage={this.sendMessage.bind(this)} key="SendMessage" theme={theme}/>
+          <SendMessage onSendMessage={this.sendMessage.bind(this)} key="SendMessage" theme={theme} useEmojis={this.state.appSettings.useEmojis}/>
           <Dropzone className="dropzone2" onDrop={this.onDrop.bind(this)} key="dropzone2">
             <div className="icon flaticon-tool490" style={theme} key="icon"/>
           </Dropzone>
@@ -235,20 +296,27 @@ class Channel extends React.Component {
 
     const messages = this.state.messages.map((e) => {
       return <Message
-                message={e}
+                message={e.payload}
                 key={e.hash}
                 onDragEnter={this.onDragEnter.bind(this)}
                 highlightWords={this.state.username}
                 colorifyUsername={this.state.appSettings.colorifyUsernames}
                 useEmojis={this.state.appSettings.useEmojis}
+                style={{
+                  fontFamily: this.state.appSettings.useMonospaceFont ? this.state.appSettings.monospaceFont : this.state.appSettings.font,
+                  fontSize: this.state.appSettings.useMonospaceFont ? '0.9em' : '1.0em',
+                  fontWeight: this.state.appSettings.useMonospaceFont ? '100' : '300',
+                  padding: this.state.appSettings.spacing,
+                }}
               />;
     });
 
-    let channelStateText = this.state.loading && this.state.loadingText ? this.state.loadingText : `Older messages...`;
-    if(this.state.reachedChannelStart)
-      channelStateText = `Beginning of # ${this.state.channelName}`;
+    // let channelStateText = this.state.loading && this.state.loadingText ? this.state.loadingText : `Loading messages...`;
+    let channelStateText = this.state.loadingText ? this.state.loadingText : `???`;
+    if(this.state.reachedChannelStart && !this.state.loading)
+      channelStateText = `Beginning of #${this.state.channelName}`;
 
-    messages.unshift(<div className="firstMessage" key="firstMessage">{channelStateText}</div>);
+    messages.unshift(<div className="firstMessage" key="firstMessage" onClick={this.loadOlderMessages.bind(this)}>{channelStateText}</div>);
 
     const fileDrop = this.state.dragEnter ? (
       <Dropzone

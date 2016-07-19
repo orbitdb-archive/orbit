@@ -29,3 +29,6 @@ $RECYCLE.BIN/
 
 node_modules/
 .tmp
+
+# Test bundle
+test/tests.bundle*

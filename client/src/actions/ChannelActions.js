@@ -5,6 +5,7 @@ import Reflux from 'reflux';
 var ChannelActions = Reflux.createActions([
   "reachedChannelStart",
   "channelInfoReceived",
+  "loadMessages",
   "loadMoreMessages",
   "sendMessage",
   "addFile",

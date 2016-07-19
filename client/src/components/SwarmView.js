@@ -4,6 +4,9 @@ import React from 'react';
 import TransitionGroup from "react-addons-css-transition-group"; //eslint-disable-line
 import NetworkActions from "actions/NetworkActions";
 import 'styles/SwarmView.scss';
+import Logger from 'logplease';
+
+const logger = Logger.create('Swarm', { color: Logger.Colors.Green });
 
 class SwarmView extends React.Component {
   constructor(props) {
