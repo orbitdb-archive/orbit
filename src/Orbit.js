@@ -85,7 +85,7 @@ class Orbit {
     }
   }
 
-  join(channel, password) {
+  join(channel) {
     if(!channel || channel === '')
       return Promise.reject(`Channel not specified`);
 
@@ -98,7 +98,7 @@ class Orbit {
 
     this._channels[channel] = {
       name: channel,
-      password: password,
+      password: null,
       db: null,
       state: { loading: true, syncing: 0 }
     };
