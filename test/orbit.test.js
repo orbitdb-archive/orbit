@@ -710,9 +710,9 @@ IpfsApis.forEach(function(ipfsApi) {
             assert.equal(res.Post instanceof Post.Types.Directory, true);
             assert.equal(res.Hash.startsWith('Qm'), true);
             assert.equal(res.Post.name, directory);
-            assert.equal(res.Post.size, 409449);
+            assert.equal(res.Post.size === 409363 || res.Post.size === 409449, true);
             assert.equal(Object.keys(res.Post.meta).length, 4);
-            assert.equal(res.Post.meta.size, 409449);
+            assert.equal(res.Post.meta.size === 409363 || res.Post.meta.size === 409449, true);
             assert.equal(res.Post.meta.from, username);
             assert.notEqual(res.Post.meta.ts, null);
             done();
