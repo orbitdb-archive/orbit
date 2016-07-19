@@ -697,7 +697,7 @@ IpfsApis.forEach(function(ipfsApi) {
       beforeEach((done) => {
         orbit = new Orbit(ipfs, { cacheFile: null, maxHistory: 0 });
         orbit.connect(network, username, password)
-          .then((res) => orbit.join(channel))
+          // .then((res) => orbit.join(channel))
           .then(() => done())
           .catch(done)
       });
@@ -712,6 +712,7 @@ IpfsApis.forEach(function(ipfsApi) {
           .then(() => orbit.addFile(channel, path.join(process.cwd(), '/test' , filename)))
           .then((res) => {
             assert.notEqual(res.Post, null);
+            assert.equal(res.Post instanceof Post.Types.File, true);
             assert.equal(res.Hash.startsWith('Qm'), true);
             assert.equal(res.Post.name, filename);
             assert.equal(res.Post.size, 68);
@@ -724,24 +725,60 @@ IpfsApis.forEach(function(ipfsApi) {
           .catch(done)
       });
 
-      it.skip('adds a directory recursively', (done) => {
-        done();
+      it('adds a directory recursively', (done) => {
+        const directory = 'assets';
+        orbit.join(channel)
+          .then(() => orbit.addFile(channel, path.join(process.cwd(), directory)))
+          .then((res) => {
+            assert.notEqual(res.Post, null);
+            assert.equal(res.Post instanceof Post.Types.Directory, true);
+            assert.equal(res.Hash.startsWith('Qm'), true);
+            assert.equal(res.Post.name, directory);
+            assert.equal(res.Post.size, 409449);
+            assert.equal(Object.keys(res.Post.meta).length, 4);
+            assert.equal(res.Post.meta.size, 409449);
+            assert.equal(res.Post.meta.from, username);
+            assert.notEqual(res.Post.meta.ts, null);
+            done();
+          })
+          .catch(done)
       });
 
-      it.skip('throws an error if channel parameter is not given', (done) => {
-        done();
+      it('throws and error if file not found', (done) => {
+        const filename = 'non-existent';
+        orbit.join(channel)
+          .then(() => orbit.addFile(channel, path.join(process.cwd(), '/test' , filename)))
+          .catch((e) => {
+            assert.equal(e, "File not found: /Users/samuli/code/anonymous-networks/test/non-existent");
+            done();
+          })
       });
 
-      it.skip('throws an error if channel parameter is not given', (done) => {
-        done();
+
+      it('throws an error if channel parameter is not given', (done) => {
+        orbit.join(channel)
+          .then(() => orbit.addFile(null, 'empty'))
+          .catch((e) => {
+            assert.equal(e, "Channel not specified");
+            done();
+          })
       });
 
-      it.skip('throws an error if filePath parameter is not given', (done) => {
-        done();
+      it('throws an error if filePath parameter is not given', (done) => {
+        orbit.join(channel)
+          .then(() => orbit.addFile(channel, null))
+          .catch((e) => {
+            assert.equal(e, "Path or Buffer not specified");
+            done();
+          })
       });
 
-      it.skip('throws an error if not joined on channel', (done) => {
-        done();
+      it.only('throws an error if not joined on channel', (done) => {
+        orbit.addFile(channel, 'hello')
+          .catch((e) => {
+            assert.equal(e, `Can't send the message, not joined on #${channel}`);
+            done();
+          })
       });
 
     });

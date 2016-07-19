@@ -176,26 +176,24 @@ class Orbit {
       return Promise.reject(`Channel not specified`);
 
     if(!filePath || filePath === '')
-      return Promise.reject(`Path not specified`);
+      return Promise.reject(`Path or Buffer not specified`);
 
-    const isBuffer = typeof filePath === 'string';
+    const isBuffer = typeof filePath !== 'string';
     const db = this._channels[channel] && this._channels[channel].db ? this._channels[channel].db : null;
 
     if(!db)
       return Promise.reject(`Can't send the message, not joined on #${channel}`);
 
+    console.log(db)
+
     const addToIpfsJs = (ipfs, filePath, isDirectory) => {
       // TODO
       return new Promise((resolve, reject) => {
-        // if(!fs.existsSync(filePath))
-        //   throw "File not found at '" + filePath + "'";
-
-        // this.ipfs.add(filePath, { recursive: recursive }).then((hash) => {
         const data = buffer ? new Buffer(buffer) : filePath;
         this.ipfs.files.add(data).then((hash) => {
           // logger.debug("H, " + JSON.stringify(hash));
           if(isDirectory) {
-            // FIXME: ipfs-api returns an empty dir name as the last hash, ignore this
+            // js-ipfs-api returns an empty dir name as the last hash, ignore this
             if(hash[hash.length-1].Name === '')
               resolve(hash[hash.length-2].Hash);
 
@@ -210,13 +208,13 @@ class Orbit {
     const addToIpfsGo = (ipfs, filePath, isDirectory) => {
       return new Promise((resolve, reject) => {
         if(!fs.existsSync(filePath))
-          throw `File not found: ${filePath}`;
+          reject(`File not found: ${filePath}`);
 
         this.ipfs.add(filePath, { recursive: isDirectory })
           .then((hash) => {
-            logger.debug("H, " + JSON.stringify(hash));
+            // logger.debug("H, " + JSON.stringify(hash));
             if(isDirectory) {
-              // FIXME: ipfs-api returns an empty dir name as the last hash, ignore this
+              // ipfs-api returns an empty dir name as the last hash, ignore this
               if(hash[hash.length-1].Name === '')
                 resolve(hash[hash.length-2].Hash);
 
@@ -230,11 +228,11 @@ class Orbit {
 
     logger.info("Adding file from path '" + filePath + "'");
     let hash, post, size;
-    let isDirectory = isBuffer ? utils.isDirectory(filePath) : false;
-    const add = isBuffer ? addToIpfsGo : addToIpfsJs;
+    let isDirectory = isBuffer ? false : utils.isDirectory(filePath);
+    const add = isBuffer ? addToIpfsJs : addToIpfsGo;
     return add(this.ipfs, filePath, isDirectory)
       .then((res) => hash = res)
-      .then(() => isBuffer ? utils.getFileSize(filePath) : buffer.byteLength)
+      .then(() => isBuffer ? buffer.byteLength : utils.getFileSize(filePath))
       .then((res) => size = res)
       .then(() => logger.info("Added local file '" + filePath + "' as " + hash))
       .then(() => {

@@ -16,7 +16,7 @@ exports.getFileSize = (filePath) => {
   return new Promise((resolve, reject) => {
     const result = fs.statSync(filePath);
     if(result.isDirectory())
-      du(filePath, (err, res) => resolve());
+      du(filePath, (err, res) => resolve(res));
     else
       resolve(result.size);
   });
