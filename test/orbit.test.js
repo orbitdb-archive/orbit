@@ -112,18 +112,18 @@ IpfsApis.forEach(function(ipfsApi) {
       it('creates an instance', () => {
         orbit = new Orbit(ipfs);
         assert.notEqual(orbit, null);
-        assert.notEqual(orbit.ipfs, null);
-        assert.equal(orbit.orbitdb, null);
-        assert.equal(orbit.options.maxHistory, 64);
-        assert.notEqual(orbit.options.cacheFile, null);
+        assert.notEqual(orbit._ipfs, null);
+        assert.equal(orbit._orbitdb, null);
+        assert.equal(orbit._options.maxHistory, 64);
+        assert.notEqual(orbit._options.cacheFile, null);
         assert.equal(Object.keys(orbit._channels).length, 0);
       });
 
       it('creates an instance with options', () => {
         orbit = new Orbit(ipfs, { cacheFile: null, maxHistory: 0 });
-        assert.equal(orbit.orbitdb, null);
-        assert.equal(orbit.options.maxHistory, 0);
-        assert.equal(orbit.options.cacheFile, null);
+        assert.equal(orbit._orbitdb, null);
+        assert.equal(orbit._options.maxHistory, 0);
+        assert.equal(orbit._options.cacheFile, null);
       });
     });
 
@@ -132,12 +132,12 @@ IpfsApis.forEach(function(ipfsApi) {
         orbit = new Orbit(ipfs);
         orbit.connect(network, username, password)
           .then((res) => {
-            assert.notEqual(orbit.orbitdb, null);
-            assert.equal(orbit.orbitdb.events.listenerCount('data'), 1);
-            assert.equal(orbit.orbitdb.events.listenerCount('load'), 1);
-            assert.equal(orbit.orbitdb.events.listenerCount('ready'), 1);
-            assert.equal(orbit.orbitdb.events.listenerCount('sync'), 1);
-            assert.equal(orbit.orbitdb.events.listenerCount('synced'), 1);
+            assert.notEqual(orbit._orbitdb, null);
+            assert.equal(orbit._orbitdb.events.listenerCount('data'), 1);
+            assert.equal(orbit._orbitdb.events.listenerCount('load'), 1);
+            assert.equal(orbit._orbitdb.events.listenerCount('ready'), 1);
+            assert.equal(orbit._orbitdb.events.listenerCount('sync'), 1);
+            assert.equal(orbit._orbitdb.events.listenerCount('synced'), 1);
             orbit.disconnect();
             done();
           })
@@ -149,7 +149,7 @@ IpfsApis.forEach(function(ipfsApi) {
         return orbit.connect('abc', username, password)
           .catch((e) => {
             assert.notEqual(e, null);
-            assert.equal(orbit.orbitdb, null);
+            assert.equal(orbit._orbitdb, null);
             // assert.equal(e.message, 'Invalid Key'); // js-ipfs
             assert.equal(e.message, "Connection refused to Pubsub at 'abc:undefined'"); // js-ipfs-api
           })

@@ -6,9 +6,9 @@ const EventEmitter = require('events').EventEmitter;
 const OrbitDB      = require('orbit-db');
 const Post         = require('ipfs-post');
 const Logger       = require('logplease');
-const logger       = Logger.create("Orbit.Orbit", { color: Logger.Colors.Green });
 const utils        = require('./utils');
-const request      = require('request');
+const logger       = Logger.create("Orbit.Orbit", { color: Logger.Colors.Green });
+// const request      = require('request');
 
 const defaultOptions = {
   cacheFile: path.join(utils.getAppPath(), "/data", "/orbit-db-cache.json"),
@@ -17,24 +17,24 @@ const defaultOptions = {
 
 class Orbit {
   constructor(ipfs, options) {
-    this.ipfs = ipfs;
     this.events = new EventEmitter();
-    this.orbitdb = null;
+    this._ipfs = ipfs;
+    this._orbitdb = null;
     this._channels = {};
     this._peers = [];
-    this.options = {};
-    Object.assign(this.options, defaultOptions);
-    Object.assign(this.options, options);
+    this._options = {};
+    Object.assign(this._options, defaultOptions);
+    Object.assign(this._options, options);
   }
 
   /* Properties */
 
   get user() {
-    return this.orbitdb ? this.orbitdb.user : null;
+    return this._orbitdb ? this._orbitdb.user : null;
   }
 
   get network() {
-    return this.orbitdb ? this.orbitdb.network : null;
+    return this._orbitdb ? this._orbitdb.network : null;
   }
 
   get channels() {
@@ -49,19 +49,19 @@ class Orbit {
 
   connect(network, username, password) {
     const user = { username: username, password: password };
-    logger.debug("Load cache from:", this.options.cacheFile);
+    logger.debug("Load cache from:", this._options.cacheFile);
     logger.info(`Connecting to network '${network}' as '${username}`);
-    return OrbitDB.connect(network, user.username, user.password, this.ipfs)
-      .then((orbit) => {
-        this.orbitdb = orbit
+    return OrbitDB.connect(network, user.username, user.password, this._ipfs)
+      .then((_orbitdb) => {
+        this._orbitdb = _orbitdb;
 
         // Subscribe to database events
-        this.orbitdb.events.on('message', this._handleMessage2.bind(this));
-        this.orbitdb.events.on('data', this._handleMessage.bind(this));
-        this.orbitdb.events.on('load', this._handleStartLoading.bind(this));
-        this.orbitdb.events.on('ready', this._handleDatabaseReady.bind(this));
-        this.orbitdb.events.on('sync', this._handleSync.bind(this));
-        this.orbitdb.events.on('synced', this._handleSynced.bind(this));
+        this._orbitdb.events.on('message', this._handleMessage2.bind(this));
+        this._orbitdb.events.on('data', this._handleMessage.bind(this));
+        this._orbitdb.events.on('load', this._handleStartLoading.bind(this));
+        this._orbitdb.events.on('ready', this._handleDatabaseReady.bind(this));
+        this._orbitdb.events.on('sync', this._handleSync.bind(this));
+        this._orbitdb.events.on('synced', this._handleSynced.bind(this));
 
         // Get peers from libp2p and update the local peers array
         setInterval(() => {
@@ -69,18 +69,17 @@ class Orbit {
         }, 1000);
       })
       .then(() => {
-        logger.info(`Connected to '${this.orbitdb.network.name}' at '${this.orbitdb.network.publishers[0]}' as '${user.username}`)
-        // this.events.emit('network', this.network, this.user);
+        logger.info(`Connected to '${this._orbitdb.network.name}' at '${this._orbitdb.network.publishers[0]}' as '${user.username}`)
         this.events.emit('connected', this.network, this.user);
         return this;
       })
   }
 
   disconnect() {
-    if(this.orbitdb) {
-      logger.warn(`Disconnected from '${this.orbitdb.network.name}' at '${this.orbitdb.network.publishers[0]}'`);
-      this.orbitdb.disconnect();
-      this.orbitdb = null;
+    if(this._orbitdb) {
+      logger.warn(`Disconnected from '${this._orbitdb.network.name}' at '${this._orbitdb.network.publishers[0]}'`);
+      this._orbitdb.disconnect();
+      this._orbitdb = null;
       this._channels = {};
       this.events.emit('disconnected');
     }
@@ -105,11 +104,11 @@ class Orbit {
     };
 
     const dbOptions = {
-      cacheFile: this.options.cacheFile,
-      maxHistory: this.options.maxHistory
+      cacheFile: this._options.cacheFile,
+      maxHistory: this._options.maxHistory
     };
 
-    return this.orbitdb.eventlog(channel, dbOptions)
+    return this._orbitdb.eventlog(channel, dbOptions)
       .then((db) => this._channels[channel].db = db)
       .then(() => this.events.emit('joined', channel))
       .then(() => true)
@@ -140,11 +139,11 @@ class Orbit {
 
     const data = {
       content: message,
-      from: this.orbitdb.user.id
+      from: this._orbitdb.user.id
     };
 
     let post;
-    return Post.create(this.ipfs, Post.Types.Message, data)
+    return Post.create(this._ipfs, Post.Types.Message, data)
       .then((res) => post = res)
       .then(() => db.add(post.Hash))
       .then((hash) => post)
@@ -166,7 +165,7 @@ class Orbit {
   }
 
   getPost(hash) {
-    return this.ipfs.object.get(hash, { enc: 'base58' })
+    return this._ipfs.object.get(hash, { enc: 'base58' })
       .then((res) => JSON.parse(res.toJSON().Data))
   }
 
@@ -183,14 +182,14 @@ class Orbit {
     if(!db)
       return Promise.reject(`Can't send the message, not joined on #${channel}`);
 
-    const addToIpfsJs = (ipfs, filePath, isDirectory) => {
+    const addTo_IpfsJs = (_ipfs, filePath, isDirectory) => {
       // TODO
       return new Promise((resolve, reject) => {
         const data = buffer ? new Buffer(buffer) : filePath;
-        this.ipfs.files.add(data).then((hash) => {
+        this._ipfs.files.add(data).then((hash) => {
           // logger.debug("H, " + JSON.stringify(hash));
           if(isDirectory) {
-            // js-ipfs-api returns an empty dir name as the last hash, ignore this
+            // js-_ipfs-api returns an empty dir name as the last hash, ignore this
             if(hash[hash.length-1].Name === '')
               resolve(hash[hash.length-2].Hash);
 
@@ -202,16 +201,16 @@ class Orbit {
       });
     };
 
-    const addToIpfsGo = (ipfs, filePath, isDirectory) => {
+    const addTo_IpfsGo = (_ipfs, filePath, isDirectory) => {
       return new Promise((resolve, reject) => {
         if(!fs.existsSync(filePath))
           reject(`File not found: ${filePath}`);
 
-        this.ipfs.add(filePath, { recursive: isDirectory })
+        this._ipfs.add(filePath, { recursive: isDirectory })
           .then((hash) => {
             // logger.debug("Added: " + JSON.stringify(hash));
             if(isDirectory) {
-              // ipfs-api returns an empty dir name as the last hash, ignore this
+              // _ipfs-api returns an empty dir name as the last hash, ignore this
               if(hash[hash.length-1].Name === '')
                 resolve(hash[hash.length-2].Hash);
 
@@ -226,8 +225,8 @@ class Orbit {
     logger.info("Adding file from path '" + filePath + "'");
     let hash, post, size;
     let isDirectory = isBuffer ? false : utils.isDirectory(filePath);
-    const add = isBuffer ? addToIpfsJs : addToIpfsGo;
-    return add(this.ipfs, filePath, isDirectory)
+    const add = isBuffer ? addTo_IpfsJs : addTo_IpfsGo;
+    return add(this._ipfs, filePath, isDirectory)
       .then((res) => hash = res)
       .then(() => isBuffer ? buffer.byteLength : utils.getFileSize(filePath))
       .then((res) => size = res)
@@ -239,27 +238,26 @@ class Orbit {
           name: filePath.split("/").pop(),
           hash: hash,
           size: size,
-          from: this.orbitdb.user.id
+          from: this._orbitdb.user.id
         };
-        return Post.create(this.ipfs, type, data);
+        return Post.create(this._ipfs, type, data);
       })
       .then((res) => post = res)
       .then(() => db.add(post))
       .then(() => post)
   }
 
-
   getFile(hash) {
     // Use if .cat doesn't seem to work
     // return new Promise((resolve, reject) => {
-    //   const stream = request('http://localhost:8080/ipfs/' + hash);
+    //   const stream = request('http://localhost:8080/_ipfs/' + hash);
     //   resolve(stream);
     // });
-    return this.ipfs.cat(hash);
+    return this._ipfs.cat(hash);
   }
 
   getDirectory(hash) {
-    return this.ipfs.ls(hash).then((res) => res.Objects[0].Links);
+    return this._ipfs.ls(hash).then((res) => res.Objects[0].Links);
   }
 
   /* Private methods */
@@ -289,7 +287,7 @@ class Orbit {
     if(this._channels[channel]) {
       this._channels[channel].state.loading = true;
       this.events.emit('load', channel);
-      this.events.emit('state.updated', this.channels);
+      this.events.emit('update', this.channels);
     }
   }
 
@@ -298,7 +296,7 @@ class Orbit {
     if(this._channels[db.dbname]) {
       this._channels[db.dbname].state.loading = false;
       this.events.emit('ready', db.dbname);
-      this.events.emit('state.updated', this.channels);
+      this.events.emit('update', this.channels);
     }
   }
 
@@ -307,7 +305,7 @@ class Orbit {
     if(this._channels[channel]) {
       this._channels[channel].state.syncing += 1;
       this.events.emit('sync', channel);
-      this.events.emit('state.updated', this.channels);
+      this.events.emit('update', this.channels);
     }
   }
 
@@ -317,24 +315,24 @@ class Orbit {
       this._channels[channel].state.syncing -= 1;
       this._channels[channel].state.syncing = Math.max(0, this._channels[channel].state.syncing);
       this.events.emit('synced', channel, items);
-      this.events.emit('state.updated', this.channels);
+      this.events.emit('update', this.channels);
     }
   }
 
   _updateSwarmPeers() {
-    if(this.ipfs.libp2p && this.ipfs.libp2p.swarm.peers) {
-      // js-ipfs
+    if(this._ipfs.libp2p && this._ipfs.libp2p.swarm.peers) {
+      // js-_ipfs
       return new Promise((resolve, reject) => {
-        this.ipfs.libp2p.swarm.peers((err, peers) => {
+        this._ipfs.libp2p.swarm.peers((err, peers) => {
           if(err) reject(err);
           resolve(peers);
         });
       })
       .then((peers) => Object.keys(peers).map((e) => peers[e].multiaddrs[0].toString()))
     } else {
-      // js-ipfs-api
+      // js-_ipfs-api
       return new Promise((resolve, reject) => {
-        return this.ipfs.swarm.peers((err, res) => {
+        return this._ipfs.swarm.peers((err, res) => {
           if(err) reject(err);
           resolve(res);
         });
