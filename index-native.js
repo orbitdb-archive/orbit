@@ -9,7 +9,7 @@ const Menu   = electron.Menu;
 const path   = require('path');
 const Logger = require('logplease');
 const logger = Logger.create("Orbit.Index-Native");
-const main   = require('./src/main');
+// const main   = require('./src/main');
 const IPFSAPI      = require('ipfs-api')
 
 // require('crash-reporter').start();
