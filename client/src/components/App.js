@@ -69,23 +69,11 @@ var App = React.createClass({
   },
   componentDidMount: function() {
     const signalServerAddress = this.props.location.query.local ? '0.0.0.0' : '178.62.241.75';
+    const ipfsApi = hasIPFS ? new window.ipfs() : null; // Main.start creates js-ipfs instance if needed
+    const dataPath = '/tmp/orbit-demo-2-';
 
-    if(!hasIPFS && !orbit) {
-      Main.start(null, '/tmp/orbit-demo-2-', signalServerAddress).then((res) => {
-        logger.info("Orbit started");
-        logger.debug("PeerId:", res.peerId.ID);
-        orbit = res.orbit;
-        AppActions.initialize(orbit);
-        NetworkActions.updateNetwork(null) // start the App
-      })
-      .catch((e) => {
-        logger.error(e.message);
-        logger.error("Stack trace:\n", e.stack);
-      });
-    } else if(hasIPFS) {
-      const ipfsApi = new window.ipfs();
-      console.log("++++", ipfsApi);
-      Main.start(ipfsApi, '/tmp/orbit-demo-2-', signalServerAddress).then((res) => {
+    if(!orbit) {
+      Main.start(ipfsApi, dataPath, signalServerAddress).then((res) => {
         logger.info("Orbit started");
         logger.debug("PeerId:", res.peerId.ID);
         orbit = res.orbit;
