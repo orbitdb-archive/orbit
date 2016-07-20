@@ -8,10 +8,9 @@ const Post         = require('ipfs-post');
 const Logger       = require('logplease');
 const utils        = require('./utils');
 const logger       = Logger.create("Orbit.Orbit", { color: Logger.Colors.Green });
-// const request      = require('request');
 
 const defaultOptions = {
-  cacheFile: path.join(utils.getAppPath(), "/data", "/orbit-db-cache.json"),
+  cacheFile: path.join(utils.getAppPath(), "/data", "/orbit-db-cache.json"), // path to orbit-db cache file
   maxHistory: 64 // how many messages to retrieve from history on joining a channel
 };
 
