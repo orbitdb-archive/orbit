@@ -182,7 +182,7 @@ class Orbit {
     if(!db)
       return Promise.reject(`Can't send the message, not joined on #${channel}`);
 
-    const addTo_IpfsJs = (_ipfs, filePath, isDirectory) => {
+    const addToIpfsJs = (_ipfs, filePath, isDirectory) => {
       // TODO
       return new Promise((resolve, reject) => {
         const data = buffer ? new Buffer(buffer) : filePath;
@@ -201,7 +201,7 @@ class Orbit {
       });
     };
 
-    const addTo_IpfsGo = (_ipfs, filePath, isDirectory) => {
+    const addToIpfsGo = (_ipfs, filePath, isDirectory) => {
       return new Promise((resolve, reject) => {
         if(!fs.existsSync(filePath))
           reject(`File not found: ${filePath}`);
@@ -225,7 +225,7 @@ class Orbit {
     logger.info("Adding file from path '" + filePath + "'");
     let hash, post, size;
     let isDirectory = isBuffer ? false : utils.isDirectory(filePath);
-    const add = isBuffer ? addTo_IpfsJs : addTo_IpfsGo;
+    const add = isBuffer ? addToIpfsJs : addToIpfsGo;
     return add(this._ipfs, filePath, isDirectory)
       .then((res) => hash = res)
       .then(() => isBuffer ? buffer.byteLength : utils.getFileSize(filePath))
