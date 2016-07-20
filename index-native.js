@@ -2,15 +2,17 @@
 
 if(process.env.ENV === 'dev') delete process.versions['electron'];
 
-const app    = require('app');
-const Window = require('browser-window');
-const Menu   = require('menu');
+const electron = require('electron');
+const app    = electron.app;
+const Window = electron.BrowserWindow;
+const Menu   = electron.Menu;
 const path   = require('path');
 const Logger = require('logplease');
 const logger = Logger.create("Orbit.Index-Native");
 const main   = require('./src/main');
+const IPFSAPI      = require('ipfs-api')
 
-require('crash-reporter').start();
+// require('crash-reporter').start();
 
 Logger.setLogfile(path.resolve(process.env.ENV === 'dev' ? process.cwd() : process.resourcesPath + "/app/", 'debug.log'));
 logger.debug("Run index-native.js");
@@ -58,35 +60,37 @@ app.on('ready', () => {
   try {
     logger.info("Starting the systems");
 
-    main.start().then((res) => {
-      events = res;
+    // main.start().then((res) => {
+      // events = res;
+      events = null;
       logger.info("Systems started");
 
       Menu.setApplicationMenu(menu);
 
-      events.on('network', (orbit) => {
-        if(orbit)
-          setWindowToNormal();
-        else
-          setWindowToLogin();
-      });
+      // events.on('network', (orbit) => {
+      //   if(orbit)
+      //     setWindowToNormal();
+      //   else
+      //     setWindowToLogin();
+      // });
 
-      events.on('connected', () => {
-        logger.error("connected");
-        setWindowToNormal();
-      });
+      // events.on('connected', () => {
+      //   logger.error("connected");
+      //   setWindowToNormal();
+      // });
 
-      events.on('disconnect', () => {
-        logger.error("disconnected");
-        setWindowToLogin();
-      });
+      // events.on('disconnect', () => {
+      //   logger.error("disconnected");
+      //   setWindowToLogin();
+      // });
 
       mainWindow = new Window(connectWindowSize);
 
       if(process.env.ENV === 'dev')
-        mainWindow.loadUrl('http://localhost:8000/webpack-dev-server/');
+        mainWindow.loadURL('file://' + __dirname + '/client/dist/index.html?electron=true');
+        // mainWindow.loadURL('http://localhost:8000/webpack-dev-server/');
       else
-        mainWindow.loadUrl('file://' + __dirname + '/client/dist/index.html');
+        mainWindow.loadURL('file://' + __dirname + '/client/dist/index.html?electron=true');
 
       const getUserHome = () => {
         return process.env[(process.platform == 'win32') ? 'USERPROFILE' : 'HOME'];
@@ -97,7 +101,7 @@ app.on('ready', () => {
       mainWindow.on('closed', () => {
         mainWindow = null;
       });
-    });
+    // });
   } catch(e) {
     logger.error("Error in index-native:", e);
   }

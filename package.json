@@ -20,7 +20,7 @@
   },
   "devDependencies": {
     "bluebird": "^3.4.1",
-    "electron-prebuilt": "0.34.1",
+    "electron-prebuilt": "1.2.7",
     "grunt": "^1.0.1",
     "grunt-chmod": "^1.1.1",
     "grunt-contrib-clean": "^1.0.0",
