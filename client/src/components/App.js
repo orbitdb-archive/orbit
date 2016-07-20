@@ -40,7 +40,8 @@ import 'styles/Scrollbars.scss';
 import 'highlight.js/styles/hybrid.css';
 
 import Main from '../main';
-import Protolol from '../assets/protolol';
+
+const logger = Logger.create('App', { color: Logger.Colors.Red });
 
 const views = {
   "Index": "/",
@@ -50,51 +51,9 @@ const views = {
   "Channel": "/channel/"
 };
 
-const logger = Logger.create('App', { color: Logger.Colors.Red });
-
+const hasIPFS = !!window.ipfs;
+console.log("hasIPFS:", hasIPFS)
 let orbit;
-
-/* ENTRY POINT */
-// Main.start().then((res) => {
-//   logger.info("Orbit started");
-//   logger.debug("PeerId:", res.peerId.ID);
-//   orbit = res.orbit;
-//   AppActions.initialize(orbit);
-//   NetworkActions.updateNetwork(null) // start the App
-// })
-// .catch((e) => {
-//   logger.error(e.message);
-//   logger.error("Stack trace:\n", e.stack);
-// });
-
-var Skynet = React.createClass({
-  componentDidMount: function() {
-    const delay = (this.props.params.delay ? this.props.params.delay : 2) * 1000;
-    const username = this.props.params.username ? this.props.params.username : 0;
-
-    setTimeout(() => {
-      Main.start(username, '/tmp/orbit-demo-' + username, '127.0.0.1').then((res) => {
-        logger.info("Orbit started");
-        logger.debug("PeerId:", res.peerId.ID);
-        orbit = res.orbit;
-        AppActions.initialize(orbit);
-        NetworkActions.updateNetwork(null) // start the App
-        SkynetActions.start(username);
-      })
-      .catch((e) => {
-        logger.error(e.message);
-        logger.error("Stack trace:\n", e.stack);
-      });
-    }, delay);
-  },
-  render: function() {
-    return (
-      <div className="Skynet">
-      Loading Skynet...
-      </div>
-    );
-  }
-});
 
 var App = React.createClass({
   getInitialState: function() {
@@ -109,14 +68,10 @@ var App = React.createClass({
     };
   },
   componentDidMount: function() {
-    // console.log("------------------------------", this.props, this.props.location.query.local)
-    // console.log(this.props.params, this.props.query);
-    //   orbit.connect(null, this.props.params.username, '');
-
     const signalServerAddress = this.props.location.query.local ? '0.0.0.0' : '178.62.241.75';
 
-    if(!orbit) {
-      Main.start(null, '/tmp/orbit-demo-2-', signalServerAddress).then((res) => {
+    if(!hasIPFS && !orbit) {
+      Main.start(true, '/tmp/orbit-demo-2-', signalServerAddress).then((res) => {
         logger.info("Orbit started");
         logger.debug("PeerId:", res.peerId.ID);
         orbit = res.orbit;
@@ -127,6 +82,8 @@ var App = React.createClass({
         logger.error(e.message);
         logger.error("Stack trace:\n", e.stack);
       });
+    } else if(hasIPFS) {
+      console.log("++++", new window.ipfs());
     }
 
     document.title = 'Orbit';
@@ -327,7 +284,6 @@ var App = React.createClass({
 render(
   <Router history={hashHistory}>
     <Route path="/" component={App}>
-      <Route path="skynet/:username/:delay" component={Skynet}/>
       <Route path="channel/:channel" component={ChannelView}/>
       <Route path="settings" component={SettingsView}/>
       <Route path="swarm" component={SwarmView}/>

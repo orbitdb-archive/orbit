@@ -54,7 +54,13 @@
   <![endif]-->
   <div id="content">
   </div>
-
+  <script type="text/javascript">
+    // Check if we're running in Electron
+    const isElectron = typeof require !== 'undefined';
+    console.log("isElectron:", isElectron);
+    if(isElectron)
+      window.ipfs = require('electron').remote.require('ipfs-api');
+  </script>
   <script>
     __REACT_DEVTOOLS_GLOBAL_HOOK__ = parent.__REACT_DEVTOOLS_GLOBAL_HOOK__
   </script>
