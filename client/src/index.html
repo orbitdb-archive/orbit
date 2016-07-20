@@ -7,8 +7,6 @@
   <meta name="description" content="">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 
-  <!-- <script src="lib/socket.io.min.js"></script> -->
-
   <style>
     html, body{
       background: #000000;
@@ -56,10 +54,12 @@
   </div>
   <script type="text/javascript">
     // Check if we're running in Electron
-    const isElectron = typeof require !== 'undefined';
+    const isElectron = !(typeof require === 'undefined' && typeof parent.require === 'undefined');
     console.log("isElectron:", isElectron);
-    if(isElectron)
-      window.ipfs = require('electron').remote.require('ipfs-api');
+    if(isElectron) {
+      const req = typeof require !== 'undefined' ? require : parent.require;
+      window.ipfs = req('electron').remote.require('ipfs-api');
+    }
   </script>
   <script>
     __REACT_DEVTOOLS_GLOBAL_HOOK__ = parent.__REACT_DEVTOOLS_GLOBAL_HOOK__

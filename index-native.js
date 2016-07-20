@@ -87,10 +87,9 @@ app.on('ready', () => {
       mainWindow = new Window(connectWindowSize);
 
       if(process.env.ENV === 'dev')
-        mainWindow.loadURL('file://' + __dirname + '/client/dist/index.html?electron=true');
-        // mainWindow.loadURL('http://localhost:8000/webpack-dev-server/');
+        mainWindow.loadURL('http://localhost:8000/webpack-dev-server/');
       else
-        mainWindow.loadURL('file://' + __dirname + '/client/dist/index.html?electron=true');
+        mainWindow.loadURL('file://' + __dirname + '/client/dist/index.html');
 
       const getUserHome = () => {
         return process.env[(process.platform == 'win32') ? 'USERPROFILE' : 'HOME'];
