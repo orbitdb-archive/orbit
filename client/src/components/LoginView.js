@@ -6,7 +6,7 @@ import NetworkStore from 'stores/NetworkStore';
 import NetworkActions from "actions/NetworkActions";
 import BackgroundAnimation from 'components/BackgroundAnimation';
 import Themes from 'app/Themes';
-import Halogen from 'halogen';
+import DotLoader from 'components/plugins/DotLoader';
 import 'styles/LoginView.scss';
 
 var maxNicknameLength = 32;
@@ -92,14 +92,15 @@ class LoginView extends React.Component{
     if(this.state.connected)
       return (<div></div>);
 
-    var color = "rgba(140, 80, 220, 0.7)";
+    // var color = "rgba(100, 48, 128, 0.5)";
+    var color = "rgba(180, 180, 180, 0.5)";
     var errorMsg   = this.state.error ? <div className="error">{this.state.error}</div> : "";
     var passwordFieldStyle = this.state.displayPasswordField ? "row" : "hidden";
 
     var form = !this.state.connecting ? (
       <TransitionGroup transitionName="loginScreenAnimation" transitionAppear={true} component="div" className="inputs" transitionAppearTimeout={5000} transitionEnterTimeout={5000} transitionLeaveTimeout={5000}>
         <div className="row">
-          <span className="label">Network</span><input type="text" ref="network" defaultValue="QmRB8x6aErtKTFHDNRiViixSKYwW1DbfcvJHaZy1hnRzLM" style={this.state.theme}/>
+          <span className="label">Network</span><input type="text" ref="network" defaultValue="localhost:3333" style={this.state.theme}/>
         </div>
         <div className="row">
           <span className="label">Nickname</span>
@@ -127,7 +128,9 @@ class LoginView extends React.Component{
       </TransitionGroup>
     ) : (
       <div className="centerrow" style={this.state.theme}>
-        <Halogen.DotLoader color={color}/>
+        <div style={{ WebkitTransform: 'translateY(-132px)'}}>
+          <DotLoader size="128px" ballSize="16px" color={color}/>
+        </div>
       </div>
     );
 
