@@ -722,10 +722,11 @@ IpfsApis.forEach(function(ipfsApi) {
 
       it('throws and error if file not found', (done) => {
         const filename = 'non-existent';
+        const filePath = path.join(process.cwd(), '/test' , filename);
         orbit.join(channel)
-          .then(() => orbit.addFile(channel, path.join(process.cwd(), '/test' , filename)))
+          .then(() => orbit.addFile(channel, filePath))
           .catch((e) => {
-            assert.equal(e, "File not found: /Users/samuli/code/anonymous-networks/test/non-existent");
+            assert.equal(e, `File not found: ${filePath}`);
             done();
           })
       });
