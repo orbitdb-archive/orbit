@@ -22,35 +22,44 @@ const dataPath = path.join(utils.getAppPath(), "/data");
 const events = new EventEmitter();
 let ipfs, orbit, peerId;
 
-const start = exports.start = (startIpfs, repositoryPath, signalServerAddress) => {
+const start = exports.start = (ipfsApiInstance, repositoryPath, signalServerAddress) => {
   // if(!id) id = 0;//new Date().getTime();
-  const startTime = new Date().getTime();
-  logger.info("Starting IPFS...");
-  return utils.ipfsDaemon(IPFS, repositoryPath, signalServerAddress)
-    .then((res) => {
-      ipfs = res;
-      orbit = new Orbit(ipfs, { dataPath: dataPath });
-    })
-    .then(() => {
-      return new Promise((resolve, reject) => {
-        ipfs.id((err, id) => {
-          if (err) return reject(err);
-          resolve(id);
-        });
+  if(ipfsApiInstance) {
+    orbit = new Orbit(ipfsApiInstance, { dataPath: dataPath });
+    return ipfsApiInstance.id()
+      .then((id) => {
+        console.log(id);
+        return { orbit: orbit, peerId: id };
       });
-    })
-    .then((res) => {
-      peerId = res;
-      // logger.info(`IPFS Node started: ${id.Addresses}/ipfs/${id.ID}`);
-      // console.log();
-      // console.log(`Orbit-${id} ^^^^^^^`);
-      // console.log(peerId.Addresses[0]);
-      // console.log();
-      return;
-    })
-    .then(() => {
-      const endTime = new Date().getTime();
-      logger.debug('Startup time: ' + (endTime - startTime) + "ms");
-      return { orbit: orbit, peerId: peerId };
-    })
+  } else {
+    const startTime = new Date().getTime();
+    logger.info("Starting IPFS...");
+    return utils.ipfsDaemon(IPFS, repositoryPath, signalServerAddress)
+      .then((res) => {
+        ipfs = res;
+        orbit = new Orbit(ipfs, { dataPath: dataPath });
+      })
+      .then(() => {
+        return new Promise((resolve, reject) => {
+          ipfs.id((err, id) => {
+            if (err) return reject(err);
+            resolve(id);
+          });
+        });
+      })
+      .then((res) => {
+        peerId = res;
+        // logger.info(`IPFS Node started: ${id.Addresses}/ipfs/${id.ID}`);
+        // console.log();
+        // console.log(`Orbit-${id} ^^^^^^^`);
+        // console.log(peerId.Addresses[0]);
+        // console.log();
+        return;
+      })
+      .then(() => {
+        const endTime = new Date().getTime();
+        logger.debug('Startup time: ' + (endTime - startTime) + "ms");
+        return { orbit: orbit, peerId: peerId };
+      })
+  }
 };

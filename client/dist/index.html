@@ -53,7 +53,7 @@
   <div id="content">
   </div>
   <script type="text/javascript">
-    // Check if we're running in Electron
+    // Check if we're running in Electron (parent.require is for webpack devserver iframe check)
     const isElectron = !(typeof require === 'undefined' && typeof parent.require === 'undefined');
     console.log("isElectron:", isElectron);
     if(isElectron) {

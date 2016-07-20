@@ -129,7 +129,7 @@ class LoginView extends React.Component{
     ) : (
       <div className="centerrow" style={this.state.theme}>
         <div style={{ WebkitTransform: 'translateY(-132px)'}}>
-          <DotLoader size="128px" ballSize="16px" color={color}/>
+          <DotLoader size="128px" ballSize="12px" color={color}/>
         </div>
       </div>
     );
