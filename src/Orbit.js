@@ -7,7 +7,7 @@ const OrbitDB      = require('orbit-db');
 const Post         = require('ipfs-post');
 const Logger       = require('logplease');
 const utils        = require('./utils');
-const logger       = Logger.create("Orbit.Orbit", { color: Logger.Colors.Green });
+const logger       = Logger.create("Orbit", { color: Logger.Colors.Green });
 
 const defaultOptions = {
   cacheFile: path.join(utils.getAppPath(), "/data", "/orbit-db-cache.json"), // path to orbit-db cache file
@@ -21,8 +21,7 @@ class Orbit {
     this._orbitdb = null;
     this._channels = {};
     this._peers = [];
-    this._options = {};
-    Object.assign(this._options, defaultOptions);
+    this._options = defaultOptions;
     Object.assign(this._options, options);
   }
 
@@ -50,6 +49,7 @@ class Orbit {
     const user = { username: username, password: password };
     logger.debug("Load cache from:", this._options.cacheFile);
     logger.info(`Connecting to network '${network}' as '${username}`);
+
     return OrbitDB.connect(network, user.username, user.password, this._ipfs)
       .then((_orbitdb) => {
         this._orbitdb = _orbitdb;
@@ -122,6 +122,10 @@ class Orbit {
     this.events.emit('left', channel);
   }
 
+  _getChannelFeed(channel) {
+    return this._channels[channel] && this._channels[channel].db ? this._channels[channel].db : null;
+  }
+
   send(channel, message) {
     if(!channel || channel === '')
       return Promise.reject(`Channel not specified`);
@@ -129,10 +133,10 @@ class Orbit {
     if(!message || message === '')
       return Promise.reject(`Can't send an empty message`);
 
-    const db = this._channels[channel] && this._channels[channel].db ? this._channels[channel].db : null;
+    const db = this._getChannelFeed(channel);
 
     if(!db)
-      return Promise.reject(`Can't send the message, not joined on #${channel}`);
+      return Promise.reject(`Can't send the message, haven't joined #${channel}`);
 
     logger.debug(`Send message to #${channel}: ${message}`);
 
@@ -144,13 +148,16 @@ class Orbit {
     let post;
     return Post.create(this._ipfs, Post.Types.Message, data)
       .then((res) => post = res)
+      .then(() => logger.debug("1"))
       .then(() => db.add(post.Hash))
       .then((hash) => post)
   }
 
   get(channel, lessThanHash, greaterThanHash, amount) {
-    const db = this._channels[channel] && this._channels[channel].db ? this._channels[channel].db : null;
-    if(!db) throw `Not joined on #${channel}`;
+    const db = this._getChannelFeed(channel);
+
+    if(!db)
+      throw `Haven't joined #${channel}`;
 
     logger.debug(`Get messages from #${channel}: ${lessThanHash}, ${greaterThanHash}, ${amount}`)
 
@@ -176,7 +183,7 @@ class Orbit {
       return Promise.reject(`Path or Buffer not specified`);
 
     const isBuffer = typeof filePath !== 'string';
-    const db = this._channels[channel] && this._channels[channel].db ? this._channels[channel].db : null;
+    const db = this._getChannelFeed(channel);
 
     if(!db)
       return Promise.reject(`Can't send the message, not joined on #${channel}`);
