@@ -18,8 +18,8 @@ var NetworkStore = Reflux.createStore({
   },
   onInitialize: function(orbit) {
     this.orbit = orbit;
-    this.orbit.events.on('network', (network) => {
-      logger.info("orbit.event: network", network)
+    this.orbit.events.on('connected', (network, user) => {
+      logger.info("orbit.event: network", network, user)
       this._updateNetwork(network)
     });
     this._updateNetwork(null)
@@ -31,40 +31,18 @@ var NetworkStore = Reflux.createStore({
     this.trigger(this.network);
     // NetworkActions.updateUser(network ? network.user : null);
   },
-  onSocketConnected: function(socket) {
-    logger.debug("connected");
-    this.socket = socket;
-    this.socket.on('orbit.error', (err) => {
-      logger.error("Register error");
-      console.log(err);
-      NetworkActions.registerError(err);
-    });
-  },
-  onSocketDisconnected: function() {
-    this.socket.removeAllListeners('orbit.error');
-    this.socket = null;
-    this.network = null;
-    this.trigger(this.network);
-  },
   onConnect: function(host, username, password) {
-    // if(!this.socket) {
-    //   console.error("Socket not connected");
-    //   return;
-    // }
     logger.debug("Connect to " + host + " as " + username);
-    // this.socket.emit('register', host, username, password); // TODO: rename event to 'connect'
     this.orbit.connect(host, username, password);
   },
   onDisconnect: function() {
     logger.debug("Disconnect");
-    // this.socket.emit('network.disconnect');
     this.init();
     this.trigger(this.network);
   },
   onGetPeers: function(callback) {
     // logger.debug("swarm.get");
     if(this.orbit) this.orbit.getSwarmPeers().then(callback);
-    if(this.socket) this.socket.emit('swarm.get', callback);
   }
 });
 

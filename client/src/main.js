@@ -25,6 +25,8 @@ let ipfs, orbit, peerId;
 const start = exports.start = (ipfsApiInstance, repositoryPath, signalServerAddress) => {
   // if(!id) id = 0;//new Date().getTime();
   if(ipfsApiInstance) {
+    // const i = new window.IpfsApi();
+    // const i = new IPFAPI();
     orbit = new Orbit(ipfsApiInstance, { dataPath: dataPath });
     return ipfsApiInstance.id()
       .then((id) => {

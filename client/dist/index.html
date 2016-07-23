@@ -58,7 +58,9 @@
     console.log("isElectron:", isElectron);
     if(isElectron) {
       const req = typeof require !== 'undefined' ? require : parent.require;
-      window.ipfs = req('electron').remote.require('ipfs-api');
+      const remote = req('electron').remote;
+      window.ipfs = remote.getGlobal('ipfsInstance');
+      window.ipcRenderer = req('electron').ipcRenderer;
     }
   </script>
   <script>

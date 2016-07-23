@@ -52,6 +52,7 @@ const views = {
 };
 
 const hasIPFS = !!window.ipfs;
+// const hasIPFS = !!window.ipcRenderer;
 console.log("hasIPFS:", hasIPFS)
 let orbit;
 
@@ -69,7 +70,8 @@ var App = React.createClass({
   },
   componentDidMount: function() {
     const signalServerAddress = this.props.location.query.local ? '0.0.0.0' : '178.62.241.75';
-    const ipfsApi = hasIPFS ? new window.ipfs() : null; // Main.start creates js-ipfs instance if needed
+    const ipfsApi = hasIPFS ? window.ipfs : null; // Main.start creates js-ipfs instance if needed
+    const ipcRenderer = hasIPFS ? window.ipcRenderer : null;
     const dataPath = '/tmp/orbit-demo-2-';
 
     if(!orbit) {
@@ -77,6 +79,12 @@ var App = React.createClass({
         logger.info("Orbit started");
         logger.debug("PeerId:", res.peerId.ID);
         orbit = res.orbit;
+
+        if(hasIPFS && ipcRenderer) {
+          orbit.events.on('connected', (network, user) => ipcRenderer.send('connected', network, user));
+          orbit.events.on('disconnected', () => ipcRenderer.send('disconnected'));
+        }
+
         AppActions.initialize(orbit);
         NetworkActions.updateNetwork(null) // start the App
       })
@@ -198,7 +206,7 @@ var App = React.createClass({
     //   channels.push({ name: channel });
     //   localStorage.setItem(channelsKey, JSON.stringify(channels));
     // }
-    if(channel === "skynet") {
+    // if(channel === "skynet") {
       // ChannelActions.sendMessage("skynet", "/me was summoned");
       // setInterval(() => {
       //   const i = Math.floor((Math.random() * Protolol.length));
@@ -207,7 +215,7 @@ var App = React.createClass({
       //   const text = line.join(" ").replace('#protolol', ''); // remove '#protolol'
       //   ChannelActions.sendMessage("skynet", text);
       // }, 2000);
-    }
+    // }
   },
   onLeaveChannel: function(channel) {
     const channelsKey = this._makeChannelsKey(this.state.user.username, this.state.networkName);
@@ -234,9 +242,10 @@ var App = React.createClass({
     this.setState({ panelOpen: true });
   },
   disconnect: function() {
+    orbit.disconnect();
     this.closePanel();
     NetworkActions.disconnect();
-    this.setState({ user: null });
+    this.setState({ user: orbit.user });
     AppActions.setLocation("Connect");
   },
   onDaemonDisconnected: function() {

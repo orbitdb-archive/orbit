@@ -53,13 +53,22 @@ const MessageStore = Reflux.createStore({
       logger.info("New messages in #" + channel)
       self.loadMessages(channel, null, null, messagesBatchSize);
     });
+
+    this.orbit.events.on('message', (channel, hash) => {
+      logger.info("New messages in #" + channel)
+      self.loadMessages(channel, null, null, messagesBatchSize);
+    });
+
     this.orbit.events.on('load', (channel) => {
     });
+
     this.orbit.events.on('ready', (channel) => {
       this.channels[channel].canLoadMore = true;
     });
+
     this.orbit.events.on('sync', (channel) => {
     });
+
     this.orbit.events.on('synced', (channel, items) => {
       logger.info("Channel synced: #" + channel)
       self.channels[channel].canLoadMore = true;
@@ -126,34 +135,34 @@ const MessageStore = Reflux.createStore({
   },
   onSocketConnected: function(socket) {
     logger.debug("connected");
-    this.socket = socket;
+    // this.socket = socket;
 
-    // Handle new messages
-    this.socket.on('data', (channel, hash) => {
-      // console.log("DATA", channel, hash);
-      logger.debug("--> new messages in #" + channel);
-      this.loadMessages(channel, null, null, messagesBatchSize);
-    });
+    // // Handle new messages
+    // this.socket.on('data', (channel, hash) => {
+    //   // console.log("DATA", channel, hash);
+    //   logger.debug("--> new messages in #" + channel);
+    //   this.loadMessages(channel, null, null, messagesBatchSize);
+    // });
 
-    // Handle DB loading state
-    this.socket.on('load', (channel) => {
-      // console.log("LOAD", channel);
-      // this.channels[channel].canLoadMore = false;
-    });
-    this.socket.on('ready', (channel) => {
-      // console.log("READY", channel);
-      // this.channels[channel].canLoadMore = true;
-    });
-    this.socket.on('sync', (channel) => {
-      // console.log("SYNC", channel);
-      // this.channels[channel].canLoadMore = false;
-    });
-    this.socket.on('synced', (channel, items) => {
-      console.log("SYNCED", channel, items);
-      this.channels[channel].canLoadMore = true;
-      if(this.channels[channel] && !this.channels[channel].loading)
-        this.loadMessages(channel, null, null, messagesBatchSize);
-    });
+    // // Handle DB loading state
+    // this.socket.on('load', (channel) => {
+    //   // console.log("LOAD", channel);
+    //   // this.channels[channel].canLoadMore = false;
+    // });
+    // this.socket.on('ready', (channel) => {
+    //   // console.log("READY", channel);
+    //   // this.channels[channel].canLoadMore = true;
+    // });
+    // this.socket.on('sync', (channel) => {
+    //   // console.log("SYNC", channel);
+    //   // this.channels[channel].canLoadMore = false;
+    // });
+    // this.socket.on('synced', (channel, items) => {
+    //   console.log("SYNCED", channel, items);
+    //   this.channels[channel].canLoadMore = true;
+    //   if(this.channels[channel] && !this.channels[channel].loading)
+    //     this.loadMessages(channel, null, null, messagesBatchSize);
+    // });
   },
   onSocketDisconnected: function() {
     this.socket.removeAllListeners('messages');
@@ -183,7 +192,7 @@ const MessageStore = Reflux.createStore({
       this.trigger(channel, this.channels[channel].messages);
   },
   onLoadMoreMessages: function(channel: string) {
-    console.log("TRY LOAD", channel, this.currentChannel)
+    // console.log("TRY LOAD", channel, this.currentChannel)
     if(channel !== this.currentChannel)
       return;
 
@@ -199,11 +208,10 @@ const MessageStore = Reflux.createStore({
     logger.debug("--> GET MESSAGES #" + channel + ", " + olderThanHash + " " + newerThanHash  + " " + amount);
     this.channels[channel].loading = true;
     UIActions.startLoading(channel, "loadmessages", "Loading messages...");
-    this.orbit.get(channel, olderThanHash, newerThanHash, amount, (messages) => {
-      this._addMessages(channel, messages, olderThanHash !== null);
-      this.channels[channel].loading = false;
-      UIActions.stopLoading(channel, "loadmessages");
-    });
+    const messages = this.orbit.get(channel, olderThanHash, newerThanHash, amount);
+    this._addMessages(channel, messages, olderThanHash !== null);
+    this.channels[channel].loading = false;
+    UIActions.stopLoading(channel, "loadmessages");
     // this.socket.emit('channel.get', channel, olderThanHash, newerThanHash, amount, (c, messages) => {
     //   this._addMessages(channel, messages, olderThanHash !== null);
     //   this.channels[channel].loading = false;
@@ -267,38 +275,26 @@ const MessageStore = Reflux.createStore({
     });
   },
   onLoadPost: function(hash: string, callback) {
-    // if(!this.socket)
-    //   return;
-    logger.debug("LOAD POST", hash)
     if(!this.posts[hash]) {
-      this.orbit.getPost(hash).then((data) => {
-        this.posts[hash] = data;
-        callback(null, data);
-
-      })
-      // this.orbit.getPost(hash, (err, data) => {
-      //   logger.debug("POST LOADED", hash, data)
-      // // this.socket.emit('post.get', hash, (err, data) => {
-      //   this.posts[hash] = data;
-      //   callback(err, data);
-      // });
+      this.orbit.getPost(hash)
+        .then((data) => {
+          this.posts[hash] = data;
+          callback(null, data);
+        })
+        .catch((e) => console.log(e))
     } else {
       callback(null, this.posts[hash]);
     }
   },
   onSendMessage: function(channel: string, text: string) {
-    // if(!this.socket)
-    //   return;
-    logger.debug("--> send message" + text);
+    logger.debug("--> send message: " + text);
     UIActions.startLoading(channel, "send");
-    this.orbit.send(channel, text, (err) => {
-    // this.socket.emit('message.send', channel, text, (err) => {
-      if(err) {
-        logger.warn("Couldn't send message: " + err.toString());
-        UIActions.raiseError(err.toString());
-      }
-      UIActions.stopLoading(channel, "send");
-    });
+    this.orbit.send(channel, text)
+      .then((post) => {
+        logger.debug("Sent:", post);
+        UIActions.stopLoading(channel, "send");
+      })
+      .catch((e) => console.log(e))
   },
   onAddFile: function(channel: string, filePath: string, buffer) {
     logger.debug("--> add file: " + filePath + buffer !== null);

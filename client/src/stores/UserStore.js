@@ -15,7 +15,7 @@ var UserStore = Reflux.createStore({
   },
   onInitialize: function(orbit) {
     this.orbit = orbit;
-    this.orbit.events.on('network', (network, user) => {
+    this.orbit.events.on('connected', (network, user) => {
       logger.info("orbit.event: (network, user)", network, user)
       this._updateUser(user)
     });

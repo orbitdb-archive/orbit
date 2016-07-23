@@ -66,16 +66,18 @@ var ChannelStore = Reflux.createStore({
 
     // this.socket.emit("channel.join", channel, password, (err, res) => {
     logger.debug("Join channel #" + channel);
-    this.orbit.join(channel, password, (err, res) => {
-      logger.debug("joined channel", channel, res);
-      if(!err) {
+    this.orbit.join(channel).then(() => {
+      logger.debug("joined channel", channel);
         NetworkActions.joinedChannel(channel);
+        this.channels = this.orbit.channels;
         this.trigger(this.channels);
-      } else {
-        console.error("Can't join #" + channel + ":", err);
-        NetworkActions.joinChannelError(channel, err);
-      }
     });
+    //   if(!err) {
+    //   } else {
+    //     console.error("Can't join #" + channel + ":", err);
+    //     NetworkActions.joinChannelError(channel, err);
+    //   }
+    // });
   },
   onLeaveChannel: function(channel) {
     console.log("--> leave channel", channel);

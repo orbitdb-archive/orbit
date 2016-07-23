@@ -3,21 +3,21 @@
 if(process.env.ENV === 'dev') delete process.versions['electron'];
 
 const electron = require('electron');
-const app    = electron.app;
-const Window = electron.BrowserWindow;
-const Menu   = electron.Menu;
-const path   = require('path');
-const Logger = require('logplease');
-const logger = Logger.create("Orbit.Index-Native");
-// const main   = require('./src/main');
-const IPFSAPI      = require('ipfs-api')
+const app      = electron.app;
+const BrowserWindow = electron.BrowserWindow;
+const Menu     = electron.Menu;
+const ipcMain  = electron.ipcMain;
+const ipfsd    = require('ipfsd-ctl');
+const path     = require('path');
+const Logger   = require('logplease');
+const logger   = Logger.create("Orbit.Index-Native");
 
 // require('crash-reporter').start();
 
 Logger.setLogfile(path.resolve(process.env.ENV === 'dev' ? process.cwd() : process.resourcesPath + "/app/", 'debug.log'));
 logger.debug("Run index-native.js");
 
-const connectWindowSize = { width: 500, height: 420, center: true, minWidth: 500, minHeight: 420, titleBarStyle: 'hidden' };
+const connectWindowSize = { width: 500, height: 420, center: true, minWidth: 500, minHeight: 420 };
 const mainWindowSize    = { width: 1200, height: 800, center: true, minWidth: 1200, minHeight: 800 };
 let mainWindow = null;
 
@@ -84,12 +84,20 @@ app.on('ready', () => {
       //   setWindowToLogin();
       // });
 
-      mainWindow = new Window(connectWindowSize);
+      mainWindow = new BrowserWindow(connectWindowSize);
 
-      if(process.env.ENV === 'dev')
-        mainWindow.loadURL('http://localhost:8000/webpack-dev-server/');
-      else
-        mainWindow.loadURL('file://' + __dirname + '/client/dist/index.html');
+      let ipfsDaemon;
+      ipfsd.local((err, node) => {
+        if(err) reject(err);
+        ipfsDaemon = node;
+        ipfsDaemon.startDaemon((err, ipfs) => {
+          global.ipfsInstance = ipfs;
+          if(process.env.ENV === 'dev')
+            mainWindow.loadURL('http://localhost:8000/webpack-dev-server/');
+          else
+            mainWindow.loadURL('file://' + __dirname + '/client/dist/index.html');
+        });
+      });
 
       const getUserHome = () => {
         return process.env[(process.platform == 'win32') ? 'USERPROFILE' : 'HOME'];
@@ -100,6 +108,19 @@ app.on('ready', () => {
       mainWindow.on('closed', () => {
         mainWindow = null;
       });
+
+      ipcMain.on('connected', (event, arg1, arg2) => {
+        console.log("-->", arg1, arg2);
+        logger.error("connected");
+        setWindowToNormal();
+      })
+
+      ipcMain.on('disconnected', (event, arg1, arg2) => {
+        console.log("d-->", arg1, arg2);
+        logger.error("disconnected");
+        setWindowToLogin();
+      })
+
     // });
   } catch(e) {
     logger.error("Error in index-native:", e);
