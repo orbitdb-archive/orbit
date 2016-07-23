@@ -41,8 +41,10 @@ class BackgroundAnimation extends React.Component {
       "rgba(225, 170, 253, " + opacity + ")"
     ].reverse();
 
-    var circles = [0, 1, 2, 3, 4, 5, 6].reverse().map((i) => {
-      var inc    = (maxSize - minSize) / (amount - 1);
+    const inc = (maxSize - minSize) / (amount - 1);
+    const rings = [0, 1, 2, 3, 4, 5, 6];
+
+    var circles = rings.reverse().map((i) => {
       var radius = minSize + (i * inc);
       var color  = colors[i];
       return (
@@ -57,10 +59,51 @@ class BackgroundAnimation extends React.Component {
       );
     });
 
+    let styleSheet = document.styleSheets[0];
+    var dots = rings.map((i) => {
+      const color = "rgba(255, 255, 255, 0.66)";
+      const pos = minSize + (i * inc);
+      const speed = (Math.random() * 12) + 6;
+      const size = (Math.random() * 2) + 0.5;
+
+      let keyframes = `@keyframes rot${i} {
+        0% {
+          transform: rotate(0deg)
+                     translate(-${pos}px)
+                     rotate(0deg);
+        }
+        100% {
+          transform: rotate(360deg)
+                     translate(-${pos}px)
+                     rotate(-360deg);
+        }
+      }`;
+      styleSheet.insertRule(keyframes, styleSheet.cssRules.length);
+
+      return (
+        <circle
+          cx={this.state.startX}
+          cy={this.state.startY}
+          r={size}
+          fill={color}
+          style={{
+            animation: `rot${i} linear`,
+            animationDuration: `${speed}s`,
+            animationDelay: `${i/2}s`,
+            animationIterationCount: "infinite"
+          }}
+          key={"dot" + i}>
+        </circle>
+      );
+    });
+
     return (
       <div className="BackgroundAnimation" ref="container">
-        <svg width={this.state.width} height={this.state.width} key="circles" style={this.state.theme}>
+        <svg width={this.state.width} height={this.state.width} key="circles" style={this.state.theme} className="transparent">
           {circles}
+        </svg>
+        <svg width={this.state.width} height={this.state.width} key="dots" style={this.state.theme} className="opaque">
+          {dots}
         </svg>
       </div>
     );

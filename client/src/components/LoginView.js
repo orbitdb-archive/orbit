@@ -126,13 +126,7 @@ class LoginView extends React.Component{
           {errorMsg}
         </div>
       </TransitionGroup>
-    ) : (
-      <div className="centerrow" style={this.state.theme}>
-        <div style={{ WebkitTransform: 'translateY(-132px)'}}>
-          <DotLoader size="128px" ballSize="12px" color={color}/>
-        </div>
-      </div>
-    );
+    ) : (<span></span>);
 
     return (
       <div className="LoginView">
@@ -142,7 +136,7 @@ class LoginView extends React.Component{
           </TransitionGroup>
           {form}
         </form>
-        <BackgroundAnimation size={this.state.logoSize} theme={this.state.theme}/>
+        <BackgroundAnimation style={{ margin: "16px"}} size={this.state.logoSize} theme={this.state.theme}/>
       </div>
     );
   }

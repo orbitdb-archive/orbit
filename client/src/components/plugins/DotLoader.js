@@ -78,7 +78,8 @@ var Loader = React.createClass({
      * @return {Object}
      */
     getAnimationStyle: function getAnimationStyle(i) {
-        var animation = [i == 0 ? rotateAnimationName : bounceAnimationName, '2s', i == 2 ? '-1s' : '0s', 'infinite', 'linear'].join(' ');
+        const speed = 4;
+        var animation = [i == 0 ? rotateAnimationName : bounceAnimationName, `${speed}s`, i == 2 ? `-${speed/2}s` : '0s', 'infinite', 'linear'].join(' ');
         var animationFillMode = 'forwards';
 
         return {

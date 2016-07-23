@@ -107,6 +107,15 @@ $text-color: rgba(228, 228, 228, 0.9);
     }
   }
 
+  .satellites {
+    position: absolute;
+    display: flex;
+    // flex-direction: row;
+    margin-top: 0.5em;
+    justify-content: center;
+    width: 100%;
+  }
+
 }
 
 .loginHeaderAnimation-appear {
