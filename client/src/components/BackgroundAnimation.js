@@ -27,6 +27,8 @@ class BackgroundAnimation extends React.Component {
   }
 
   render() {
+    //TODO: pre-calc all this
+
     var maxSize   = (this.state.width || window.innerWidth) / 2;
     var minSize   = 32;
     var amount    = 7;
@@ -61,7 +63,7 @@ class BackgroundAnimation extends React.Component {
 
     let styleSheet = document.styleSheets[0];
     var dots = rings.map((i) => {
-      const color = "rgba(255, 255, 255, 0.66)";
+      const color = "rgba(255, 255, 255, 0.4)";
       const pos = minSize + (i * inc);
       const speed = (Math.random() * 12) + 6;
       const size = (Math.random() * 2) + 0.5;
