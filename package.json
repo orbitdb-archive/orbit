@@ -2,7 +2,7 @@
   "name": "orbit",
   "version": "2.1.0",
   "description": "Distributed peer-to-peer chat built on IPFS",
-  "main": "index-native.js",
+  "main": "index.js",
   "dependencies": {
     "du": "^0.1.0",
     "ipfs-api": "^6.0.3",

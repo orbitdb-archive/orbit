@@ -33,6 +33,9 @@ Live demo: [http://orbit.libp2p.io/](orbit.libp2p.io)
 - npm v3.x.x
 
 #### Build the native app
+
+*Note: Electron currently has a bug that prevents js-ipfs-api to work correctly. You will need to build Electron from master with this PR included: https://github.com/electron/electron/pull/6572*
+
 ```
 npm install
 grunt build
