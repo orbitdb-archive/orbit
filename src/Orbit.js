@@ -3,83 +3,117 @@
 const fs           = require('fs');
 const path         = require('path');
 const EventEmitter = require('events').EventEmitter;
-const async        = require('asyncawait/async');
-const await        = require('asyncawait/await');
-const request      = require('request');
-const Logger       = require('logplease');
-const logger       = Logger.create("Orbit.Orbit", { color: Logger.Colors.Green });
-const utils        = require('orbit-common/lib/utils');
 const OrbitDB      = require('orbit-db');
-const Post         = require('orbit-db/src/post/Post');
-const Network      = require('./NetworkConfig');
+const Post         = require('ipfs-post');
+const Logger       = require('logplease');
+const utils        = require('./utils');
+const logger       = Logger.create("Orbit", { color: Logger.Colors.Green });
+
+const defaultOptions = {
+  cacheFile: path.join(utils.getAppPath(), "/data", "/orbit-db-cache.json"), // path to orbit-db cache file
+  maxHistory: 64 // how many messages to retrieve from history on joining a channel
+};
 
 class Orbit {
-  constructor(ipfs, events) {
-    this.ipfs = ipfs;
-    this.orbit = null;
-    this.events = events;
+  constructor(ipfs, options) {
+    this.events = new EventEmitter();
+    this._ipfs = ipfs;
+    this._orbitdb = null;
     this._channels = {};
+    this._peers = [];
+    this._options = defaultOptions;
+    Object.assign(this._options, options);
   }
 
-  connect(host, username, password) {
-    const hostname = host.split(":")[0];
-    const port = host.split(":")[1];
-    // const network = { host: hostname, port: port };
-    // TODO: hard coded until UI is fixed
-    var network = Network.fromFile(path.resolve(utils.getAppPath(), "network.json"));
+  /* Properties */
+
+  get user() {
+    return this._orbitdb ? this._orbitdb.user : null;
+  }
+
+  get network() {
+    return this._orbitdb ? this._orbitdb.network : null;
+  }
+
+  get channels() {
+    return Object.keys(this._channels).map((f) => this._channels[f]);
+  }
+
+  get peers() {
+    return this._peers;
+  }
+
+  /* Public methods */
+
+  connect(network, username, password) {
     const user = { username: username, password: password };
-    logger.info(`Connecting to network at '${network.host}:${network.port}' as '${user.username}`);
-    const cacheFile = path.resolve(utils.getAppPath(), "orbit-db-cache.json");
-    logger.debug("Load cache from:", cacheFile);
-    OrbitDB.connect(network.host, network.port, user.username, user.password, this.ipfs, { cacheFile: cacheFile })
-      .then((orbit) => {
-        this.orbit = orbit;
-        this.orbit.events.on('data', this._handleMessage.bind(this));
-        this.orbit.events.on('load', this._handleStartLoading.bind(this));
-        this.orbit.events.on('loaded', this._handleStopLoading.bind(this));
-        logger.info(`Connected to '${this.orbit.network.name}' at '${this.orbit.network.host}:${this.orbit.network.port}' as '${user.username}`)
-        this.events.emit('network', this.orbit);
+    logger.debug("Load cache from:", this._options.cacheFile);
+    logger.info(`Connecting to network '${network}' as '${username}`);
+
+    return OrbitDB.connect(network, user.username, user.password, this._ipfs)
+      .then((_orbitdb) => {
+        this._orbitdb = _orbitdb;
+
+        // Subscribe to database events
+        this._orbitdb.events.on('message', this._handleMessage2.bind(this));
+        this._orbitdb.events.on('data', this._handleMessage.bind(this));
+        this._orbitdb.events.on('load', this._handleStartLoading.bind(this));
+        this._orbitdb.events.on('ready', this._handleDatabaseReady.bind(this));
+        this._orbitdb.events.on('sync', this._handleSync.bind(this));
+        this._orbitdb.events.on('synced', this._handleSynced.bind(this));
+
+        // Get peers from libp2p and update the local peers array
+        setInterval(() => {
+          this._updateSwarmPeers().then((peers) => {
+            this._peers = peers;
+            this.events.emit('peers', this._peers);
+          });
+        }, 1000);
       })
-      .catch((e) => {
-        this.orbit = null;
-        this._handleError(e);
-      });
+      .then(() => {
+        logger.info(`Connected to '${this._orbitdb.network.name}' at '${this._orbitdb.network.publishers[0]}' as '${user.username}`)
+        this.events.emit('connected', this.network, this.user);
+        return this;
+      })
   }
 
   disconnect() {
-    if(this.orbit) {
-      this.orbit.events.removeListener('message', this._handleMessage);
-      this.orbit.events.removeListener('load', this._handleStartLoading);
-      this.orbit.events.removeListener('loaded', this._handleStopLoading);
-      logger.warn(`Disconnected from '${this.orbit.network.name}' at '${this.orbit.network.host}:${this.orbit.network.port}'`);
-      this.orbit.disconnect();
-      this.orbit = null;
+    if(this._orbitdb) {
+      logger.warn(`Disconnected from '${this._orbitdb.network.name}' at '${this._orbitdb.network.publishers[0]}'`);
+      this._orbitdb.disconnect();
+      this._orbitdb = null;
       this._channels = {};
-      this.events.emit('network', this.orbit);
+      this.events.emit('disconnected');
     }
   }
 
-  getChannels(callback) {
-    const channels = Object.keys(this._channels)
-      .map((f) => this._channels[f])
-      .map((f) => { return { name: f.name, password: f.password } });
+  join(channel) {
+    if(!channel || channel === '')
+      return Promise.reject(`Channel not specified`);
 
-    if(callback) callback(channels);
-
-    return channels;
-  }
-
-  join(channel, password, callback) {
     logger.debug(`Join #${channel}`);
-    if(!this._channels[channel]) {
-      this.orbit.channel(channel, password).then((db) => {
-        this._channels[channel] = { name: channel, password: password, db: db };
-        this.events.emit('channels.updated', this.getChannels());
-        if(callback) callback(null, { name: channel, modes: {} })
-      });
-    } else {
-      if(callback) callback(null, { name: channel, modes: {} })
+
+    if(this._channels[channel]) {
+      // this.events.emit('ready', channel);
+      return Promise.resolve(false);
     }
+
+    this._channels[channel] = {
+      name: channel,
+      password: null,
+      db: null,
+      state: { loading: true, syncing: 0 }
+    };
+
+    const dbOptions = {
+      cacheFile: this._options.cacheFile,
+      maxHistory: this._options.maxHistory
+    };
+
+    return this._orbitdb.eventlog(channel, dbOptions)
+      .then((db) => this._channels[channel].db = db)
+      .then(() => this.events.emit('joined', channel))
+      .then(() => true)
   }
 
   leave(channel) {
@@ -87,151 +121,229 @@ class Orbit {
       this._channels[channel].db.close();
       delete this._channels[channel];
       logger.debug("Left channel #" + channel);
-      this.events.emit('channels.updated', this.getChannels());
     }
+    this.events.emit('left', channel);
   }
 
-  getUser(hash, callback) {
-    // TODO: return user id from ipfs hash (user.id)
-    if(callback) callback(this.orbit.user.id);
+  _getChannelFeed(channel) {
+    return this._channels[channel] && this._channels[channel].db ? this._channels[channel].db : null;
   }
 
-  getSwarmPeers(callback) {
-    this.ipfs.swarm.peers().then((peers) => {
-      if(callback) callback(peers.Strings);
-    }).catch((e) => {
-      this._handleError(e);
-      if(callback) callback(null);
-    });
-  }
+  send(channel, message) {
+    if(!channel || channel === '')
+      return Promise.reject(`Channel not specified`);
 
-  getMessages(channel, lessThanHash, greaterThanHash, amount, callback) {
-    logger.debug(`Get messages from #${channel}: ${lessThanHash}, ${greaterThanHash}, ${amount}`)
-    let options = { limit: amount };
-    if(lessThanHash) options.lt = lessThanHash;
-    if(greaterThanHash) options.gte = greaterThanHash;
-    const messages = this._channels[channel].db.iterator(options).collect();
-    if(callback) callback(channel, messages);
-  }
+    if(!message || message === '')
+      return Promise.reject(`Can't send an empty message`);
 
-  getPost(hash, callback) {
-    this.ipfs.object.get(hash).then((res) => {
-      if(callback) callback(null, JSON.parse(res.Data));
-    }).catch((e) => {
-      this._handleError(e);
-      if(callback) callback(e.message, null);
-    });
-  }
+    const db = this._getChannelFeed(channel);
 
-  sendMessage(channel, message, callback) {
+    if(!db)
+      return Promise.reject(`Can't send the message, haven't joined #${channel}`);
+
     logger.debug(`Send message to #${channel}: ${message}`);
+
     const data = {
       content: message,
-      from: this.orbit.user.id
+      from: this._orbitdb.user.id
     };
-    Post.create(this.ipfs, Post.Types.Message, data).then((post) => {
-      this._channels[channel].db.add(post.Hash).then((hash) => {
-        if(callback) callback(null);
-      });
-    }).catch((e) => {
-      this._handleError(e);
-      if(callback) callback(e.message);
-    });
+
+    let post;
+    return Post.create(this._ipfs, Post.Types.Message, data)
+      .then((res) => post = res)
+      .then(() => db.add(post.Hash))
+      .then((hash) => post)
   }
 
-  addFile(channel, filePath, callback) {
-    const addToIpfs = (ipfs, filePath, isDirectory) => {
+  get(channel, lessThanHash, greaterThanHash, amount) {
+    const db = this._getChannelFeed(channel);
+
+    if(!db)
+      throw `Haven't joined #${channel}`;
+
+    logger.debug(`Get messages from #${channel}: ${lessThanHash}, ${greaterThanHash}, ${amount}`)
+
+    let options = {
+      limit: amount || 1,
+      lt: lessThanHash || null,
+      gte: greaterThanHash || null
+    };
+
+    return db.iterator(options).collect();
+  }
+
+  getPost(hash) {
+    return this._ipfs.object.get(hash, { enc: 'base58' })
+      .then((res) => JSON.parse(res.toJSON().Data))
+  }
+
+  addFile(channel, filePath) {
+    if(!channel || channel === '')
+      return Promise.reject(`Channel not specified`);
+
+    if(!filePath || filePath === '')
+      return Promise.reject(`Path or Buffer not specified`);
+
+    const isBuffer = typeof filePath !== 'string';
+    const db = this._getChannelFeed(channel);
+
+    if(!db)
+      return Promise.reject(`Can't send the message, not joined on #${channel}`);
+
+    const addToIpfsJs = (_ipfs, filePath, isDirectory) => {
+      // TODO
       return new Promise((resolve, reject) => {
-        if(!fs.existsSync(filePath))
-          throw "File not found at '" + filePath + "'";
-
-        // this.ipfs.add(filePath, { recursive: recursive }).then((hash) => {
-        this.ipfs.add(filePath, { recursive: isDirectory }).then((hash) => {
-          logger.debug("H, " + JSON.stringify(hash));
-
+        const data = buffer ? new Buffer(buffer) : filePath;
+        this._ipfs.files.add(data).then((hash) => {
+          // logger.debug("H, " + JSON.stringify(hash));
           if(isDirectory) {
-            // FIXME: ipfs-api returns an empty dir name as the last hash, ignore this
+            // js-_ipfs-api returns an empty dir name as the last hash, ignore this
             if(hash[hash.length-1].Name === '')
               resolve(hash[hash.length-2].Hash);
 
             resolve(hash[hash.length-1].Hash);
           } else {
-            resolve(hash[0].Hash);
+            resolve(hash[0].path);
           }
         });
       });
-    }
-
-    logger.info("Adding file from path '" + filePath + "'");
-    var isDirectory = await (utils.isDirectory(filePath));
-    var hash = await (addToIpfs(this.ipfs, filePath, isDirectory));
-    var size = await (utils.getFileSize(filePath));
-    logger.info("Added local file '" + filePath + "' as " + hash);
-
-    const data = {
-      name: filePath.split("/").pop(),
-      hash: hash,
-      size: size,
-      from: this.orbit.user.id
     };
 
-    const type = isDirectory ? Post.Types.Directory : Post.Types.File;
-    Post.create(this.ipfs, type, data).then((post) => {
-      this._channels[channel].db.add(post.Hash).then((hash) => {
-        if(callback) callback(null);
+    const addToIpfsGo = (_ipfs, filePath, isDirectory) => {
+      return new Promise((resolve, reject) => {
+        this._ipfs.add(filePath, { recursive: isDirectory })
+          .then((hash) => {
+            // logger.debug("Added: " + JSON.stringify(hash));
+            if(isDirectory) {
+              // _ipfs-api returns an empty dir name as the last hash, ignore this
+              if(hash[hash.length-1].Name === '')
+                resolve(hash[hash.length-2].Hash);
+
+              resolve(hash[hash.length-1].Hash);
+            } else {
+              resolve(hash[0].Hash);
+            }
+          }).catch(reject)
       });
-    });
+    };
+
+    logger.info("Adding file from path '" + filePath + "'");
+    let hash, post, size;
+    let isDirectory = isBuffer ? false : utils.isDirectory(filePath);
+    const add = isBuffer ? addToIpfsJs : addToIpfsGo;
+    return add(this._ipfs, filePath, isDirectory)
+      .then((res) => hash = res)
+      .then(() => isBuffer ? buffer.byteLength : utils.getFileSize(filePath))
+      .then((res) => size = res)
+      .then(() => logger.info("Added local file '" + filePath + "' as " + hash))
+      .then(() => {
+        // Create a post and add it to the channel
+        const type = isDirectory ? Post.Types.Directory : Post.Types.File;
+        const data = {
+          name: filePath.split("/").pop(),
+          hash: hash,
+          size: size,
+          from: this._orbitdb.user.id
+        };
+        return Post.create(this._ipfs, type, data);
+      })
+      .then((res) => post = res)
+      .then(() => db.add(post.Hash))
+      .then(() => post)
   }
 
-  getDirectory(hash, callback) {
-    this.ipfs.ls(hash).then((result) => {
-      if(result.Objects && callback)
-        callback(result.Objects[0].Links);
-    }).catch((e) => {
-      this._handleError(e);
-      if(callback) callback(null);
-    });
-  }
-
-  getFile(hash, callback) {
-    request('http://localhost:8080/ipfs/' + hash, function (error, response, body) {
-      if(!error && response.statusCode === 200) {
-        if(callback) callback(body);
-      }
-    })
-    // this.ipfs.cat(hash, (err, result) => {
-    //   if(callback) callback(result);
+  getFile(hash) {
+    // Use if .cat doesn't seem to work
+    // return new Promise((resolve, reject) => {
+    //   const stream = request('http://localhost:8080/_ipfs/' + hash);
+    //   resolve(stream);
     // });
+    return this._ipfs.cat(hash);
   }
 
-  get user() {
-    return this.orbit.user;
+  getDirectory(hash) {
+    return this._ipfs.ls(hash).then((res) => res.Objects[0].Links);
   }
 
-  get network() {
-    return this.orbit.network;
-  }
+  /* Private methods */
 
+  // TODO: tests for everything below
   _handleError(e) {
-    logger.error(e.message);
-    logger.debug("Stack trace:\n", e.stack);
+    logger.error(e);
+    logger.error("Stack trace:\n", e.stack);
     this.events.emit('orbit.error', e.message);
+    throw e;
   }
 
   _handleMessage(channel, message) {
-    this.events.emit('message', channel, message);
+    logger.debug("new entry in database", channel, message);
+    if(this._channels[channel])
+      this.events.emit('data', channel, message);
   }
 
-  _handleStartLoading(action, channel) {
-    this.events.emit('db.load', action, channel)
+  _handleMessage2(channel, message) {
+    logger.debug("new entry from network", channel, message);
+    if(this._channels[channel])
+      this.events.emit('message', channel, message);
   }
 
-  _handleStopLoading(action, channel) {
-    this.events.emit('db.loaded', action, channel)
+  _handleStartLoading(channel) {
+    logger.debug("load channel", channel, this._channels);
+    if(this._channels[channel]) {
+      this._channels[channel].state.loading = true;
+      this.events.emit('load', channel);
+      this.events.emit('update', this.channels);
+    }
   }
 
-  onSocketConnected(socket) {
-    this.events.emit('network', this.orbit);
+  _handleDatabaseReady(db) {
+    logger.debug("database ready", db.dbname);
+    if(this._channels[db.dbname]) {
+      this._channels[db.dbname].state.loading = false;
+      this.events.emit('ready', db.dbname);
+      this.events.emit('update', this.channels);
+    }
+  }
+
+  _handleSync(channel) {
+    logger.debug("sync channel", channel);
+    if(this._channels[channel]) {
+      this._channels[channel].state.syncing += 1;
+      this.events.emit('sync', channel);
+      this.events.emit('update', this.channels);
+    }
+  }
+
+  _handleSynced(channel, items) {
+    logger.debug("channel synced", channel, items.length);
+    if(this._channels[channel]) {
+      this._channels[channel].state.syncing -= 1;
+      this._channels[channel].state.syncing = Math.max(0, this._channels[channel].state.syncing);
+      this.events.emit('synced', channel, items);
+      this.events.emit('update', this.channels);
+    }
+  }
+
+  _updateSwarmPeers() {
+    if(this._ipfs.libp2p && this._ipfs.libp2p.swarm.peers) {
+      // js-_ipfs
+      return new Promise((resolve, reject) => {
+        this._ipfs.libp2p.swarm.peers((err, peers) => {
+          if(err) reject(err);
+          resolve(peers);
+        });
+      })
+      .then((peers) => Object.keys(peers).map((e) => peers[e].multiaddrs[0].toString()))
+    } else {
+      // js-_ipfs-api
+      return new Promise((resolve, reject) => {
+        return this._ipfs.swarm.peers((err, res) => {
+          if(err) reject(err);
+          resolve(res);
+        });
+      })
+      .then((peers) => peers.Strings)
+    }
   }
 
 }

@@ -44,7 +44,7 @@ $text-color: rgba(228, 228, 228, 0.9);
     margin-left: 0.5em;
     margin-right: 0.5em;
 
-    max-width: 30em;
+    max-width: 32.5em;
 
     .hidden {
       visibility: hidden;
@@ -105,6 +105,15 @@ $text-color: rgba(228, 228, 228, 0.9);
       cursor: not-allowed;
       width: 90%;
     }
+  }
+
+  .satellites {
+    position: absolute;
+    display: flex;
+    // flex-direction: row;
+    margin-top: 0.5em;
+    justify-content: center;
+    width: 100%;
   }
 
 }

@@ -1,10 +1,12 @@
 'use strict';
 
 import React from 'react';
+import EmojiPicker from './EmojiPicker'
 import Actions from "actions/UIActions";
 import AutoCompleter from "./AutoCompleter.js";
 import 'styles/SendMessage.scss';
 import UsersStore from 'stores/UsersStore';
+import TransitionGroup from "react-addons-css-transition-group";
 
 class SendMessage extends React.Component {
   constructor(props) {
@@ -12,7 +14,10 @@ class SendMessage extends React.Component {
     this.autoComplete = new AutoCompleter();
     this.autoComplete.onUpdated = (text) => this.refs.message.value = text;
     this.state = {
-      theme: props.theme
+      theme: props.theme,
+      useEmojis: props.useEmojis,
+      emojiPickerActive: false,
+      lastWord: null
     };
   }
 
@@ -40,14 +45,55 @@ class SendMessage extends React.Component {
     return;
   }
 
+  onCloseEmojiPicker() {
+    this.setState({ emojiPickerActive : false });
+    this.refs.message.focus();
+  }
+
+  onSelectEmoji (emojiText) {
+    let text = this.refs.message.value.split(' ');
+    text.pop();
+    text.push(emojiText);
+    this.refs.message.value = text.join(' ');
+  }
+
+  onInput() {
+    const lastWord = this.refs.message.value.split(' ').pop();
+    this.setState({ lastWord: lastWord });
+    if (lastWord.startsWith(':')) {
+      this.setState({ emojiPickerActive: this.props.useEmojis });
+    }
+  }
+
   onKeyDown(event) {
     this.autoComplete.onKeyDown(event, this.refs.message.value, UsersStore.users);
+    if (this.state.emojiPickerActive) {
+      this.refs.emojipicker.onKeyDown(event);
+    }
   }
-  
+
   render() {
+    const emojiPicker = this.state.emojiPickerActive ?
+      <TransitionGroup
+        component="div"
+        transitionName="emojiPreview"
+        transitionAppear={true}
+        transitionAppearTimeout={1000}
+        transitionEnterTimeout={0}
+        transitionLeaveTimeout={0}
+        >
+        <EmojiPicker ref='emojipicker'
+          elemsPerRow={8}
+          filterText={this.state.lastWord}
+          onClose={this.onCloseEmojiPicker.bind(this)}
+          onSelectEmoji={this.onSelectEmoji.bind(this)}/>
+      </TransitionGroup>
+      : <span/>
+
     return (
       <div className="SendMessage">
         <form onSubmit={this.sendMessage.bind(this)}>
+          {emojiPicker}
           <input
             type="text"
             ref="message"
@@ -55,12 +101,12 @@ class SendMessage extends React.Component {
             autoComplete={true}
             style={this.state.theme}
             onKeyDown={this.onKeyDown.bind(this)}
+            onInput={this.onInput.bind(this)}
             />
         </form>
       </div>
     );
   }
-
 }
 
 export default SendMessage;

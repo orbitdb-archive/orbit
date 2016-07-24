@@ -5,7 +5,7 @@ import Reflux from 'reflux';
 var UIActions = Reflux.createActions([
   "raiseError",
   "joinChannel",
-  "showChannel",
+  // "showChannel",
   "focusOnSendMessage",
   "startLoading",
   "stopLoading",

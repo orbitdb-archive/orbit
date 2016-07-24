@@ -9,6 +9,10 @@ import Highlight from 'components/plugins/highlight';
 import highlight from 'highlight.js'
 import ChannelActions from 'actions/ChannelActions';
 import Clipboard from 'clipboard';
+
+import MessageStore from 'stores/MessageStore';
+
+
 import Logger from 'logplease';
 const logger = Logger.create('Clipboard', { color: Logger.Colors.Magenta });
 
@@ -37,11 +41,54 @@ class File extends React.Component {
     const isCode = this._isTextFile(this.state.name);
 
     if(!this.state.showPreview && isCode) {
-      ChannelActions.loadFile(this.state.file, (file) => {
-        this.setState({ previewContent: <Highlight>{file}</Highlight> });
+      ChannelActions.loadFile(this.state.file, (err, contents) => {
+        this.setState({ previewContent: <Highlight>{contents}</Highlight> });
       });
     } else {
       this.setState({ previewContent: "Loading..." });
+    }
+
+    function toArrayBuffer(buffer) {
+      var ab = new ArrayBuffer(buffer.length);
+      var view = new Uint8Array(ab);
+      for (var i = 0; i < buffer.length; ++i) {
+          view[i] = buffer[i];
+      }
+      return ab;
+    }
+
+    if(!this.state.showPreview) {
+      setTimeout(() => {
+        var mimeCodec = 'video/mp4; codecs="avc1.42E01E, mp4a.40.2"';
+        let source = new MediaSource();
+        this.refs.video_tag.src = window.URL.createObjectURL(source);
+
+        source.addEventListener('sourceopen', (e) => {
+          let sourceBuffer = source.addSourceBuffer(mimeCodec);
+          MessageStore.orbit.ipfs.files.cat(this.state.file, (err, res) => {
+            let buf = [];
+            sourceBuffer.addEventListener('updateend', () => {
+              if(buf.length > 0)
+                sourceBuffer.appendBuffer(buf.shift())
+            });
+            res
+              .on('error', (err) => console.error(err))
+              .on('data', (data) => {
+                if(!sourceBuffer.updating)
+                  sourceBuffer.appendBuffer(toArrayBuffer(data));
+                else
+                  buf.push(toArrayBuffer(data));
+              })
+              .on('end', () => {
+                console.log("END!!!")
+                setTimeout(() => {
+                  source.endOfStream()
+                  this.refs.video_tag.play();
+                }, 100);
+              })
+          });
+        }, false);
+      }, 500);
     }
 
     this.setState({ showPreview: !this.state.showPreview });
@@ -57,7 +104,7 @@ class File extends React.Component {
     var size         = getHumanReadableBytes(this.state.size);
 
     var split = this.state.name.split('.');
-    var isVideo = split[split.length - 1] === 'mp4';
+    var isVideo = split[split.length - 1] === 'mp4' || split[split.length - 1] === 'webm';
     var isAudio = split[split.length - 1] === 'mp3';
     var isCode  = this._isTextFile(this.state.name);
     var isPicture = split[split.length - 1] === 'png';

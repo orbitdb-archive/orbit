@@ -2,7 +2,7 @@
 
 import _ from 'lodash';
 import React from 'react';
-import TransitionGroup from "react-addons-css-transition-group"; //eslint-disable-line
+import TransitionGroup from "react-addons-css-transition-group";
 import AppStateStore from 'stores/AppStateStore';
 import UIActions from "actions/UIActions";
 import 'styles/Header.scss';
@@ -28,7 +28,7 @@ class Header extends React.Component {
 
   openChannel(channel, event) {
     event.stopPropagation();
-    UIActions.showChannel(channel);
+    UIActions.joinChannel(channel);
   }
 
   onDragEnter(event) {

@@ -11,26 +11,26 @@ var ConnectionStore = Reflux.createStore({
   init: function() {
     this.socket = null;
 
-    this.socket = io(ApiUrl.getSocketUrl(), {
-      reconnectionDelay: 0,
-      reconnectionDelayMax: 1000
-    });
+    // this.socket = io(ApiUrl.getSocketUrl(), {
+    //   reconnectionDelay: 0,
+    //   reconnectionDelayMax: 1000
+    // });
 
-    this.socket.on('connect', () => {
-      logger.debug("WebSocket connected");
+    // this.socket.on('connect', () => {
+    //   logger.debug("WebSocket connected");
 
-      this.socket.on('network', (network) => {
-        NetworkActions.updateNetwork(network);
-      });
+    //   this.socket.on('network', (network) => {
+    //     NetworkActions.updateNetwork(network);
+    //   });
 
-      SocketActions.socketConnected(this.socket);
-    });
+    //   SocketActions.socketConnected(this.socket);
+    // });
 
-    this.socket.on('disconnect', () => {
-      logger.debug("WebSocket disconnected");
-      this.socket.removeAllListeners('network');
-      SocketActions.socketDisconnected();
-    });
+    // this.socket.on('disconnect', () => {
+    //   logger.debug("WebSocket disconnected");
+    //   this.socket.removeAllListeners('network');
+    //   SocketActions.socketDisconnected();
+    // });
   }
 });
 

@@ -1,7 +1,5 @@
 # Orbit
 
-***Current work is happenig in: https://github.com/haadcode/orbit/tree/js-ipfs***
-
 *Warning: Orbit is very much work-in-progress. If something is not working, please let me know and I'll make sure to fix it.*
 
 ## Introduction
@@ -18,55 +16,56 @@ There's currently a server (https://github.com/haadcode/orbit-server) that track
 ![Screenshot 2](https://raw.githubusercontent.com/haadcode/orbit/master/screenshots/screenshot3%202016-04-14.png)
 ![Screenshot 3](https://raw.githubusercontent.com/haadcode/orbit/master/screenshots/screenshot6%202016-04-17.png)
 
-## Requirements
-- Node.js v4.x.x
-- npm
-
-For development
-
-- Following npm modules installed globally: grunt-cli, mocha, electron-prebuilt
-- g++, gcc, make (for building native modules)
-- python 2 (for building, some native modules need it, node-fibers perhaps?)
-
 ## Run
-### Browser
-Install and run:
-```
-npm install
-node index.js
-```
 
-Open `http://localhost:3001` in your browser
+### Browser
+
+Open `client/dist/index.html` in your browser *(Chrome recommended!)*
+
+The browser version uses [js-ipfs](github.com/ipfs/js-ipfs) library. 
+
+Live demo: [http://orbit.libp2p.io/](orbit.libp2p.io)
 
 ### App
-Build the native app:
+
+#### Requirements
+- Node.js v6.x.x
+- npm v3.x.x
+
+#### Build the native app
+
+*Note: Electron currently has a bug that prevents js-ipfs-api to work correctly. You will need to build Electron from master with this PR included: https://github.com/electron/electron/pull/6572*
+
 ```
 npm install
 grunt build
 ```
 
-The builds are in `dist/`. Eg. on OSX, open the application from `dist/AnonymousNetworks-darwin-x64`.
+The builds are in `dist/`. Eg. on OS X, open the application from `dist/Orbit-darwin-x64`.
 
-Orbit uses [Electron](http://electron.atom.io/) to wrap the application in a native executable.
+Orbit uses [Electron](http://electron.atom.io/) to wrap the application in a native executable. The Electron version of Orbit uses [go-ipfs](https://github.com/ipfs/go-ipfs) daemon. You don't need to have an IPFS daemon running to run Orbit.
 
-### Run Options
-#### Autologin
-Create a file called `user.json` and add your wanted credentials:
+## Development
+
+### Requirements
+- Node.js v6.x.x
+- npm v3.x.x
+- Following npm modules installed globally: grunt-cli, mocha, electron-prebuilt
+- g++, gcc, make (for building native modules)
+- python 2 (for building, some native modules need it, node-fibers perhaps?)
+
+### Tests
+
+*Note: requires a running redis-server*
+
 ```
-{
-  "username": "haadcode",
-  "password": "" // Not used atm
-}
+npm install
+npm test
 ```
 
-Start the program:
+### Build all
 ```
-node index.js
-```
-
-## Build
-Build all:
-```
+npm install
 grunt build
 ```
 
@@ -81,44 +80,95 @@ grunt build_native_linux
 The builds are in `dist/`
 
 ## UI Development
-Build distributable:
-```
-cd client/
-npm install
-grunt build
-```
-
-Development:
-```
-node index
-```
-
 ```
 cd client/
 (npm install)
 grunt serve
 ```
 
+This will open webpack dev-server at [localhost:8000/webpack-dev-server/](localhost:8000/webpack-dev-server/).
+
+Build UI distributable:
+```
+cd client/
+npm install
+grunt build
+```
+
+This will create `client/dist` directory which can be copied and distributed.
+
 ### Development in Electron
 For UI development (webpack-dev-server in the Electron app).
+
+Start Electron:
+```
+npm install
+ENV=dev ./node_modules/.bin/electron . 
+```
 
 Start the webpack dev server:
 ```
 cd client/
+npm install
 grunt serve
 ```
 
-Start Electron:
-```
-ENV=dev ./node_modules/.bin/electron . 
-```
-
-Make sure you don't have the node.js version running and no client open the browser.
-
 ## Run your own network
-Get https://github.com/haadcode/orbit-server and start the server, edit `./network.json` and point to appropriate url (eg. localhost:3006)
+Get https://github.com/haadcode/orbit-server and start the server. In Orbit's login window, point to the host where your orbit-server is running.
 
 ## Contributing
 Would be happy to accept PRs! If you want to work on something, it'd be good to talk beforehand to make sure nobody else is working on it. You can reach me on Twitter [@haadcode](https://twitter.com/haadcode) or on IRC #ipfs on Freenode.
 
 See [TODO](https://github.com/haadcode/orbit/blob/master/TODO.md) for ideas and tasks up for grabs.
+
+## Orbit API
+
+#### connect(url, username, password)
+Connect to a network. `url` should be given as a string in the form of `host:port`.
+
+TODO: return value, thrown errors, example
+
+#### disconnect()
+Disconnect from the currently connected network.
+
+TODO: return value, thrown errors, example
+
+#### join(channel)
+Join a `channel`.
+
+TODO: return value, thrown errors, example
+
+#### leave(channel)
+Leave a `channel`.
+
+TODO: return value, thrown errors, example
+
+#### send(channel, message)
+Send a `message` to a `channel`. Channel must be joined first.
+
+TODO: return value, thrown errors, example
+
+#### get(channel, lessThanHash, greaterThanHash, amount)
+Get messages from a channel. Returns an `Array` of messages.
+
+TODO: params, thrown errors
+
+#### getPost(hash)
+Get the contents of a message.
+
+TODO: params, return value, thrown errors, example
+
+#### addFile(channel, filePath || buffer)
+Add a file to a `channel`. 
+
+TODO: params, return value, thrown errors, example
+
+#### getFile(hash)
+Returns contents of a file from IPFS.
+
+TODO: params, return value, thrown errors, example
+
+#### getDirectory(hash)
+Returns a directory listing as an `Array`
+
+TODO: params, return value, thrown errors, example

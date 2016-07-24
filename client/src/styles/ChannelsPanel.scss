@@ -19,6 +19,7 @@ $channel-name-min-height: 1.5em;
   z-index: 100;
   background: rgb(32, 32, 32);
   max-width: 20em;
+  min-width: 20em;
   height: 100%;
   box-sizing: border-box;
   display: flex;
@@ -195,10 +196,23 @@ $channel-name-min-height: 1.5em;
     flex-direction: row;
     justify-content: space-between;
     align-items: flex-end;
+    align-self: center;
+    width: 70%;
     color: 000;
     color: rgba(220, 220, 220, 0.2);
     -webkit-user-select: none;
     -moz-user-select: none;
+
+    .icon {
+      color: rgba(220, 220, 220, 0.2);
+      font-size: 1.0em;
+      padding: 0.5em;
+      margin-bottom: 0.5em;
+    }
+
+    .icon:hover {
+      color: rgba(220, 220, 220, 0.8);
+    }
   }
 
   .submitButton, input[type=submit] {

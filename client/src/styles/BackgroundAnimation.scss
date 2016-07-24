@@ -8,7 +8,18 @@
   display: flex;
   justify-content: center;
   z-index: -1;
-  opacity: 0.3;
+
+  .transparent {
+    // transform: translateX(-50%);
+    opacity: 0.3;
+    position: absolute;
+  }
+
+  .opaque {
+    // transform: translateX(-50%);
+    opacity: 1.0;
+    position: absolute;
+  }
 
     -webkit-transform-style: preserve-3d;
     transform-style: preserve-3d;
@@ -34,6 +45,19 @@
   //   -webkit-transform: translate3D(0, 0, 0);
   //   transform: translate3D(0, 0, 0);
   // }
+
+  @keyframes rot {
+    0% {
+      transform: rotate(0deg)
+                 translate(-32px)
+                 rotate(0deg);
+    }
+    100% {
+      transform: rotate(360deg)
+                 translate(-32px)
+                 rotate(-360deg);
+    }
+  }
 
   circle {
     -webkit-transform-style: preserve-3d;

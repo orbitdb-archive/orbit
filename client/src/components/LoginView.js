@@ -1,16 +1,18 @@
 'use strict';
 
 import React from 'react';
-import TransitionGroup from "react-addons-css-transition-group"; //eslint-disable-line
+import TransitionGroup from "react-addons-css-transition-group";
 import NetworkStore from 'stores/NetworkStore';
 import NetworkActions from "actions/NetworkActions";
-import BackgroundAnimation from 'components/BackgroundAnimation'; //eslint-disable-line
+import BackgroundAnimation from 'components/BackgroundAnimation';
 import Themes from 'app/Themes';
-import Halogen from 'halogen'; //eslint-disable-line
+import DotLoader from 'components/plugins/DotLoader';
 import 'styles/LoginView.scss';
 
 var maxNicknameLength = 32;
 var maxLogoSize = 320;
+
+const defaultNetworkHost = window.DEV ? 'localhost:3333' : '178.62.241.75:3333'; // localhost or dev network
 
 class LoginView extends React.Component{
   constructor(props) {
@@ -33,7 +35,7 @@ class LoginView extends React.Component{
   }
 
   componentDidMount() {
-    window.addEventListener('resize', this.onResize.bind(this));
+    // window.addEventListener('resize', this.onResize.bind(this));
 
     if(this.refs.username) this.refs.username.focus();
 
@@ -56,7 +58,7 @@ class LoginView extends React.Component{
   }
 
   componentWillUnmount() {
-    window.removeEventListener('resize', this.onResize);
+    // window.removeEventListener('resize', this.onResize.bind(this));
     this.unsubscribeFromNetworkStore();
   }
 
@@ -64,10 +66,10 @@ class LoginView extends React.Component{
     if(this.refs.password) this.refs.password.focus();
   }
 
-  onResize() {
-    var size = Math.min(window.innerWidth, maxLogoSize);
-    this.setState({ logoSize: size });
-  }
+  // onResize() {
+  //   var size = Math.min(window.innerWidth, maxLogoSize);
+  //   this.setState({ logoSize: size });
+  // }
 
   register(e) {
     e.preventDefault();
@@ -77,7 +79,6 @@ class LoginView extends React.Component{
 
     if(network !== '' && username !== '') {
       this.setState({ error: null, connecting: true, username: username, password: password });
-      console.log("UI connect");
       NetworkActions.connect(network, username, password);
     }
 
@@ -93,14 +94,15 @@ class LoginView extends React.Component{
     if(this.state.connected)
       return (<div></div>);
 
-    var color = "rgba(140, 80, 220, 0.7)";
+    // var color = "rgba(100, 48, 128, 0.5)";
+    var color = "rgba(180, 180, 180, 0.5)";
     var errorMsg   = this.state.error ? <div className="error">{this.state.error}</div> : "";
     var passwordFieldStyle = this.state.displayPasswordField ? "row" : "hidden";
 
     var form = !this.state.connecting ? (
       <TransitionGroup transitionName="loginScreenAnimation" transitionAppear={true} component="div" className="inputs" transitionAppearTimeout={5000} transitionEnterTimeout={5000} transitionLeaveTimeout={5000}>
         <div className="row">
-          <span className="label">Network</span><input type="text" ref="network" defaultValue="178.62.241.75:3333" style={this.state.theme}/>
+          <span className="label">Network</span><input type="text" ref="network" defaultValue={defaultNetworkHost} style={this.state.theme}/>
         </div>
         <div className="row">
           <span className="label">Nickname</span>
@@ -126,11 +128,7 @@ class LoginView extends React.Component{
           {errorMsg}
         </div>
       </TransitionGroup>
-    ) : (
-      <div className="centerrow" style={this.state.theme}>
-        <Halogen.DotLoader color={color}/>
-      </div>
-    );
+    ) : (<span></span>);
 
     return (
       <div className="LoginView">
@@ -140,7 +138,7 @@ class LoginView extends React.Component{
           </TransitionGroup>
           {form}
         </form>
-        <BackgroundAnimation size={this.state.logoSize} theme={this.state.theme}/>
+        <BackgroundAnimation style={{ margin: "16px"}} size={this.state.logoSize} theme={this.state.theme}/>
       </div>
     );
   }

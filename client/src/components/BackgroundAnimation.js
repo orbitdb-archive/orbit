@@ -27,6 +27,9 @@ class BackgroundAnimation extends React.Component {
   }
 
   render() {
+
+    //TODO: pre-calc all this
+
     var maxSize   = (this.state.width || window.innerWidth) / 2;
     var minSize   = 32;
     var amount    = 7;
@@ -41,8 +44,10 @@ class BackgroundAnimation extends React.Component {
       "rgba(225, 170, 253, " + opacity + ")"
     ].reverse();
 
-    var circles = [0, 1, 2, 3, 4, 5, 6].reverse().map((i) => {
-      var inc    = (maxSize - minSize) / (amount - 1);
+    const inc = (maxSize - minSize) / (amount - 1);
+    const rings = [0, 1, 2, 3, 4, 5, 6];
+
+    var circles = rings.reverse().map((i) => {
       var radius = minSize + (i * inc);
       var color  = colors[i];
       return (
@@ -57,10 +62,43 @@ class BackgroundAnimation extends React.Component {
       );
     });
 
+    let styleSheet = document.styleSheets[0];
+    var dots = rings.map((i) => {
+      const color = "rgba(196, 196, 196, 0.1)";
+      const mul   = (Math.random() < 0.5 ? -1 : 1); // randomize between negative and positive pos
+      const pos   = (minSize + (i * inc)) * mul; // starting position for the dot
+      const speed = (Math.random() * 14) + 8;
+      const size  = (Math.random() * 2) + 1;
+      const startRadians = Math.floor(Math.random() * 360);
+      let keyframes = `@keyframes rot${i} {
+        0%   { transform: rotate(${startRadians}deg) translate(${pos}px) rotate(-${startRadians}deg); }
+        100% { transform: rotate(${startRadians + 360}deg) translate(${pos}px) rotate(-${startRadians + 360}deg); }
+      }`;
+      styleSheet.insertRule(keyframes, styleSheet.cssRules.length);
+
+      return (
+        <circle
+          cx={this.state.startX}
+          cy={this.state.startY}
+          r={size}
+          fill={color}
+          style={{
+            animation: `rot${i} linear`,
+            animationDuration: `${speed}s`,
+            animationIterationCount: "infinite"
+          }}
+          key={"dot" + i}>
+        </circle>
+      );
+    });
+
     return (
       <div className="BackgroundAnimation" ref="container">
-        <svg width={this.state.width} height={this.state.width} key="circles" style={this.state.theme}>
+        <svg width={this.state.width} height={this.state.width} key="circles" style={this.state.theme} className="transparent">
           {circles}
+        </svg>
+        <svg width={this.state.width} height={this.state.width} key="dots" style={this.state.theme} className="opaque">
+          {dots}
         </svg>
       </div>
     );

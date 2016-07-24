@@ -6,7 +6,6 @@
 .vagrant/
 .tmp/
 .electron-prebuilt/
-npm-debug.log
 
 dist/nodejs-linux
 dist/nodejs-osx
@@ -15,8 +14,10 @@ client/node_modules/
 node_modules/
 
 cache.db
-debug.log
+*.log
 user.json
 orbit-db-cache.json
 
 Vagrantfile
+
+data/

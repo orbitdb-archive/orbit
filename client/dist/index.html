@@ -7,8 +7,6 @@
   <meta name="description" content="">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 
-  <script src="lib/socket.io.min.js"></script>
-
   <style>
     html, body{
       background: #000000;
@@ -54,7 +52,19 @@
   <![endif]-->
   <div id="content">
   </div>
-
+  <script type="text/javascript">
+    // Check if we're running in Electron (parent.require is for webpack devserver iframe check)
+    const isElectron = !(typeof require === 'undefined' && typeof parent.require === 'undefined');
+    console.log("isElectron:", isElectron);
+    if(isElectron) {
+      const req = typeof require !== 'undefined' ? require : parent.require;
+      const remote = req('electron').remote;
+      window.ipfs = remote.getGlobal('ipfsInstance');
+      window.orbit = remote.getGlobal('orbit');
+      window.DEV = remote.getGlobal('DEV');
+      window.ipcRenderer = req('electron').ipcRenderer;
+    }
+  </script>
   <script>
     __REACT_DEVTOOLS_GLOBAL_HOOK__ = parent.__REACT_DEVTOOLS_GLOBAL_HOOK__
   </script>

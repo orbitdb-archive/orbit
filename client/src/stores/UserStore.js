@@ -1,7 +1,7 @@
 'use strict';
 
 import Reflux from 'reflux';
-import Actions from 'actions/UIActions';
+import AppActions from 'actions/AppActions';
 import UserActions from 'actions/UserActions';
 import NetworkActions from 'actions/NetworkActions';
 import SocketActions from 'actions/SocketActions';
@@ -9,11 +9,21 @@ import Logger from 'logplease';
 const logger = Logger.create('UserStore', { color: Logger.Colors.Green });
 
 var UserStore = Reflux.createStore({
-  listenables: [UserActions, NetworkActions, SocketActions],
+  listenables: [AppActions, UserActions, NetworkActions, SocketActions],
   init: function() {
     this.user = null;
   },
+  onInitialize: function(orbit) {
+    this.orbit = orbit;
+    this.orbit.events.on('connected', (network, user) => {
+      logger.info("orbit.event: (network, user)", network, user)
+      this._updateUser(user)
+    });
+  },
   onUpdateUser: function(user) {
+    this._updateUser(user);
+  },
+  _updateUser: function(user) {
     logger.debug("received user");
     console.log(user);
     if(user) {
