@@ -61,6 +61,7 @@
       const remote = req('electron').remote;
       window.ipfs = remote.getGlobal('ipfsInstance');
       window.orbit = remote.getGlobal('orbit');
+      window.DEV = remote.getGlobal('DEV');
       window.ipcRenderer = req('electron').ipcRenderer;
     }
   </script>

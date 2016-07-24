@@ -85,6 +85,7 @@ app.on('ready', () => {
         orbit = new Orbit(ipfs, { dataPath: dataPath });
         global.orbit = orbit;
         global.ipfsInstance = ipfs;
+        global.DEV = process.env.ENV === 'dev';
         if(process.env.ENV === 'dev')
           mainWindow.loadURL('http://localhost:8000/webpack-dev-server/');
         else

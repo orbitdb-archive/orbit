@@ -10,13 +10,13 @@
   z-index: -1;
 
   .transparent {
-    transform: translateX(-50%);
+    // transform: translateX(-50%);
     opacity: 0.3;
     position: absolute;
   }
 
   .opaque {
-    transform: translateX(-50%);
+    // transform: translateX(-50%);
     opacity: 1.0;
     position: absolute;
   }

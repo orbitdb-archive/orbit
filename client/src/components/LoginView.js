@@ -12,6 +12,8 @@ import 'styles/LoginView.scss';
 var maxNicknameLength = 32;
 var maxLogoSize = 320;
 
+const defaultNetworkHost = window.DEV ? 'localhost:3333' : '178.62.241.75:3333'; // localhost or dev network
+
 class LoginView extends React.Component{
   constructor(props) {
     super(props);
@@ -100,7 +102,7 @@ class LoginView extends React.Component{
     var form = !this.state.connecting ? (
       <TransitionGroup transitionName="loginScreenAnimation" transitionAppear={true} component="div" className="inputs" transitionAppearTimeout={5000} transitionEnterTimeout={5000} transitionLeaveTimeout={5000}>
         <div className="row">
-          <span className="label">Network</span><input type="text" ref="network" defaultValue="localhost:3333" style={this.state.theme}/>
+          <span className="label">Network</span><input type="text" ref="network" defaultValue={defaultNetworkHost} style={this.state.theme}/>
         </div>
         <div className="row">
           <span className="label">Nickname</span>
