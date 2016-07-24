@@ -223,7 +223,7 @@ class Orbit {
             } else {
               resolve(hash[0].Hash);
             }
-          });
+          }).catch(reject)
       });
     };
 

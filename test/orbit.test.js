@@ -726,7 +726,7 @@ IpfsApis.forEach(function(ipfsApi) {
         orbit.join(channel)
           .then(() => orbit.addFile(channel, filePath))
           .catch((e) => {
-            assert.equal(e, `File not found: ${filePath}`);
+            assert.equal(e.message.toString(), `ENOENT: no such file or directory, stat '${filePath}'`);
             done();
           })
       });
