@@ -24,6 +24,7 @@ import MessageStore from 'stores/MessageStore';
 import UsersStore from 'stores/UsersStore';
 import SettingsStore from 'stores/SettingsStore';
 import LoadingStateStore from 'stores/LoadingStateStore';
+import SwarmStore from 'stores/SwarmStore';
 
 import ChannelsPanel from 'components/ChannelsPanel';
 import ChannelView from 'components/ChannelView';
@@ -51,10 +52,10 @@ const views = {
   "Channel": "/channel/"
 };
 
-const hasIPFS = !!window.ipfs;
-// const hasIPFS = !!window.ipcRenderer;
+// const hasIPFS = !!window.ipfs;
+const hasIPFS = !!window.orbit;
 console.log("hasIPFS:", hasIPFS)
-let orbit;
+let orbit = hasIPFS ? window.orbit : null;
 
 var App = React.createClass({
   getInitialState: function() {
@@ -74,7 +75,7 @@ var App = React.createClass({
     const ipcRenderer = hasIPFS ? window.ipcRenderer : null;
     const dataPath = '/tmp/orbit-demo-2-';
 
-    if(!orbit) {
+    // if(!orbit) {
       Main.start(ipfsApi, dataPath, signalServerAddress).then((res) => {
         logger.info("Orbit started");
         logger.debug("PeerId:", res.peerId.ID);
@@ -92,7 +93,7 @@ var App = React.createClass({
         logger.error(e.message);
         logger.error("Stack trace:\n", e.stack);
       });
-    }
+    // }
 
     document.title = 'Orbit';
 
@@ -143,6 +144,7 @@ var App = React.createClass({
     }
   },
   _reset: function() {
+    if(hasIPFS) ipcRenderer.send('disconnected')
     this.setState(this.getInitialState());
   },
   onNetworkUpdated: function(network) {

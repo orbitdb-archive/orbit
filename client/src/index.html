@@ -60,6 +60,7 @@
       const req = typeof require !== 'undefined' ? require : parent.require;
       const remote = req('electron').remote;
       window.ipfs = remote.getGlobal('ipfsInstance');
+      window.orbit = remote.getGlobal('orbit');
       window.ipcRenderer = req('electron').ipcRenderer;
     }
   </script>

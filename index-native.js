@@ -2,20 +2,28 @@
 
 if(process.env.ENV === 'dev') delete process.versions['electron'];
 
+const fs       = require('fs');
+const path     = require('path');
 const electron = require('electron');
 const app      = electron.app;
 const BrowserWindow = electron.BrowserWindow;
 const Menu     = electron.Menu;
 const ipcMain  = electron.ipcMain;
 const ipfsd    = require('ipfsd-ctl');
-const path     = require('path');
 const Logger   = require('logplease');
 const logger   = Logger.create("Orbit.Index-Native");
+
+const Orbit = require('./src/Orbit');
+const utils = require('./src/utils');
 
 // require('crash-reporter').start();
 
 Logger.setLogfile(path.resolve(process.env.ENV === 'dev' ? process.cwd() : process.resourcesPath + "/app/", 'debug.log'));
 logger.debug("Run index-native.js");
+
+const dataPath = path.join(utils.getAppPath(), "/data");
+if(!fs.existsSync(dataPath))
+  fs.mkdirSync(dataPath);
 
 const connectWindowSize = { width: 500, height: 420, center: true, minWidth: 500, minHeight: 420 };
 const mainWindowSize    = { width: 1200, height: 800, center: true, minWidth: 1200, minHeight: 800 };
@@ -52,6 +60,10 @@ const shutdown = () => {
   }, 1000);
 };
 
+const getUserHome = () => {
+  return process.env[(process.platform == 'win32') ? 'USERPROFILE' : 'HOME'];
+};
+
 app.on('window-all-closed', shutdown);
 process.on('SIGINT', () => shutdown)
 process.on('SIGTERM', () => shutdown)
@@ -60,68 +72,40 @@ app.on('ready', () => {
   try {
     logger.info("Starting the systems");
 
-    // main.start().then((res) => {
-      // events = res;
-      events = null;
-      logger.info("Systems started");
+    Menu.setApplicationMenu(menu);
 
-      Menu.setApplicationMenu(menu);
+    mainWindow = new BrowserWindow(connectWindowSize);
+    mainWindow.webContents.session.setDownloadPath(path.resolve(getUserHome() + '/Downloads'))
 
-      // events.on('network', (orbit) => {
-      //   if(orbit)
-      //     setWindowToNormal();
-      //   else
-      //     setWindowToLogin();
-      // });
-
-      // events.on('connected', () => {
-      //   logger.error("connected");
-      //   setWindowToNormal();
-      // });
-
-      // events.on('disconnect', () => {
-      //   logger.error("disconnected");
-      //   setWindowToLogin();
-      // });
-
-      mainWindow = new BrowserWindow(connectWindowSize);
-
-      let ipfsDaemon;
-      ipfsd.local((err, node) => {
-        if(err) reject(err);
-        ipfsDaemon = node;
-        ipfsDaemon.startDaemon((err, ipfs) => {
-          global.ipfsInstance = ipfs;
-          if(process.env.ENV === 'dev')
-            mainWindow.loadURL('http://localhost:8000/webpack-dev-server/');
-          else
-            mainWindow.loadURL('file://' + __dirname + '/client/dist/index.html');
-        });
+    let ipfsDaemon, orbit;
+    ipfsd.local((err, node) => {
+      if(err) reject(err);
+      ipfsDaemon = node;
+      ipfsDaemon.startDaemon((err, ipfs) => {
+        orbit = new Orbit(ipfs, { dataPath: dataPath });
+        global.orbit = orbit;
+        global.ipfsInstance = ipfs;
+        if(process.env.ENV === 'dev')
+          mainWindow.loadURL('http://localhost:8000/webpack-dev-server/');
+        else
+          mainWindow.loadURL('file://' + __dirname + '/client/dist/index.html');
       });
+    });
 
-      const getUserHome = () => {
-        return process.env[(process.platform == 'win32') ? 'USERPROFILE' : 'HOME'];
-      };
+    mainWindow.on('closed', () => {
+      mainWindow = null;
+    });
 
-      mainWindow.webContents.session.setDownloadPath(path.resolve(getUserHome() + '/Downloads'))
+    ipcMain.on('connected', (event, arg1, arg2) => {
+      logger.debug("connected");
+      setWindowToNormal();
+    })
 
-      mainWindow.on('closed', () => {
-        mainWindow = null;
-      });
+    ipcMain.on('disconnected', (event, arg1, arg2) => {
+      logger.debug("disconnected");
+      setWindowToLogin();
+    })
 
-      ipcMain.on('connected', (event, arg1, arg2) => {
-        console.log("-->", arg1, arg2);
-        logger.error("connected");
-        setWindowToNormal();
-      })
-
-      ipcMain.on('disconnected', (event, arg1, arg2) => {
-        console.log("d-->", arg1, arg2);
-        logger.error("disconnected");
-        setWindowToLogin();
-      })
-
-    // });
   } catch(e) {
     logger.error("Error in index-native:", e);
   }

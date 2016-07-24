@@ -33,7 +33,7 @@ class LoginView extends React.Component{
   }
 
   componentDidMount() {
-    window.addEventListener('resize', this.onResize.bind(this));
+    // window.addEventListener('resize', this.onResize.bind(this));
 
     if(this.refs.username) this.refs.username.focus();
 
@@ -56,7 +56,7 @@ class LoginView extends React.Component{
   }
 
   componentWillUnmount() {
-    window.removeEventListener('resize', this.onResize.bind(this));
+    // window.removeEventListener('resize', this.onResize.bind(this));
     this.unsubscribeFromNetworkStore();
   }
 
@@ -64,10 +64,10 @@ class LoginView extends React.Component{
     if(this.refs.password) this.refs.password.focus();
   }
 
-  onResize() {
-    var size = Math.min(window.innerWidth, maxLogoSize);
-    this.setState({ logoSize: size });
-  }
+  // onResize() {
+  //   var size = Math.min(window.innerWidth, maxLogoSize);
+  //   this.setState({ logoSize: size });
+  // }
 
   register(e) {
     e.preventDefault();

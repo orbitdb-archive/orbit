@@ -1,8 +1,8 @@
 'use strict';
 
 import React from 'react';
-import TransitionGroup from "react-addons-css-transition-group"; //eslint-disable-line
-import NetworkActions from "actions/NetworkActions";
+import TransitionGroup from "react-addons-css-transition-group";
+import SwarmStore from 'stores/SwarmStore';
 import 'styles/SwarmView.scss';
 import Logger from 'logplease';
 
@@ -17,14 +17,12 @@ class SwarmView extends React.Component {
   }
 
   componentDidMount() {
-    this.poller = setInterval(() => {
-      NetworkActions.getPeers((peers) => this.setState({ peers: peers }));
-    }, 1000);
-    NetworkActions.getPeers((peers) => this.setState({ peers: peers }));
+    this.unsubscribeFromSwarmStore = SwarmStore.listen((peers) => this.setState({ peers: peers }));
+    this.setState({ peers: SwarmStore.peers })
   }
 
   componentWillUnmount() {
-    clearInterval(this.poller);
+    this.unsubscribeFromSwarmStore();
   }
 
   render() {

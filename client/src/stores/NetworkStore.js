@@ -2,14 +2,13 @@
 
 import Reflux from 'reflux';
 import AppActions from 'actions/AppActions';
-import SocketActions from 'actions/SocketActions';
 import NetworkActions from 'actions/NetworkActions';
 import Logger from 'logplease';
 
 const logger = Logger.create('NetworkStore', { color: Logger.Colors.Yellow });
 
 var NetworkStore = Reflux.createStore({
-  listenables: [AppActions, NetworkActions, SocketActions],
+  listenables: [AppActions, NetworkActions],
   init: function() {
     this.network = null;
   },
@@ -29,7 +28,6 @@ var NetworkStore = Reflux.createStore({
     if(!network) logger.debug("Not connected to a network");
     this.network = network;
     this.trigger(this.network);
-    // NetworkActions.updateUser(network ? network.user : null);
   },
   onConnect: function(host, username, password) {
     logger.debug("Connect to " + host + " as " + username);
@@ -39,10 +37,6 @@ var NetworkStore = Reflux.createStore({
     logger.debug("Disconnect");
     this.init();
     this.trigger(this.network);
-  },
-  onGetPeers: function(callback) {
-    // logger.debug("swarm.get");
-    if(this.orbit) this.orbit.getSwarmPeers().then(callback);
   }
 });
 

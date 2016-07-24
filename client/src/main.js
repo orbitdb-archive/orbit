@@ -27,11 +27,11 @@ const start = exports.start = (ipfsApiInstance, repositoryPath, signalServerAddr
   if(ipfsApiInstance) {
     // const i = new window.IpfsApi();
     // const i = new IPFAPI();
-    orbit = new Orbit(ipfsApiInstance, { dataPath: dataPath });
+    // orbit = new Orbit(ipfsApiInstance, { dataPath: dataPath });
     return ipfsApiInstance.id()
       .then((id) => {
         console.log(id);
-        return { orbit: orbit, peerId: id };
+        return { orbit: window.orbit, peerId: id };
       });
   } else {
     const startTime = new Date().getTime();
