@@ -1,58 +1,124 @@
-# Orbit js-ipfs demo branch
+# Orbit
+
+*Warning: Orbit is very much work-in-progress. If something is not working, please let me know and I'll make sure to fix it.*
+
+## Introduction
+
+Orbit is a ***distributed, peer-to-peer chat application built on [IPFS](http://ipfs.io)***.
+
+All content (messages, files, metadata) are saved in IPFS as files or objects.
+
+There's currently a server (https://github.com/haadcode/orbit-server) that tracks the head (IPFS hash) of a linked list that enables traversing the history of a channel's messages. In future this will be replaced by IPNS.
+
+**Please note that Orbit is not secure at the moment!**
+
+![Screenshot 1](https://raw.githubusercontent.com/haadcode/orbit/master/screenshots/screenshot4%202016-04-16.png)
+![Screenshot 2](https://raw.githubusercontent.com/haadcode/orbit/master/screenshots/screenshot3%202016-04-14.png)
+![Screenshot 3](https://raw.githubusercontent.com/haadcode/orbit/master/screenshots/screenshot6%202016-04-17.png)
 
 ## Run
 
-1. Open `client/dist/index.html` in your browser *(Chrome recommended)*
-2. Done
+### Browser
+
+Open `client/dist/index.html` in your browser *(Chrome recommended!)*
+
+The browser version uses [js-ipfs](github.com/ipfs/js-ipfs) library. 
+
+Live demo: [http://orbit.libp2p.io/](orbit.libp2p.io)
+
+### App
+
+#### Requirements
+- Node.js v6.x.x
+- npm v3.x.x
+
+#### Build the native app
+```
+npm install
+grunt build
+```
+
+The builds are in `dist/`. Eg. on OS X, open the application from `dist/Orbit-darwin-x64`.
+
+Orbit uses [Electron](http://electron.atom.io/) to wrap the application in a native executable. The Electron version of Orbit uses [go-ipfs](https://github.com/ipfs/go-ipfs) daemon. You don't need to have an IPFS daemon running to run Orbit.
 
 ## Development
-### Requirements 
 
-* Node.js v4.x.x 
-* npm v3.x.x
+### Requirements
+- Node.js v6.x.x
+- npm v3.x.x
+- Following npm modules installed globally: grunt-cli, mocha, electron-prebuilt
+- g++, gcc, make (for building native modules)
+- python 2 (for building, some native modules need it, node-fibers perhaps?)
 
-*If you don't have npm v3.x installed, you can install it from npm with `npm install npm3 -g` and run the npm commands described in this document with `npm3` instead of `npm`.*
+### Tests
 
-### Installation
-```
-git clone -b js-ipfs https://github.com/haadcode/orbit
-cd orbit/
-npm install
-```
+*Note: requires a running redis-server*
 
-### Run
 ```
-cd client/
-npm install
-npm run dev
-```
-
-### Test
-```
-cd client/
 npm install
 npm test
 ```
 
-### Build
+### Build all
+```
+npm install
+grunt build
+```
+
+Build for individual platforms:
+```
+grunt build_nodejs_osx
+grunt build_nodejs_linux
+grunt build_native_osx
+grunt build_native_linux
+```
+
+The builds are in `dist/`
+
+## UI Development
+```
+cd client/
+(npm install)
+grunt serve
+```
+
+This will open webpack dev-server at [localhost:8000/webpack-dev-server/](localhost:8000/webpack-dev-server/).
+
+Build UI distributable:
 ```
 cd client/
 npm install
-npm run build
+grunt build
 ```
 
-This will update the files in `dist/`.
+This will create `client/dist` directory which can be copied and distributed.
 
-### Publish
+### Development in Electron
+For UI development (webpack-dev-server in the Electron app).
 
-**In order to publish, you must have ipfs daemon running locally**
+Start Electron:
+```
+npm install
+ENV=dev ./node_modules/.bin/electron . 
+```
 
+Start the webpack dev server:
 ```
 cd client/
-npm run publish
+npm install
+grunt serve
 ```
 
-### Orbit API
+## Run your own network
+Get https://github.com/haadcode/orbit-server and start the server. In Orbit's login window, point to the host where your orbit-server is running.
+
+## Contributing
+Would be happy to accept PRs! If you want to work on something, it'd be good to talk beforehand to make sure nobody else is working on it. You can reach me on Twitter [@haadcode](https://twitter.com/haadcode) or on IRC #ipfs on Freenode.
+
+See [TODO](https://github.com/haadcode/orbit/blob/master/TODO.md) for ideas and tasks up for grabs.
+
+## Orbit API
 
 #### connect(url, username, password)
 Connect to a network. `url` should be given as a string in the form of `host:port`.
