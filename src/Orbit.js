@@ -64,7 +64,10 @@ class Orbit {
 
         // Get peers from libp2p and update the local peers array
         setInterval(() => {
-          this._updateSwarmPeers().then((peers) => this._peers = peers);
+          this._updateSwarmPeers().then((peers) => {
+            this._peers = peers;
+            this.events.emit('peers', this._peers);
+          });
         }, 1000);
       })
       .then(() => {
