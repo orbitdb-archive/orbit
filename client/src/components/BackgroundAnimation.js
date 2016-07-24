@@ -27,6 +27,7 @@ class BackgroundAnimation extends React.Component {
   }
 
   render() {
+
     //TODO: pre-calc all this
 
     var maxSize   = (this.state.width || window.innerWidth) / 2;
@@ -63,22 +64,15 @@ class BackgroundAnimation extends React.Component {
 
     let styleSheet = document.styleSheets[0];
     var dots = rings.map((i) => {
-      const color = "rgba(255, 255, 255, 0.4)";
-      const pos = minSize + (i * inc);
-      const speed = (Math.random() * 12) + 6;
-      const size = (Math.random() * 2) + 0.5;
-
+      const color = "rgba(196, 196, 196, 0.1)";
+      const mul   = (Math.random() < 0.5 ? -1 : 1); // randomize between negative and positive pos
+      const pos   = (minSize + (i * inc)) * mul; // starting position for the dot
+      const speed = (Math.random() * 14) + 8;
+      const size  = (Math.random() * 2) + 1;
+      const startRadians = Math.floor(Math.random() * 360);
       let keyframes = `@keyframes rot${i} {
-        0% {
-          transform: rotate(0deg)
-                     translate(-${pos}px)
-                     rotate(0deg);
-        }
-        100% {
-          transform: rotate(360deg)
-                     translate(-${pos}px)
-                     rotate(-360deg);
-        }
+        0%   { transform: rotate(${startRadians}deg) translate(${pos}px) rotate(-${startRadians}deg); }
+        100% { transform: rotate(${startRadians + 360}deg) translate(${pos}px) rotate(-${startRadians + 360}deg); }
       }`;
       styleSheet.insertRule(keyframes, styleSheet.cssRules.length);
 
@@ -91,7 +85,6 @@ class BackgroundAnimation extends React.Component {
           style={{
             animation: `rot${i} linear`,
             animationDuration: `${speed}s`,
-            animationDelay: `${i/2}s`,
             animationIterationCount: "infinite"
           }}
           key={"dot" + i}>
