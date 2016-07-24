@@ -3,21 +3,16 @@
 - refactor Orbit.js to work independently, fix the methods/events/properties
 - buffering for add/get files
 - orbit-db: use browserfs for Cache
-- create gimme-ipfs-daemon to handle js-ipfs vs. go-ipfs
 - media player component for js-ipfs
 - integrate with ES6 compatible Reflux (after they merge)
 - add "linkto" field to Post (for threaded conversations)
 - threaded conversations. enable from (channel?) options
 - pin messages
 - reactions to messages
-- add crdts: all counters, sets and graphs (to crdt lib)
-- orbit-db: document store, graph store
 - move settings to a panel instead of view
 
 ### WIP
-- emoji auto-completion
 - Fix browser file upload
-- Refactor: Move channel loading state to the node.js process
 
 ### Must have
 - Refactor: Move loading icon in Channel to its own component

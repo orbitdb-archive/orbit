@@ -1,5 +1,8 @@
 # Changelog for Orbit
 
+**3.0.0**
+- Massive re-write, everything was changed
+
 **2.2.0**
 - Update to orbit-db 0.8.x
 - Tab to finish the username when writing
