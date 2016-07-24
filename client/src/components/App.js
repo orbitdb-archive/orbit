@@ -52,10 +52,9 @@ const views = {
   "Channel": "/channel/"
 };
 
-// const hasIPFS = !!window.ipfs;
-const hasIPFS = !!window.orbit;
+const hasIPFS = !!window.ipfs;
 console.log("hasIPFS:", hasIPFS)
-let orbit = hasIPFS ? window.orbit : null;
+let orbit// = hasIPFS ? window.orbit : null;
 
 var App = React.createClass({
   getInitialState: function() {

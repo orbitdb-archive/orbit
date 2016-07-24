@@ -211,9 +211,6 @@ class Orbit {
 
     const addToIpfsGo = (_ipfs, filePath, isDirectory) => {
       return new Promise((resolve, reject) => {
-        if(!fs.existsSync(filePath))
-          reject(`File not found: ${filePath}`);
-
         this._ipfs.add(filePath, { recursive: isDirectory })
           .then((hash) => {
             // logger.debug("Added: " + JSON.stringify(hash));

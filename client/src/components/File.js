@@ -41,8 +41,8 @@ class File extends React.Component {
     const isCode = this._isTextFile(this.state.name);
 
     if(!this.state.showPreview && isCode) {
-      ChannelActions.loadFile(this.state.file, (file) => {
-        this.setState({ previewContent: <Highlight>{file}</Highlight> });
+      ChannelActions.loadFile(this.state.file, (err, contents) => {
+        this.setState({ previewContent: <Highlight>{contents}</Highlight> });
       });
     } else {
       this.setState({ previewContent: "Loading..." });

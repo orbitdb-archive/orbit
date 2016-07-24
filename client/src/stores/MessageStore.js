@@ -267,6 +267,7 @@ const MessageStore = Reflux.createStore({
   },
   onLoadPost: function(hash: string, callback) {
     if(!this.posts[hash]) {
+      console.log("jjj", hash)
       this.orbit.getPost(hash)
         .then((data) => {
           this.posts[hash] = data;
@@ -300,6 +301,13 @@ const MessageStore = Reflux.createStore({
         UIActions.raiseError(error);
       })
   },
+  onLoadFile: function(hash, cb) {
+    this.orbit.getFile(hash).then((stream) => {
+      let buf = '';
+      stream.on('data', (chunk) => buf += chunk);
+      stream.on('end', () => cb(null, buf));
+    })
+  },
   onLoadDirectoryInfo: function(hash, cb) {
     // if(!this.socket)
     //   return;
@@ -318,19 +326,6 @@ const MessageStore = Reflux.createStore({
             };
           });
         }
-        cb(result);
-      });
-    } else {
-      cb(null);
-    }
-  },
-  onLoadFile: function(hash, cb) {
-    // if(!this.socket)
-    //   return;
-
-    if(hash) {
-      this.socket.emit('file.get', hash, (result) => {
-        logger.debug("<-- received file:");
         cb(result);
       });
     } else {
