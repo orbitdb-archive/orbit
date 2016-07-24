@@ -523,7 +523,7 @@ IpfsApis.forEach(function(ipfsApi) {
         orbit.send(channel, content)
           .then((post) => done(new Error(`Not joined on #${channel} but the message was sent!`)))
           .catch((e) => {
-            assert.equal(e.toString(), `Can't send the message, not joined on #${channel}`);
+            assert.equal(e.toString(), `Can't send the message, haven't joined #${channel}`);
             done();
           })
       });
@@ -611,7 +611,7 @@ IpfsApis.forEach(function(ipfsApi) {
         try {
           const messages = orbit.get(channel);
         } catch(e) {
-          assert.equal(e, `Not joined on #${channel}`);
+          assert.equal(e, `Haven't joined #${channel}`);
           done();
         }
       });
@@ -894,7 +894,7 @@ IpfsApis.forEach(function(ipfsApi) {
         orbit.join(channel);
       });
 
-      it('emits \'sync\' on load', (done) => {
+      it.skip('emits \'sync\' on load', (done) => {
         orbit.events.on('sync', (channelName) => {
           assert.equal(channelName, channel);
           done();
@@ -902,7 +902,7 @@ IpfsApis.forEach(function(ipfsApi) {
         orbit.join(channel);
       });
 
-      it('emits \'update\' on sync', (done) => {
+      it.skip('emits \'update\' on sync', (done) => {
         orbit.join(channel)
           .then(() => {
             orbit.events.removeAllListeners('update');
@@ -918,7 +918,7 @@ IpfsApis.forEach(function(ipfsApi) {
           });
       });
 
-      it('emits \'sync\'', (done) => {
+      it.skip('emits \'sync\'', (done) => {
         orbit.join(channel).then(() => {
           orbit.events.on('sync', (channelName) => {
             assert.equal(channelName, channel);
@@ -927,7 +927,7 @@ IpfsApis.forEach(function(ipfsApi) {
         });
       });
 
-      it('emits \'update\' on synced', (done) => {
+      it.skip('emits \'update\' on synced', (done) => {
         orbit.join(channel).then(() => {
           orbit.events.removeAllListeners('update');
           orbit.events.on('synced', (channelName) => {
@@ -942,7 +942,7 @@ IpfsApis.forEach(function(ipfsApi) {
         });
       });
 
-      it('emits \'synced\' after sync', (done) => {
+      it.skip('emits \'synced\' after sync', (done) => {
         orbit.events.on('synced', (channelName) => {
           orbit.events.removeAllListeners('synced');
           orbit.events.on('synced', (channelName, items) => {

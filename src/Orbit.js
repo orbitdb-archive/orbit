@@ -151,7 +151,6 @@ class Orbit {
     let post;
     return Post.create(this._ipfs, Post.Types.Message, data)
       .then((res) => post = res)
-      .then(() => logger.debug("1"))
       .then(() => db.add(post.Hash))
       .then((hash) => post)
   }
@@ -252,7 +251,7 @@ class Orbit {
         return Post.create(this._ipfs, type, data);
       })
       .then((res) => post = res)
-      .then(() => db.add(post))
+      .then(() => db.add(post.Hash))
       .then(() => post)
   }
 
