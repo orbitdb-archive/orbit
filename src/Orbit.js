@@ -87,15 +87,13 @@ class Orbit {
   }
 
   join(channel) {
+    logger.debug(`Join #${channel}`);
+
     if(!channel || channel === '')
       return Promise.reject(`Channel not specified`);
 
-    logger.debug(`Join #${channel}`);
-
-    if(this._channels[channel]) {
-      // this.events.emit('ready', channel);
+    if(this._channels[channel])
       return Promise.resolve(false);
-    }
 
     this._channels[channel] = {
       name: channel,
@@ -124,43 +122,23 @@ class Orbit {
     this.events.emit('left', channel);
   }
 
-  _getChannelFeed(channel) {
-    return this._channels[channel] && this._channels[channel].db ? this._channels[channel].db : null;
-  }
-
   send(channel, message) {
-    if(!channel || channel === '')
-      return Promise.reject(`Channel not specified`);
+    logger.debug(`Send message to #${channel}: ${message}`);
 
     if(!message || message === '')
       return Promise.reject(`Can't send an empty message`);
-
-    const db = this._getChannelFeed(channel);
-
-    if(!db)
-      return Promise.reject(`Can't send the message, haven't joined #${channel}`);
-
-    logger.debug(`Send message to #${channel}: ${message}`);
 
     const data = {
       content: message,
       from: this._orbitdb.user.id
     };
 
-    let post;
-    return Post.create(this._ipfs, Post.Types.Message, data)
-      .then((res) => post = res)
-      .then(() => db.add(post.Hash))
-      .then((hash) => post)
+    return this._getChannelFeed(channel)
+      .then((feed) => this._postMessage(feed, Post.Types.Message, data))
   }
 
   get(channel, lessThanHash, greaterThanHash, amount) {
-    const db = this._getChannelFeed(channel);
-
-    if(!db)
-      throw `Haven't joined #${channel}`;
-
-    logger.debug(`Get messages from #${channel}: ${lessThanHash}, ${greaterThanHash}, ${amount}`)
+    logger.debug(`Get messages from #${channel}: ${lessThanHash}, ${greaterThanHash}, ${amount}`);
 
     let options = {
       limit: amount || 1,
@@ -168,7 +146,8 @@ class Orbit {
       gte: greaterThanHash || null
     };
 
-    return db.iterator(options).collect();
+    return this._getChannelFeed(channel)
+      .then((feed) => feed.iterator(options).collect());
   }
 
   getPost(hash) {
@@ -177,24 +156,14 @@ class Orbit {
   }
 
   addFile(channel, filePath) {
-    if(!channel || channel === '')
-      return Promise.reject(`Channel not specified`);
-
     if(!filePath || filePath === '')
       return Promise.reject(`Path or Buffer not specified`);
 
-    const isBuffer = typeof filePath !== 'string';
-    const db = this._getChannelFeed(channel);
-
-    if(!db)
-      return Promise.reject(`Can't send the message, not joined on #${channel}`);
-
-    const addToIpfsJs = (_ipfs, filePath, isDirectory) => {
+    const addToIpfsJs = (ipfs, filePath, isDirectory) => {
       // TODO
       return new Promise((resolve, reject) => {
         const data = buffer ? new Buffer(buffer) : filePath;
-        this._ipfs.files.add(data).then((hash) => {
-          // logger.debug("H, " + JSON.stringify(hash));
+        ipfs.files.add(data).then((hash) => {
           if(isDirectory) {
             // js-_ipfs-api returns an empty dir name as the last hash, ignore this
             if(hash[hash.length-1].Name === '')
@@ -208,11 +177,10 @@ class Orbit {
       });
     };
 
-    const addToIpfsGo = (_ipfs, filePath, isDirectory) => {
+    const addToIpfsGo = (ipfs, filePath, isDirectory) => {
       return new Promise((resolve, reject) => {
-        this._ipfs.add(filePath, { recursive: isDirectory })
+        ipfs.add(filePath, { recursive: isDirectory })
           .then((hash) => {
-            // logger.debug("Added: " + JSON.stringify(hash));
             if(isDirectory) {
               // _ipfs-api returns an empty dir name as the last hash, ignore this
               if(hash[hash.length-1].Name === '')
@@ -227,16 +195,19 @@ class Orbit {
     };
 
     logger.info("Adding file from path '" + filePath + "'");
-    let hash, post, size;
-    let isDirectory = isBuffer ? false : utils.isDirectory(filePath);
-    const add = isBuffer ? addToIpfsJs : addToIpfsGo;
-    return add(this._ipfs, filePath, isDirectory)
+    let hash, post, size, feed;
+    const isBuffer = typeof filePath !== 'string';
+    const isDirectory = isBuffer ? false : utils.isDirectory(filePath);
+    const addToIpfs = isBuffer ? addToIpfsJs : addToIpfsGo;
+    return this._getChannelFeed(channel)
+      .then((res) => feed = res)
+      .then(() => addToIpfs(this._ipfs, filePath, isDirectory))
       .then((res) => hash = res)
       .then(() => isBuffer ? buffer.byteLength : utils.getFileSize(filePath))
       .then((res) => size = res)
       .then(() => logger.info("Added local file '" + filePath + "' as " + hash))
       .then(() => {
-        // Create a post and add it to the channel
+        // Create a post
         const type = isDirectory ? Post.Types.Directory : Post.Types.File;
         const data = {
           name: filePath.split("/").pop(),
@@ -244,11 +215,8 @@ class Orbit {
           size: size,
           from: this._orbitdb.user.id
         };
-        return Post.create(this._ipfs, type, data);
+        return this._postMessage(feed, type, data);
       })
-      .then((res) => post = res)
-      .then(() => db.add(post.Hash))
-      .then(() => post)
   }
 
   getFile(hash) {
@@ -266,11 +234,30 @@ class Orbit {
 
   /* Private methods */
 
+  _getChannelFeed(channel) {
+    if(!channel || channel === '')
+      return Promise.reject(`Channel not specified`);
+
+    return new Promise((resolve, reject) => {
+      const feed = this._channels[channel] && this._channels[channel].db ? this._channels[channel].db : null;
+      if(!feed) reject(`Haven't joined #${channel}`);
+      resolve(feed);
+    });
+  }
+
+  _postMessage(feed, postType, data) {
+    let post;
+    return Post.create(this._ipfs, postType, data)
+      .then((res) => post = res)
+      .then(() => feed.add(post.Hash))
+      .then(() => post);
+  }
+
   // TODO: tests for everything below
   _handleError(e) {
     logger.error(e);
     logger.error("Stack trace:\n", e.stack);
-    this.events.emit('orbit.error', e.message);
+    this.events.emit('error', e.message);
     throw e;
   }
 

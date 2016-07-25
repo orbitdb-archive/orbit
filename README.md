@@ -149,9 +149,9 @@ Send a `message` to a `channel`. Channel must be joined first.
 TODO: return value, thrown errors, example
 
 #### get(channel, lessThanHash, greaterThanHash, amount)
-Get messages from a channel. Returns an `Array` of messages.
+Get messages from a channel. Returns a Promise that resolves to an `Array` of messages.
 
-TODO: params, thrown errors
+TODO: params, thrown errors, example
 
 #### getPost(hash)
 Get the contents of a message.

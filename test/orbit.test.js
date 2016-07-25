@@ -451,20 +451,20 @@ IpfsApis.forEach(function(ipfsApi) {
 
       it('sends a message to a channel', (done) => {
         const content = 'hello1';
+        let message;
         orbit.join(channel)
           .then(() => orbit.send(channel, content))
-          .then((message) => {
-            setTimeout(() => {
-              const messages = orbit.get(channel);
-              assert.equal(messages.length, 1);
-              assert.equal(messages[0].payload.op, 'ADD');
-              assert.equal(messages[0].payload.value, message.Hash);
-              assert.notEqual(messages[0].payload.meta, null);
-              assert.notEqual(messages[0].payload.meta.ts, null);
-              assert.equal(messages[0].hash.startsWith('Qm'), true);
-              assert.equal(messages[0].next.length, 0);
-              done();
-            }, 1000);
+          .then((res) => message = res)
+          .then(() => orbit.get(channel))
+          .then((messages) => {
+            assert.equal(messages.length, 1);
+            assert.equal(messages[0].payload.op, 'ADD');
+            assert.equal(messages[0].payload.value, message.Hash);
+            assert.notEqual(messages[0].payload.meta, null);
+            assert.notEqual(messages[0].payload.meta.ts, null);
+            assert.equal(messages[0].hash.startsWith('Qm'), true);
+            assert.equal(messages[0].next.length, 0);
+            done();
           })
           .catch(done)
       });
@@ -474,17 +474,15 @@ IpfsApis.forEach(function(ipfsApi) {
         orbit.join(channel)
           .then(() => orbit.send(channel, content))
           .then((message) => {
-            setTimeout(() => {
-              assert.notEqual(message.Post, null);
-              assert.equal(message.Hash.startsWith('Qm'), true);
-              assert.equal(message.Post.content, content);
-              assert.equal(Object.keys(message.Post.meta).length, 4);
-              assert.equal(message.Post.meta.type, "text");
-              assert.equal(message.Post.meta.size, 15);
-              assert.equal(message.Post.meta.from, username);
-              assert.notEqual(message.Post.meta.ts, null);
-              done();
-            }, 1000);
+            assert.notEqual(message.Post, null);
+            assert.equal(message.Hash.startsWith('Qm'), true);
+            assert.equal(message.Post.content, content);
+            assert.equal(Object.keys(message.Post.meta).length, 4);
+            assert.equal(message.Post.meta.type, "text");
+            assert.equal(message.Post.meta.size, 15);
+            assert.equal(message.Post.meta.from, username);
+            assert.notEqual(message.Post.meta.ts, null);
+            done();
           })
           .catch(done)
       });
@@ -495,21 +493,19 @@ IpfsApis.forEach(function(ipfsApi) {
           .then(() => orbit.send(channel, content))
           .then((message) => orbit.getPost(message.Hash))
           .then((data) => {
-            setTimeout(() => {
-              assert.equal(data.content, content);
-              assert.equal(data.meta.type, "text");
-              assert.equal(data.meta.size, 15);
-              assert.notEqual(data.meta.ts, null);
-              assert.equal(data.meta.from, username);
-              done();
-            }, 1000);
+            assert.equal(data.content, content);
+            assert.equal(data.meta.type, "text");
+            assert.equal(data.meta.size, 15);
+            assert.notEqual(data.meta.ts, null);
+            assert.equal(data.meta.from, username);
+            done();
           })
           .catch(done)
       });
 
       it('throws an error when channel is not specified', (done) => {
         orbit.join(channel)
-          .then(() => orbit.send())
+          .then(() => orbit.send(null, 'hello'))
           .then((post) => done(new Error("Channel was not specified!")))
           .catch((e) => {
             assert.equal(e.toString(), `Channel not specified`);
@@ -523,7 +519,7 @@ IpfsApis.forEach(function(ipfsApi) {
         orbit.send(channel, content)
           .then((post) => done(new Error(`Not joined on #${channel} but the message was sent!`)))
           .catch((e) => {
-            assert.equal(e.toString(), `Can't send the message, haven't joined #${channel}`);
+            assert.equal(e.toString(), `Haven't joined #${channel}`);
             done();
           })
       });
@@ -565,55 +561,56 @@ IpfsApis.forEach(function(ipfsApi) {
       it('returns the latest message', (done) => {
         const ts = new Date().getTime();
         const content = 'hello' + ts;
+        let message;
         orbit.join(channel)
           .then(() => orbit.send(channel, content))
-          .then((message) => {
-            setTimeout(() => {
-              const messages = orbit.get(channel, null, null, 10);
-              assert.equal(messages.length, 1);
-              assert.equal(messages[0].payload.op, 'ADD');
-              assert.equal(messages[0].payload.value, message.Hash);
-              assert.notEqual(messages[0].payload.meta, null);
-              assert.notEqual(messages[0].payload.meta.ts, null);
-              assert.equal(messages[0].hash.startsWith('Qm'), true);
-              assert.equal(messages[0].next.length, 0);
-              done();
-            }, 1000);
+          .then((res) => message = res)
+          .then(() => orbit.get(channel, null, null, 10))
+          .then((messages) => {
+            assert.equal(messages.length, 1);
+            assert.equal(messages[0].payload.op, 'ADD');
+            assert.equal(messages[0].payload.value, message.Hash);
+            assert.notEqual(messages[0].payload.meta, null);
+            assert.notEqual(messages[0].payload.meta.ts, null);
+            assert.equal(messages[0].hash.startsWith('Qm'), true);
+            assert.equal(messages[0].next.length, 0);
+            done();
           })
           .catch(done)
       });
 
       it('returns all messages in the right order', (done) => {
         const content = 'hello';
-        orbit.join(channel)
+        const channel2 = 'channel-' + new Date().getTime();
+        let result;
+        orbit.join(channel2)
           .then(() => {
-            return Promise.mapSeries([1, 2, 3, 4, 5], (i) => orbit.send(channel, content + i), { concurrency: 1 })
+            return Promise.mapSeries([1, 2, 3, 4, 5], (i) => orbit.send(channel2, content + i), { concurrency: 1 })
           })
-          .then((result) => {
-            setTimeout(() => {
-              const messages = orbit.get(channel, null, null, -1);
-              assert.equal(messages.length, 5);
-              messages.forEach((msg, index) => {
-                assert.equal(msg.payload.op, 'ADD');
-                assert.equal(msg.payload.value, result[index].Hash);
-                assert.notEqual(msg.payload.meta, null);
-                assert.notEqual(msg.payload.meta.ts, null);
-                assert.equal(msg.hash.startsWith('Qm'), true);
-                assert.equal(msg.next.length, index === 0 ? 0 : 1);
-              });
-              done();
-            }, 4000);
+          .then((res) => result = res)
+          .then(() => orbit.get(channel2, null, null, -1))
+          .then((messages) => {
+            assert.equal(messages.length, 5);
+            messages.forEach((msg, index) => {
+              assert.equal(msg.payload.op, 'ADD');
+              assert.equal(msg.payload.value, result[index].Hash);
+              assert.notEqual(msg.payload.meta, null);
+              assert.notEqual(msg.payload.meta.ts, null);
+              assert.equal(msg.hash.startsWith('Qm'), true);
+              assert.equal(msg.next.length, index === 0 ? 0 : 1);
+            });
+            done();
           })
           .catch(done)
       });
 
       it('throws an error if trying to get from a channel that hasn\'t been joined', (done) => {
-        try {
-          const messages = orbit.get(channel);
-        } catch(e) {
-          assert.equal(e, `Haven't joined #${channel}`);
-          done();
-        }
+        orbit.get(channel)
+          .then((res) => done(new Error("Got result but not joined on channel!")))
+          .catch((e) => {
+            assert.equal(e, `Haven't joined #${channel}`);
+            done();
+          });
       });
     });
 
@@ -639,15 +636,12 @@ IpfsApis.forEach(function(ipfsApi) {
         orbit.join(channel)
           .then(() => orbit.getPost(message.Hash))
           .then((data) => {
-            setTimeout(() => {
-
-              assert.equal(data.content, content);
-              assert.equal(data.meta.type, "text");
-              assert.equal(data.meta.size, 15);
-              assert.notEqual(data.meta.ts, null);
-              assert.equal(data.meta.from, username);
-              done();
-            }, 1000);
+            assert.equal(data.content, content);
+            assert.equal(data.meta.type, "text");
+            assert.equal(data.meta.size, 15);
+            assert.notEqual(data.meta.ts, null);
+            assert.equal(data.meta.from, username);
+            done();
           })
           .catch(done)
       });
@@ -753,7 +747,7 @@ IpfsApis.forEach(function(ipfsApi) {
       it('throws an error if not joined on channel', (done) => {
         orbit.addFile(channel, 'hello')
           .catch((e) => {
-            assert.equal(e, `Can't send the message, not joined on #${channel}`);
+            assert.equal(e, `Haven't joined #${channel}`);
             done();
           })
       });
