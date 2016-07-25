@@ -1,6 +1,5 @@
 'use strict';
 
-const fs           = require('fs');
 const path         = require('path');
 const EventEmitter = require('events').EventEmitter;
 const OrbitDB      = require('orbit-db');
@@ -45,14 +44,14 @@ class Orbit {
 
   /* Public methods */
 
-  connect(network, username, password) {
+  connect(host, username, password) {
     const user = { username: username, password: password };
     logger.debug("Load cache from:", this._options.cacheFile);
-    logger.info(`Connecting to network '${network}' as '${username}`);
+    logger.info(`Connecting to network '${host}' as '${username}`);
 
-    return OrbitDB.connect(network, user.username, user.password, this._ipfs)
-      .then((_orbitdb) => {
-        this._orbitdb = _orbitdb;
+    return OrbitDB.connect(host, user.username, user.password, this._ipfs)
+      .then((orbitdb) => {
+        this._orbitdb = orbitdb;
 
         // Subscribe to database events
         this._orbitdb.events.on('message', this._handleMessage2.bind(this));
