@@ -22,9 +22,9 @@ There's currently a server (https://github.com/haadcode/orbit-server) that track
 
 Open `client/dist/index.html` in your browser *(Chrome recommended!)*
 
-The browser version uses [js-ipfs](github.com/ipfs/js-ipfs) library. 
+The browser version uses [js-ipfs](http://github.com/ipfs/js-ipfs) library. 
 
-Live demo: [http://orbit.libp2p.io/](orbit.libp2p.io)
+Live demo: [http://orbit.libp2p.io/](http://orbit.libp2p.io)
 
 ### App
 
@@ -34,7 +34,7 @@ Live demo: [http://orbit.libp2p.io/](orbit.libp2p.io)
 
 #### Build the native app
 
-*Note: Electron currently has a bug that prevents js-ipfs-api to work correctly. You will need to build Electron from master with this PR included: https://github.com/electron/electron/pull/6572*
+*Note: Electron currently has a bug that prevents js-ipfs-api to work correctly. You will need to build Electron from master which contains a fix for the bug.*
 
 ```
 npm install
