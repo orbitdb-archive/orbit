@@ -14,7 +14,7 @@
     "file-loader": "^0.8.5",
     "halogen": "^0.2.0",
     "highlight.js": "^9.4.0",
-    "ipfs": "^0.11.0",
+    "ipfs": "^0.13.0",
     "lodash": "^4.12.0",
     "logplease": "^1.2.7",
     "normalize.css": "~4.1.1",
