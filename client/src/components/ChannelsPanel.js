@@ -1,15 +1,20 @@
 'use strict';
 
 import React from 'react';
-import TransitionGroup from "react-addons-css-transition-group";
+import TransitionGroup from "react-addons-css-transition-group"; //eslint-disable-line
 import UIActions from "actions/UIActions";
-import JoinChannel from 'components/JoinChannel';
+import JoinChannel from 'components/JoinChannel'; //eslint-disable-line
+import ChannelStore from 'stores/ChannelStore';
 import AppStateStore from 'stores/AppStateStore';
 import NetworkActions from 'actions/NetworkActions';
-import BackgroundAnimation from 'components/BackgroundAnimation';
-import Halogen from 'halogen';
+import BackgroundAnimation from 'components/BackgroundAnimation'; //eslint-disable-line
+import Spinner from 'components/Spinner';
 import 'styles/ChannelsPanel.scss';
 import 'styles/RecentChannels.scss';
+
+const channelsToArray = (channels) => {
+  return Object.keys(channels).map((f) => channels[f]);
+};
 
 class ChannelsPanel extends React.Component {
   constructor(props) {
@@ -43,10 +48,17 @@ class ChannelsPanel extends React.Component {
     this.stopListeningAppState = AppStateStore.listen((appState) => {
       this.setState({ appState: appState });
     });
+
+    this.unsubscribeFromChannelStore = ChannelStore.listen((channels) => {
+      this.setState({ openChannels: channels });
+    });
+
+    this.setState({ openChannels: ChannelStore.channels });
   }
 
   componentWillUnmount() {
     this.stopListeningAppState();
+    this.unsubscribeFromChannelStore();
   }
 
   onClose() {
@@ -80,48 +92,34 @@ class ChannelsPanel extends React.Component {
   }
 
   render() {
-    var headerStyle = this.state.currentChannel ? "header" : "header no-close";
-    var color = 'rgba(140, 80, 220, 1)';
-    var loadingIcon   = this.state.loading ? (
-      <div className="loadingIcon" style={this.state.theme}>
-        <Halogen.MoonLoader color={color} size="32px"/>
-      </div>
-    ) : "";
+    const headerClass = this.state.currentChannel ? "header" : "header no-close";
+    const channelsHeaderClass = Object.keys(this.state.openChannels).length > 0 ? "panelHeader" : "hidden";
+    const channelJoinInputClass = !this.state.loading ? "joinChannelInput" : "joinChannelInput invisible";
 
-    var channelsHeaderStyle = Object.keys(this.state.openChannels).length > 0 ? "panelHeader" : "hidden";
-    var openChannels = Object.keys(this.state.openChannels).length > 0 ? Object.keys(this.state.openChannels).map((f) => this._renderChannel(this.state.openChannels[f])) : [];
-    var channelJoinInputStyle = !this.state.loading ? "joinChannelInput" : "joinChannelInput invisible";
+    const openChannels = Object.values(this.state.openChannels).map((channel) => this._renderChannel(channel));
+
+    const transitionProps = {
+      component: 'div',
+      transitionAppear: true,
+      transitionAppearTimeout: 5000,
+      transitionEnterTimeout: 5000,
+      transitionLeaveTimeout: 5000,
+    };
 
     return (
       <div>
-        <TransitionGroup
-          transitionName="openPanelAnimation"
-          transitionAppear={true}
-          transitionAppearTimeout={5000}
-          transitionEnterTimeout={5000}
-          transitionLeaveTimeout={5000}
-          component="div">
+        <TransitionGroup {...transitionProps} transitionName="openPanelAnimation">
           <div className="ChannelsPanel">
-            <BackgroundAnimation size="320" startY="58" theme={this.state.theme}/>
 
-            <TransitionGroup
-              transitionName="panelHeaderAnimation"
-              transitionAppear={true}
-              transitionAppearTimeout={5000}
-              transitionEnterTimeout={5000}
-              transitionLeaveTimeout={5000}
-              component="div">
-              <div className={headerStyle} onClick={this.onClose.bind(this)}>
+            <BackgroundAnimation size="320" startY="58" theme={this.state.theme} />
+
+            <TransitionGroup {...transitionProps} transitionName="panelHeaderAnimation">
+              <div className={headerClass} onClick={this.onClose.bind(this)}>
                 <div className="logo">Orbit</div>
               </div>
             </TransitionGroup>
-            <TransitionGroup
-              transitionName="networkNameAnimation"
-              transitionAppear={true}
-              transitionAppearTimeout={5000}
-              transitionEnterTimeout={5000}
-              transitionLeaveTimeout={5000}
-              component="div">
+
+            <TransitionGroup {...transitionProps} transitionName="networkNameAnimation">
               <div className="networkName">
                 <div className="text">{this.state.networkName}</div>
               </div>
@@ -129,16 +127,9 @@ class ChannelsPanel extends React.Component {
 
             <div className="username">{this.state.username}</div>
 
-            {loadingIcon}
+            <Spinner isLoading={this.state.loading} color="rgba(140, 80, 220, 1)" size="32px" />
 
-            <TransitionGroup
-              component="div"
-              transitionName="joinChannelAnimation"
-              transitionAppear={true}
-              transitionAppearTimeout={5000}
-              transitionEnterTimeout={5000}
-              transitionLeaveTimeout={5000}
-              className={channelJoinInputStyle}>
+            <TransitionGroup {...transitionProps} transitionName="joinChannelAnimation" className={channelJoinInputClass}>
               <JoinChannel
                 onJoinChannel={this.handleJoinChannel.bind(this)}
                 requirePassword={this.state.requirePassword}
@@ -147,33 +138,24 @@ class ChannelsPanel extends React.Component {
               />
             </TransitionGroup>
 
+            <div className={channelsHeaderClass}>Channels</div>
 
-            <div className={channelsHeaderStyle}>Channels</div>
-
-            <TransitionGroup
-              component="div"
-              transitionName="joinChannelAnimation"
-              transitionAppear={true}
-              transitionAppearTimeout={5000}
-              transitionEnterTimeout={5000}
-              transitionLeaveTimeout={5000}
-              className="openChannels">
+            <TransitionGroup {...transitionProps} transitionName="joinChannelAnimation" className="openChannels">
               <div className="RecentChannelsView">
                 <div className="RecentChannels">{openChannels}</div>
               </div>
             </TransitionGroup>
 
             <div className="bottomRow">
-              <div className="icon flaticon-gear94" onClick={this.props.onOpenSettings} style={this.state.theme} key="settingsIcon"/>
-              <div className="icon flaticon-sharing7" onClick={this.props.onOpenSwarmView} style={this.state.theme} key="swarmIcon"/>
-              <div className="icon flaticon-prohibition35" onClick={this.props.onDisconnect} style={this.state.theme} key="disconnectIcon"/>
+              <input type="submit" onClick={this.props.onOpenSettings} value="Settings" style={this.state.theme} />
+              <input type="submit" onClick={this.props.onOpenSwarmView} value="Swarm" style={this.state.theme} />
+              <input type="submit" onClick={this.props.onDisconnect} value="Disconnect" style={this.state.theme} />
             </div>
+
           </div>
-
         </TransitionGroup>
 
-        <TransitionGroup component="div" transitionName="darkenerAnimation" transitionAppear={true} className={"darkener"} onClick={this.onClose.bind(this)} transitionAppearTimeout={5000} transitionEnterTimeout={5000} transitionLeaveTimeout={5000}>
-        </TransitionGroup>
+        <TransitionGroup {...transitionProps} transitionName="darkenerAnimation" className="darkener" onClick={this.onClose.bind(this)} />
       </div>
     );
   }
