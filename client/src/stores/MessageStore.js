@@ -63,6 +63,7 @@ const MessageStore = Reflux.createStore({
         this.channels[channel].canLoadMore = true;
       });
 
+      // TODO: revisit this to make sure it's all working
       feed.events.on('synced', (channel, items) => {
         logger.info("Channel synced: #" + channel)
         self.channels[channel].canLoadMore = true;
@@ -70,33 +71,6 @@ const MessageStore = Reflux.createStore({
           self.loadMessages(channel, null, null, messagesBatchSize);
       });
     })
-
-    // this.orbit.events.on('data', (channel, hash) => {
-    //   logger.info("New messages in #" + channel)
-    //   self.loadMessages(channel, null, null, messagesBatchSize);
-    // });
-
-    // this.orbit.events.on('message', (channel, hash) => {
-    //   logger.info("New messages in #" + channel)
-    //   self.loadMessages(channel, null, null, messagesBatchSize);
-    // });
-
-    // this.orbit.events.on('load', (channel) => {
-    // });
-
-    // this.orbit.events.on('ready', (channel) => {
-    //   this.channels[channel].canLoadMore = true;
-    // });
-
-    // this.orbit.events.on('sync', (channel) => {
-    // });
-
-    // this.orbit.events.on('synced', (channel, items) => {
-    //   logger.info("Channel synced: #" + channel)
-    //   self.channels[channel].canLoadMore = true;
-    //   if(self.channels[channel] && !self.channels[channel].loading)
-    //     self.loadMessages(channel, null, null, messagesBatchSize);
-    // });
   },
   _updateLoadingState: function(channel) {
     logger.debug("Update channel state", channel);
