@@ -244,10 +244,10 @@ const MessageStore = Reflux.createStore({
       })
       .catch((e) => console.log(e))
   },
-  onAddFile: function(channel: string, filePath: string, buffer) {
+  onAddFile: function(channel: string, filePath: string, buffer, meta) {
     logger.debug("--> Add file: " + filePath + buffer !== null);
     UIActions.startLoading(channel, "file");
-    this.orbit.addFile(channel, filePath, buffer)
+    this.orbit.addFile(channel, filePath, buffer, meta)
       .then((post) => UIActions.stopLoading(channel, "file"))
       .catch((e) => {
         const error = e.toString();
@@ -256,11 +256,14 @@ const MessageStore = Reflux.createStore({
       })
   },
   onLoadFile: function(hash, cb) {
-    this.orbit.getFile(hash).then((stream) => {
-      let buf = '';
-      stream.on('data', (chunk) => buf += chunk);
-      stream.on('end', () => cb(null, buf));
-    })
+    this.orbit.getFile(hash)
+      .then((stream) => {
+        let buf = '';
+        stream.on('close', () => cb(null, buf));
+        stream.on('data', (chunk) => buf += chunk);
+        // stream.on('end', () => cb(null, buf)); // for some reason the stream emits 'close', but not 'end'
+      })
+      .catch((e) => logger.error(e))
   },
   onLoadDirectoryInfo: function(hash, cb) {
     // TODO: refactor

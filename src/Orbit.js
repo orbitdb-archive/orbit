@@ -5,8 +5,10 @@ const EventEmitter = require('events').EventEmitter;
 const OrbitDB      = require('orbit-db');
 const Post         = require('ipfs-post');
 const Logger       = require('logplease');
-const utils        = require('./utils');
 const logger       = Logger.create("Orbit", { color: Logger.Colors.Green });
+
+// TODO: move utils to the main process in Electron version so that fs can be used
+const utils        = require('./utils');
 
 const defaultOptions = {
   cacheFile: path.join(utils.getAppPath(), "/data", "/orbit-db-cache.json"), // path to orbit-db cache file
@@ -222,7 +224,7 @@ class Orbit {
   getFile(hash) {
     // Use if .cat doesn't seem to work
     // return new Promise((resolve, reject) => {
-    //   const stream = request('http://localhost:8080/_ipfs/' + hash);
+    //   const stream = request(`http://localhost:8080/ipfs/${hash}`);
     //   resolve(stream);
     // });
     return this._ipfs.cat(hash);

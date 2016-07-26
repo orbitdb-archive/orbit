@@ -182,14 +182,15 @@ class Channel extends React.Component {
   onDrop(files) {
     this.setState({ dragEnter: false });
     files.forEach((file) => {
+      const meta = { mimeType: file.type }
+      // Electron can return a path of a directory
       if(file.path) {
-        this.sendFile(file.path);
+        this.sendFile(file.path, null, meta);
       } else {
+        // In browsers, read the files returned by the event
         const reader = new FileReader();
         reader.onload = (event) => {
-          this.sendFile(file.name, event.target.result, {
-            mimeType: file.type,
-          });
+          this.sendFile(file.name, event.target.result, meta);
         };
         reader.readAsArrayBuffer(file);
         // console.error("File upload not yet implemented in browser. Try the electron app.");
