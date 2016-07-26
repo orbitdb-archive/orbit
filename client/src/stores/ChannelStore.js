@@ -21,6 +21,7 @@ var ChannelStore = Reflux.createStore({
       this.trigger(this.channels);
     });
   },
+  // TODO: remove this function once nobody's using it anymore
   get: function(channel) {
     return this.channels[channel];
   },

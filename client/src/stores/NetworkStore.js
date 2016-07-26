@@ -12,16 +12,13 @@ var NetworkStore = Reflux.createStore({
   init: function() {
     this.network = null;
   },
-  network: function() {
-    return this.network;
-  },
   onInitialize: function(orbit) {
     this.orbit = orbit;
     this.orbit.events.on('connected', (network, user) => {
       logger.info("orbit.event: network", network, user)
       this._updateNetwork(network)
     });
-    this._updateNetwork(null)
+    this._updateNetwork(null);
   },
   _updateNetwork: function(network, user) {
     logger.debug("Received network state");
@@ -35,8 +32,7 @@ var NetworkStore = Reflux.createStore({
   },
   onDisconnect: function() {
     logger.debug("Disconnect");
-    this.init();
-    this.trigger(this.network);
+    this._updateNetwork(null);
   }
 });
 
