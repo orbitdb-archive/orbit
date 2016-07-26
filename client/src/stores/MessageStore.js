@@ -23,14 +23,8 @@ const MessageStore = Reflux.createStore({
     this.channels = {};
     this.posts = {}; // simple cache for message contents
     this._reset();
-    // this.stopListeningChannelUpdates = ChannelStore.listen((channels) => {
-    //   const channel = Object.keys(channels).map((f) => channels[f]).find((e) => e.name === this.currentChannel);
-    //   // logger.debug("Channels state updated for", channel)
-    //   if(channel)
-    //   this._updateLoadingState(channel);
-    // });
 
-    // debug
+    // debug for Friedel
     window.send = (amount, interval) => {
       let i = 0;
       let timer = setInterval(() => {
@@ -42,7 +36,6 @@ const MessageStore = Reflux.createStore({
   },
   onInitialize: function(orbit) {
     this.orbit = orbit
-    const self = this
 
     this.orbit.events.on('joined', (channel) => {
       logger.info(`Joined #${channel}`);
@@ -51,12 +44,12 @@ const MessageStore = Reflux.createStore({
 
       feed.events.on('updated', (name, newItems) => {
         logger.info("New messages in #" + channel);
-        self.loadMessages(channel, null, null, messagesBatchSize);
+        this.loadMessages(channel, null, null, messagesBatchSize);
       });
 
       feed.events.on('data', (name, hash) => {
         logger.info("Sent message to #" + channel);
-        self.loadMessages(channel, null, null, messagesBatchSize);
+        this.loadMessages(channel, null, null, messagesBatchSize);
       });
 
       feed.events.on('ready', (name) => {
@@ -66,9 +59,9 @@ const MessageStore = Reflux.createStore({
       // TODO: revisit this to make sure it's all working
       feed.events.on('synced', (channel, items) => {
         logger.info("Channel synced: #" + channel)
-        self.channels[channel].canLoadMore = true;
-        if(self.channels[channel] && !self.channels[channel].loading)
-          self.loadMessages(channel, null, null, messagesBatchSize);
+        this.channels[channel].canLoadMore = true;
+        if(this.channels[channel] && !this.channels[channel].loading)
+          this.loadMessages(channel, null, null, messagesBatchSize);
       });
     })
   },
