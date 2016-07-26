@@ -12,12 +12,16 @@ import Spinner from 'components/Spinner';
 import 'styles/ChannelsPanel.scss';
 import 'styles/RecentChannels.scss';
 
+const channelsToArray = (channels) => {
+  return Object.keys(channels).map((f) => channels[f]);
+};
+
 class ChannelsPanel extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
       currentChannel: props.currentChannel,
-      openChannels: [],
+      openChannels: props.channels,
       joiningToChannel: props.joiningToChannel,
       username: props.username,
       requirePassword: props.requirePassword || false,
@@ -30,6 +34,7 @@ class ChannelsPanel extends React.Component {
 
   componentWillReceiveProps(nextProps) {
     this.setState({
+      openChannels: nextProps.channels,
       currentChannel: nextProps.currentChannel,
       joiningToChannel: nextProps.joiningToChannel || this.state.joiningToChannel,
       requirePassword: nextProps.requirePassword,
@@ -88,10 +93,10 @@ class ChannelsPanel extends React.Component {
 
   render() {
     const headerClass = this.state.currentChannel ? "header" : "header no-close";
-    const channelsHeaderClass = this.state.openChannels.length > 0 ? "panelHeader" : "hidden";
+    const channelsHeaderClass = Object.keys(this.state.openChannels).length > 0 ? "panelHeader" : "hidden";
     const channelJoinInputClass = !this.state.loading ? "joinChannelInput" : "joinChannelInput invisible";
 
-    const openChannels = this.state.openChannels.map((channel) => this._renderChannel(channel));
+    const openChannels = Object.values(this.state.openChannels).map((channel) => this._renderChannel(channel));
 
     const transitionProps = {
       component: 'div',
