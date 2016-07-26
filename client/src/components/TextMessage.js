@@ -50,6 +50,7 @@ class TextMessage extends React.Component {
 
     return _.flatten(items.map((item) => {
       if(typeof item !== 'string') return item;
+      if(item[0] !== ':' && item.indexOf('d:') > 0) return item; // Handle 'd:' specially
       emojiOpts.attributes.alt = item.trim();
       return ReactEmoji.emojify(item, emojiOpts);
     }));
