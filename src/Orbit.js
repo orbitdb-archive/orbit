@@ -174,7 +174,7 @@ class Orbit {
       });
   }
 
-  addFile(channel, filePath, buffer) {
+  addFile(channel, filePath, buffer, meta) {
     console.log("!!!!!!!!!!!!!", typeof filePath === 'string')
     console.log(channel, filePath);
 
@@ -218,7 +218,8 @@ class Orbit {
           name: filePath.split("/").pop(),
           hash: hash,
           size: size,
-          from: this.orbitdb.user.id
+          from: this.orbitdb.user.id,
+          meta: meta,
         };
 
         const type = isDirectory ? Post.Types.Directory : Post.Types.File;
@@ -239,12 +240,25 @@ class Orbit {
   }
 
   getFile(hash, callback) {
-    // request('http://localhost:8080/ipfs/' + hash, function (error, response, body) {
-    //   if(!error && response.statusCode === 200) {
-        if(callback) callback(null);
-        // if(callback) callback(body);
-    //   }
-    // })
+    if (callback) {
+      callback(null);
+      return;
+    }
+    return this.ipfs.files.cat(hash).then(res => {
+      return new Promise((resolve, reject) => {
+        const buffers = [];
+        res
+          .on('error', err => {
+            reject(err);
+          })
+          .on('data', data => {
+            buffers.push(data);
+          })
+          .on('end', () => {
+            resolve(new Blob(buffers));
+          });
+      });
+    });
   }
 
   _handleError(e) {

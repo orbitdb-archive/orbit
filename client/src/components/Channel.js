@@ -2,16 +2,15 @@
 
 import _ from 'lodash';
 import React from 'react';
-import TransitionGroup from "react-addons-css-transition-group";
 import Message from 'components/Message';
-import SendMessage from 'components/SendMessage';
+import ChannelControls from 'components/ChannelControls';
+import NewMessageNotification from 'components/NewMessageNotification';
 import Dropzone from 'react-dropzone';
 import MessageStore from 'stores/MessageStore';
 import ChannelStore from 'stores/ChannelStore';
 import LoadingStateStore from 'stores/LoadingStateStore';
 import UIActions from 'actions/UIActions';
 import ChannelActions from 'actions/ChannelActions';
-import Halogen from 'halogen';
 import 'styles/Channel.scss';
 import Logger from 'logplease';
 const logger = Logger.create('Channel', { color: Logger.Colors.Cyan });
@@ -31,7 +30,6 @@ class Channel extends React.Component {
       error: null,
       dragEnter: false,
       username: props.user ? props.user.username : '',
-      displayNewMessagesIcon: false,
       unreadMessages: 0,
       appSettings: props.appSettings,
       theme: props.theme
@@ -48,7 +46,7 @@ class Channel extends React.Component {
     if(nextProps.channel !== this.state.channelName) {
       this.setState({
         channelChanged: true,
-        displayNewMessagesIcon: false,
+        unreadMessages: 0,
         loading: true,
         reachedChannelStart: false,
         messages: []
@@ -158,7 +156,6 @@ class Channel extends React.Component {
       && this.state.messages.length > 0 && _.last(messages).payload.meta.ts > _.last(this.state.messages).payload.meta.ts
       && this.node.scrollHeight > 0) {
       this.setState({
-        displayNewMessagesIcon: true,
         unreadMessages: this.state.unreadMessages + 1
       });
     }
@@ -171,9 +168,9 @@ class Channel extends React.Component {
       ChannelActions.sendMessage(this.state.channelName, text);
   }
 
-  sendFile(filePath: string, buffer) {
+  sendFile(filePath: string, buffer, meta) {
     if(filePath !== '' || buffer !== null)
-      ChannelActions.addFile(this.state.channelName, filePath, buffer);
+      ChannelActions.addFile(this.state.channelName, filePath, buffer, meta);
   }
 
   loadOlderMessages() {
@@ -222,15 +219,15 @@ class Channel extends React.Component {
 
   onDrop(files) {
     this.setState({ dragEnter: false });
-    console.log('Dropped files: ', files);
     files.forEach((file) => {
       if(file.path) {
         this.sendFile(file.path);
       } else {
         const reader = new FileReader();
         reader.onload = (event) => {
-          console.log(file, event);
-          this.sendFile(file.name, event.target.result)
+          this.sendFile(file.name, event.target.result, {
+            mimeType: file.type,
+          });
         };
         reader.readAsArrayBuffer(file);
         // console.error("File upload not yet implemented in browser. Try the electron app.");
@@ -261,7 +258,9 @@ class Channel extends React.Component {
     // If we scrolled to the bottom, hide the "new messages" label
     this.node = this.refs.MessagesView;
     if(this.node.scrollHeight - this.node.scrollTop - 10 <= this.node.clientHeight) {
-      this.setState({ displayNewMessagesIcon: false, unreadMessages: 0 });
+      this.setState({
+        unreadMessages: 0
+      });
     }
   }
 
@@ -270,89 +269,70 @@ class Channel extends React.Component {
     this.node.scrollTop = this.node.scrollHeight + this.node.clientHeight;
   }
 
-  render() {
-    const theme = this.state.theme;
-    const channelMode = (<div className={"statusMessage"} style={theme}>{this.state.channelMode}</div>);
-
-    const controlsBar = (
-      <TransitionGroup
-        component="div"
-        transitionName="controlsAnimation"
-        transitionAppear={true}
-        transitionAppearTimeout={1000}
-        transitionEnterTimeout={0}
-        transitionLeaveTimeout={0}
-        >
-        <div className="Controls" key="controls">
-          <SendMessage onSendMessage={this.sendMessage.bind(this)} key="SendMessage" theme={theme} useEmojis={this.state.appSettings.useEmojis}/>
-          <Dropzone className="dropzone2" onDrop={this.onDrop.bind(this)} key="dropzone2">
-            <div className="icon flaticon-tool490" style={theme} key="icon"/>
-          </Dropzone>
-        </div>
-      </TransitionGroup>
-    );
-
-    const messages = this.state.messages.map((e) => {
-      return <Message
-                message={e.payload}
-                key={e.hash}
-                onDragEnter={this.onDragEnter.bind(this)}
-                highlightWords={this.state.username}
-                colorifyUsername={this.state.appSettings.colorifyUsernames}
-                useEmojis={this.state.appSettings.useEmojis}
-                style={{
-                  fontFamily: this.state.appSettings.useMonospaceFont ? this.state.appSettings.monospaceFont : this.state.appSettings.font,
-                  fontSize: this.state.appSettings.useMonospaceFont ? '0.9em' : '1.0em',
-                  fontWeight: this.state.appSettings.useMonospaceFont ? '100' : '300',
-                  padding: this.state.appSettings.spacing,
-                }}
-              />;
-    });
-
-    // let channelStateText = this.state.loading && this.state.loadingText ? this.state.loadingText : `Loading messages...`;
-    let channelStateText = this.state.loadingText ? this.state.loadingText : `???`;
-    if(this.state.reachedChannelStart && !this.state.loading)
-      channelStateText = `Beginning of #${this.state.channelName}`;
-
-    messages.unshift(<div className="firstMessage" key="firstMessage" onClick={this.loadOlderMessages.bind(this)}>{channelStateText}</div>);
-
-    const fileDrop = this.state.dragEnter ? (
-      <Dropzone
-        className="dropzone"
-        activeClassName="dropzoneActive"
-        disableClick={true}
-        onDrop={this.onDrop.bind(this)}
+  renderMessages() {
+    const { messages, username, channelName, loading, loadingText, reachedChannelStart, appSettings } = this.state;
+    const { colorifyUsernames, useEmojis, useMonospaceFont, font, monospaceFont, spacing } = appSettings;
+    const elements = messages.map((message) => (
+      <Message
+        message={message.payload}
+        key={message.hash}
         onDragEnter={this.onDragEnter.bind(this)}
-        onDragLeave={this.onDragLeave.bind(this)}
-        style={theme}
-        key="dropzone"
-        >
-        <div ref="dropLabel" style={theme}>Add files to #{this.state.channelName}</div>
-      </Dropzone>
-    ) : "";
-
-    const showNewMessageNotification = this.state.displayNewMessagesIcon ? (
-      <div className="newMessagesBar" onClick={this.onScrollToBottom.bind(this)}>
-        There are <span className="newMessagesNumber">{this.state.unreadMessages}</span> new messages
+        highlightWords={username}
+        colorifyUsername={colorifyUsernames}
+        useEmojis={useEmojis}
+        style={{
+          fontFamily: useMonospaceFont ? monospaceFont : font,
+          fontSize: useMonospaceFont ? '0.9em' : '1.0em',
+          fontWeight: useMonospaceFont ? '100' : '300',
+          padding: spacing,
+        }}
+      />
+    ));
+    elements.unshift(
+      <div className="firstMessage" key="firstMessage" onClick={this.loadOlderMessages.bind(this)}>
+        {reachedChannelStart && !loading ? `Beginning of #${channelName}` : loadingText || '???'}
       </div>
-    ) : (<span></span>);
+    );
+    return elements;
+  }
 
-    const loadingIcon = this.state.loading ? (
-      <div className="loadingBar">
-        <Halogen.MoonLoader className="loadingIcon" color="rgba(255, 255, 255, 0.7)" size="16px"/>
-      </div>
-    ) : "";
+  renderFileDrop() {
+    const { theme, dragEnter, channelName } = this.state;
+    if (dragEnter) {
+      return (
+        <Dropzone
+          className="dropzone"
+          activeClassName="dropzoneActive"
+          disableClick={true}
+          onDrop={this.onDrop.bind(this)}
+          onDragEnter={this.onDragEnter.bind(this)}
+          onDragLeave={this.onDragLeave.bind(this)}
+          style={theme} >
+            <div ref="dropLabel" style={theme}>Add files to #{channelName}</div>
+        </Dropzone>
+      );
+    }
+    return null;
+  }
 
+  render() {
+    const { unreadMessages, loading, channelMode, appSettings, theme } = this.state;
     return (
       <div className="Channel flipped" onDragEnter={this.onDragEnter.bind(this)}>
-        <div className="Messages" ref="MessagesView" onScroll={this.onScroll.bind(this)} >
-          {messages}
+        <div className="Messages" ref="MessagesView" onScroll={this.onScroll.bind(this)}>
+          {this.renderMessages()}
         </div>
-        {showNewMessageNotification}
-        {controlsBar}
-        {fileDrop}
-        {loadingIcon}
-        {channelMode}
+        <NewMessageNotification
+          onClick={this.onScrollToBottom.bind(this)}
+          unreadMessages={unreadMessages} />
+        <ChannelControls
+          onSendMessage={this.sendMessage.bind(this)}
+          onSendFiles={this.onDrop.bind(this)}
+          isLoading={loading}
+          channelMode={channelMode}
+          appSettings={appSettings}
+          theme={theme} />
+        {this.renderFileDrop()}
       </div>
     );
   }
