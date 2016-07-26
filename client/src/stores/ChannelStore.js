@@ -18,7 +18,7 @@ var ChannelStore = Reflux.createStore({
     this.orbit = orbit;
     this.orbit.events.on('update', (channel) => {
       this.channels = this.orbit.channels;
-      this.trigger(channel, this.channels);
+      this.trigger(this.channels);
     });
   },
   get: function(channel) {

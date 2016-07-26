@@ -80,7 +80,7 @@ class Channel extends React.Component {
 
   _updateLoadingState(channel) {
     if(channel) {
-      logger.debug("CHANNEL STATE CHANGED", channel, this.state.channelName);
+      // logger.debug("CHANNEL STATE CHANGED", channel, this.state.channelName);
       const loading = (channel.state.loading || channel.state.syncing > 0);
       const text = loading ? 'Syncing...' : '';
       logger.debug(loading, text);
@@ -88,9 +88,9 @@ class Channel extends React.Component {
     }
   }
 
-  _onChannelStateChanged(updatedChannel, channels) {
+  _onChannelStateChanged(channels) {
     const channelInfo = channels[this.state.channelName];
-    logger.debug("Channels state updated for", updatedChannel)
+    logger.debug(`Channel state updated for ${this.state.channelName}`)
     if(channelInfo)
       this._updateLoadingState(channelInfo);
     // logger.debug("CHANNEL STATE CHANGED", channelName, this.state.channelName);
@@ -312,7 +312,7 @@ class Channel extends React.Component {
     });
 
     // let channelStateText = this.state.loading && this.state.loadingText ? this.state.loadingText : `Loading messages...`;
-    let channelStateText = this.state.loadingText ? this.state.loadingText : `???`;
+    let channelStateText = this.state.loadingText ? this.state.loadingText : `Loading...`;
     if(this.state.reachedChannelStart && !this.state.loading)
       channelStateText = `Beginning of #${this.state.channelName}`;
 
