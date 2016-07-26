@@ -213,15 +213,15 @@ IpfsApis.forEach(function(ipfsApi) {
 
       it('joins a new channel', () => {
         return orbit.join(channel).then((result) => {
-          const channels = orbit.channels;
+          const c = orbit.channels[channel];
           assert.equal(result, true);
-          assert.equal(channels.length, 1);
-          assert.equal(channels[0].name, channel);
-          assert.equal(channels[0].password, null);
-          assert.notEqual(channels[0].db, null);
-          assert.equal(channels[0].state.loading, false);
-          assert.equal(channels[0].state.syncing, 0);
-          assert.notEqual(orbit._channels[channel], null);
+          assert.notEqual(c, null);
+          assert.equal(Object.keys(orbit.channels).length, 1);
+          assert.equal(c.name, channel);
+          assert.equal(c.password, null);
+          assert.notEqual(c.db, null);
+          assert.equal(c.state.loading, false);
+          assert.equal(c.state.syncing, 0);
         });
       });
 
@@ -229,14 +229,14 @@ IpfsApis.forEach(function(ipfsApi) {
         return orbit.join(channel)
           .then(() => orbit.join(channel))
           .then((result) => {
-            const channels = orbit.channels;
+            const c = orbit.channels[channel];
             assert.equal(result, false);
-            assert.equal(channels.length, 1);
-            assert.equal(channels[0].name, channel);
-            assert.equal(channels[0].password, null);
-            assert.notEqual(channels[0].db, null);
-            assert.equal(channels[0].state.loading, false);
-            assert.equal(channels[0].state.syncing, 0);
+            assert.equal(Object.keys(orbit.channels).length, 1);
+            assert.equal(c.name, channel);
+            assert.equal(c.password, null);
+            assert.notEqual(c.db, null);
+            assert.equal(c.state.loading, false);
+            assert.equal(c.state.syncing, 0);
           });
       });
 
@@ -245,19 +245,20 @@ IpfsApis.forEach(function(ipfsApi) {
         return orbit.join(channel)
           .then(() => orbit.join(channel2))
           .then((result) => {
-            const channels = orbit.channels;
+            const c1 = orbit.channels[channel];
+            const c2 = orbit.channels[channel2];
             assert.equal(result, true);
-            assert.equal(channels.length, 2);
-            assert.equal(channels[0].name, channel);
-            assert.equal(channels[0].password, null);
-            assert.equal(channels[0].state.loading, false);
-            assert.equal(channels[0].state.syncing, 0);
-            assert.notEqual(channels[0].db, null);
-            assert.equal(channels[1].name, channel2);
-            assert.equal(channels[1].password, null);
-            assert.equal(channels[1].state.loading, false);
-            assert.equal(channels[1].state.syncing, 0);
-            assert.notEqual(channels[1].db, null);
+            assert.equal(Object.keys(orbit.channels).length, 2);
+            assert.equal(c1.name, channel);
+            assert.equal(c1.password, null);
+            assert.equal(c1.state.loading, false);
+            assert.equal(c1.state.syncing, 0);
+            assert.notEqual(c1.db, null);
+            assert.equal(c2.name, channel2);
+            assert.equal(c2.password, null);
+            assert.equal(c2.state.loading, false);
+            assert.equal(c2.state.syncing, 0);
+            assert.notEqual(c2.db, null);
           });
       });
 
@@ -277,15 +278,16 @@ IpfsApis.forEach(function(ipfsApi) {
 
       it('emits \'joined\' event after joining a new channel', (done) => {
         orbit.events.once('joined', (channelName) => {
-          const channels = orbit.channels;
-          assert.equal(channelName, channel);
-          assert.equal(channels.length, 1);
-          assert.equal(channels[0].name, channel);
-          assert.equal(channels[0].password, null);
-          assert.notEqual(channels[0].db, null);
-          assert.equal(channels[0].state.loading, false);
-          assert.equal(channels[0].state.syncing, 0);
-          assert.notEqual(orbit._channels[channel], null);
+          const c = orbit.channels[channel];
+          assert.notEqual(channel, null);
+          assert.equal(channel, c.name);
+          assert.equal(channelName, c.name);
+          assert.equal(Object.keys(orbit.channels).length, 1);
+          assert.equal(c.name, channel);
+          assert.equal(c.password, null);
+          assert.notEqual(c.db, null);
+          assert.equal(c.state.loading, false);
+          assert.equal(c.state.syncing, 0);
           done();
         });
         orbit.join(channel).catch(done);
@@ -340,8 +342,8 @@ IpfsApis.forEach(function(ipfsApi) {
         orbit.join(channel).then(() => {
           orbit.leave(channel);
           const channels = orbit.channels;
-          assert.equal(channels.length, 0);
-          assert.equal(orbit.channels[channel], null);
+          assert.equal(Object.keys(channels).length, 0);
+          assert.equal(channels[channel], null);
           done();
         });
       });
@@ -350,7 +352,7 @@ IpfsApis.forEach(function(ipfsApi) {
         orbit.join(channel).then(() => {
           orbit.events.on('left', (channelName) => {
             assert.equal(channelName, channel);
-            assert.equal(orbit.channels.length, 0);
+            assert.equal(Object.keys(orbit.channels).length, 0);
             done();
           });
           orbit.leave(channel);
@@ -360,7 +362,7 @@ IpfsApis.forEach(function(ipfsApi) {
       it('emits \'left\' event after calling leave if channels hasn\'t been joined', (done) => {
         orbit.events.on('left', (channelName) => {
           assert.equal(channelName, channel);
-          assert.equal(orbit.channels.length, 0);
+            assert.equal(Object.keys(orbit.channels).length, 0);
           done();
         });
         orbit.leave(channel);
@@ -380,7 +382,7 @@ IpfsApis.forEach(function(ipfsApi) {
           assert.equal(orbit.network, null);
         });
         it('no channels', () => {
-          assert.equal(orbit.channels.length, 0);
+          assert.equal(Object.keys(orbit.channels).length, 0);
         });
         it('no peers', () => {
           assert.equal(orbit.peers.length, 0);
@@ -417,20 +419,20 @@ IpfsApis.forEach(function(ipfsApi) {
           it('returns a joined channel', () => {
             const channel2 = 'test2';
             return orbit.join(channel2).then(() => {
-              assert.equal(orbit.channels.length, 1);
-              assert.equal(orbit.channels[0].name, channel2);
+              assert.equal(Object.keys(orbit.channels).length, 1);
+              assert.equal(orbit.channels[channel2].name, channel2);
             })
           });
 
-          it('returns the channels in correcy format', () => {
+          it('returns the channels in correct format', () => {
             return orbit.join(channel).then(() => {
-              const channels = orbit.channels;
-              assert.equal(orbit.channels.length, 2);
-              assert.equal(channels[1].name, channel);
-              assert.equal(channels[1].password, null);
-              assert.equal(Object.prototype.isPrototypeOf(channels[1].db, EventStore), true);
-              assert.equal(channels[1].state.loading, false);
-              assert.equal(channels[1].state.syncing, 0);
+              const c = orbit.channels[channel];
+              assert.equal(Object.keys(orbit.channels).length, 2);
+              assert.equal(c.name, channel);
+              assert.equal(c.password, null);
+              assert.equal(Object.prototype.isPrototypeOf(c.db, EventStore), true);
+              assert.equal(c.state.loading, false);
+              assert.equal(c.state.syncing, 0);
             });
           });
         });
@@ -858,10 +860,11 @@ IpfsApis.forEach(function(ipfsApi) {
 
       it('emits \'update\' on load', (done) => {
         orbit.events.once('update', (channels) => {
-          assert.equal(channels.length, 1);
-          assert.equal(channels[0].db, null);
-          assert.equal(channels[0].state.loading, true);
-          assert.equal(channels[0].state.syncing, 0);
+          const c = channels[channel];
+          assert.equal(Object.keys(channels).length, 1);
+          assert.equal(c.db, null);
+          assert.equal(c.state.loading, true);
+          assert.equal(c.state.syncing, 0);
           done();
         });
         orbit.join(channel);
@@ -878,10 +881,11 @@ IpfsApis.forEach(function(ipfsApi) {
       it('emits \'update\' on ready', (done) => {
         orbit.events.on('ready', () => {
           orbit.events.on('update', (channels) => {
-            assert.equal(channels.length, 1);
-            assert.equal(channels[0].db, null);
-            assert.equal(channels[0].state.loading, false);
-            assert.equal(channels[0].state.syncing, 0);
+            const c = channels[channel];
+            assert.equal(Object.keys(channels).length, 1);
+            assert.equal(c.db, null);
+            assert.equal(c.state.loading, false);
+            assert.equal(c.state.syncing, 0);
             done();
           });
         });
@@ -902,10 +906,10 @@ IpfsApis.forEach(function(ipfsApi) {
             orbit.events.removeAllListeners('update');
             orbit.events.on('sync', (channelName) => {
               orbit.events.on('update', (channels) => {
-                assert.equal(channels.length, 1);
-                assert.notEqual(channels[0].db, null);
-                assert.equal(channels[0].state.loading, false);
-                assert.equal(channels[0].state.syncing, 1);
+                assert.equal(Object.keys(channels).length, 1);
+                assert.notEqual(channels[channel].db, null);
+                assert.equal(channels[channel].state.loading, false);
+                assert.equal(channels[channel].state.syncing, 1);
                 done();
               });
             });
@@ -926,10 +930,10 @@ IpfsApis.forEach(function(ipfsApi) {
           orbit.events.removeAllListeners('update');
           orbit.events.on('synced', (channelName) => {
             orbit.events.on('update', (channels) => {
-              assert.equal(channels.length, 1);
-              assert.notEqual(channels[0].db, null);
-              assert.equal(channels[0].state.loading, false);
-              assert.equal(channels[0].state.syncing, 0);
+              assert.equal(Object.keys(channels).length, 1);
+              assert.notEqual(channels[channel].db, null);
+              assert.equal(channels[channel].state.loading, false);
+              assert.equal(channels[channel].state.syncing, 0);
               done();
             });
           });
