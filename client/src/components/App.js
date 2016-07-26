@@ -270,6 +270,7 @@ var App = React.createClass({
         onOpenSwarmView={this.openSwarmView}
         onOpenSettings={this.openSettings}
         onDisconnect={this.disconnect}
+        channels={ChannelStore.channels}
         currentChannel={AppStateStore.state.location}
         username={this.state.user ? this.state.user.username : ""}
         requirePassword={this.state.requirePassword}

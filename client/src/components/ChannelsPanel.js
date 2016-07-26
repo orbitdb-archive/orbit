@@ -1,14 +1,13 @@
 'use strict';
 
 import React from 'react';
-import TransitionGroup from "react-addons-css-transition-group"; //eslint-disable-line
+import TransitionGroup from "react-addons-css-transition-group";
 import UIActions from "actions/UIActions";
-import JoinChannel from 'components/JoinChannel'; //eslint-disable-line
-import ChannelStore from 'stores/ChannelStore';
+import JoinChannel from 'components/JoinChannel';
 import AppStateStore from 'stores/AppStateStore';
 import NetworkActions from 'actions/NetworkActions';
-import BackgroundAnimation from 'components/BackgroundAnimation'; //eslint-disable-line
-import Halogen from 'halogen'; //eslint-disable-line
+import BackgroundAnimation from 'components/BackgroundAnimation';
+import Halogen from 'halogen';
 import 'styles/ChannelsPanel.scss';
 import 'styles/RecentChannels.scss';
 
@@ -17,7 +16,7 @@ class ChannelsPanel extends React.Component {
     super(props);
     this.state = {
       currentChannel: props.currentChannel,
-      openChannels: [],
+      openChannels: props.channels,
       joiningToChannel: props.joiningToChannel,
       username: props.username,
       requirePassword: props.requirePassword || false,
@@ -30,6 +29,7 @@ class ChannelsPanel extends React.Component {
 
   componentWillReceiveProps(nextProps) {
     this.setState({
+      openChannels: nextProps.channels,
       currentChannel: nextProps.currentChannel,
       joiningToChannel: nextProps.joiningToChannel || this.state.joiningToChannel,
       requirePassword: nextProps.requirePassword,
@@ -43,17 +43,10 @@ class ChannelsPanel extends React.Component {
     this.stopListeningAppState = AppStateStore.listen((appState) => {
       this.setState({ appState: appState });
     });
-
-    this.unsubscribeFromChannelStore = ChannelStore.listen((channels) => {
-      this.setState({ openChannels: channels });
-    });
-
-    this.setState({ openChannels: ChannelStore.channels });
   }
 
   componentWillUnmount() {
     this.stopListeningAppState();
-    this.unsubscribeFromChannelStore();
   }
 
   onClose() {
@@ -95,8 +88,8 @@ class ChannelsPanel extends React.Component {
       </div>
     ) : "";
 
-    var channelsHeaderStyle = this.state.openChannels.length > 0 ? "panelHeader" : "hidden";
-    var openChannels = this.state.openChannels.length > 0 ? this.state.openChannels.map((f) => this._renderChannel(f)) : [];
+    var channelsHeaderStyle = Object.keys(this.state.openChannels).length > 0 ? "panelHeader" : "hidden";
+    var openChannels = Object.keys(this.state.openChannels).length > 0 ? Object.keys(this.state.openChannels).map((f) => this._renderChannel(this.state.openChannels[f])) : [];
     var channelJoinInputStyle = !this.state.loading ? "joinChannelInput" : "joinChannelInput invisible";
 
     return (
