@@ -62,6 +62,13 @@ const MessageStore = Reflux.createStore({
       feed.events.on('ready', (name) => {
         this.channels[channel].canLoadMore = true;
       });
+
+      feed.events.on('synced', (channel, items) => {
+        logger.info("Channel synced: #" + channel)
+        self.channels[channel].canLoadMore = true;
+        if(self.channels[channel] && !self.channels[channel].loading)
+          self.loadMessages(channel, null, null, messagesBatchSize);
+      });
     })
 
     // this.orbit.events.on('data', (channel, hash) => {
