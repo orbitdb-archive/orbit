@@ -26,5 +26,12 @@ module.exports = {
   },
   readFileSync(path, options) {
     return;
+  },
+  statSync(path) {
+    return {
+      isDirectory: function() {
+        return false;
+      }
+    }
   }
 }
