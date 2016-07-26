@@ -278,7 +278,7 @@ class Orbit {
     if(this._channels[channel]) {
       this._channels[channel].state.loading = true;
       this.events.emit('load', channel);
-      this.events.emit('update', this.channels);
+      this.events.emit('update', channel);
     }
   }
 
@@ -287,7 +287,7 @@ class Orbit {
     if(this._channels[db.dbname]) {
       this._channels[db.dbname].state.loading = false;
       this.events.emit('ready', db.dbname);
-      this.events.emit('update', this.channels);
+      this.events.emit('update', db.dbname);
     }
   }
 
@@ -296,7 +296,7 @@ class Orbit {
     if(this._channels[channel]) {
       this._channels[channel].state.syncing += 1;
       this.events.emit('sync', channel);
-      this.events.emit('update', this.channels);
+      this.events.emit('update', channel);
     }
   }
 
@@ -306,7 +306,7 @@ class Orbit {
       this._channels[channel].state.syncing -= 1;
       this._channels[channel].state.syncing = Math.max(0, this._channels[channel].state.syncing);
       this.events.emit('synced', channel, items);
-      this.events.emit('update', this.channels);
+      this.events.emit('update', channel);
     }
   }
 

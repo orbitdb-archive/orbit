@@ -860,8 +860,8 @@ IpfsApis.forEach(function(ipfsApi) {
 
       it('emits \'update\' on load', (done) => {
         orbit.events.once('update', (channels) => {
-          const c = channels[channel];
-          assert.equal(Object.keys(channels).length, 1);
+          const c = orbit.channels[channel];
+          assert.equal(Object.keys(orbit.channels).length, 1);
           assert.equal(c.db, null);
           assert.equal(c.state.loading, true);
           assert.equal(c.state.syncing, 0);
@@ -880,9 +880,9 @@ IpfsApis.forEach(function(ipfsApi) {
 
       it('emits \'update\' on ready', (done) => {
         orbit.events.on('ready', () => {
-          orbit.events.on('update', (channels) => {
-            const c = channels[channel];
-            assert.equal(Object.keys(channels).length, 1);
+          orbit.events.on('update', (channel) => {
+            const c = orbit.channels[channel];
+            assert.equal(Object.keys(orbit.channels).length, 1);
             assert.equal(c.db, null);
             assert.equal(c.state.loading, false);
             assert.equal(c.state.syncing, 0);
@@ -905,11 +905,11 @@ IpfsApis.forEach(function(ipfsApi) {
           .then(() => {
             orbit.events.removeAllListeners('update');
             orbit.events.on('sync', (channelName) => {
-              orbit.events.on('update', (channels) => {
-                assert.equal(Object.keys(channels).length, 1);
-                assert.notEqual(channels[channel].db, null);
-                assert.equal(channels[channel].state.loading, false);
-                assert.equal(channels[channel].state.syncing, 1);
+              orbit.events.on('update', (channel) => {
+                assert.equal(Object.keys(orbit.channels).length, 1);
+                assert.notEqual(orbit.channels[channel].db, null);
+                assert.equal(orbit.channels[channel].state.loading, false);
+                assert.equal(orbit.channels[channel].state.syncing, 1);
                 done();
               });
             });
@@ -929,11 +929,11 @@ IpfsApis.forEach(function(ipfsApi) {
         orbit.join(channel).then(() => {
           orbit.events.removeAllListeners('update');
           orbit.events.on('synced', (channelName) => {
-            orbit.events.on('update', (channels) => {
-              assert.equal(Object.keys(channels).length, 1);
-              assert.notEqual(channels[channel].db, null);
-              assert.equal(channels[channel].state.loading, false);
-              assert.equal(channels[channel].state.syncing, 0);
+            orbit.events.on('update', (channel) => {
+              assert.equal(Object.keys(orbit.channels).length, 1);
+              assert.notEqual(orbit.channels[channel].db, null);
+              assert.equal(orbit.channels[channel].state.loading, false);
+              assert.equal(orbit.channels[channel].state.syncing, 0);
               done();
             });
           });
