@@ -82,8 +82,6 @@ app.on('ready', () => {
       if(err) reject(err);
       ipfsDaemon = node;
       ipfsDaemon.startDaemon((err, ipfs) => {
-        orbit = new Orbit(ipfs, { dataPath: dataPath });
-        global.orbit = orbit;
         global.ipfsInstance = ipfs;
         global.DEV = process.env.ENV === 'dev';
         if(process.env.ENV === 'dev')

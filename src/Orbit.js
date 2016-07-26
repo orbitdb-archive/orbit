@@ -35,7 +35,7 @@ class Orbit {
   }
 
   get channels() {
-    return Object.keys(this._channels).map((f) => this._channels[f]);
+    return this._channels;//Object.keys(this._channels).map((f) => this._channels[f]);
   }
 
   get peers() {

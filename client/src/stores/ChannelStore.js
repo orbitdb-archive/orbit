@@ -3,7 +3,6 @@
 import _ from 'lodash';
 import Reflux from 'reflux';
 import AppActions from 'actions/AppActions';
-import SocketActions from 'actions/SocketActions';
 import NetworkActions from 'actions/NetworkActions';
 import ChannelActions from 'actions/ChannelActions';
 import AppStateStore from 'stores/AppStateStore';
@@ -11,77 +10,39 @@ import Logger from 'logplease';
 const logger = Logger.create('ChannelStore', { color: Logger.Colors.Blue });
 
 var ChannelStore = Reflux.createStore({
-  listenables: [AppActions, NetworkActions, SocketActions, ChannelActions],
+  listenables: [AppActions, NetworkActions, ChannelActions],
   init: function() {
     this.channels = [];
   },
   onInitialize: function(orbit) {
     this.orbit = orbit;
-    this.orbit.events.on('channels.updated', (channels) => {
-      logger.debug("orbit event: channels.updated")
-      console.log(channels);
-      this._updateChannels(channels);
-    });
-    this.orbit.events.on('state.updated', (channels) => {
-      logger.debug("orbit event: state.updated")
-      console.log(channels);
-      this._updateChannels(channels);
-    });
   },
   get: function(channel) {
-    return _.find(this.channels, { name: channel });
-  },
-  onSocketConnected: function(socket) {
-    logger.debug("connected");
-    this.socket = socket;
-    this.socket.on('channels.updated', this._updateChannels);
-    this.socket.emit("channels.get", this._updateChannels);
-  },
-  _updateChannels: function(channels) {
-    logger.debug("received channels");
-    console.log(channels);
-    this.channels = channels;
-    this.trigger(this.channels);
-  },
-  onSocketDisconnected: function() {
-    this.socket.removeAllListeners('channels.updated');
-    this.socket = null;
-    this.onDisconnect();
+    // return _.find(this.channels, { name: channel });
+    return this.channels[channel];
   },
   onDisconnect: function() {
-    this.init();
-    this.trigger(this.channels);
-  },
-  onJoinedChannel: function(channel) {
+    this.channels = [];
     this.trigger(this.channels);
   },
   onJoinChannel: function(channel, password) {
+    // TODO: check if still needed?
     if(channel === AppStateStore.state.currentChannel)
       return;
 
-    // if(!this.socket) {
-    //   // console.error("Socket not connected");
-    //   return;
-    // }
-
-    // this.socket.emit("channel.join", channel, password, (err, res) => {
-    logger.debug("Join channel #" + channel);
-    this.orbit.join(channel).then(() => {
-      logger.debug("joined channel", channel);
-        NetworkActions.joinedChannel(channel);
-        this.channels = this.orbit.channels;
-        this.trigger(this.channels);
+    logger.debug(`Join channel #${channel}`);
+    this.orbit.join(channel).then((channelName) => {
+      logger.debug(`Joined channel #${channel}`);
+      NetworkActions.joinedChannel(channel);
+      this.channels = this.orbit.channels;
+      this.trigger(this.channels);
     });
-    //   if(!err) {
-    //   } else {
-    //     console.error("Can't join #" + channel + ":", err);
-    //     NetworkActions.joinChannelError(channel, err);
-    //   }
-    // });
   },
   onLeaveChannel: function(channel) {
-    console.log("--> leave channel", channel);
-    this.socket.emit("channel.part", channel);
+    logger.debug(`Leave channel #${channel}`);
+    this.orbit.leave(channel);
+    this.channels = this.orbit.channels;
+    this.trigger(this.channels);
   }
 });
 

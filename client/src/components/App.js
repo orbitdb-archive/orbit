@@ -18,7 +18,6 @@ import AppStateStore from 'stores/AppStateStore';
 import UserStore from 'stores/UserStore';
 import UserActions from 'actions/UserActions';
 import NetworkStore from 'stores/NetworkStore';
-import ConnectionStore from 'stores/ConnectionStore';
 import ChannelStore from 'stores/ChannelStore';
 import MessageStore from 'stores/MessageStore';
 import UsersStore from 'stores/UsersStore';
@@ -78,6 +77,7 @@ var App = React.createClass({
       Main.start(ipfsApi, dataPath, signalServerAddress).then((res) => {
         logger.info("Orbit started");
         logger.debug("PeerId:", res.peerId.ID);
+        console.log(res)
         orbit = res.orbit;
 
         if(hasIPFS && ipcRenderer) {
@@ -104,7 +104,6 @@ var App = React.createClass({
     NetworkActions.leaveChannel.listen(this.onLeaveChannel);
     SocketActions.socketDisconnected.listen(this.onDaemonDisconnected);
 
-    // this.unsubscribeFromConnectionStore = ConnectionStore.listen(this.onDaemonConnected);
     this.unsubscribeFromNetworkStore = NetworkStore.listen(this.onNetworkUpdated);
     this.unsubscribeFromUserStore = UserStore.listen(this.onUserUpdated);
     this.stopListeningAppState = AppStateStore.listen(this._handleAppStateChange);

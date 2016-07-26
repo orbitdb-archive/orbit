@@ -31,7 +31,7 @@ const start = exports.start = (ipfsApiInstance, repositoryPath, signalServerAddr
     return ipfsApiInstance.id()
       .then((id) => {
         console.log(id);
-        return { orbit: window.orbit, peerId: id };
+        return { orbit: orbit, peerId: id };
       });
   } else {
     const startTime = new Date().getTime();
