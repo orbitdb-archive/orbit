@@ -95,13 +95,11 @@ app.on('ready', () => {
       mainWindow = null;
     });
 
-    ipcMain.on('connected', (event, arg1, arg2) => {
-      logger.debug("connected");
+    ipcMain.on('connected', (event) => {
       setWindowToNormal();
     })
 
-    ipcMain.on('disconnected', (event, arg1, arg2) => {
-      logger.debug("disconnected");
+    ipcMain.on('disconnected', (event) => {
       setWindowToLogin();
     })
 
