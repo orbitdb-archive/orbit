@@ -16,9 +16,12 @@ var ChannelStore = Reflux.createStore({
   },
   onInitialize: function(orbit) {
     this.orbit = orbit;
+    this.orbit.events.on('update', (channel) => {
+      this.channels = this.orbit.channels;
+      this.trigger(channel, this.channels);
+    });
   },
   get: function(channel) {
-    // return _.find(this.channels, { name: channel });
     return this.channels[channel];
   },
   onDisconnect: function() {

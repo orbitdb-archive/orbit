@@ -23,12 +23,12 @@ const MessageStore = Reflux.createStore({
     this.channels = {};
     this.posts = {}; // simple cache for message contents
     this._reset();
-    this.stopListeningChannelUpdates = ChannelStore.listen((channels) => {
-      const channel = Object.keys(channels).map((f) => channels[f]).find((e) => e.name === this.currentChannel);
-      // logger.debug("Channels state updated for", channel)
-      if(channel)
-      this._updateLoadingState(channel);
-    });
+    // this.stopListeningChannelUpdates = ChannelStore.listen((channels) => {
+    //   const channel = Object.keys(channels).map((f) => channels[f]).find((e) => e.name === this.currentChannel);
+    //   // logger.debug("Channels state updated for", channel)
+    //   if(channel)
+    //   this._updateLoadingState(channel);
+    // });
 
     // debug
     window.send = (amount, interval) => {

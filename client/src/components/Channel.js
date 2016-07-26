@@ -80,7 +80,7 @@ class Channel extends React.Component {
 
   _updateLoadingState(channel) {
     if(channel) {
-      // logger.debug("CHANNEL STATE CHANGED", channel, this.state.channelName);
+      logger.debug("CHANNEL STATE CHANGED", channel, this.state.channelName);
       const loading = (channel.state.loading || channel.state.syncing > 0);
       const text = loading ? 'Syncing...' : '';
       logger.debug(loading, text);
@@ -88,9 +88,9 @@ class Channel extends React.Component {
     }
   }
 
-  _onChannelStateChanged(channels) {
-    const channelInfo = channels.find((e) => e.name === this.state.channelName);
-    // logger.debug("Channels state updated for", channel)
+  _onChannelStateChanged(updatedChannel, channels) {
+    const channelInfo = channels[this.state.channelName];
+    logger.debug("Channels state updated for", updatedChannel)
     if(channelInfo)
       this._updateLoadingState(channelInfo);
     // logger.debug("CHANNEL STATE CHANGED", channelName, this.state.channelName);
