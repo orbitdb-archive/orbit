@@ -11,7 +11,7 @@ const logger       = Logger.create("Orbit", { color: Logger.Colors.Green });
 const utils        = require('./utils');
 
 const defaultOptions = {
-  cacheFile: path.join(utils.getAppPath(), "/data", "/orbit-db-cache.json"), // path to orbit-db cache file
+  cacheFile: path.join(utils.getAppPath(), "/orbit-db-cache.json"), // path to orbit-db cache file
   maxHistory: 64 // how many messages to retrieve from history on joining a channel
 };
 
