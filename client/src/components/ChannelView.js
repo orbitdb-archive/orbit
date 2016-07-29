@@ -1,49 +1,43 @@
-'use strict';
+'use strict'
 
-import _ from 'lodash';
-import React from 'react';
-import Channel from 'components/Channel';
-import ChannelStore from 'stores/ChannelStore';
-import ChannelActions from 'actions/ChannelActions';
-import UserActions from 'actions/UserActions';
-import SettingsActions from "actions/SettingsActions";
-import Themes from 'app/Themes';
-import 'styles/ChannelView.scss';
+import _ from 'lodash'
+import React from 'react'
+import Channel from 'components/Channel'
+import ChannelStore from 'stores/ChannelStore'
+import UserStore from 'stores/UserStore'
+import SettingsStore from "stores/SettingsStore"
+import Themes from 'app/Themes'
+import 'styles/ChannelView.scss'
 
 class ChannelView extends React.Component {
   constructor(props) {
-    super(props);
+    super(props)
     this.state = {
       channelName: props.params.channel,
       channel: {},
       appSettings: {},
       user: null
-    };
+    }
   }
 
   componentDidMount() {
-    UserActions.getUser((user) => this.setState({ user: user}));
-    SettingsActions.get((settings) => this.setState({ appSettings: settings }));
-    // this.unsubscribeFromChannelMode = ChannelActions.channelModeUpdated.listen((channel, modes) => {
-    //   var c = _.cloneDeep(this.state.channel);
-    //   c.modes = modes;
-    //   this.setState({ channel: c });
-    // });
-
-    this.setState({ channel: ChannelStore.get(this.state.channelName) });
-  }
-
-  componentWillUnmount() {
-    // this.unsubscribeFromChannelMode();
+    this.setState({
+      user: UserStore.user,
+      channel: ChannelStore.get(this.state.channelName),
+      appSettings: SettingsStore.settings
+    })
   }
 
   componentWillReceiveProps(nextProps) {
-    this.setState({ channelName: nextProps.params.channel, channel: ChannelStore.get(nextProps.params.channel) });
-    SettingsActions.get((settings) => this.setState({ appSettings: settings }));
+    this.setState({
+      channelName: nextProps.params.channel,
+      channel: ChannelStore.get(nextProps.params.channel),
+      appSettings: SettingsStore.settings
+    })
   }
 
   render() {
-    var theme = this.state.appSettings ? Themes[this.state.appSettings.theme] : null;
+    var theme = this.state.appSettings ? Themes[this.state.appSettings.theme] : null
     return (
       <div className="ChannelView">
         <Channel
@@ -55,9 +49,8 @@ class ChannelView extends React.Component {
           user={this.state.user}
         />
       </div>
-    );
+    )
   }
-
 }
 
-export default ChannelView;
+export default ChannelView
