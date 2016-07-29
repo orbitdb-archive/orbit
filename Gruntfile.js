@@ -14,10 +14,8 @@ module.exports = function (grunt) {
     clean: {
       cache: [".tmp"],
       dist: ["dist"],
-      dist_nodejs_linux: ["dist/nodejs-linux"],
-      dist_nodejs_osx: ["dist/nodejs-osx"],
-      dist_native_osx: ["dist/Orbit-darwin-x64"],
-      dist_native_linux: ["dist/Orbit-linux-x64"]
+      osx: ["dist/Orbit-darwin-x64"],
+      linux: ["dist/Orbit-linux-x64"]
     },
 
     electron: {
@@ -31,7 +29,9 @@ module.exports = function (grunt) {
           arch: 'x64',
           overwrite: true,
           icon: 'assets/orbit.icns',
-          cache: '.electron-prebuilt'
+          download: {
+            cache: '.electron-prebuilt'
+          }
         }
       },
       linuxBuild: {
@@ -44,7 +44,9 @@ module.exports = function (grunt) {
           arch: 'x64',
           overwrite: true,
           icon: 'assets/orbit.icns',
-          cache: '.electron-prebuilt'
+          download: {
+            cache: '.electron-prebuilt'
+          }
         }
       }
     },
@@ -65,28 +67,8 @@ module.exports = function (grunt) {
             ],
             dest: '.tmp/'
           }
-        ],
-      },
-      nodejs_linux: {
-        files: [
-          {
-            expand: true,
-            cwd: '.tmp/',
-            src: ["**/*", "**/.*/*"],
-            dest: 'dist/nodejs-linux'
-          }
         ]
-      },
-      nodejs_osx: {
-        files: [
-          {
-            expand: true,
-            cwd: '.tmp/',
-            src: ["**/*", "**/.*/*"],
-            dest: 'dist/nodejs-osx'
-          }
-        ]
-      },
+      }
     },
 
     chmod: {
@@ -96,10 +78,6 @@ module.exports = function (grunt) {
         },
         src: [
           '.tmp/node_modules/**',
-          'dist/nodejs-osx/node_modules/orbit-common/node_modules/subcomandante/subcom',
-          'dist/nodejs-linux/node_modules/orbit-common/node_modules/subcomandante/subcom',
-          'dist/nodejs-osx/node_modules/orbit-common/node_modules/go-ipfs-dep/go-ipfs/ipfs',
-          'dist/nodejs-linux/node_modules/orbit-common/node_modules/go-ipfs-dep/go-ipfs/ipfs',
           'dist/Orbit-darwin-x64/Orbit.app/Contents/Resources/app/node_modules/subcomandante/subcom',
           'dist/Orbit-darwin-x64/Orbit.app/Contents/Resources/app/node_modules/go-ipfs-dep/go-ipfs/ipfs',
           'dist/Orbit-linux-x64/Orbit.app/Contents/Resources/app/node_modules/subcomandante/subcom',
@@ -120,49 +98,28 @@ module.exports = function (grunt) {
   });
 
   grunt.registerTask('default', ["build"]);
-  grunt.registerTask('build_osx', ["build_nodejs_linux", "build_nodejs_osx", "build_native_osx"]);
-  grunt.registerTask('build_linux', ["build_nodejs_linux", "build_native_linux"]);
-  grunt.registerTask('build_nodejs', ["build_nodejs_linux", 'build_nodejs_osx']);
+  grunt.registerTask('build_osx', ["build_osx"]);
+  grunt.registerTask('build_linux', ["build_linux"]);
 
   grunt.registerTask('build', function() {
-    grunt.task.run('clean:dist_nodejs_osx');
-    grunt.task.run('clean:dist_nodejs_linux');
-    grunt.task.run('clean:dist_native_osx');
-    grunt.task.run('clean:dist_native_linux');
-
-    grunt.task.run('copy_files');
-    grunt.task.run('copy:nodejs_osx');
-    grunt.task.run('copy:nodejs_linux');
-
-    grunt.task.run('npm_install');
-    grunt.task.run('electron:osxBuild');
-    grunt.task.run('chmod:bins');
-  });
-
-  grunt.registerTask('build_nodejs_osx', function() {
-    grunt.task.run('clean:dist_nodejs_osx');
-    grunt.task.run('copy_files');
-    grunt.task.run('copy:nodejs_osx');
-    grunt.task.run('chmod:bins');
-  });
-
-  grunt.registerTask('build_nodejs_linux', function() {
-    grunt.task.run('clean:dist_nodejs_linux');
-    grunt.task.run('copy_files');
-    grunt.task.run('copy:nodejs_linux');
-    grunt.task.run('chmod:bins');
-  });
-
-  grunt.registerTask('build_native_osx', function() {
-    grunt.task.run('clean:dist_native_osx');
+    grunt.task.run('clean:osx');
+    grunt.task.run('clean:linux');
     grunt.task.run('copy_files');
     grunt.task.run('npm_install');
     grunt.task.run('electron:osxBuild');
     grunt.task.run('chmod:bins');
   });
 
-  grunt.registerTask('build_native_linux', function() {
-    grunt.task.run('clean:dist_native_linux');
+  grunt.registerTask('build_osx', function() {
+    grunt.task.run('clean:osx');
+    grunt.task.run('copy_files');
+    grunt.task.run('npm_install');
+    grunt.task.run('electron:osxBuild');
+    grunt.task.run('chmod:bins');
+  });
+
+  grunt.registerTask('build_linux', function() {
+    grunt.task.run('clean:linux');
     grunt.task.run('copy_files');
     grunt.task.run('npm_install');
     grunt.task.run('electron:linuxBuild');
