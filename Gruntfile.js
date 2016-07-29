@@ -1,5 +1,7 @@
 'use strict';
 
+const ElectronVersion = '1.3.1'
+
 module.exports = function (grunt) {
   require('load-grunt-tasks')(grunt);
   grunt.loadNpmTasks('grunt-contrib-clean');
@@ -24,7 +26,7 @@ module.exports = function (grunt) {
           name: 'Orbit',
           dir: '.tmp',
           out: 'dist/',
-          version: '1.2.7',
+          version: ElectronVersion,
           platform: 'darwin',
           arch: 'x64',
           overwrite: true,
@@ -37,7 +39,7 @@ module.exports = function (grunt) {
           name: 'Orbit',
           dir: '.tmp',
           out: 'dist/',
-          version: '1.2.7',
+          version: ElectronVersion,
           platform: 'linux',
           arch: 'x64',
           overwrite: true,
