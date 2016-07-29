@@ -18,12 +18,12 @@ const utils = require('./src/utils');
 
 // require('crash-reporter').start();
 
-Logger.setLogfile(path.resolve(process.env.ENV === 'dev' ? process.cwd() : process.resourcesPath + "/app/", 'debug.log'));
-logger.debug("Run index-native.js");
+const appDataPath = path.resolve(process.env.ENV === 'dev' ? process.cwd() : process.resourcesPath + "/app")
+if(!fs.existsSync(appDataPath))
+  fs.mkdirSync(appDataPath);
 
-const dataPath = path.join(utils.getAppPath(), "/data");
-if(!fs.existsSync(dataPath))
-  fs.mkdirSync(dataPath);
+Logger.setLogfile(path.join(appDataPath, 'debug.log'));
+logger.debug("Run index-native.js");
 
 const connectWindowSize = { width: 500, height: 420, center: true, minWidth: 500, minHeight: 420 };
 const mainWindowSize    = { width: 1200, height: 800, center: true, minWidth: 1200, minHeight: 800 };
