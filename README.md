@@ -38,7 +38,7 @@ Live demo: [http://orbit.libp2p.io/](http://orbit.libp2p.io)
 
 ```
 npm install
-grunt build
+npm build
 ```
 
 The builds are in `dist/`. Eg. on OS X, open the application from `dist/Orbit-darwin-x64`.
@@ -50,7 +50,6 @@ Orbit uses [Electron](http://electron.atom.io/) to wrap the application in a nat
 ### Requirements
 - Node.js v6.x.x
 - npm v3.x.x
-- Following npm modules installed globally: grunt-cli, mocha, electron-prebuilt
 - g++, gcc, make (for building native modules)
 - python 2 (for building, some native modules need it, node-fibers perhaps?)
 
@@ -66,15 +65,7 @@ npm test
 ### Build all
 ```
 npm install
-grunt build
-```
-
-Build for individual platforms:
-```
-grunt build_nodejs_osx
-grunt build_nodejs_linux
-grunt build_native_osx
-grunt build_native_linux
+npm build
 ```
 
 The builds are in `dist/`
@@ -82,8 +73,8 @@ The builds are in `dist/`
 ## UI Development
 ```
 cd client/
-(npm install)
-grunt serve
+npm install
+npm dev
 ```
 
 This will open webpack dev-server at [localhost:8000/webpack-dev-server/](localhost:8000/webpack-dev-server/).
@@ -92,7 +83,7 @@ Build UI distributable:
 ```
 cd client/
 npm install
-grunt build
+npm build
 ```
 
 This will create `client/dist` directory which can be copied and distributed.
@@ -110,7 +101,7 @@ Start the webpack dev server:
 ```
 cd client/
 npm install
-grunt serve
+npm dev
 ```
 
 ## Run your own network
