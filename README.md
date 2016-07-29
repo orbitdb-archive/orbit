@@ -1,22 +1,17 @@
 # Orbit
 
-*Warning: Orbit is very much work-in-progress. If something is not working, please let me know and I'll make sure to fix it.*
+> A distributed, peer-to-peer chat application built on [IPFS](http://ipfs.io)
 
-## Introduction
+[![Project Status](https://badge.waffle.io/haadcode/orbit.svg?label=In%20Progress&title=In%20Progress)](http://waffle.io/haadcode/orbit)
+[![CircleCI Status](https://circleci.com/gh/haadcode/orbit.svg?style=shield&circle-token=158cdbe02f9dc4ca4cf84d8f54a8b17b4ed881a1)](https://circleci.com/gh/haadcode/orbit)
 
-Orbit is a ***distributed, peer-to-peer chat application built on [IPFS](http://ipfs.io)***.
-
-All content (messages, files, metadata) are saved in IPFS as files or objects.
-
-There's currently a server (https://github.com/haadcode/orbit-server) that tracks the head (IPFS hash) of a linked list that enables traversing the history of a channel's messages. In future this will be replaced by IPNS.
-
-**Please note that Orbit is not secure at the moment!**
-
-![Screenshot 1](https://raw.githubusercontent.com/haadcode/orbit/master/screenshots/screenshot4%202016-04-16.png)
-![Screenshot 2](https://raw.githubusercontent.com/haadcode/orbit/master/screenshots/screenshot3%202016-04-14.png)
-![Screenshot 3](https://raw.githubusercontent.com/haadcode/orbit/master/screenshots/screenshot6%202016-04-17.png)
+<img src="https://raw.githubusercontent.com/haadcode/orbit/master/screenshots/screenshot4%202016-04-16.png" width="80%">
+<img src="https://raw.githubusercontent.com/haadcode/orbit/master/screenshots/screenshot3%202016-04-14.png" width="50%">
+<img src="https://raw.githubusercontent.com/haadcode/orbit/master/screenshots/screenshot6%202016-04-17.png" width="50%">
 
 ## Run
+
+***Please note that Orbit is not secure at the moment!***
 
 ### Browser
 
@@ -28,13 +23,16 @@ Live demo: [http://orbit.libp2p.io/](http://orbit.libp2p.io)
 
 ### App
 
+Orbit uses [Electron](http://electron.atom.io/) to wrap the application in a native executable. The Electron version of Orbit uses [go-ipfs](https://github.com/ipfs/go-ipfs) daemon. You don't need to have an IPFS daemon running to run Orbit.
+
 #### Requirements
+
+To build the Electron app, you will need to following tools:
+
 - Node.js v6.x.x
 - npm v3.x.x
 
-#### Build the native app
-
-*Note: Electron currently has a bug that prevents js-ipfs-api to work correctly. You will need to build Electron from master which contains a fix for the bug.*
+#### Build the Electron app
 
 ```
 npm install
@@ -42,8 +40,6 @@ npm build
 ```
 
 The builds are in `dist/`. Eg. on OS X, open the application from `dist/Orbit-darwin-x64`.
-
-Orbit uses [Electron](http://electron.atom.io/) to wrap the application in a native executable. The Electron version of Orbit uses [go-ipfs](https://github.com/ipfs/go-ipfs) daemon. You don't need to have an IPFS daemon running to run Orbit.
 
 ## Development
 
@@ -88,7 +84,7 @@ npm build
 
 This will create `client/dist` directory which can be copied and distributed.
 
-### Development in Electron
+### UI Development with Electron
 For UI development (webpack-dev-server in the Electron app).
 
 Start Electron:
@@ -109,6 +105,8 @@ Get https://github.com/haadcode/orbit-server and start the server. In Orbit's lo
 
 ## Contributing
 Would be happy to accept PRs! If you want to work on something, it'd be good to talk beforehand to make sure nobody else is working on it. You can reach me on Twitter [@haadcode](https://twitter.com/haadcode) or on IRC #ipfs on Freenode.
+
+Good place to start is to take a look at the ["help wanted" issues](https://github.com/haadcode/orbit/issues?q=is%3Aopen+is%3Aissue+label%3A%22help+wanted%22).
 
 See [TODO](https://github.com/haadcode/orbit/blob/master/TODO.md) for ideas and tasks up for grabs.
 
