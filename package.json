@@ -19,7 +19,7 @@
     "grunt-chmod": "^1.1.1",
     "grunt-contrib-clean": "^1.0.0",
     "grunt-contrib-copy": "^1.0.0",
-    "grunt-electron": "^4.0.0",
+    "grunt-electron": "^2.0.1",
     "ipfs": "^0.13.0",
     "load-grunt-tasks": "^3.5.0",
     "mocha": "^2.5.3",
