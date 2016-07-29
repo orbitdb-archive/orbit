@@ -147,9 +147,9 @@ class ChannelsPanel extends React.Component {
             </TransitionGroup>
 
             <div className="bottomRow">
-              <input type="submit" onClick={this.props.onOpenSettings} value="Settings" style={this.state.theme} />
-              <input type="submit" onClick={this.props.onOpenSwarmView} value="Swarm" style={this.state.theme} />
-              <input type="submit" onClick={this.props.onDisconnect} value="Disconnect" style={this.state.theme} />
+              <div className="icon flaticon-gear94" onClick={this.props.onOpenSettings} style={this.state.theme} key="settingsIcon"/>
+              <div className="icon flaticon-sharing7" onClick={this.props.onOpenSwarmView} style={this.state.theme} key="swarmIcon"/>
+              <div className="icon flaticon-prohibition35" onClick={this.props.onDisconnect} style={this.state.theme} key="disconnectIcon"/>
             </div>
 
           </div>
