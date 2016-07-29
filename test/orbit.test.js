@@ -144,14 +144,15 @@ IpfsApis.forEach(function(ipfsApi) {
           .catch(done)
       });
 
-      it('handles connection error', () => {
+      it('handles connection error', (done) => {
         orbit = new Orbit(ipfs);
-        return orbit.connect('abc', username, password)
+        orbit.connect('localhost:61523', username, password)
           .catch((e) => {
             assert.notEqual(e, null);
             assert.equal(orbit._orbitdb, null);
             // assert.equal(e.message, 'Invalid Key'); // js-ipfs
-            assert.equal(e.message, "Connection refused to Pubsub at 'abc:undefined'"); // js-ipfs-api
+            assert.equal(e.message, "Connection refused to Pubsub at 'localhost:61523'"); // js-ipfs-api
+            done();
           })
       });
 

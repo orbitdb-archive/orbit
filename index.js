@@ -23,7 +23,7 @@ if(!fs.existsSync(appDataPath))
   fs.mkdirSync(appDataPath);
 
 Logger.setLogfile(path.join(appDataPath, 'debug.log'));
-logger.debug("Run index-native.js");
+logger.debug("Run index.js");
 
 const connectWindowSize = { width: 500, height: 420, center: true, minWidth: 500, minHeight: 420 };
 const mainWindowSize    = { width: 1200, height: 800, center: true, minWidth: 1200, minHeight: 800 };
