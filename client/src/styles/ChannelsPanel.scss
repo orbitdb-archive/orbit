@@ -15,6 +15,7 @@ $channel-name-min-height: 1.5em;
 .ChannelsPanel {
   color: rgb(240, 240, 240);
   border-right: 1px solid rgba(40, 40, 40, 0.4);
+  border-left: 1px solid rgba(40, 40, 40, 0.4);
   position: absolute;
   z-index: 100;
   background: rgb(32, 32, 32);
@@ -238,7 +239,7 @@ $channel-name-min-height: 1.5em;
   width: 100%;
   height: 100%;
   z-index: 1;
-  background-color: rgba(0,0,0,0.25);
+  background-color: rgba(0,0,0,0.33);
   cursor: pointer;
 
   .darkenerAnimation {
@@ -257,7 +258,21 @@ $channel-name-min-height: 1.5em;
 
 }
 
-.openPanelAnimation-appear {
+.openPanelAnimationRight-appear {
+  $duration: .3s;
+  $animation-name: slideFromRight;
+
+  -webkit-animation: $animation-name;
+  animation: $animation-name;
+  -webkit-animation-duration: $duration;
+  animation-duration: $duration;
+  -webkit-animation-fill-mode: both;
+  animation-fill-mode: both;
+  -webkit-animation-timing-function: ease-out;
+  animation-timing-function: ease-out;
+}
+
+.openPanelAnimationLeft-appear {
   $duration: .3s;
   $animation-name: slideFromLeft;
 
@@ -271,9 +286,23 @@ $channel-name-min-height: 1.5em;
   animation-timing-function: ease-out;
 }
 
-.panelHeaderAnimation-appear {
+.panelHeaderAnimationLeft-appear {
   $duration: 0.6s;
   $animation-name: bounceInLeft;
+
+  -webkit-animation: $animation-name;
+  animation: $animation-name;
+  -webkit-animation-duration: $duration;
+  animation-duration: $duration;
+  -webkit-animation-fill-mode: both;
+  animation-fill-mode: both;
+  -webkit-animation-timing-function: ease-out;
+  animation-timing-function: ease-out;
+}
+
+.panelHeaderAnimationRight-appear {
+  $duration: 0.6s;
+  $animation-name: bounceInRight;
 
   -webkit-animation: $animation-name;
   animation: $animation-name;

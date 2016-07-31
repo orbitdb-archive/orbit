@@ -22,6 +22,7 @@ class ChannelsPanel extends React.Component {
     this.state = {
       currentChannel: props.currentChannel,
       openChannels: props.channels,
+      leftSide: props.left,
       joiningToChannel: props.joiningToChannel,
       username: props.username,
       requirePassword: props.requirePassword || false,
@@ -34,8 +35,9 @@ class ChannelsPanel extends React.Component {
 
   componentWillReceiveProps(nextProps) {
     this.setState({
-      openChannels: nextProps.channels,
       currentChannel: nextProps.currentChannel,
+      openChannels: nextProps.channels,
+      leftSide: nextProps.left,
       joiningToChannel: nextProps.joiningToChannel || this.state.joiningToChannel,
       requirePassword: nextProps.requirePassword,
       loading: false,
@@ -106,14 +108,16 @@ class ChannelsPanel extends React.Component {
       transitionLeaveTimeout: 5000,
     };
 
+    const align = this.state.leftSide ? { right: 0, borderRight: '0px' } : { borderLeft: '0px' }
+
     return (
       <div>
-        <TransitionGroup {...transitionProps} transitionName="openPanelAnimation">
-          <div className="ChannelsPanel">
+        <TransitionGroup {...transitionProps} transitionName={this.state.leftSide ? "openPanelAnimationRight" : "openPanelAnimationLeft"}>
+          <div className="ChannelsPanel" style={align}>
 
             <BackgroundAnimation size="320" startY="58" theme={this.state.theme} />
 
-            <TransitionGroup {...transitionProps} transitionName="panelHeaderAnimation">
+            <TransitionGroup {...transitionProps} transitionName={this.state.leftSide ? "panelHeaderAnimationRight" : "panelHeaderAnimationLeft"}>
               <div className={headerClass} onClick={this.onClose.bind(this)}>
                 <div className="logo">Orbit</div>
               </div>

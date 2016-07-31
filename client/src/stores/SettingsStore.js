@@ -16,7 +16,8 @@ var defaultSettings = {
   spacing: 0.1,
   font: 'Lato',
   monospaceFont: 'Roboto Mono',
-  useMonospaceFont: false
+  useMonospaceFont: false,
+  leftSidePanel: false
 };
 
 var SettingsStore = Reflux.createStore({
@@ -43,6 +44,7 @@ var SettingsStore = Reflux.createStore({
       this.settings.font = this.settings.font || defaultSettings.font;
       this.settings.monospaceFont = this.settings.monospaceFont || defaultSettings.monospaceFont;
       this.settings.useMonospaceFont = this.settings.useMonospaceFont || defaultSettings.useMonospaceFont;
+      this.settings.leftSidePanel = this.settings.leftSidePanel || defaultSettings.leftSidePanel;
 
       // Save the defaults for this user
       localStorage.setItem("anonet.app." + this.username + ".settings", JSON.stringify(this.settings));

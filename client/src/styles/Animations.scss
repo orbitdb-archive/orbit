@@ -141,6 +141,23 @@ $bounce-amount: 2px;
     }
 }
 
+@keyframes bounceInRight {
+    0% {
+        opacity: 0;
+        transform: translateX(200px);
+    }
+    60% {
+        transform: translateX($bounce-amount);
+    }
+    80% {
+        transform: translateX(-$bounce-amount);
+    }
+    100% {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
 @keyframes bounceInDown {
     0% {
         opacity: 0;
@@ -155,6 +172,17 @@ $bounce-amount: 2px;
     100% {
         opacity: 1;
         transform: translateY(0);
+    }
+}
+
+@keyframes slideFromRight {
+    0% {
+        opacity: 0;
+        transform: translateX(200px);
+    }
+    100% {
+        opacity: 1;
+        transform: translateX(0);
     }
 }
 

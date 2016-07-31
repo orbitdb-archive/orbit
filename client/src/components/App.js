@@ -59,6 +59,7 @@ var App = React.createClass({
   getInitialState: function() {
     return {
       panelOpen: false,
+      leftSidePanel: false,
       user: null,
       location: null,
       joiningToChannel: null,
@@ -108,7 +109,7 @@ var App = React.createClass({
     this.unsubscribeFromUserStore = UserStore.listen(this.onUserUpdated);
     this.stopListeningAppState = AppStateStore.listen(this._handleAppStateChange);
     this.unsubscribeFromSettingsStore = SettingsStore.listen((settings) => {
-      this.setState({ theme: Themes[settings.theme] || null });
+      this.setState({ theme: Themes[settings.theme] || null, leftSidePanel: settings.leftSidePanel });
     });
 
     window.onblur = () => {
@@ -275,6 +276,7 @@ var App = React.createClass({
         username={this.state.user ? this.state.user.username : ""}
         requirePassword={this.state.requirePassword}
         theme={this.state.theme}
+        left={this.state.leftSidePanel}
         networkName={this.state.networkName}
         joiningToChannel={this.state.joiningToChannel}
       />
