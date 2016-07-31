@@ -37,9 +37,7 @@ module.exports = {
   },
   plugins: [
     new webpack.optimize.DedupePlugin(),
-    // new webpack.optimize.UglifyJsPlugin({
-    //   mangle: false
-    // }),
+    new webpack.optimize.UglifyJsPlugin(),
     new webpack.optimize.AggressiveMergingPlugin(),
     new webpack.NoErrorsPlugin()
   ],
@@ -70,7 +68,7 @@ module.exports = {
       query: babel
     }, {
       test: /\.js$/,
-      include: /node_modules\/(hoek|qs|wreck|boom|ipfs-.+)/,
+      include: /node_modules\/(hoek|qs|wreck|boom|logplease|ipfs-.+|orbit-db.*|crdts)/,
       loader: 'babel',
       query: babel
     }, {
