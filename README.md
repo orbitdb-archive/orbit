@@ -90,7 +90,7 @@ For UI development (webpack-dev-server in the Electron app).
 Start Electron:
 ```
 npm install
-ENV=dev ./node_modules/.bin/electron . 
+npm run dev:electron
 ```
 
 Start the webpack dev server:

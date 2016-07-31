@@ -27,7 +27,8 @@
   },
   "scripts": {
     "test": "./node_modules/.bin/mocha",
-    "build": "./node_modules/.bin/grunt build"
+    "build": "./node_modules/.bin/grunt build",
+    "dev:electron": "ENV=dev ./node_modules/.bin/electron ."
   },
   "repository": {
     "type": "git",
