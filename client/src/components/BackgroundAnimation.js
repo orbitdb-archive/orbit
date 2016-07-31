@@ -64,7 +64,7 @@ class BackgroundAnimation extends React.Component {
 
     let styleSheet = document.styleSheets[0];
     var dots = rings.map((i) => {
-      const color = "rgba(196, 196, 196, 0.1)";
+      const color = `rgba(196, 196, 196, ${0.3 - ((i + 1) * 0.03)})`;
       const mul   = (Math.random() < 0.5 ? -1 : 1); // randomize between negative and positive pos
       const pos   = (minSize + (i * inc)) * mul; // starting position for the dot
       const speed = (Math.random() * 14) + 8;
