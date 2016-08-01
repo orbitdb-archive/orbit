@@ -1,5 +1,8 @@
 # Changelog for Orbit
 
+**master**
+- Try right-aligned channels panels
+
 **3.0.0**
 - Massive re-write, everything was changed
 

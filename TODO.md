@@ -22,7 +22,6 @@
 - Solution for playing videos purely in the browser (replace/improve on current MediaSource API solution)
 - feature: markdown as content type in messages (like files/lists)
 - fix autolinks for http://localhost:port (fix in react-autolink)
-- Try right-aligned channels panels
 - Private messages (one-to-one messages)
     + channels but with @ instead of #
 - Collections (pin messages to lists)
