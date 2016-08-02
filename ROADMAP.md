@@ -4,7 +4,7 @@ This document describes the current status and the upcoming milestones of the Or
 
 ### Status and Progress
 
-[![Project Status](https://badge.waffle.io/haadcode/orbit.svg?label=TODO&title=TODO)](http://waffle.io/haadcode/orbit) [![Project Status](https://badge.waffle.io/haadcode/orbit.svg?label=In%20Progress&title=In%20Progress)](http://waffle.io/haadcode/orbit) [![Project Status](https://badge.waffle.io/haadcode/orbit.svg?label=Done&title=Done)](http://waffle.io/haadcode/orbit) 
+[![Project Status](https://badge.waffle.io/haadcode/orbit.svg?label=Backlog&title=Backlog)](http://waffle.io/haadcode/orbit) [![Project Status](https://badge.waffle.io/haadcode/orbit.svg?label=In%20Progress&title=In%20Progress)](http://waffle.io/haadcode/orbit) [![Project Status](https://badge.waffle.io/haadcode/orbit.svg?label=Done&title=Done)](http://waffle.io/haadcode/orbit) 
 
 See details of current progress on [Orbit's project board](https://waffle.io/haadcode/orbit)
 
