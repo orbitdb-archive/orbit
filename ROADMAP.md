@@ -10,7 +10,7 @@ See details of current progress on [Orbit's project board](https://waffle.io/haa
 
 ### Milestones and Goals
 
-See the [current milestone progress](https://github.com/haadcode/orbit/milestones) for milestone details. See each milestone for their individual goals and tasks.
+See the [milestone overview](https://github.com/haadcode/orbit/milestones) to check current progress. See each milestone for their individual goals and tasks.
 
 ##### Milestones and Goals: Q3/2016
 
