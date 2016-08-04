@@ -235,8 +235,9 @@ class Channel extends React.Component {
     this.node.scrollTop = this.node.scrollHeight + this.node.clientHeight;
   }
 
-  onReplyTo(hash) {
-    this.setState({ replyto: hash })
+  onReplyTo(message) {
+    this.setState({ replyto: message })
+    UIActions.focusOnSendMessage();
   }
 
   renderMessages() {

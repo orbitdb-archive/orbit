@@ -234,14 +234,20 @@ input[type=button], .channelOptionsButton {
   color: rgb(128, 128, 128);
 
   .replyto {
-    width: 0;
-    flex: 0 1 30%;
+    // flex: 0 0 30%;
+    min-width: 5vw;
+    max-width: 30vw;
+    justify-content: flex-start;
+    overflow: hidden;
+    white-space: pre;
     font-size: 0.8em;
+    font-style: italic;
+    margin-right: 0.2em;
   }
 }
 
 .statusMessage {
-  position: absolute;
+  // position: absolute;
   bottom: 1.2em;
   right: 1em;
   margin-right: 0.5em;

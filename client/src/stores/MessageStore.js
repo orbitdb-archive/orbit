@@ -11,6 +11,7 @@ import NotificationActions from 'actions/NotificationActions';
 import UserActions from 'actions/UserActions';
 import ChannelStore from 'stores/ChannelStore';
 import UserStore from 'stores/UserStore';
+import { getFormattedTime } from '../utils/utils.js';
 import Logger from 'logplease';
 const logger = Logger.create('MessageStore', { color: Logger.Colors.Magenta });
 
@@ -237,6 +238,7 @@ const MessageStore = Reflux.createStore({
             } else {
               self.onLoadPost(post.replyto, (data) => {
                 if(data) {
+                  self.posts[hash] = data;
                   self.posts[hash].replyToContent = "<" + data.meta.from + "> " + data.content;
                 }
                 callback(null, self.posts[hash]);

@@ -46,7 +46,7 @@ class Message extends React.Component {
 
   onReplyTo(event) {
     this.setState({ replyto: this.props.message.value })
-    this.props.onReplyTo(this.props.message.value)
+    this.props.onReplyTo({ hash: this.props.message.value, post: this.state.post })
   }
 
   renderContent() {
