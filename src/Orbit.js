@@ -124,7 +124,7 @@ class Orbit {
     this.events.emit('left', channel);
   }
 
-  send(channel, message) {
+  send(channel, message, replyToHash) {
     logger.debug(`Send message to #${channel}: ${message}`);
 
     if(!message || message === '')
@@ -132,6 +132,7 @@ class Orbit {
 
     const data = {
       content: message,
+      replyto: replyToHash || null,
       from: this._orbitdb.user.id
     };
 

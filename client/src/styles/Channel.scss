@@ -228,6 +228,16 @@ input[type=button], .channelOptionsButton {
   min-height: $controls-height;
   border-top: 1px solid $bar-border-color;
   border-bottom: 1px solid $bar-border-color;
+
+  font-family: "Source Sans Pro";
+  font-weight: 100;
+  color: rgb(128, 128, 128);
+
+  .replyto {
+    width: 0;
+    flex: 0 1 30%;
+    font-size: 0.8em;
+  }
 }
 
 .statusMessage {

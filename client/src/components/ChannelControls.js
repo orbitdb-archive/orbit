@@ -16,10 +16,11 @@ class ChannelControls extends React.Component {
       channelMode: PropTypes.string,
       appSettings: PropTypes.object,
       theme: PropTypes.object,
+      replyto: PropTypes.string,
   };
 
   render() {
-    const { onSendMessage, onSendFiles, isLoading, channelMode, appSettings, theme } = this.props;
+    const { onSendMessage, onSendFiles, isLoading, channelMode, appSettings, theme, replyto } = this.props;
     return (
       <TransitionGroup
         component="div"
@@ -31,7 +32,8 @@ class ChannelControls extends React.Component {
         >
         <div className="Controls" key="controls">
           <Spinner isLoading={isLoading} color="rgba(255, 255, 255, 0.7)" size="16px" />
-          <SendMessage onSendMessage={onSendMessage} theme={theme} useEmojis={appSettings.useEmojis} />
+          <span className="replyto">{replyto ? "Reply To: " + replyto : ""}</span>
+          <SendMessage onSendMessage={onSendMessage} theme={theme} useEmojis={appSettings.useEmojis} replyto={replyto} />
           <Dropzone className="dropzone2" onDrop={onSendFiles}>
             <div className="icon flaticon-tool490" style={theme} />
           </Dropzone>

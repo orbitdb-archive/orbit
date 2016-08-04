@@ -28,6 +28,7 @@ class Channel extends React.Component {
       reachedChannelStart: false,
       channelMode: "Public",
       error: null,
+      replyto: null,
       dragEnter: false,
       username: props.user ? props.user.username : '',
       unreadMessages: 0,
@@ -125,9 +126,11 @@ class Channel extends React.Component {
     this.setState({ messages: messages });
   }
 
-  sendMessage(text: string) {
-    if(text !== '')
-      ChannelActions.sendMessage(this.state.channelName, text);
+  sendMessage(text: string, replyto: string) {
+    if(text !== '') {
+      ChannelActions.sendMessage(this.state.channelName, text, replyto);
+      this.setState({ replyto: null })
+    }
   }
 
   sendFile(filePath: string, buffer, meta) {
@@ -232,6 +235,10 @@ class Channel extends React.Component {
     this.node.scrollTop = this.node.scrollHeight + this.node.clientHeight;
   }
 
+  onReplyTo(hash) {
+    this.setState({ replyto: hash })
+  }
+
   renderMessages() {
     const { messages, username, channelName, loading, loadingText, reachedChannelStart, appSettings } = this.state;
     const { colorifyUsernames, useEmojis, useMonospaceFont, font, monospaceFont, spacing } = appSettings;
@@ -240,6 +247,7 @@ class Channel extends React.Component {
         message={message.payload}
         key={message.hash}
         onDragEnter={this.onDragEnter.bind(this)}
+        onReplyTo={this.onReplyTo.bind(this)}
         highlightWords={username}
         colorifyUsername={colorifyUsernames}
         useEmojis={useEmojis}
@@ -279,7 +287,7 @@ class Channel extends React.Component {
   }
 
   render() {
-    const { unreadMessages, loading, channelMode, appSettings, theme } = this.state;
+    const { unreadMessages, loading, channelMode, appSettings, theme, replyto } = this.state;
     return (
       <div className="Channel flipped" onDragEnter={this.onDragEnter.bind(this)}>
         <div className="Messages" ref="MessagesView" onScroll={this.onScroll.bind(this)}>
@@ -294,7 +302,9 @@ class Channel extends React.Component {
           isLoading={loading}
           channelMode={channelMode}
           appSettings={appSettings}
-          theme={theme} />
+          theme={theme}
+          replyto={replyto}
+         />
         {this.renderFileDrop()}
       </div>
     );

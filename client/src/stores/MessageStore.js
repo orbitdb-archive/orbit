@@ -223,21 +223,38 @@ const MessageStore = Reflux.createStore({
   },
   onLoadPost: function(hash: string, callback) {
     // TODO: change to Promise instead of callback
+    var self = this
+
     if(!this.posts[hash]) {
       this.orbit.getPost(hash)
         .then((data) => {
-          this.posts[hash] = data;
-          callback(null, data);
+          let post = data;
+          this.posts[hash] = post;
+          if(post.replyto) {
+            if(this.posts[post.replyto] && this.posts[post.replyto].content) {
+              self.posts[hash].replyToContent = "<" + this.posts[post.replyto].meta.from + "> " + this.posts[post.replyto].content;
+              callback(null, self.posts[hash]);
+            } else {
+              self.onLoadPost(post.replyto, (data) => {
+                if(data) {
+                  self.posts[hash].replyToContent = "<" + data.meta.from + "> " + data.content;
+                }
+                callback(null, self.posts[hash]);
+              })
+            }
+          } else {
+            callback(null, post);
+          }
         })
         .catch((e) => logger.error(e))
     } else {
       callback(null, this.posts[hash]);
     }
   },
-  onSendMessage: function(channel: string, text: string) {
-    logger.debug("--> Send message: " + text);
+  onSendMessage: function(channel: string, text: string, replyToHash: string) {
+    logger.debug("--> Send message: " + text, replyToHash);
     UIActions.startLoading(channel, "send");
-    this.orbit.send(channel, text)
+    this.orbit.send(channel, text, replyToHash)
       .then((post) => {
         logger.debug("Sent:", post);
         UIActions.stopLoading(channel, "send");

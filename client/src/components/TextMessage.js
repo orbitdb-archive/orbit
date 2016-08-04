@@ -14,6 +14,7 @@ class TextMessage extends React.Component {
     super(props);
     this.state = {
       text: props.text,
+      replyto: props.replyto,
       useEmojis: props.useEmojis,
       highlightWords: props.highlightWords,
     };
@@ -69,6 +70,9 @@ class TextMessage extends React.Component {
     finalText = this._highlight(finalText);
     finalText = this.state.useEmojis ? this._emojify(finalText) : finalText;
     // finalText = this._ipfsfy(finalText);
+
+    if(this.state.replyto)
+      finalText.push(<span className="reply">{` --> "${this.state.replyto}"`}</span>)
 
     const content = (
       <TransitionGroup

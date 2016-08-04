@@ -44,6 +44,11 @@ class Message extends React.Component {
     });
   }
 
+  onReplyTo(event) {
+    this.setState({ replyto: this.props.message.value })
+    this.props.onReplyTo(this.props.message.value)
+  }
+
   renderContent() {
     const { highlightWords, useEmojis } = this.props;
     const { isCommand, post } = this.state;
@@ -55,6 +60,7 @@ class Message extends React.Component {
           content = (
             <TextMessage
               text={post.content}
+              replyto={post.replyToContent}
               useEmojis={useEmojis}
               highlightWords={post.meta.from !== highlightWords ? highlightWords : ''}
               key={post.hash} />
@@ -68,7 +74,7 @@ class Message extends React.Component {
           break;
       }
     }
-    return <div className={contentClass}>{content}</div>;
+    return <div className={contentClass} onClick={this.onReplyTo.bind(this)}>{content}</div>;
   }
 
   render() {
