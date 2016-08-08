@@ -8,12 +8,16 @@ const Logger       = require('logplease');
 const logger       = Logger.create("Orbit", { color: Logger.Colors.Green });
 
 // TODO: move utils to the main process in Electron version so that fs can be used
-const utils        = require('./utils');
+const utils = require('./utils');
 
 const defaultOptions = {
   cacheFile: path.join(utils.getAppPath(), "/orbit-db-cache.json"), // path to orbit-db cache file
   maxHistory: 64 // how many messages to retrieve from history on joining a channel
 };
+
+const Crypto = require('orbit-crypto').OrbitCrypto
+let signKey
+Crypto.generateKey().then((key) => signKey = key)
 
 class Orbit {
   constructor(ipfs, options) {
@@ -153,9 +157,26 @@ class Orbit {
   }
 
   getPost(hash) {
+    let data, signKey
     return this._ipfs.object.get(hash, { enc: 'base58' })
-      .then((res) => JSON.parse(res.toJSON().Data))
+      .then((res) => data = JSON.parse(res.toJSON().Data))
+      .then(() => console.log("111", data, Buffer.from(data.sig)))
+      .then(() => Crypto.importKeyFromIpfs(this._ipfs, data.signKey))
+      .then((signKey) => Crypto.verify(
+        Buffer.from(data.sig).buffer,
+        signKey,
+        new Buffer(JSON.stringify({
+          content: data.content,
+          meta: data.meta,
+          replyto: data.replyto
+        })))
+       )
+      .then(() => console.log(data))
+      .then(() => data)
   }
+
+  // _verifyPost(postData) {
+  // }
 
   addFile(channel, filePath) {
     if(!filePath || filePath === '')
@@ -248,11 +269,11 @@ class Orbit {
   }
 
   _postMessage(feed, postType, data) {
-    let post;
-    return Post.create(this._ipfs, postType, data)
+    let post
+    return Post.create(this._ipfs, postType, data, signKey)
       .then((res) => post = res)
       .then(() => feed.add(post.Hash))
-      .then(() => post);
+      .then(() => post)
   }
 
   // TODO: tests for everything below

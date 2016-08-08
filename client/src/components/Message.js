@@ -54,7 +54,7 @@ class Message extends React.Component {
         case 'text':
           content = (
             <TextMessage
-              text={post.content}
+              text={post.content + (post.sig ? " (signed by: " + post.signKey : '')}
               useEmojis={useEmojis}
               highlightWords={post.meta.from !== highlightWords ? highlightWords : ''}
               key={post.hash} />

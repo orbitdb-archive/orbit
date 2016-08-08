@@ -25,8 +25,7 @@
     "react-dropzone": "^3.4.0",
     "react-emoji": "^0.4.4",
     "react-router": "^2.4.0",
-    "reflux": "^0.4.1",
-    "webcrypto-shim": "^0.1.1"
+    "reflux": "^0.4.1"
   },
   "devDependencies": {
     "babel": "^6.5.2",
