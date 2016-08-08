@@ -46,9 +46,7 @@ const MessageStore = Reflux.createStore({
 
     this.orbit.events.on('joined', (channel) => {
       logger.info(`Joined #${channel}`);
-
       const feed = this.orbit.channels[channel].feed;
-
       // feed.events.on('write', (name, newItems) => {
       //   logger.info("New messages in #" + channel);
       //   // this.loadMessages(channel, null, null, messagesBatchSize);
