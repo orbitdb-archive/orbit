@@ -134,7 +134,7 @@ var App = React.createClass({
 
     if(state.currentChannel) {
       document.title = prefix + ' ' + AppStateStore.state.location + ' ' + suffix;
-      this.goToLocation(state.currentChannel, views.Channel + state.currentChannel);
+      this.goToLocation(state.currentChannel, views.Channel + encodeURIComponent(state.currentChannel));
     } else {
       document.title = prefix + ' Orbit';
       this.goToLocation(state.location, views[state.location]);
