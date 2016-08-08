@@ -37,69 +37,108 @@ const MessageStore = Reflux.createStore({
   onInitialize: function(orbit) {
     this.orbit = orbit
 
+    this.orbit.events.on('message', (channel, message) => {
+      // logger.warn("-->", channel, message)
+      // TODO: add message directly to the state and trigger update
+      // this.loadMessages(channel, null, null, messagesBatchSize);
+      this._addMessages(channel, [message], false)
+    })
+
     this.orbit.events.on('joined', (channel) => {
       logger.info(`Joined #${channel}`);
 
-      const feed = this.orbit.channels[channel].db;
+      const feed = this.orbit.channels[channel].feed;
 
-      feed.events.on('updated', (name, newItems) => {
-        logger.info("New messages in #" + channel);
-        this.loadMessages(channel, null, null, messagesBatchSize);
+      // feed.events.on('write', (name, newItems) => {
+      //   logger.info("New messages in #" + channel);
+      //   // this.loadMessages(channel, null, null, messagesBatchSize);
+      //   this._addMessages(name, newItems, false)
+      // });
+
+      // feed.events.on('data', (name, hash) => {
+      //   // logger.info("Sent message to #" + channel);
+      //   logger.info("New messages in #" + channel);
+      //   this.loadMessages(channel, null, null, messagesBatchSize);
+      // });
+
+      feed.events.on('sync', (name) => {
+        // TODO: started loading new items
+        // console.log("-------------------------------- SYNC")
+        // logger.debug("Syncing");
+        // UIActions.startLoading(channel.name, "sync", "Syncing...");
+        // if(this.syncTimeout[channel.name]) clearTimeout(this.syncTimeout[channel.name])
+        // this.syncTimeout[channel.name] = setTimeout(() => {
+        //   const text = `Syncing is taking a long time. This usually means connection problems with the network.`
+        //   UIActions.startLoading(channel.name, "synctimeout", text)
+        // }, 10000)
+
+        // setTimeout(() => {
+        //   logger.debug("Clear")
+        //   clearTimeout(this.syncTimeout[channel.name])
+        //   delete this.syncTimeout[channel.name]
+        //   UIActions.stopLoading(channel.name, "sync")
+        //   UIActions.stopLoading(channel.name, "synctimeout")
+        // }, 60000)
+
       });
 
-      feed.events.on('data', (name, hash) => {
-        logger.info("Sent message to #" + channel);
-        this.loadMessages(channel, null, null, messagesBatchSize);
-      });
-
-      feed.events.on('ready', (name) => {
-        this.channels[channel].canLoadMore = true;
-      });
-
-      // TODO: revisit this to make sure it's all working
-      feed.events.on('synced', (channel, items) => {
-        logger.info("Channel synced: #" + channel)
-        this.channels[channel].canLoadMore = true;
-        if(this.channels[channel] && !this.channels[channel].loading)
-          this.loadMessages(channel, null, null, messagesBatchSize);
-      });
-    })
-  },
-  _updateLoadingState: function(channel) {
-    logger.debug("Update channel state", channel);
-    if(channel) {
-      this.channels[channel.name].isReady = !channel.state.loading && !channel.state.syncing;
-      this.channels[channel.name].loading = channel.state.loading;
-      this.channels[channel.name].syncing = channel.state.syncing;
-
-      if(channel.state.loading) {
+      feed.events.on('load', (name) => {
+        // TODO: started loading feed's history
+        console.log("-------------------------------- LOAD")
         UIActions.startLoading(channel.name, "loadhistory", "Connecting...");
         if(this.connectTimeout[channel.name]) clearTimeout(this.connectTimeout[channel.name]);
         this.connectTimeout[channel.name] = setTimeout(() => {
-          UIActions.startLoading(channel.name, "loadhistory", `Connecting to the channel is taking a long time. This usually means connection problems with the network.`);
+          const text = `Connecting to the channel is taking a long time. This usually means connection problems with the network.`
+          UIActions.startLoading(channel.name, "loadhistory", text);
         }, 10000);
-      } else {
+      });
+
+      feed.events.on('ready', (name) => {
+        // TODO: feed's history loaded
+        console.log("-------------------------------- READY")
         clearTimeout(this.connectTimeout[channel.name]);
         delete this.connectTimeout[channel.name];
         UIActions.stopLoading(channel.name, "loadhistory");
-      }
 
-      if(channel.state.syncing > 0 && !this.syncTimeout[channel.name]) {
-        logger.debug("Syncing");
-        UIActions.startLoading(channel.name, "sync", "Syncing...");
-        if(this.syncTimeout[channel.name]) clearTimeout(this.syncTimeout[channel.name]);
-        this.syncTimeout[channel.name] = setTimeout(() => {
-          UIActions.startLoading(channel.name, "synctimeout", "Syncing is taking a long time. This usually means connection problems with the network.");
-        }, 10000);
-      } else {
-        logger.debug("Clear");
-        clearTimeout(this.syncTimeout[channel.name]);
-        delete this.syncTimeout[channel.name];
-        UIActions.stopLoading(channel.name, "sync");
-        UIActions.stopLoading(channel.name, "synctimeout");
-      }
-    }
+        this.channels[channel].canLoadMore = true;
+      });
+    })
   },
+  // _updateLoadingState: function(channel) {
+  //   logger.debug("Update channel state", channel);
+  //   if(channel) {
+  //     this.channels[channel.name].isReady = !channel.state.loading && !channel.state.syncing;
+  //     this.channels[channel.name].loading = channel.state.loading;
+  //     this.channels[channel.name].syncing = channel.state.syncing;
+
+  //     if(channel.state.loading) {
+  //       UIActions.startLoading(channel.name, "loadhistory", "Connecting...");
+  //       if(this.connectTimeout[channel.name]) clearTimeout(this.connectTimeout[channel.name]);
+  //       this.connectTimeout[channel.name] = setTimeout(() => {
+  //         UIActions.startLoading(channel.name, "loadhistory", `Connecting to the channel is taking a long time. This usually means connection problems with the network.`);
+  //       }, 10000);
+  //     } else {
+  //       clearTimeout(this.connectTimeout[channel.name]);
+  //       delete this.connectTimeout[channel.name];
+  //       UIActions.stopLoading(channel.name, "loadhistory");
+  //     }
+
+  //     if(channel.state.syncing > 0 && !this.syncTimeout[channel.name]) {
+  //       logger.debug("Syncing");
+  //       UIActions.startLoading(channel.name, "sync", "Syncing...");
+  //       if(this.syncTimeout[channel.name]) clearTimeout(this.syncTimeout[channel.name]);
+  //       this.syncTimeout[channel.name] = setTimeout(() => {
+  //         UIActions.startLoading(channel.name, "synctimeout", "Syncing is taking a long time. This usually means connection problems with the network.");
+  //       }, 10000);
+  //     } else {
+  //       logger.debug("Clear");
+  //       clearTimeout(this.syncTimeout[channel.name]);
+  //       delete this.syncTimeout[channel.name];
+  //       UIActions.stopLoading(channel.name, "sync");
+  //       UIActions.stopLoading(channel.name, "synctimeout");
+  //     }
+  //   }
+  // },
   _reset: function() {
     this.channels = {};
     this.posts = {};

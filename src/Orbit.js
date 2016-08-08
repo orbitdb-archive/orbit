@@ -60,12 +60,13 @@ class Orbit {
         this._orbitdb = orbitdb;
 
         // Subscribe to database events
-        this._orbitdb.events.on('message', this._handleMessage2.bind(this));
+        // this._orbitdb.events.on('data', this._handleMessage2.bind(this));
+        // this._orbitdb.events.on('write', this._handleMessage.bind(this));
         this._orbitdb.events.on('data', this._handleMessage.bind(this));
-        this._orbitdb.events.on('load', this._handleStartLoading.bind(this));
-        this._orbitdb.events.on('ready', this._handleDatabaseReady.bind(this));
-        this._orbitdb.events.on('sync', this._handleSync.bind(this));
-        this._orbitdb.events.on('synced', this._handleSynced.bind(this));
+        // this._orbitdb.events.on('load', this._handleStartLoading.bind(this));
+        // this._orbitdb.events.on('ready', this._handleDatabaseReady.bind(this));
+        // this._orbitdb.events.on('sync', this._handleSync.bind(this));
+        // this._orbitdb.events.on('synced', this._handleSynced.bind(this));
 
         // Get peers from libp2p and update the local peers array
         setInterval(() => {
@@ -105,6 +106,7 @@ class Orbit {
       name: channel,
       password: null,
       db: null,
+      feed: null,
       state: { loading: true, syncing: 0 }
     };
 
@@ -115,6 +117,7 @@ class Orbit {
 
     return this._orbitdb.eventlog(channel, dbOptions)
       .then((db) => this._channels[channel].db = db)
+      .then((db) => this._channels[channel].feed = db)
       .then(() => this.events.emit('joined', channel))
       .then(() => true)
   }
@@ -286,53 +289,53 @@ class Orbit {
   }
 
   _handleMessage(channel, message) {
-    logger.debug("new entry in database", channel, message);
-    if(this._channels[channel])
-      this.events.emit('data', channel, message);
-  }
-
-  _handleMessage2(channel, message) {
-    logger.debug("new entry from network", channel, message);
+    // logger.debug("new messages in ", channel, message);
     if(this._channels[channel])
       this.events.emit('message', channel, message);
   }
 
-  _handleStartLoading(channel) {
-    logger.debug("load channel", channel, this._channels);
-    if(this._channels[channel]) {
-      this._channels[channel].state.loading = true;
-      this.events.emit('load', channel);
-      this.events.emit('update', channel);
-    }
-  }
+  // _handleMessage2(channel, message) {
+  //   logger.debug("new entry from network", channel, message);
+  //   if(this._channels[channel])
+  //     this.events.emit('message', channel, message);
+  // }
 
-  _handleDatabaseReady(db) {
-    logger.debug("database ready", db.dbname);
-    if(this._channels[db.dbname]) {
-      this._channels[db.dbname].state.loading = false;
-      this.events.emit('ready', db.dbname);
-      this.events.emit('update', db.dbname);
-    }
-  }
+  // _handleStartLoading(channel) {
+  //   logger.debug("load channel", channel, this._channels);
+  //   if(this._channels[channel]) {
+  //     this._channels[channel].state.loading = true;
+  //     this.events.emit('load', channel);
+  //     this.events.emit('update', channel);
+  //   }
+  // }
 
-  _handleSync(channel) {
-    logger.debug("sync channel", channel);
-    if(this._channels[channel]) {
-      this._channels[channel].state.syncing += 1;
-      this.events.emit('sync', channel);
-      this.events.emit('update', channel);
-    }
-  }
+  // _handleDatabaseReady(db) {
+  //   logger.debug("database ready", db.dbname);
+  //   if(this._channels[db.dbname]) {
+  //     this._channels[db.dbname].state.loading = false;
+  //     this.events.emit('ready', db.dbname);
+  //     this.events.emit('update', db.dbname);
+  //   }
+  // }
 
-  _handleSynced(channel, items) {
-    logger.debug("channel synced", channel, items.length);
-    if(this._channels[channel]) {
-      this._channels[channel].state.syncing -= 1;
-      this._channels[channel].state.syncing = Math.max(0, this._channels[channel].state.syncing);
-      this.events.emit('synced', channel, items);
-      this.events.emit('update', channel);
-    }
-  }
+  // _handleSync(channel) {
+  //   logger.debug("sync channel", channel);
+  //   if(this._channels[channel]) {
+  //     this._channels[channel].state.syncing += 1;
+  //     this.events.emit('sync', channel);
+  //     this.events.emit('update', channel);
+  //   }
+  // }
+
+  // _handleSynced(channel, items) {
+  //   logger.debug("channel synced", channel, items.length);
+  //   if(this._channels[channel]) {
+  //     this._channels[channel].state.syncing -= 1;
+  //     this._channels[channel].state.syncing = Math.max(0, this._channels[channel].state.syncing);
+  //     this.events.emit('synced', channel, items);
+  //     this.events.emit('update', channel);
+  //   }
+  // }
 
   _updateSwarmPeers() {
     if(this._ipfs.libp2p && this._ipfs.libp2p.swarm.peers) {

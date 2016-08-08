@@ -24,7 +24,7 @@ class Channel extends React.Component {
       channelName: null,
       messages: [],
       loading: false,
-      loadingText: '',
+      loadingText: 'Loading...',
       reachedChannelStart: false,
       channelMode: "Public",
       error: null,
@@ -75,10 +75,10 @@ class Channel extends React.Component {
   _updateLoadingState(channel) {
     if(channel) {
       // logger.debug("CHANNEL STATE CHANGED", channel, this.state.channelName);
-      const loading = (channel.state.loading || channel.state.syncing > 0);
-      const text = loading ? 'Syncing...' : '';
-      logger.debug(loading, text);
-      this.setState({ loading: loading, loadingText: text });
+      // const loading = (channel.state.loading || channel.state.syncing > 0);
+      // const text = loading ? 'Syncing...' : '';
+      // logger.debug(loading, text);
+      // this.setState({ loading: loading, loadingText: text });
     }
   }
 
@@ -253,7 +253,7 @@ class Channel extends React.Component {
     ));
     elements.unshift(
       <div className="firstMessage" key="firstMessage" onClick={this.loadOlderMessages.bind(this)}>
-        {reachedChannelStart && !loading ? `Beginning of #${channelName}` : loadingText || '???'}
+        {reachedChannelStart && !loading ? `Beginning of #${channelName}` : loadingText }
       </div>
     );
     return elements;
