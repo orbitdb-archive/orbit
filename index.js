@@ -47,7 +47,7 @@ const setWindowToLogin = () => {
   const x    = (pos[0] + size[0]/2) - connectWindowSize.width/2;
   const y    = (pos[1] + size[1]/2) - connectWindowSize.height/2;
   mainWindow.setSize(connectWindowSize.width, connectWindowSize.height);
-  mainWindow.setPosition(x, y);
+  // mainWindow.setPosition(x, y);
 };
 
 const shutdown = () => {
