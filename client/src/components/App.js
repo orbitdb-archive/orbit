@@ -6,6 +6,8 @@ import { render } from 'react-dom';
 import { Router, Route, hashHistory } from 'react-router';
 import Logger from 'logplease';
 
+import 'webcrypto-shim'
+
 import AppActions from 'actions/AppActions';
 import UIActions from "actions/UIActions";
 import SocketActions from 'actions/SocketActions';
@@ -42,6 +44,97 @@ import 'highlight.js/styles/hybrid.css';
 import Main from '../main';
 
 const logger = Logger.create('App', { color: Logger.Colors.Red });
+
+console.log("---------------------------------------")
+window.crypto.subtle.generateKey(
+    {
+        name: "HMAC",
+        hash: {name: "SHA-256"}, //can be "SHA-1", "SHA-256", "SHA-384", or "SHA-512"
+        //length: 256, //optional, if you want your key length to differ from the hash function's block length
+    },
+    true, //whether the key is extractable (i.e. can be used in exportKey)
+    ["sign", "verify"] //can be any combination of "sign" and "verify"
+)
+.then(function(key){
+    //returns a key object
+    console.log("generated key:", key);
+
+    window.crypto.subtle.exportKey(
+        "jwk", //can be "jwk" or "raw"
+        key //extractable must be true
+    )
+    .then(function(keydata){
+        //returns the exported key data
+        console.log("exported key:", keydata);
+
+        // window.crypto.subtle.importKey(keydata
+        window.crypto.subtle.importKey(
+        "jwk", //can be "jwk" or "raw"
+        keydata,
+        {   //this is the algorithm options
+            name: "HMAC",
+            hash: {name: "SHA-256"}, //can be "SHA-1", "SHA-256", "SHA-384", or "SHA-512"
+            //length: 256, //optional, if you want your key length to differ from the hash function's block length
+        },
+        keydata.ext, //whether the key is extractable (i.e. can be used in exportKey)
+        keydata.key_ops //can be any combination of "sign" and "verify"
+    )
+    .then(function(key){
+        //returns the symmetric key
+        console.log("imported key:", key);
+
+        const data = new Uint8Array('hello world!')
+
+        window.crypto.subtle.sign(
+            {
+                name: "HMAC",
+            },
+            key, //from generateKey or importKey above
+            data //ArrayBuffer of data you want to sign
+        )
+        .then(function(signature){
+            //returns an ArrayBuffer containing the signature
+            console.log("signature:", new Uint8Array(signature));
+
+            window.crypto.subtle.verify(
+                {
+                    name: "HMAC",
+                },
+                key, //from generateKey or importKey above
+                signature, //ArrayBuffer of the signature
+                data //ArrayBuffer of the data
+            )
+            .then(function(isvalid){
+                //returns a boolean on whether the signature is true or not
+                console.log("valid:", isvalid);
+                console.log("---------------------------------------")
+            })
+            .catch(function(err){
+                console.error(err);
+            });
+
+        })
+        .catch(function(err){
+            console.error(err);
+        });
+
+    })
+    .catch(function(err){
+        console.error(err);
+    });
+
+
+    })
+    .catch(function(err){
+        console.error(err);
+    });
+
+})
+.catch(function(err){
+    console.error(err);
+});
+
+
 
 const views = {
   "Index": "/",
