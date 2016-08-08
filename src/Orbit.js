@@ -15,7 +15,7 @@ const defaultOptions = {
   maxHistory: 64 // how many messages to retrieve from history on joining a channel
 };
 
-const Crypto = require('orbit-crypto').OrbitCrypto
+const Crypto = require('orbit-crypto')
 let signKey
 Crypto.generateKey().then((key) => signKey = key)
 
@@ -160,7 +160,7 @@ class Orbit {
     let data, signKey
     return this._ipfs.object.get(hash, { enc: 'base58' })
       .then((res) => data = JSON.parse(res.toJSON().Data))
-      .then(() => console.log("111", data, Buffer.from(data.sig)))
+      // .then(() => console.log("111", data, Buffer.from(data.sig)))
       .then(() => Crypto.importKeyFromIpfs(this._ipfs, data.signKey))
       .then((signKey) => Crypto.verify(
         Buffer.from(data.sig).buffer,
@@ -171,7 +171,8 @@ class Orbit {
           replyto: data.replyto
         })))
        )
-      .then(() => console.log(data))
+      .catch((e) => data)
+      // .then(() => console.log(data))
       .then(() => data)
   }
 
