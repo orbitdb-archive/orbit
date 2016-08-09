@@ -24,6 +24,8 @@ const MessageStore = Reflux.createStore({
     this.posts = {}; // simple cache for message contents
     this._reset();
 
+    this.loading = false;
+
     // debug for Friedel
     window.send = (amount, interval) => {
       let i = 0;
@@ -38,8 +40,7 @@ const MessageStore = Reflux.createStore({
     this.orbit = orbit
 
     this.orbit.events.on('message', (channel, message) => {
-      // logger.warn("-->", channel, message)
-      // TODO: add message directly to the state and trigger update
+      // logger.info("-->", channel, message)
       // this.loadMessages(channel, null, null, messagesBatchSize);
       this._addMessages(channel, [message], false)
     })
@@ -58,6 +59,13 @@ const MessageStore = Reflux.createStore({
       //   logger.info("New messages in #" + channel);
       //   this.loadMessages(channel, null, null, messagesBatchSize);
       // });
+
+      feed.events.on('history', (name, messages) => {
+        console.log("-------------------------------- HISTORY", name, messages)
+        if(messages[0].next.length > 0)
+          this.channels[channel].canLoadMore = true;
+        this._addMessages(channel, _.take(messages.reverse(), messagesBatchSize - 1), true)
+      });
 
       feed.events.on('sync', (name) => {
         // TODO: started loading new items
@@ -82,23 +90,22 @@ const MessageStore = Reflux.createStore({
 
       feed.events.on('load', (name) => {
         // TODO: started loading feed's history
-        console.log("-------------------------------- LOAD")
-        UIActions.startLoading(channel.name, "loadhistory", "Connecting...");
-        if(this.connectTimeout[channel.name]) clearTimeout(this.connectTimeout[channel.name]);
-        this.connectTimeout[channel.name] = setTimeout(() => {
-          const text = `Connecting to the channel is taking a long time. This usually means connection problems with the network.`
-          UIActions.startLoading(channel.name, "loadhistory", text);
+        console.log("-------------------------------- LOAD", name)
+        UIActions.startLoading(name, "loadHistory", "Loading history...");
+        if(this.connectTimeout[name]) clearTimeout(this.connectTimeout[name]);
+        this.connectTimeout[name] = setTimeout(() => {
+          const text = `Loading history for #${name} is taking a long time. This usually means connection problems with the network.`
+          UIActions.startLoading(name, "loadHistory", text);
         }, 10000);
       });
 
       feed.events.on('ready', (name) => {
         // TODO: feed's history loaded
-        console.log("-------------------------------- READY")
-        clearTimeout(this.connectTimeout[channel.name]);
-        delete this.connectTimeout[channel.name];
-        UIActions.stopLoading(channel.name, "loadhistory");
-
-        this.channels[channel].canLoadMore = true;
+        console.log("-------------------------------- READY", name)
+        clearTimeout(this.connectTimeout[name]);
+        delete this.connectTimeout[name];
+        UIActions.stopLoading(name, "loadHistory");
+        this.channels[name].canLoadMore = true;
       });
     })
   },
@@ -185,25 +192,29 @@ const MessageStore = Reflux.createStore({
     if(channel !== this.currentChannel)
       return;
 
-    if(!this.channels[channel].loading && this.channels[channel].canLoadMore) {
-      logger.debug("load more messages from #" + channel);
-      this.channels[channel].canLoadMore = true;
-      this.loadMessages(channel, this.getOldestMessage(channel), null, messagesBatchSize);
-    }
+    // if(!this.channels[channel].loading && this.channels[channel].canLoadMore) {
+      if(!this.loading && this.channels[channel].canLoadMore) {
+        logger.debug("load more messages from #" + channel);
+        // this.channels[channel].canLoadMore = true;
+        this.loadMessages(channel, this.getOldestMessage(channel), null, messagesBatchSize);
+      }
+    // }
   },
   loadMessages: function(channel: string, olderThanHash: string, newerThanHash: string, amount: number) {
     logger.debug("--> GET MESSAGES #" + channel + ", " + olderThanHash + " " + newerThanHash  + " " + amount);
-    this.channels[channel].loading = true;
-    UIActions.startLoading(channel, "loadmessages", "Loading messages...");
+    // this.channels[channel].loading = true;
+      this.loading = true
+    // UIActions.startLoading(channel, "loadMessages", "Loading more messages...");
     this.orbit.get(channel, olderThanHash, newerThanHash, amount)
       .then((messages) => {
         this._addMessages(channel, messages, olderThanHash !== null);
-        this.channels[channel].loading = false;
-        UIActions.stopLoading(channel, "loadmessages");
+        this.loading = false
+        // this.channels[channel].loading = false;
+        // UIActions.stopLoading(channel, "loadMessages");
       })
   },
   _addMessages: function(channel: string, newMessages: Array, older: boolean) {
-    logger.debug("<-- messages: " + channel + " - " + newMessages.length);
+    logger.debug("<-- Add " + newMessages.length + " messages to #" + channel);
     console.log(newMessages);
     var unique = _.differenceWith(newMessages, this.channels[channel].messages, _.isEqual);
     logger.debug("Unique new messages: " + unique.length);
@@ -233,11 +244,11 @@ const MessageStore = Reflux.createStore({
     } else if(older) {
       this.channels[channel].canLoadMore = false;
       ChannelActions.reachedChannelStart();
-    } else if(!older && this.channels[channel].messages.length === 0 && this.channels[channel].isReady) {
+    } else if(!older && this.channels[channel].messages.length === 0) {
       this.channels[channel].canLoadMore = false;
       ChannelActions.reachedChannelStart();
     }
-    logger.debug("Messages added:", unique.length, ", oldest", this.getOldestMessage(channel), this.channels[channel].isReady, older, this.channels[channel].messages.length === 0);
+    // logger.debug("Messages added:", unique.length, ", oldest", this.getOldestMessage(channel), this.channels[channel].isReady, older, this.channels[channel].messages.length === 0);
   },
   _loadPost: function(channel: string, message) {
     const hasMentions = (text: string, mention: string) => {
@@ -273,11 +284,11 @@ const MessageStore = Reflux.createStore({
   },
   onSendMessage: function(channel: string, text: string) {
     logger.debug("--> Send message: " + text);
-    UIActions.startLoading(channel, "send");
+    // UIActions.startLoading(channel, "send");
     this.orbit.send(channel, text)
       .then((post) => {
         logger.debug("Sent:", post);
-        UIActions.stopLoading(channel, "send");
+        // UIActions.stopLoading(channel, "send");
       })
       .catch((e) => console.log(e))
   },
