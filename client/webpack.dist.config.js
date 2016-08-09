@@ -36,9 +36,9 @@ module.exports = {
     reasons: false
   },
   plugins: [
-    new webpack.optimize.DedupePlugin(),
-    new webpack.optimize.UglifyJsPlugin(),
-    new webpack.optimize.AggressiveMergingPlugin(),
+    // new webpack.optimize.DedupePlugin(),
+    // new webpack.optimize.UglifyJsPlugin(),
+    // new webpack.optimize.AggressiveMergingPlugin(),
     new webpack.NoErrorsPlugin()
   ],
   resolveLoader: {
@@ -49,8 +49,8 @@ module.exports = {
       path.join(__dirname, 'node_modules')
     ],
     alias: {
-      'fs': path.join(__dirname + '/node_modules', 'html5-fs'),
       'node_modules': path.join(__dirname + '/node_modules'),
+      'fs': path.join(__dirname + '/node_modules', 'html5-fs'),
       'app': __dirname + '/src/app/',
       'styles': __dirname + '/src/styles',
       'mixins': __dirname + '/src/mixins',
@@ -68,7 +68,7 @@ module.exports = {
       query: babel
     }, {
       test: /\.js$/,
-      include: /node_modules\/(hoek|qs|wreck|boom|logplease|ipfs-.+|orbit-db.*|crdts)/,
+      include: /node_modules\/(hoek|qs|wreck|boom|logplease|ipfs-.+|orbit.*|crdts)/,
       loader: 'babel',
       query: babel
     }, {

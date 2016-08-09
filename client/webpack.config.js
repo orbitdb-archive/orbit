@@ -34,10 +34,9 @@ module.exports = {
       path.join(__dirname, 'node_modules')
     ],
     alias: {
-      // "node-forge": require.resolve("peer-id/vendor/forge.bundle.js"),
-      "libp2p-ipfs": "libp2p-ipfs-browser",
-      'fs': path.join(__dirname + '/node_modules', 'html5-fs'),
       'node_modules': path.join(__dirname + '/node_modules'),
+      'libp2p-ipfs': 'libp2p-ipfs-browser',
+      'fs': path.join(__dirname + '/node_modules', 'html5-fs'),
       'app': __dirname + '/src/app/',
       'styles': __dirname + '/src/styles',
       'mixins': __dirname + '/src/mixins',

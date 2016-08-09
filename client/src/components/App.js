@@ -4,7 +4,6 @@ import _ from 'lodash'
 import React from 'react'
 import { render } from 'react-dom'
 import { Router, Route, hashHistory } from 'react-router'
-import { TextDecoder } from 'text-encoding'
 import Logger from 'logplease'
 
 import fs from 'fs'
@@ -59,7 +58,7 @@ console.log("hasIPFS:", hasIPFS)
 let orbit// = hasIPFS ? window.orbit : null;
 
 if(!hasIPFS) {
-  fs.init(5 * 1024 * 1024, function(err) {
+  fs.init(1 * 1024 * 1024, function(err) {
     if(err) {
       console.log("ERR", err)
       // Error handling
