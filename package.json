@@ -21,6 +21,7 @@
     "grunt-contrib-clean": "^1.0.0",
     "grunt-contrib-copy": "^1.0.0",
     "grunt-electron": "^2.0.1",
+    "http-server": "^0.9.0",
     "ipfs": "^0.13.0",
     "load-grunt-tasks": "^3.5.0",
     "mocha": "^2.5.3",
@@ -29,7 +30,8 @@
   "scripts": {
     "test": "./node_modules/.bin/mocha",
     "build": "./node_modules/.bin/grunt build",
-    "dev:electron": "ENV=dev ./node_modules/.bin/electron ."
+    "dev:electron": "ENV=dev ./node_modules/.bin/electron .",
+    "start": "./node_modules/.bin/http-server -c-1 & open http://localhost:8080/client/dist/index.html & wait"
   },
   "repository": {
     "type": "git",
