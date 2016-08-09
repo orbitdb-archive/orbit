@@ -105,7 +105,6 @@ class Orbit {
     this._channels[channel] = {
       name: channel,
       password: null,
-      db: null,
       feed: null,
       state: { loading: true, syncing: 0 }
     };
@@ -116,15 +115,15 @@ class Orbit {
     };
 
     return this._orbitdb.eventlog(channel, dbOptions)
-      .then((db) => this._channels[channel].db = db)
       .then((db) => this._channels[channel].feed = db)
       .then(() => this.events.emit('joined', channel))
+      // .then(() => this._channels[channel].feed.loadHistory())
       .then(() => true)
   }
 
   leave(channel) {
     if(this._channels[channel]) {
-      this._channels[channel].db.close();
+      this._channels[channel].feed.close();
       delete this._channels[channel];
       logger.debug("Left channel #" + channel);
     }
@@ -156,7 +155,11 @@ class Orbit {
     };
 
     return this._getChannelFeed(channel)
-      .then((feed) => feed.iterator(options).collect());
+      .then((feed) => {
+        const res = feed.iterator(options).collect()
+        console.log("ITEMS:", res.length)
+        return res
+      });
   }
 
   getPost(hash) {
@@ -266,7 +269,7 @@ class Orbit {
       return Promise.reject(`Channel not specified`);
 
     return new Promise((resolve, reject) => {
-      const feed = this._channels[channel] && this._channels[channel].db ? this._channels[channel].db : null;
+      const feed = this._channels[channel] && this._channels[channel].feed ? this._channels[channel].feed : null;
       if(!feed) reject(`Haven't joined #${channel}`);
       resolve(feed);
     });

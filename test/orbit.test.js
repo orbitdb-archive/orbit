@@ -220,7 +220,7 @@ IpfsApis.forEach(function(ipfsApi) {
           assert.equal(Object.keys(orbit.channels).length, 1);
           assert.equal(c.name, channel);
           assert.equal(c.password, null);
-          assert.notEqual(c.db, null);
+          assert.notEqual(c.feed, null);
           assert.equal(c.state.loading, false);
           assert.equal(c.state.syncing, 0);
         });
@@ -235,7 +235,7 @@ IpfsApis.forEach(function(ipfsApi) {
             assert.equal(Object.keys(orbit.channels).length, 1);
             assert.equal(c.name, channel);
             assert.equal(c.password, null);
-            assert.notEqual(c.db, null);
+            assert.notEqual(c.feed, null);
             assert.equal(c.state.loading, false);
             assert.equal(c.state.syncing, 0);
           });
@@ -254,12 +254,12 @@ IpfsApis.forEach(function(ipfsApi) {
             assert.equal(c1.password, null);
             assert.equal(c1.state.loading, false);
             assert.equal(c1.state.syncing, 0);
-            assert.notEqual(c1.db, null);
+            assert.notEqual(c1.feed, null);
             assert.equal(c2.name, channel2);
             assert.equal(c2.password, null);
             assert.equal(c2.state.loading, false);
             assert.equal(c2.state.syncing, 0);
-            assert.notEqual(c2.db, null);
+            assert.notEqual(c2.feed, null);
           });
       });
 
@@ -286,7 +286,7 @@ IpfsApis.forEach(function(ipfsApi) {
           assert.equal(Object.keys(orbit.channels).length, 1);
           assert.equal(c.name, channel);
           assert.equal(c.password, null);
-          assert.notEqual(c.db, null);
+          assert.notEqual(c.feed, null);
           assert.equal(c.state.loading, false);
           assert.equal(c.state.syncing, 0);
           done();
@@ -319,7 +319,7 @@ IpfsApis.forEach(function(ipfsApi) {
       //       assert.equal(channelName, channel);
       //       assert.equal(channels[0].name, channel);
       //       assert.equal(channels[0].password, null);
-      //       assert.notEqual(channels[0].db, null);
+      //       assert.notEqual(channels[0].feed, null);
       //       assert.equal(channels[0].state.loading, false);
       //       assert.equal(channels[0].state.syncing, 0);
       //       assert.notEqual(orbit._channels[channel], null);
@@ -431,7 +431,7 @@ IpfsApis.forEach(function(ipfsApi) {
               assert.equal(Object.keys(orbit.channels).length, 2);
               assert.equal(c.name, channel);
               assert.equal(c.password, null);
-              assert.equal(Object.prototype.isPrototypeOf(c.db, EventStore), true);
+              assert.equal(Object.prototype.isPrototypeOf(c.feed, EventStore), true);
               assert.equal(c.state.loading, false);
               assert.equal(c.state.syncing, 0);
             });
@@ -863,7 +863,7 @@ IpfsApis.forEach(function(ipfsApi) {
         orbit.events.once('update', (channels) => {
           const c = orbit.channels[channel];
           assert.equal(Object.keys(orbit.channels).length, 1);
-          assert.equal(c.db, null);
+          assert.equal(c.feed, null);
           assert.equal(c.state.loading, true);
           assert.equal(c.state.syncing, 0);
           done();
@@ -884,7 +884,7 @@ IpfsApis.forEach(function(ipfsApi) {
           orbit.events.on('update', (channel) => {
             const c = orbit.channels[channel];
             assert.equal(Object.keys(orbit.channels).length, 1);
-            assert.equal(c.db, null);
+            assert.equal(c.feed, null);
             assert.equal(c.state.loading, false);
             assert.equal(c.state.syncing, 0);
             done();
@@ -908,7 +908,7 @@ IpfsApis.forEach(function(ipfsApi) {
             orbit.events.on('sync', (channelName) => {
               orbit.events.on('update', (channel) => {
                 assert.equal(Object.keys(orbit.channels).length, 1);
-                assert.notEqual(orbit.channels[channel].db, null);
+                assert.notEqual(orbit.channels[channel].feed, null);
                 assert.equal(orbit.channels[channel].state.loading, false);
                 assert.equal(orbit.channels[channel].state.syncing, 1);
                 done();
@@ -932,7 +932,7 @@ IpfsApis.forEach(function(ipfsApi) {
           orbit.events.on('synced', (channelName) => {
             orbit.events.on('update', (channel) => {
               assert.equal(Object.keys(orbit.channels).length, 1);
-              assert.notEqual(orbit.channels[channel].db, null);
+              assert.notEqual(orbit.channels[channel].feed, null);
               assert.equal(orbit.channels[channel].state.loading, false);
               assert.equal(orbit.channels[channel].state.syncing, 0);
               done();
