@@ -7,6 +7,8 @@ import { Router, Route, hashHistory } from 'react-router'
 import { TextDecoder } from 'text-encoding'
 import Logger from 'logplease'
 
+import fs from 'fs'
+
 import AppActions from 'actions/AppActions';
 import UIActions from "actions/UIActions";
 import SocketActions from 'actions/SocketActions';
@@ -40,9 +42,9 @@ import 'styles/App.scss';
 import 'styles/Scrollbars.scss';
 import 'highlight.js/styles/hybrid.css';
 
-import Main from '../main';
+import Main from '../main'
 
-const logger = Logger.create('App', { color: Logger.Colors.Red });
+const logger = Logger.create('App', { color: Logger.Colors.Red })
 
 const views = {
   "Index": "/",
@@ -55,6 +57,18 @@ const views = {
 const hasIPFS = !!window.ipfs;
 console.log("hasIPFS:", hasIPFS)
 let orbit// = hasIPFS ? window.orbit : null;
+
+if(!hasIPFS) {
+  fs.init(5 * 1024 * 1024, function(err) {
+    if(err) {
+      console.log("ERR", err)
+      // Error handling
+    } else {
+      console.log("fs initialized")
+      // Now we can use the other fs API functions!
+    }
+  })
+}
 
 var App = React.createClass({
   getInitialState: function() {

@@ -36,7 +36,7 @@ module.exports = {
     alias: {
       // "node-forge": require.resolve("peer-id/vendor/forge.bundle.js"),
       "libp2p-ipfs": "libp2p-ipfs-browser",
-      fs: require.resolve('./src/fs-mock'),
+      'fs': path.join(__dirname + '/node_modules', 'html5-fs'),
       'node_modules': path.join(__dirname + '/node_modules'),
       'app': __dirname + '/src/app/',
       'styles': __dirname + '/src/styles',

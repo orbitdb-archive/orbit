@@ -13,6 +13,7 @@
     "emoji-annotation-to-unicode": "^0.2.4",
     "halogen": "^0.2.0",
     "highlight.js": "^9.5.0",
+    "html5-fs": "https://github.com/haadcode/html5-fs.git",
     "ipfs": "^0.13.0",
     "lodash": "^4.14.0",
     "logplease": "^1.2.7",
