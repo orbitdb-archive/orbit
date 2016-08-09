@@ -17,7 +17,6 @@ const defaultOptions = {
 
 const Crypto = require('orbit-crypto')
 let signKey
-Crypto.generateKey().then((key) => signKey = key)
 
 class Orbit {
   constructor(ipfs, options) {
@@ -76,6 +75,8 @@ class Orbit {
           });
         }, 1000);
       })
+      .then(() => Crypto.generateKey())
+      .then((key) => signKey = key)
       .then(() => {
         logger.info(`Connected to '${this._orbitdb.network.name}' at '${this._orbitdb.network.publishers[0]}' as '${user.username}`)
         this.events.emit('connected', this.network, this.user);
@@ -170,7 +171,7 @@ class Orbit {
           replyto: data.replyto
         })))
        )
-      .catch((e) => data)
+      // .catch((e) => data)
       .then(() => data)
   }
 

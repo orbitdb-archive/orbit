@@ -134,10 +134,6 @@ IpfsApis.forEach(function(ipfsApi) {
           .then((res) => {
             assert.notEqual(orbit._orbitdb, null);
             assert.equal(orbit._orbitdb.events.listenerCount('data'), 1);
-            assert.equal(orbit._orbitdb.events.listenerCount('load'), 1);
-            assert.equal(orbit._orbitdb.events.listenerCount('ready'), 1);
-            assert.equal(orbit._orbitdb.events.listenerCount('sync'), 1);
-            assert.equal(orbit._orbitdb.events.listenerCount('synced'), 1);
             orbit.disconnect();
             done();
           })
@@ -221,8 +217,6 @@ IpfsApis.forEach(function(ipfsApi) {
           assert.equal(c.name, channel);
           assert.equal(c.password, null);
           assert.notEqual(c.feed, null);
-          assert.equal(c.state.loading, false);
-          assert.equal(c.state.syncing, 0);
         });
       });
 
@@ -236,8 +230,6 @@ IpfsApis.forEach(function(ipfsApi) {
             assert.equal(c.name, channel);
             assert.equal(c.password, null);
             assert.notEqual(c.feed, null);
-            assert.equal(c.state.loading, false);
-            assert.equal(c.state.syncing, 0);
           });
       });
 
@@ -252,13 +244,9 @@ IpfsApis.forEach(function(ipfsApi) {
             assert.equal(Object.keys(orbit.channels).length, 2);
             assert.equal(c1.name, channel);
             assert.equal(c1.password, null);
-            assert.equal(c1.state.loading, false);
-            assert.equal(c1.state.syncing, 0);
             assert.notEqual(c1.feed, null);
             assert.equal(c2.name, channel2);
             assert.equal(c2.password, null);
-            assert.equal(c2.state.loading, false);
-            assert.equal(c2.state.syncing, 0);
             assert.notEqual(c2.feed, null);
           });
       });
@@ -287,8 +275,6 @@ IpfsApis.forEach(function(ipfsApi) {
           assert.equal(c.name, channel);
           assert.equal(c.password, null);
           assert.notEqual(c.feed, null);
-          assert.equal(c.state.loading, false);
-          assert.equal(c.state.syncing, 0);
           done();
         });
         orbit.join(channel).catch(done);
@@ -320,8 +306,6 @@ IpfsApis.forEach(function(ipfsApi) {
       //       assert.equal(channels[0].name, channel);
       //       assert.equal(channels[0].password, null);
       //       assert.notEqual(channels[0].feed, null);
-      //       assert.equal(channels[0].state.loading, false);
-      //       assert.equal(channels[0].state.syncing, 0);
       //       assert.notEqual(orbit._channels[channel], null);
       //       assert.equal(channels.length, 1);
       //       done();
@@ -432,8 +416,6 @@ IpfsApis.forEach(function(ipfsApi) {
               assert.equal(c.name, channel);
               assert.equal(c.password, null);
               assert.equal(Object.prototype.isPrototypeOf(c.feed, EventStore), true);
-              assert.equal(c.state.loading, false);
-              assert.equal(c.state.syncing, 0);
             });
           });
         });
@@ -824,8 +806,9 @@ IpfsApis.forEach(function(ipfsApi) {
     describe('events', function() {
       beforeEach((done) => {
         orbit = new Orbit(ipfs, { cacheFile: null });
+        orbit.events.on('joined', () => done())
         orbit.connect(network, username, password)
-          .then((res) => done())
+          .then(() => orbit.join(channel))
           .catch(done)
       });
 
@@ -834,124 +817,120 @@ IpfsApis.forEach(function(ipfsApi) {
       });
 
       it('emits \'message\'', (done) => {
-        orbit.events.on('message', (channelName, messageHash) => {
-          assert.equal(channelName, channel);
-          assert.equal(messageHash.startsWith('Qm'), true);
-          done();
-        });
-        orbit.join(channel).then(() => orbit.send(channel, 'hello'));
-      });
+        orbit.events.on('message', (channelName, message) => {
+          assert.equal(channelName, channel)
+          assert.notEqual(message.payload, undefined)
+          assert.equal(message.payload.op, 'ADD')
+          assert.equal(message.payload.key, null)
+          assert.equal(message.payload.value.startsWith('Qm'), true)
+          assert.equal(message.hash.startsWith('Qm'), true)
+          done()
+        })
+        orbit.send(channel, 'hello')
+      })
 
-      it('emits \'data\'', (done) => {
-        orbit.events.on('data', (channelName, messageHash) => {
-          assert.equal(channelName, channel);
-          assert.equal(messageHash.startsWith('Qm'), true);
-          done();
-        });
-        orbit.join(channel).then(() => orbit.send(channel, 'hello'));
-      });
+    //   it('emits \'data\'', (done) => {
+    //     orbit.events.on('data', (channelName, messageHash) => {
+    //       assert.equal(channelName, channel)
+    //       assert.equal(messageHash.startsWith('Qm'), true)
+    //       done()
+    //     })
+    //     orbit.send(channel, 'hello')
+    //   })
 
-      it('emits \'load\'', (done) => {
-        orbit.events.on('load', (channelName) => {
-          assert.equal(channelName, channel);
-          done();
-        });
-        orbit.join(channel);
-      });
+    //   it('emits \'load\'', (done) => {
+    //     orbit.events.on('load', (channelName) => {
+    //       assert.equal(channelName, channel);
+    //       done();
+    //     });
+    //     orbit.join(channel);
+    //   });
 
-      it('emits \'update\' on load', (done) => {
-        orbit.events.once('update', (channels) => {
-          const c = orbit.channels[channel];
-          assert.equal(Object.keys(orbit.channels).length, 1);
-          assert.equal(c.feed, null);
-          assert.equal(c.state.loading, true);
-          assert.equal(c.state.syncing, 0);
-          done();
-        });
-        orbit.join(channel);
-      });
+    //   it('emits \'update\' on load', (done) => {
+    //     orbit.events.once('update', (channels) => {
+    //       const c = orbit.channels[channel];
+    //       assert.equal(Object.keys(orbit.channels).length, 1);
+    //       assert.equal(c.feed, null);
+    //       done();
+    //     });
+    //     orbit.join(channel);
+    //   });
 
-      it('emits \'ready\'', (done) => {
-        orbit.events.on('ready', (channelName) => {
-          assert.equal(channelName, channel);
-          done();
-        });
-        orbit.join(channel);
-      });
+    //   it('emits \'ready\'', (done) => {
+    //     orbit.events.on('ready', (channelName) => {
+    //       assert.equal(channelName, channel);
+    //       done();
+    //     });
+    //     orbit.join(channel);
+    //   });
 
-      it('emits \'update\' on ready', (done) => {
-        orbit.events.on('ready', () => {
-          orbit.events.on('update', (channel) => {
-            const c = orbit.channels[channel];
-            assert.equal(Object.keys(orbit.channels).length, 1);
-            assert.equal(c.feed, null);
-            assert.equal(c.state.loading, false);
-            assert.equal(c.state.syncing, 0);
-            done();
-          });
-        });
-        orbit.join(channel);
-      });
+    //   it('emits \'update\' on ready', (done) => {
+    //     orbit.events.on('ready', () => {
+    //       orbit.events.on('update', (channel) => {
+    //         const c = orbit.channels[channel];
+    //         assert.equal(Object.keys(orbit.channels).length, 1);
+    //         assert.equal(c.feed, null);
+    //         done();
+    //       });
+    //     });
+    //     orbit.join(channel);
+    //   });
 
-      it.skip('emits \'sync\' on load', (done) => {
-        orbit.events.on('sync', (channelName) => {
-          assert.equal(channelName, channel);
-          done();
-        });
-        orbit.join(channel);
-      });
+    //   it.skip('emits \'sync\' on load', (done) => {
+    //     orbit.events.on('sync', (channelName) => {
+    //       assert.equal(channelName, channel);
+    //       done();
+    //     });
+    //     orbit.join(channel);
+    //   });
 
-      it.skip('emits \'update\' on sync', (done) => {
-        orbit.join(channel)
-          .then(() => {
-            orbit.events.removeAllListeners('update');
-            orbit.events.on('sync', (channelName) => {
-              orbit.events.on('update', (channel) => {
-                assert.equal(Object.keys(orbit.channels).length, 1);
-                assert.notEqual(orbit.channels[channel].feed, null);
-                assert.equal(orbit.channels[channel].state.loading, false);
-                assert.equal(orbit.channels[channel].state.syncing, 1);
-                done();
-              });
-            });
-          });
-      });
+    //   it.skip('emits \'update\' on sync', (done) => {
+    //     orbit.join(channel)
+    //       .then(() => {
+    //         orbit.events.removeAllListeners('update');
+    //         orbit.events.on('sync', (channelName) => {
+    //           orbit.events.on('update', (channel) => {
+    //             assert.equal(Object.keys(orbit.channels).length, 1);
+    //             assert.notEqual(orbit.channels[channel].feed, null);
+    //             done();
+    //           });
+    //         });
+    //       });
+    //   });
 
-      it.skip('emits \'sync\'', (done) => {
-        orbit.join(channel).then(() => {
-          orbit.events.on('sync', (channelName) => {
-            assert.equal(channelName, channel);
-            done();
-          });
-        });
-      });
+    //   it.skip('emits \'sync\'', (done) => {
+    //     orbit.join(channel).then(() => {
+    //       orbit.events.on('sync', (channelName) => {
+    //         assert.equal(channelName, channel);
+    //         done();
+    //       });
+    //     });
+    //   });
 
-      it.skip('emits \'update\' on synced', (done) => {
-        orbit.join(channel).then(() => {
-          orbit.events.removeAllListeners('update');
-          orbit.events.on('synced', (channelName) => {
-            orbit.events.on('update', (channel) => {
-              assert.equal(Object.keys(orbit.channels).length, 1);
-              assert.notEqual(orbit.channels[channel].feed, null);
-              assert.equal(orbit.channels[channel].state.loading, false);
-              assert.equal(orbit.channels[channel].state.syncing, 0);
-              done();
-            });
-          });
-        });
-      });
+    //   it.skip('emits \'update\' on synced', (done) => {
+    //     orbit.join(channel).then(() => {
+    //       orbit.events.removeAllListeners('update');
+    //       orbit.events.on('synced', (channelName) => {
+    //         orbit.events.on('update', (channel) => {
+    //           assert.equal(Object.keys(orbit.channels).length, 1);
+    //           assert.notEqual(orbit.channels[channel].feed, null);
+    //           done();
+    //         });
+    //       });
+    //     });
+    //   });
 
-      it.skip('emits \'synced\' after sync', (done) => {
-        orbit.events.on('synced', (channelName) => {
-          orbit.events.removeAllListeners('synced');
-          orbit.events.on('synced', (channelName, items) => {
-            assert.equal(channelName, channel);
-            done();
-          });
-          orbit.send(channel, 'hello');
-        });
-        orbit.join(channel);
-      });
+    //   it.skip('emits \'synced\' after sync', (done) => {
+    //     orbit.events.on('synced', (channelName) => {
+    //       orbit.events.removeAllListeners('synced');
+    //       orbit.events.on('synced', (channelName, items) => {
+    //         assert.equal(channelName, channel);
+    //         done();
+    //       });
+    //       orbit.send(channel, 'hello');
+    //     });
+    //     orbit.join(channel);
+    //   });
     });
 
   });
