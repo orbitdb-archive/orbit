@@ -6,7 +6,7 @@
   "dependencies": {
     "du": "^0.1.0",
     "ipfs-api": "^6.0.3",
-    "ipfs-post": "^0.0.6",
+    "ipfs-post": "^0.0.7",
     "ipfsd-ctl": "^0.14.0",
     "lodash": "^4.14.0",
     "logplease": "^1.2.7",
