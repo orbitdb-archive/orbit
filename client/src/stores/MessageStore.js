@@ -62,7 +62,7 @@ const MessageStore = Reflux.createStore({
 
       feed.events.on('history', (name, messages) => {
         console.log("-------------------------------- HISTORY", name, messages)
-        if(messages[0].next.length > 0)
+        if(messages[0] && messages[0].next.length > 0)
           this.channels[channel].canLoadMore = true;
         this._addMessages(channel, _.take(messages.reverse(), messagesBatchSize - 1), true)
       });

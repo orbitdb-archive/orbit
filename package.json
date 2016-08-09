@@ -11,7 +11,7 @@
     "lodash": "^4.14.0",
     "logplease": "^1.2.7",
     "orbit-crypto": "0.0.2",
-    "orbit-db": "^0.10.2"
+    "orbit-db": "^0.11.1"
   },
   "devDependencies": {
     "bluebird": "^3.4.1",
