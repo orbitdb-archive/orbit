@@ -49,6 +49,7 @@ module.exports = {
     alias: {
       'node_modules': path.join(__dirname + '/node_modules'),
       'fs': path.join(__dirname + '/node_modules', 'html5-fs'),
+      'node-webcrypto-ossl': path.join(__dirname + '/node_modules', 'webcrypto'),
       'app': __dirname + '/src/app/',
       'styles': __dirname + '/src/styles',
       'mixins': __dirname + '/src/mixins',

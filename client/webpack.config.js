@@ -37,6 +37,7 @@ module.exports = {
       'node_modules': path.join(__dirname + '/node_modules'),
       'libp2p-ipfs': 'libp2p-ipfs-browser',
       'fs': path.join(__dirname + '/node_modules', 'html5-fs'),
+      'node-webcrypto-ossl': path.join(__dirname + '/node_modules', 'webcrypto'),
       'app': __dirname + '/src/app/',
       'styles': __dirname + '/src/styles',
       'mixins': __dirname + '/src/mixins',
