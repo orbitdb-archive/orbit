@@ -287,7 +287,8 @@ const MessageStore = Reflux.createStore({
     // UIActions.startLoading(channel, "send");
     this.orbit.send(channel, text)
       .then((post) => {
-        logger.debug("Sent:", post);
+        logger.debug("Sent:", post.content)
+        // logger.debug(post)
         // UIActions.stopLoading(channel, "send");
       })
       .catch((e) => console.log(e))
