@@ -163,7 +163,7 @@ class Orbit {
       .then((res) => data = JSON.parse(res.toJSON().Data))
       .then(() => Crypto.importKeyFromIpfs(this._ipfs, data.signKey))
       .then((signKey) => Crypto.verify(
-        Buffer.from(data.sig).buffer,
+        new Uint8Array(data.sig),
         signKey,
         new Buffer(JSON.stringify({
           content: data.content,
