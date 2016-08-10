@@ -276,6 +276,7 @@ const MessageStore = Reflux.createStore({
     if(!this.posts[hash]) {
       this.orbit.getPost(hash)
         .then((data) => {
+          console.log(data)
           this.posts[hash] = data;
           callback(null, data);
         })
@@ -306,9 +307,9 @@ const MessageStore = Reflux.createStore({
         UIActions.raiseError(error);
       })
   },
-  onLoadFile: function(hash: string, fromURL: boolean, buffer: boolean, callback) {
+  onLoadFile: function(hash: string, asURL: boolean, asStream: boolean, callback) {
     const hasIPFS = !!window.ipfs;
-    if(hasIPFS && fromURL) {
+    if(hasIPFS && asURL) {
       callback(null, null, `http://localhost:8080/ipfs/${hash}`)
     } else if(hasIPFS) {
       var xhr = new XMLHttpRequest()
@@ -316,33 +317,30 @@ const MessageStore = Reflux.createStore({
       xhr.responseType = 'blob'
       xhr.onload = function(e) {
         if(this.status == 200) {
+          // console.log("RESPONSE", typeof this.response, this.response)
           callback(null, this.response) // this.response is a Blob
         }
-      };
+      }
       xhr.send()
     } else {
       this.orbit.getFile(hash)
         .then((stream) => {
           // console.log("got stream", stream)
-
-          if(buffer) {
+          if(asStream) {
             callback(null, null, null, stream)
           } else {
-            let buf = '';
+            let buf = new Uint8Array(0)
             stream.on('error', () => callback(err, null));
             stream.on('data', (chunk) => {
-              console.log("DATA", chunk)
-              buf += chunk
-            });
-            stream.on('close', () => {
-              // for some reason the stream doesn't emit end or close atm
-              console.log("CLOSE")
-              callback(null, new Blob([buf]))
+              // console.log("DATA", chunk)
+              const tmp = new Uint8Array(buf.length + chunk.length)
+              tmp.set(buf)
+              tmp.set(chunk, buf.length)
+              buf = tmp
             });
             stream.on('end', () => {
-              // for some reason the stream doesn't emit end or close atm
-              console.log("END")
-              callback(null, new Blob([buf]))
+              // console.log("END")
+              callback(null, buf)
             });
           }
         })
@@ -365,26 +363,6 @@ const MessageStore = Reflux.createStore({
         console.log("DIRECTORY2", result)
         callback(null, result)
       })
-
-    // if(hash) {
-    //   this.socket.emit('directory.get', hash, (result) => {
-    //     logger.debug("<-- received directory:");
-    //     console.log(result);
-    //     if(result) {
-    //       result = result.map((e) => {
-    //         return {
-    //           hash: e.Hash,
-    //           size: e.Size,
-    //           type: e.Type === 1 ? "directory" : "file",
-    //           name: e.Name
-    //         };
-    //       });
-    //     }
-    //     cb(result);
-    //   });
-    // } else {
-    //   cb(null);
-    // }
   }
 });
 

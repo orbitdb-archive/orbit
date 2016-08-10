@@ -72,7 +72,7 @@ class Message extends React.Component {
           );
           break;
         case 'file':
-          content = <File hash={post.hash} name={post.name} size={post.size} />;
+          content = <File hash={post.hash} name={post.name} size={post.size} meta={post.meta}/>;
           break;
         case 'directory':
           content = <Directory hash={post.hash} name={post.name} size={post.size} root={true} />;

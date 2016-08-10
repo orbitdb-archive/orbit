@@ -18,6 +18,7 @@ class File extends React.Component {
     super(props);
     this.ext = /(?:\.([^.]+))?$/.exec(props.name)[1];
     this.state = {
+      meta: props.meta,
       showPreview: false,
       previewContent: "Loading...",
     };
@@ -46,40 +47,51 @@ class File extends React.Component {
   }
 
   handleClick(name) {
+    function toArrayBuffer(buffer) {
+      var ab = new ArrayBuffer(buffer.length);
+      var view = new Uint8Array(ab);
+      for (var i = 0; i < buffer.length; ++i) {
+          view[i] = buffer[i];
+      }
+      return ab;
+    }
+
     this.setState({
       showPreview: !this.state.showPreview,
       previewContent: 'Loading...',
     }, () => {
-      const hasIPFS = !!window.ipfs;
+      const isElectron = !!window.ipfs;
       if (this.state.showPreview) {
 
-        ChannelActions.loadFile(this.props.hash, this.isAudio | this.isVideo | this.isImage, this.isVideo && !hasIPFS, (err, blob, url, stream) => {
+        const isMedia = this.isAudio | this.isVideo | this.isImage
+        const asURL = isElectron & isMedia
+        const asStream = this.isVideo
+        let blob
+
+        ChannelActions.loadFile(this.props.hash, asURL, asStream, (err, buffer, url, stream) => {
           if (err) {
             console.error(err)
             return
           }
 
           let previewContent = 'Unable to display file.'
-          if (blob || url || stream) {
-            if (!url && !stream) url = window.URL.createObjectURL(blob)
+          if (buffer || url || stream) {
+
+            if (buffer && this.state.meta.mimeType) {
+              const arrayBufferView = toArrayBuffer(buffer)
+              blob = new Blob([arrayBufferView], { type: this.state.meta.mimeType })
+              url = window.URL.createObjectURL(blob)
+            }
+
             if (this.isAudio) {
               previewContent = <audio height={200} src={url} controls autoPlay={true} />
             } else if (this.isImage) {
               previewContent = <img height={200} src={url} />
             } else if (this.isVideo) {
-              if (hasIPFS) {
+              if (isElectron) {
                 previewContent = <video height={200} src={url} ref="videoPlayer" controls autoPlay={true} />
                 return
               } else {
-                function toArrayBuffer(buffer) {
-                  var ab = new ArrayBuffer(buffer.length);
-                  var view = new Uint8Array(ab);
-                  for (var i = 0; i < buffer.length; ++i) {
-                      view[i] = buffer[i];
-                  }
-                  return ab;
-                }
-
                 const mimeCodec = 'video/mp4; codecs="avc1.42E01E, mp4a.40.2"'
                 const source = new MediaSource()
                 url = window.URL.createObjectURL(source)
