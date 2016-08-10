@@ -77,13 +77,22 @@ class File extends React.Component {
           let previewContent = 'Unable to display file.'
           if (buffer || url || stream) {
 
-            if (buffer && this.state.meta.mimeType && !isElectron) {
+            if(buffer && isElectron) {
+              blob = buffer
+            } else if (buffer && this.state.meta.mimeType) {
               const arrayBufferView = toArrayBuffer(buffer)
               blob = new Blob([arrayBufferView], { type: this.state.meta.mimeType })
-            } else if(isElectron) {
-              blob = buffer
-              url = window.URL.createObjectURL(blob)
             }
+
+            if(buffer)
+              url = window.URL.createObjectURL(blob)
+            // if (buffer && this.state.meta.mimeType && isMedia) {
+            //   const arrayBufferView = toArrayBuffer(buffer)
+            //   blob = new Blob([arrayBufferView], { type: this.state.meta.mimeType })
+            // } else if (isElectron) {
+            //   blob = buffer
+            //   url = window.URL.createObjectURL(blob)
+            // }
 
             if (this.isAudio) {
               previewContent = <audio height={200} src={url} controls autoPlay={true} />
@@ -91,7 +100,8 @@ class File extends React.Component {
               previewContent = <img height={200} src={url} />
             } else if (this.isVideo) {
               if (isElectron) {
-                previewContent = <video height={200} src={url} ref="videoPlayer" controls autoPlay={true} />
+                previewContent = <video height={200} src={url} controls autoPlay={true} />
+                this.setState({ previewContent })
                 return
               } else {
                 const mimeCodec = 'video/mp4; codecs="avc1.42E01E, mp4a.40.2"'
