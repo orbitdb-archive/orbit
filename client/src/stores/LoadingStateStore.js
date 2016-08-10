@@ -9,29 +9,22 @@ var LoadingStateStore = Reflux.createStore({
     this.state = {};
   },
   onStartLoading: function(id, action, message, progress) {
-    // console.log("LoadingStateStore - start loading:", id, action, message, progress);
-    const old = this.state[id] ? this.state[id][action] : null;
-
     if(!this.state[id])
       this.state[id] = {};
 
     this.state[id][action] = {
-      loading: true,
       message: message,
-      progress: progress
+      // progress: progress
     };
 
-    // if(old)
-      this.trigger(this.state);
+    this.trigger(this.state);
   },
-  onUpdateLoading: function(id, action, progress) {
-    // console.log("LoadingStateStore - update loading:", id, action, progress);
-    // TODO
-  },
+  // onUpdateLoading: function(id, action, progress) {
+  //   // console.log("LoadingStateStore - update loading:", id, action, progress);
+  //   // TODO
+  // },
   onStopLoading: function(id, action) {
-    // console.log("STOP LOADING", id, action);
     if(this.state[id] && this.state[id][action]) {
-      // this.state[id][action].loading = false;
       delete this.state[id][action];
       this.trigger(this.state);
     }

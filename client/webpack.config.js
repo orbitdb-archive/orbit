@@ -34,10 +34,10 @@ module.exports = {
       path.join(__dirname, 'node_modules')
     ],
     alias: {
-      // "node-forge": require.resolve("peer-id/vendor/forge.bundle.js"),
-      "libp2p-ipfs": "libp2p-ipfs-browser",
-      fs: require.resolve('./src/fs-mock'),
       'node_modules': path.join(__dirname + '/node_modules'),
+      'libp2p-ipfs': 'libp2p-ipfs-browser',
+      'fs': path.join(__dirname + '/node_modules', 'html5-fs'),
+      'node-webcrypto-ossl': path.join(__dirname + '/node_modules', 'webcrypto'),
       'app': __dirname + '/src/app/',
       'styles': __dirname + '/src/styles',
       'mixins': __dirname + '/src/mixins',

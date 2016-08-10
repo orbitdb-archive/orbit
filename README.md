@@ -29,7 +29,8 @@ To start the application:
 ```
 git clone https://github.com/haadcode/orbit.git
 cd orbit
-open client/dist/index.html
+npm install
+npm start
 ```
 
 Or check the live demo: [http://orbit.libp2p.io/](http://orbit.libp2p.io)

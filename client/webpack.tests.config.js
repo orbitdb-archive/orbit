@@ -43,7 +43,7 @@ module.exports = {
       path.join(__dirname, 'node_modules')
     ],
     alias: {
-      fs: require.resolve('./src/fs-mock'),
+      'fs': path.join(__dirname + '/node_modules', 'html5-fs'),
       'node_modules': path.join(__dirname + '/node_modules'),
       'app': __dirname + '/src/app/',
       'styles': __dirname + '/src/styles',

@@ -4,7 +4,7 @@ import React from 'react';
 import TransitionGroup from "react-addons-css-transition-group";
 import ChannelActions from 'actions/ChannelActions';
 import File from 'components/File';
-import {getHumanReadableBytes} from '../utils/utils.js';
+import { getHumanReadableBytes } from '../utils/utils.js';
 import 'styles/Directory.scss';
 
 class Directory extends React.Component {
@@ -34,7 +34,6 @@ class Directory extends React.Component {
   }
 
   render() {
-    // var downloadLink = apiURL + this.state.link + "?name=" + this.state.name + "&action=download";
     var size     = getHumanReadableBytes(this.state.size);
     var children = [];
     var name     = (

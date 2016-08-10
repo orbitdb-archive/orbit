@@ -8,12 +8,15 @@ const Logger       = require('logplease');
 const logger       = Logger.create("Orbit", { color: Logger.Colors.Green });
 
 // TODO: move utils to the main process in Electron version so that fs can be used
-const utils        = require('./utils');
+const utils = require('./utils');
 
 const defaultOptions = {
-  cacheFile: path.join(utils.getAppPath(), "/orbit-db-cache.json"), // path to orbit-db cache file
+  cacheFile: path.join(utils.getAppPath(), "/orbit-data.json"), // path to orbit-db cache file
   maxHistory: 64 // how many messages to retrieve from history on joining a channel
 };
+
+const Crypto = require('orbit-crypto')
+let signKey
 
 class Orbit {
   constructor(ipfs, options) {
@@ -56,12 +59,13 @@ class Orbit {
         this._orbitdb = orbitdb;
 
         // Subscribe to database events
-        this._orbitdb.events.on('message', this._handleMessage2.bind(this));
+        // this._orbitdb.events.on('data', this._handleMessage2.bind(this));
+        // this._orbitdb.events.on('write', this._handleMessage.bind(this));
         this._orbitdb.events.on('data', this._handleMessage.bind(this));
-        this._orbitdb.events.on('load', this._handleStartLoading.bind(this));
-        this._orbitdb.events.on('ready', this._handleDatabaseReady.bind(this));
-        this._orbitdb.events.on('sync', this._handleSync.bind(this));
-        this._orbitdb.events.on('synced', this._handleSynced.bind(this));
+        // this._orbitdb.events.on('load', this._handleStartLoading.bind(this));
+        // this._orbitdb.events.on('ready', this._handleDatabaseReady.bind(this));
+        // this._orbitdb.events.on('sync', this._handleSync.bind(this));
+        // this._orbitdb.events.on('synced', this._handleSynced.bind(this));
 
         // Get peers from libp2p and update the local peers array
         setInterval(() => {
@@ -71,6 +75,8 @@ class Orbit {
           });
         }, 1000);
       })
+      .then(() => Crypto.generateKey())
+      .then((key) => signKey = key)
       .then(() => {
         logger.info(`Connected to '${this._orbitdb.network.name}' at '${this._orbitdb.network.publishers[0]}' as '${user.username}`)
         this.events.emit('connected', this.network, this.user);
@@ -89,35 +95,34 @@ class Orbit {
   }
 
   join(channel) {
-    logger.debug(`Join #${channel}`);
+    logger.debug(`Join #${channel}`)
 
     if(!channel || channel === '')
-      return Promise.reject(`Channel not specified`);
+      return Promise.reject(`Channel not specified`)
 
     if(this._channels[channel])
-      return Promise.resolve(false);
+      return Promise.resolve(false)
+
+    const dbOptions = {
+      cacheFile: '/' + this.user.id + this._options.cacheFile,
+      maxHistory: this._options.maxHistory
+    }
 
     this._channels[channel] = {
       name: channel,
       password: null,
-      db: null,
+      // feed is the database instance
+      feed: this._orbitdb.eventlog(channel, dbOptions),
       state: { loading: true, syncing: 0 }
-    };
+    }
 
-    const dbOptions = {
-      cacheFile: this._options.cacheFile,
-      maxHistory: this._options.maxHistory
-    };
-
-    return this._orbitdb.eventlog(channel, dbOptions)
-      .then((db) => this._channels[channel].db = db)
-      .then(() => this.events.emit('joined', channel))
-      .then(() => true)
+    this.events.emit('joined', channel)
+    return Promise.resolve(true)
   }
 
   leave(channel) {
     if(this._channels[channel]) {
-      this._channels[channel].db.close();
+      this._channels[channel].feed.close();
       delete this._channels[channel];
       logger.debug("Left channel #" + channel);
     }
@@ -125,22 +130,22 @@ class Orbit {
   }
 
   send(channel, message) {
-    logger.debug(`Send message to #${channel}: ${message}`);
+    logger.debug(`Send message to #${channel}: ${message}`)
 
     if(!message || message === '')
-      return Promise.reject(`Can't send an empty message`);
+      return Promise.reject(`Can't send an empty message`)
 
     const data = {
       content: message,
       from: this._orbitdb.user.id
-    };
+    }
 
     return this._getChannelFeed(channel)
       .then((feed) => this._postMessage(feed, Post.Types.Message, data))
   }
 
   get(channel, lessThanHash, greaterThanHash, amount) {
-    logger.debug(`Get messages from #${channel}: ${lessThanHash}, ${greaterThanHash}, ${amount}`);
+    logger.debug(`Get messages from #${channel}: ${lessThanHash}, ${greaterThanHash}, ${amount}`)
 
     let options = {
       limit: amount || 1,
@@ -149,17 +154,33 @@ class Orbit {
     };
 
     return this._getChannelFeed(channel)
-      .then((feed) => feed.iterator(options).collect());
+      .then((feed) => feed.iterator(options).collect())
   }
 
   getPost(hash) {
+    let data, signKey
     return this._ipfs.object.get(hash, { enc: 'base58' })
-      .then((res) => JSON.parse(res.toJSON().Data))
+      .then((res) => data = JSON.parse(res.toJSON().Data))
+      .then(() => Crypto.importKeyFromIpfs(this._ipfs, data.signKey))
+      .then((signKey) => Crypto.verify(
+        new Uint8Array(data.sig),
+        signKey,
+        new Buffer(JSON.stringify({
+          content: data.content,
+          meta: data.meta,
+          replyto: data.replyto
+        })))
+       )
+      // .catch((e) => data)
+      .then(() => data)
   }
+
+  // _verifyPost(postData) {
+  // }
 
   addFile(channel, filePath) {
     if(!filePath || filePath === '')
-      return Promise.reject(`Path or Buffer not specified`);
+      return Promise.reject(`Path or Buffer not specified`)
 
     const addToIpfsJs = (ipfs, filePath, isDirectory) => {
       // TODO
@@ -241,18 +262,18 @@ class Orbit {
       return Promise.reject(`Channel not specified`);
 
     return new Promise((resolve, reject) => {
-      const feed = this._channels[channel] && this._channels[channel].db ? this._channels[channel].db : null;
+      const feed = this._channels[channel] && this._channels[channel].feed ? this._channels[channel].feed : null;
       if(!feed) reject(`Haven't joined #${channel}`);
       resolve(feed);
     });
   }
 
   _postMessage(feed, postType, data) {
-    let post;
-    return Post.create(this._ipfs, postType, data)
+    let post
+    return Post.create(this._ipfs, postType, data, signKey)
       .then((res) => post = res)
       .then(() => feed.add(post.Hash))
-      .then(() => post);
+      .then(() => post)
   }
 
   // TODO: tests for everything below
@@ -264,52 +285,9 @@ class Orbit {
   }
 
   _handleMessage(channel, message) {
-    logger.debug("new entry in database", channel, message);
-    if(this._channels[channel])
-      this.events.emit('data', channel, message);
-  }
-
-  _handleMessage2(channel, message) {
-    logger.debug("new entry from network", channel, message);
+    // logger.debug("new messages in ", channel, message);
     if(this._channels[channel])
       this.events.emit('message', channel, message);
-  }
-
-  _handleStartLoading(channel) {
-    logger.debug("load channel", channel, this._channels);
-    if(this._channels[channel]) {
-      this._channels[channel].state.loading = true;
-      this.events.emit('load', channel);
-      this.events.emit('update', channel);
-    }
-  }
-
-  _handleDatabaseReady(db) {
-    logger.debug("database ready", db.dbname);
-    if(this._channels[db.dbname]) {
-      this._channels[db.dbname].state.loading = false;
-      this.events.emit('ready', db.dbname);
-      this.events.emit('update', db.dbname);
-    }
-  }
-
-  _handleSync(channel) {
-    logger.debug("sync channel", channel);
-    if(this._channels[channel]) {
-      this._channels[channel].state.syncing += 1;
-      this.events.emit('sync', channel);
-      this.events.emit('update', channel);
-    }
-  }
-
-  _handleSynced(channel, items) {
-    logger.debug("channel synced", channel, items.length);
-    if(this._channels[channel]) {
-      this._channels[channel].state.syncing -= 1;
-      this._channels[channel].state.syncing = Math.max(0, this._channels[channel].state.syncing);
-      this.events.emit('synced', channel, items);
-      this.events.emit('update', channel);
-    }
   }
 
   _updateSwarmPeers() {

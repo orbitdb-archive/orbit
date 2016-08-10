@@ -1,10 +1,12 @@
 'use strict';
 
-import _ from 'lodash';
-import React from 'react';
-import { render } from 'react-dom';
-import { Router, Route, hashHistory } from 'react-router';
-import Logger from 'logplease';
+import _ from 'lodash'
+import React from 'react'
+import { render } from 'react-dom'
+import { Router, Route, hashHistory } from 'react-router'
+import Logger from 'logplease'
+
+import fs from 'fs'
 
 import AppActions from 'actions/AppActions';
 import UIActions from "actions/UIActions";
@@ -39,9 +41,9 @@ import 'styles/App.scss';
 import 'styles/Scrollbars.scss';
 import 'highlight.js/styles/hybrid.css';
 
-import Main from '../main';
+import Main from '../main'
 
-const logger = Logger.create('App', { color: Logger.Colors.Red });
+const logger = Logger.create('App', { color: Logger.Colors.Red })
 
 const views = {
   "Index": "/",
@@ -54,6 +56,18 @@ const views = {
 const hasIPFS = !!window.ipfs;
 console.log("hasIPFS:", hasIPFS)
 let orbit// = hasIPFS ? window.orbit : null;
+
+if(!hasIPFS) {
+  fs.init(1 * 1024 * 1024, function(err) {
+    if(err) {
+      console.log("ERR", err)
+      // Error handling
+    } else {
+      console.log("fs initialized")
+      // Now we can use the other fs API functions!
+    }
+  })
+}
 
 var App = React.createClass({
   getInitialState: function() {
@@ -74,32 +88,29 @@ var App = React.createClass({
     const ipcRenderer = hasIPFS ? window.ipcRenderer : null;
     const dataPath = '/tmp/orbit-demo-2-';
 
-    // if(!orbit) {
-      Main.start(ipfsApi, dataPath, signalServerAddress).then((res) => {
-        logger.info("Orbit started");
-        logger.debug("PeerId:", res.peerId.ID);
-        console.log(res)
-        orbit = res.orbit;
+    Main.start(ipfsApi, dataPath, signalServerAddress).then((res) => {
+      logger.info("Orbit started");
+      logger.debug("PeerId:", res.peerId.ID);
 
-        if(hasIPFS && ipcRenderer) {
-          orbit.events.on('connected', (network, user) => ipcRenderer.send('connected', network, user));
-          orbit.events.on('disconnected', () => ipcRenderer.send('disconnected'));
-        }
+      orbit = res.orbit;
 
-        AppActions.initialize(orbit);
-        NetworkActions.updateNetwork(null) // start the App
-      })
-      .catch((e) => {
-        logger.error(e.message);
-        logger.error("Stack trace:\n", e.stack);
-      });
-    // }
+      if(hasIPFS && ipcRenderer) {
+        orbit.events.on('connected', (network, user) => ipcRenderer.send('connected', network, user));
+        orbit.events.on('disconnected', () => ipcRenderer.send('disconnected'));
+      }
+
+      AppActions.initialize(orbit);
+      NetworkActions.updateNetwork(null) // start the App
+    })
+    .catch((e) => {
+      logger.error(e.message);
+      logger.error("Stack trace:\n", e.stack);
+    });
 
     document.title = 'Orbit';
 
     SkynetActions.start.listen((username) => orbit.connect(null, username, ''));
     UIActions.joinChannel.listen(this.joinChannel);
-    // UIActions.showChannel.listen(this.showChannel);
     NetworkActions.joinedChannel.listen(this.onJoinedChannel);
     NetworkActions.joinChannelError.listen(this.onJoinChannelError);
     NetworkActions.leaveChannel.listen(this.onLeaveChannel);
@@ -136,7 +147,7 @@ var App = React.createClass({
 
     if(state.currentChannel) {
       document.title = prefix + ' ' + AppStateStore.state.location + ' ' + suffix;
-      this.goToLocation(state.currentChannel, views.Channel + state.currentChannel);
+      this.goToLocation(state.currentChannel, views.Channel + encodeURIComponent(state.currentChannel));
     } else {
       document.title = prefix + ' Orbit';
       this.goToLocation(state.location, views[state.location]);

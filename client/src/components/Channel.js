@@ -23,8 +23,8 @@ class Channel extends React.Component {
       channelChanged: true,
       channelName: null,
       messages: [],
-      loading: false,
-      loadingText: '',
+      loading: true,
+      loadingText: 'Connecting...',
       reachedChannelStart: false,
       channelMode: "Public",
       error: null,
@@ -48,10 +48,12 @@ class Channel extends React.Component {
         channelChanged: true,
         unreadMessages: 0,
         loading: true,
+        loadingText: 'Loading...',
         reachedChannelStart: false,
         messages: []
       });
       UIActions.focusOnSendMessage();
+
       ChannelActions.loadMessages(nextProps.channel);
     }
 
@@ -62,31 +64,34 @@ class Channel extends React.Component {
       theme: nextProps.theme
     });
 
-    this._updateLoadingState(nextProps.channelInfo);
+    // this._updateLoadingState(nextProps.channelInfo);
   }
 
   componentDidMount() {
-    this.stopListeningChannelUpdates = ChannelStore.listen(this._onChannelStateChanged.bind(this));
-    this.unsubscribeFromMessageStore = MessageStore.listen(this.onNewMessages.bind(this));
-    this.unsubscribeFromErrors = UIActions.raiseError.listen(this._onError.bind(this));
-    this.node = this.refs.MessagesView;
+    this.stopListeningLoadingState = LoadingStateStore.listen(this._updateLoadingState.bind(this))
+    this.stopListeningChannelUpdates = ChannelStore.listen(this._onChannelStateChanged.bind(this))
+    this.unsubscribeFromMessageStore = MessageStore.listen(this.onNewMessages.bind(this))
+    this.unsubscribeFromErrors = UIActions.raiseError.listen(this._onError.bind(this))
+    this.node = this.refs.MessagesView
   }
 
-  _updateLoadingState(channel) {
-    if(channel) {
-      // logger.debug("CHANNEL STATE CHANGED", channel, this.state.channelName);
-      const loading = (channel.state.loading || channel.state.syncing > 0);
-      const text = loading ? 'Syncing...' : '';
-      logger.debug(loading, text);
-      this.setState({ loading: loading, loadingText: text });
+  _updateLoadingState(state) {
+    logger.debug("CHANNEL STATE CHANGED", state, this.state.channelName);
+    const channel = state[this.state.channelName]
+    if(channel && channel.loadHistory) {
+      this.setState({ loading: true, loadingText: channel.loadHistory.message })
+    } else if(channel && channel.loadMessages) {
+      this.setState({ loading: true, loadingText: channel.loadMessages.message })
+    } else {
+      this.setState({ loading: false, loadingText: 'Load more messages...' })
     }
   }
 
   _onChannelStateChanged(channels) {
     const channelInfo = channels[this.state.channelName];
     logger.debug(`Channel state updated for ${this.state.channelName}`)
-    if(channelInfo)
-      this._updateLoadingState(channelInfo);
+    // if(channelInfo)
+    //   this._updateLoadingState(channelInfo);
   }
 
   _onError(errorMessage) {
@@ -103,7 +108,8 @@ class Channel extends React.Component {
     clearTimeout(this.scrollTimer);
     this.unsubscribeFromMessageStore();
     this.unsubscribeFromErrors();
-    this.stopListeningChannelState();
+    this.stopListeningLoadingState();
+    // this.stopListeningChannelState();
     this.stopListeningChannelUpdates();
     this.setState({ messages: [] });
   }
@@ -213,10 +219,12 @@ class Channel extends React.Component {
 
     // After scroll has finished, check if we should load more messages
     // Using timeout here because of OS-applied scroll inertia
+    this.setState({ loadingText: 'Loading more messages...' })
     this.scrollTimer = setTimeout(() => {
       if(this._shouldLoadMoreMessages())
         this.loadOlderMessages();
     }, 800);
+
 
     // If we scrolled to the bottom, hide the "new messages" label
     this.node = this.refs.MessagesView;
@@ -253,7 +261,7 @@ class Channel extends React.Component {
     ));
     elements.unshift(
       <div className="firstMessage" key="firstMessage" onClick={this.loadOlderMessages.bind(this)}>
-        {reachedChannelStart && !loading ? `Beginning of #${channelName}` : loadingText || '???'}
+        {reachedChannelStart && !loading ? `Beginning of #${channelName}` : loadingText }
       </div>
     );
     return elements;

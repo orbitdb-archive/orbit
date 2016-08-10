@@ -13,7 +13,6 @@ const ipfsd    = require('ipfsd-ctl');
 const Logger   = require('logplease');
 const logger   = Logger.create("Orbit.Index-Native");
 
-const Orbit = require('./src/Orbit');
 const utils = require('./src/utils');
 
 // require('crash-reporter').start();
@@ -48,7 +47,7 @@ const setWindowToLogin = () => {
   const x    = (pos[0] + size[0]/2) - connectWindowSize.width/2;
   const y    = (pos[1] + size[1]/2) - connectWindowSize.height/2;
   mainWindow.setSize(connectWindowSize.width, connectWindowSize.height);
-  mainWindow.setPosition(x, y);
+  // mainWindow.setPosition(x, y);
 };
 
 const shutdown = () => {
@@ -77,7 +76,7 @@ app.on('ready', () => {
     mainWindow = new BrowserWindow(connectWindowSize);
     mainWindow.webContents.session.setDownloadPath(path.resolve(getUserHome() + '/Downloads'))
 
-    let ipfsDaemon, orbit;
+    let ipfsDaemon;
     ipfsd.local((err, node) => {
       if(err) reject(err);
       ipfsDaemon = node;

@@ -13,7 +13,7 @@ class ChannelView extends React.Component {
   constructor(props) {
     super(props)
     this.state = {
-      channelName: props.params.channel,
+      channelName: decodeURIComponent(props.params.channel),
       channel: {},
       appSettings: {},
       user: null
@@ -30,7 +30,7 @@ class ChannelView extends React.Component {
 
   componentWillReceiveProps(nextProps) {
     this.setState({
-      channelName: nextProps.params.channel,
+      channelName: decodeURIComponent(nextProps.params.channel),
       channel: ChannelStore.get(nextProps.params.channel),
       appSettings: SettingsStore.settings
     })

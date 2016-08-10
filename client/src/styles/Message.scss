@@ -50,4 +50,38 @@ $timestamp-color:  rgba(240, 240, 240, 0.6);
     flex: 1;
     overflow: hidden;
   }
+
+  .popout {
+    display: flex;
+    position: absolute;
+    right: 0;
+  }
+
+  .row {
+    display: flex;
+    align-items: flex-start;
+  }
+
+  .Popup {
+    border: 1px solid rgb(48, 48, 48);
+    font-size: 0.75em;
+    margin-right: 0.5em;
+    color: rgba(228, 228, 228, 0.8);
+    background: rgb(32, 32, 32);
+    padding: 1.0em;
+  }
+
+  .Verified {
+    font-size: 0.8em;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-right: 0.5em;
+    color: rgb(64, 64, 64);
+  }
+
+  .Verified:hover {
+    color: rgb(128, 128, 128);
+  }
+
 }

@@ -8,6 +8,7 @@ import TextMessage from "components/TextMessage";
 import Directory from "components/Directory";
 import ChannelActions from 'actions/ChannelActions';
 import NotificationActions from 'actions/NotificationActions';
+import TransitionGroup from "react-addons-css-transition-group"; //eslint-disable-line
 import { getFormattedTime } from '../utils/utils.js';
 import "styles/Message.scss";
 
@@ -20,6 +21,7 @@ class Message extends React.Component {
       hasHighlights: false,
       isCommand: false,
       formattedTime: getFormattedTime(props.message.meta.ts),
+      showSignature: false,
     };
   }
 
@@ -42,6 +44,15 @@ class Message extends React.Component {
       }
       this.setState(state);
     });
+  }
+
+  onShowVerification(show, evt) {
+    console.log("SIGNED BY:", this.state.post.signKey)
+    this.setState({ showSignature: true })
+    // if(this.showVerificationTimer) clearTimeout(this.showVerificationTimer)
+    // this.showVerificationTimer = setTimeout(() => {
+      this.setState({ showSignature: show })
+    // }, 1000)
   }
 
   renderContent() {
@@ -71,6 +82,39 @@ class Message extends React.Component {
     return <div className={contentClass}>{content}</div>;
   }
 
+  renderVerification() {
+    return this.state.post && this.state.post.signKey ?
+      <span className="popout"
+        onMouseLeave={this.onShowVerification.bind(this, false)}
+        onMouseOver={this.onShowVerification.bind(this, true)}>
+      {this.state.showSignature ?
+          <span className="row">
+            <TransitionGroup
+              transitionName="textAnimation"
+              transitionAppear={true}
+              transitionAppearTimeout={1000}
+              transitionEnterTimeout={0}
+              transitionLeaveTimeout={0}>
+              <div className="Popup">
+                <b>Signed by:</b><br/>
+                {this.state.post.meta.from}
+                <br/><br/>
+                <b>Signing key:</b><br/>
+                {this.state.post.signKey}
+              </div>
+            </TransitionGroup>
+            <span
+              className="Verified flaticon-linked1"
+            />
+          </span>
+        :
+        (<span
+          className="Verified flaticon-linked1"
+        />)
+      }
+    </span> : null
+  }
+
   render() {
     const { message, colorifyUsername, style, onDragEnter } = this.props;
     const { post, isCommand, hasHighlights, formattedTime } = this.state;
@@ -83,6 +127,7 @@ class Message extends React.Component {
           colorify={colorifyUsername}
           highlight={isCommand} />
         {this.renderContent()}
+        {this.renderVerification()}
       </div>
     );
   }
