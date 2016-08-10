@@ -7,7 +7,7 @@
     "du": "^0.1.0",
     "ipfs-api": "^6.0.3",
     "node-webcrypto-ossl": "https://github.com/haadcode/node-webcrypto-ossl.git",
-    "ipfs-post": "https://github.com/haadcode/ipfs-post.git",
+    "ipfs-post": "^0.0.10",
     "ipfsd-ctl": "^0.14.0",
     "lodash": "^4.14.0",
     "logplease": "^1.2.7",
