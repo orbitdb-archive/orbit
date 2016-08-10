@@ -52,7 +52,6 @@ class Channel extends React.Component {
         messages: []
       });
       UIActions.focusOnSendMessage();
-
       ChannelActions.loadMessages(nextProps.channel);
     }
 
@@ -104,6 +103,9 @@ class Channel extends React.Component {
   }
 
   onNewMessages(channel: string, messages) {
+    console.log("MESSAGES", channel, messages)
+    console.log(this.state.channelName)
+
     if(channel !== this.state.channelName)
       return;
 
@@ -125,9 +127,9 @@ class Channel extends React.Component {
       ChannelActions.sendMessage(this.state.channelName, text);
   }
 
-  sendFile(filePath: string, buffer, meta) {
-    if(filePath !== '' || buffer !== null)
-      ChannelActions.addFile(this.state.channelName, filePath, buffer, meta);
+  sendFile(source) {
+    if(source.directory || (source.filename !== '' && source.buffer !== null))
+      ChannelActions.addFile(this.state.channelName, source);
   }
 
   loadOlderMessages() {
@@ -177,16 +179,18 @@ class Channel extends React.Component {
   onDrop(files) {
     this.setState({ dragEnter: false });
     files.forEach((file) => {
-      const meta = { mimeType: file.type }
+      const meta = { mimeType: file.type, size: file.size }
       // Electron can return a path of a directory
       if(file.path) {
-        this.sendFile(file.path, null, meta);
+        console.log("FILE", file)
+        this.sendFile({ filename: file.path, directory: file.path, meta: meta });
       } else {
         // In browsers, read the files returned by the event
         // TODO: add buffering support
         const reader = new FileReader();
         reader.onload = (event) => {
-          this.sendFile(file.name, event.target.result, meta);
+          console.log("FILE", file)
+          this.sendFile({ filename: file.name, buffer: event.target.result, meta: meta });
         };
         reader.readAsArrayBuffer(file);
         // console.error("File upload not yet implemented in browser. Try the electron app.");

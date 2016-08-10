@@ -170,8 +170,10 @@ const MessageStore = Reflux.createStore({
     this._reset();
   },
   onJoinChannel: function(channel, password) {
+    console.log("JOIN", channel)
     this._resetChannelState(this.currentChannel);
-    this.channels[channel] = { messages: [], isReady: false, loading: false, canLoadMore: true };
+    if(!this.channels[channel])
+      this.channels[channel] = { messages: [], isReady: false, loading: false, canLoadMore: true };
     this.currentChannel = channel;
   },
   onJoinedChannel: function(channel) {
@@ -184,7 +186,7 @@ const MessageStore = Reflux.createStore({
     this._resetChannelState(channel);
   },
   onLoadMessages: function(channel: string) {
-    // console.log("LOAD MESSAGES", channel, this.channels[channel])
+    console.log("onLoadMessages", channel)
     if(this.channels[channel])
       this.trigger(channel, this.channels[channel].messages);
   },
@@ -304,37 +306,85 @@ const MessageStore = Reflux.createStore({
         UIActions.raiseError(error);
       })
   },
-  onLoadFile: function(hash, cb) {
-    this.orbit.getFile(hash)
-      .then((stream) => {
-        let buf = '';
-        stream.on('close', () => cb(null, buf));
-        stream.on('data', (chunk) => buf += chunk);
-        // stream.on('end', () => cb(null, buf)); // for some reason the stream emits 'close', but not 'end'
-      })
-      .catch((e) => logger.error(e))
-  },
-  onLoadDirectoryInfo: function(hash, cb) {
-    // TODO: refactor
-    if(hash) {
-      this.socket.emit('directory.get', hash, (result) => {
-        logger.debug("<-- received directory:");
-        console.log(result);
-        if(result) {
-          result = result.map((e) => {
-            return {
-              hash: e.Hash,
-              size: e.Size,
-              type: e.Type === 1 ? "directory" : "file",
-              name: e.Name
-            };
-          });
+  onLoadFile: function(hash: string, fromURL: boolean, buffer: boolean, callback) {
+    const hasIPFS = !!window.ipfs;
+    if(hasIPFS && fromURL) {
+      callback(null, null, `http://localhost:8080/ipfs/${hash}`)
+    } else if(hasIPFS) {
+      var xhr = new XMLHttpRequest()
+      xhr.open('GET', `http://localhost:8080/ipfs/${hash}`, true)
+      xhr.responseType = 'blob'
+      xhr.onload = function(e) {
+        if(this.status == 200) {
+          callback(null, this.response) // this.response is a Blob
         }
-        cb(result);
-      });
+      };
+      xhr.send()
     } else {
-      cb(null);
+      this.orbit.getFile(hash)
+        .then((stream) => {
+          // console.log("got stream", stream)
+
+          if(buffer) {
+            callback(null, null, null, stream)
+          } else {
+            let buf = '';
+            stream.on('error', () => callback(err, null));
+            stream.on('data', (chunk) => {
+              console.log("DATA", chunk)
+              buf += chunk
+            });
+            stream.on('close', () => {
+              // for some reason the stream doesn't emit end or close atm
+              console.log("CLOSE")
+              callback(null, new Blob([buf]))
+            });
+            stream.on('end', () => {
+              // for some reason the stream doesn't emit end or close atm
+              console.log("END")
+              callback(null, new Blob([buf]))
+            });
+          }
+        })
+        .catch((e) => logger.error(e))
     }
+  },
+  onLoadDirectoryInfo: function(hash, callback) {
+    // TODO: refactor
+    this.orbit.getDirectory(hash)
+      .then((result) => {
+        console.log("DIRECTORY", result)
+        result = result.map((e) => {
+          return {
+            hash: e.Hash,
+            size: e.Size,
+            type: e.Type === 1 ? "directory" : "file",
+            name: e.Name
+          };
+        });
+        console.log("DIRECTORY2", result)
+        callback(null, result)
+      })
+
+    // if(hash) {
+    //   this.socket.emit('directory.get', hash, (result) => {
+    //     logger.debug("<-- received directory:");
+    //     console.log(result);
+    //     if(result) {
+    //       result = result.map((e) => {
+    //         return {
+    //           hash: e.Hash,
+    //           size: e.Size,
+    //           type: e.Type === 1 ? "directory" : "file",
+    //           name: e.Name
+    //         };
+    //       });
+    //     }
+    //     cb(result);
+    //   });
+    // } else {
+    //   cb(null);
+    // }
   }
 });
 

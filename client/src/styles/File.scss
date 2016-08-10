@@ -186,7 +186,7 @@ $directory-link-hover-color2: rgba(240, 240, 240, 0.9);
 }
 
 .fileAnimation-enter {
-  $duration: 1.2s;
+  $duration: 1.0s;
 
   -webkit-animation-name: fadeIn;
   animation-name: fadeIn;
@@ -199,14 +199,14 @@ $directory-link-hover-color2: rgba(240, 240, 240, 0.9);
 }
 
 .fileAnimation-leave {
-  $duration: 0.9s;
+  $duration: 0.3s;
 
-  -webkit-animation-name: fadeOut;
-  animation-name: fadeOut;
+  -webkit-animation-name: fadeOutWithHeight;
+  animation-name: fadeOutWithHeight;
   -webkit-animation-duration: $duration;
   animation-duration: $duration;
   -webkit-animation-fill-mode: both;
   animation-fill-mode: both;
-  -webkit-animation-timing-function: ease-in;
-  animation-timing-function: ease-in;
+  -webkit-animation-timing-function: ease-out;
+  animation-timing-function: ease-out;
 }

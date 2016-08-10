@@ -156,17 +156,17 @@ var App = React.createClass({
   onNetworkUpdated: function(network) {
     logger.debug("Network updated");
     console.log(network);
-    if(!network) {
+    if (!network) {
       this._reset();
       AppActions.setLocation("Connect");
     } else {
       this.setState({ networkName: network.name });
-      const channels = JSON.parse(localStorage.getItem( "anonet.app." + this.state.user.username + "." + network.name + ".channels")) || [];
-      channels.forEach( (c) => NetworkActions.joinChannel(c, ''));
+      const channels = JSON.parse(localStorage.getItem( "orbit.app." + this.state.user.username + "." + network.name + ".channels")) || [];
+      channels.forEach((channel) => NetworkActions.joinChannel(channel.name, ''));
     }
   },
   _makeChannelsKey: function(username, networkName) {
-    return "anonet.app." + username + "." + networkName + ".channels";
+    return "orbit.app." + username + "." + networkName + ".channels";
   },
   _showConnectView: function() {
     this.setState({ user: null });
@@ -176,21 +176,21 @@ var App = React.createClass({
     logger.debug("User updated");
     console.log(user);
 
-    if(!user) {
+    if (!user) {
       AppActions.setLocation("Connect");
       return;
     }
 
-    if(user === this.state.user)
+    if (user === this.state.user)
       return;
 
     this.setState({ user: user });
 
-    if(!this.state.panelOpen) this.openPanel();
+    if (!this.state.panelOpen) this.openPanel();
     AppActions.setLocation(null);
   },
   joinChannel: function(channelName, password) {
-    if(channelName === AppStateStore.state.currentChannel) {
+    if (channelName === AppStateStore.state.currentChannel) {
       this.closePanel();
       return;
     }
@@ -208,22 +208,12 @@ var App = React.createClass({
     document.title = `#${channel}`;
     logger.debug("Set title: " + document.title);
     AppActions.setCurrentChannel(channel);
-    // const channelsKey = this._makeChannelsKey(this.state.user.username, this.state.networkName);
-    // let channels = JSON.parse(localStorage.getItem(channelsKey)) || [];
-    // if(!_.some(channels, { name: channel })){
-    //   channels.push({ name: channel });
-    //   localStorage.setItem(channelsKey, JSON.stringify(channels));
-    // }
-    // if(channel === "skynet") {
-      // ChannelActions.sendMessage("skynet", "/me was summoned");
-      // setInterval(() => {
-      //   const i = Math.floor((Math.random() * Protolol.length));
-      //   const line = Protolol[i].split(' ');
-      //   line.splice(0, 1); // remove "@name"
-      //   const text = line.join(" ").replace('#protolol', ''); // remove '#protolol'
-      //   ChannelActions.sendMessage("skynet", text);
-      // }, 2000);
-    // }
+    const channelsKey = this._makeChannelsKey(this.state.user.username, this.state.networkName);
+    let channels = JSON.parse(localStorage.getItem(channelsKey)) || [];
+    if (!_.some(channels, { name: channel })){
+      channels.push({ name: channel });
+      localStorage.setItem(channelsKey, JSON.stringify(channels));
+    }
   },
   onLeaveChannel: function(channel) {
     const channelsKey = this._makeChannelsKey(this.state.user.username, this.state.networkName);

@@ -60,6 +60,12 @@
     100% {opacity: 0;}
 }
 
+@keyframes fadeOutWithHeight {
+    0% {opacity: 1;}
+    80% {height: 100%}
+    100% {opacity: 0; height: 0%}
+}
+
 @keyframes darken {
     0% {opacity: 0;}
     100% {opacity: 1;}

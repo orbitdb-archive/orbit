@@ -1,19 +1,20 @@
-'use strict';
+'use strict'
 
-const path         = require('path');
-const EventEmitter = require('events').EventEmitter;
-const OrbitDB      = require('orbit-db');
-const Post         = require('ipfs-post');
-const Logger       = require('logplease');
-const logger       = Logger.create("Orbit", { color: Logger.Colors.Green });
+const path         = require('path')
+const EventEmitter = require('events').EventEmitter
+const OrbitDB      = require('orbit-db')
+const Post         = require('ipfs-post')
+const Logger       = require('logplease')
+const logger       = Logger.create("Orbit", { color: Logger.Colors.Green })
+const bs58         = require('bs58')
 
 // TODO: move utils to the main process in Electron version so that fs can be used
-const utils = require('./utils');
+const utils = require('./utils')
 
 const defaultOptions = {
   cacheFile: path.join(utils.getAppPath(), "/orbit-data.json"), // path to orbit-db cache file
   maxHistory: 64 // how many messages to retrieve from history on joining a channel
-};
+}
 
 const Crypto = require('orbit-crypto')
 let signKey
@@ -178,65 +179,88 @@ class Orbit {
   // _verifyPost(postData) {
   // }
 
-  addFile(channel, filePath) {
-    if(!filePath || filePath === '')
-      return Promise.reject(`Path or Buffer not specified`)
+  /*
+    addFile(channel, source) where source:
+    {
+      // for all files, filename must be specified
+      filename: <filepath>,    // add an individual file
+      // use either of these
+      directory: <path>,       // add a directory
+      buffer: <Buffer>,        // add a file from buffer
+      // optional meta data
+      meta: <meta data object>
+    }
+  */
+  addFile(channel, source) {
+    if(!source || !source.filename)
+      return Promise.reject(`Filename not specified`)
 
-    const addToIpfsJs = (ipfs, filePath, isDirectory) => {
-      // TODO
+    const addToIpfsJs = (ipfs, filename, buffer) => {
+      // TODO: refactor this when js-ipfs returns { Hash, Name, Size} objects instead of DAGNodes
       return new Promise((resolve, reject) => {
-        const data = buffer ? new Buffer(buffer) : filePath;
-        ipfs.files.add(data).then((hash) => {
-          if(isDirectory) {
-            // js-_ipfs-api returns an empty dir name as the last hash, ignore this
-            if(hash[hash.length-1].Name === '')
-              resolve(hash[hash.length-2].Hash);
+        const data = new Buffer(buffer)
+        ipfs.files.add(data).then((result) => {
+          // console.log("hash", result, filename)
+          // console.log("ADDED A FILE")
+          resolve({ Hash: bs58.encode(result[0].node.multihash()).toString(), isDirectory: false })
+        })
+      })
+    }
 
-            resolve(hash[hash.length-1].Hash);
-          } else {
-            resolve(hash[0].path);
-          }
-        });
-      });
-    };
-
-    const addToIpfsGo = (ipfs, filePath, isDirectory) => {
+    const addToIpfsGo = (ipfs, filePath) => {
       return new Promise((resolve, reject) => {
-        ipfs.add(filePath, { recursive: isDirectory })
-          .then((hash) => {
-            if(isDirectory) {
-              // _ipfs-api returns an empty dir name as the last hash, ignore this
-              if(hash[hash.length-1].Name === '')
-                resolve(hash[hash.length-2].Hash);
-
-              resolve(hash[hash.length-1].Hash);
-            } else {
-              resolve(hash[0].Hash);
+        ipfs.add(filePath, { recursive: true })
+          .then((result) => {
+            const length = result.length
+            const filename = filePath.split('/').pop()
+            // console.log("hash", result, filename, length)
+            // TODO check if still true: "ipfs-api returns an empty dir name as the last hash, ignore this"
+            // last added hash is the filename --> we added a directory
+            if(result[length - 1].Name === filename) {
+              // console.log("ADDED A DIRECTORY")
+              resolve({ Hash: result[length - 1].Hash, isDirectory: true })
+            } else if(result[0].Name === filePath) {
+              // console.log("ADDED A FILE")
+              // first added hash is the filename --> we added a file
+              resolve({ Hash: result[0].Hash, isDirectory: false })
             }
           }).catch(reject)
-      });
-    };
+      })
+    }
 
-    logger.info("Adding file from path '" + filePath + "'");
-    let hash, post, size, feed;
-    const isBuffer = typeof filePath !== 'string';
-    const isDirectory = isBuffer ? false : utils.isDirectory(filePath);
-    const addToIpfs = isBuffer ? addToIpfsJs : addToIpfsGo;
+    logger.info("Adding file from path '" + source.filename + "'")
+
+    const isBuffer = (source.buffer && source.filename) ? true : false
+    // const isDirectory = source.directory ? true : false
+    const filename = source.directory ? source.directory.split("/").pop() : source.filename.split("/").pop()
+    const size = (source.meta && source.meta.size) ? source.meta.size : 0
+
+    let result, feed
+    let addToIpfs
+
+    if(isBuffer) // Adding from browsers
+      addToIpfs = () => addToIpfsJs(this._ipfs, source.filename, source.buffer)
+    else if(source.directory) // Adding from Electron
+      addToIpfs = () => addToIpfsGo(this._ipfs, source.directory)
+    else
+      addToIpfs = () => addToIpfsGo(this._ipfs, source.filename)
+
     return this._getChannelFeed(channel)
       .then((res) => feed = res)
-      .then(() => addToIpfs(this._ipfs, filePath, isDirectory))
-      .then((res) => hash = res)
-      .then(() => isBuffer ? buffer.byteLength : utils.getFileSize(filePath))
-      .then((res) => size = res)
-      .then(() => logger.info("Added local file '" + filePath + "' as " + hash))
+      .then(() => addToIpfs())
+      .then((res) => result = res)
+      // .then(() => isBuffer ? source.buffer.byteLength : utils.getFileSize(source.directory))
+      // .then((res) => size = res)
+      .then(() => logger.info("Added file '" + source.filename + "' as ", result))
       .then(() => {
         // Create a post
-        const type = isDirectory ? Post.Types.Directory : Post.Types.File;
+        const type = result.isDirectory ? Post.Types.Directory : Post.Types.File;
         const data = {
-          name: filePath.split("/").pop(),
-          hash: hash,
+          name: filename,
+          hash: result.Hash,
           size: size,
-          from: this._orbitdb.user.id
+          from: this._orbitdb.user.id,
+          meta: source.meta || {}
         };
         return this._postMessage(feed, type, data);
       })

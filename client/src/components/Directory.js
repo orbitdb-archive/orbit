@@ -15,14 +15,14 @@ class Directory extends React.Component {
       hash: props.hash,
       link: null,
       size: props.size,
-      children: [],
+      children: null,
       open: false,
       loading: true
     };
   }
 
   componentDidMount() {
-    ChannelActions.loadDirectoryInfo(this.props.hash, (objects) => {
+    ChannelActions.loadDirectoryInfo(this.props.hash, (err, objects) => {
       this.setState({ children: objects, loading: false });
     });
   }

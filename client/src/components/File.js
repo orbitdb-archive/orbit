@@ -13,47 +13,7 @@ import 'styles/File.scss';
 import Logger from 'logplease';
 const logger = Logger.create('Clipboard', { color: Logger.Colors.Magenta });
 
-function readUTF8String(bytes) {
-  let i = 0;
-  let string = '';
-
-  // Remove UTF-8 BOM header, if present
-  const UTF8_BOM_HEADER = '\xef\xbb\xbf';
-  if (bytes.slice(0, 3) == UTF8_BOM_HEADER) {
-    i = 3;
-  }
-
-  // Convert UTF-8 encoded codepoints to JS string
-  // See https://en.wikipedia.org/wiki/UTF-8#Description
-  for (; i < bytes.byteLength; i++) {
-    const byte1 = bytes[i];
-    if (byte1 < 0x80) {
-      // U+0000 .. U+007F
-      string += String.fromCharCode(byte1);
-    } else if (byte1 >= 0xc2 && byte1 < 0xe0) {
-      // U+0080 .. U+07FF
-      const byte2 = bytes[++i];
-      string += String.fromCharCode(((byte1 & 0x1f) << 6) + (byte2 & 0x3f));
-    } else if (byte1 >= 0xe0 && byte1 < 0xf0) {
-      // U+0800 .. U+FFFF
-      const byte2 = bytes[++i];
-      const byte3 = bytes[++i];
-      string += String.fromCharCode(((byte1 & 0xff) << 12) + ((byte2 & 0x3f) << 6) + (byte3 & 0x3f));
-    } else if (byte1 >= 0xf0 && byte1 < 0xf5) {
-      // U+10000 .. U+1FFFFF
-      const byte2 = bytes[++i];
-      const byte3 = bytes[++i];
-      const byte4 = bytes[++i];
-      const codepoint = (((byte1 & 0x07) << 18) + ((byte2 & 0x3f) << 12) + ((byte3 & 0x3f) << 6) + (byte4 & 0x3f)) - 0x10000;
-      string += String.fromCharCode((codepoint >> 10) + 0xd800, (codepoint & 0x3ff) + 0xdc00);
-    }
-  }
-
-  return string;
-}
-
 class File extends React.Component {
-
   constructor(props) {
     super(props);
     this.ext = /(?:\.([^.]+))?$/.exec(props.name)[1];
@@ -78,7 +38,7 @@ class File extends React.Component {
   }
 
   get isImage() {
-    return this.ext === 'png' || this.ext === 'jpg' || this.ext === 'gif';
+    return this.ext === 'png' || this.ext === 'jpg' || this.ext === 'gif' || this.ext === 'svg';
   }
 
   get isHighlightable() {
@@ -90,37 +50,81 @@ class File extends React.Component {
       showPreview: !this.state.showPreview,
       previewContent: 'Loading...',
     }, () => {
+      const hasIPFS = !!window.ipfs;
       if (this.state.showPreview) {
-        ChannelActions.loadFile(this.props.hash, (err, buffer) => {
-          let previewContent = 'Unable to display file.';
-          const blob = new Blob([buffer]);
-          if (blob) {
-            const url = window.URL.createObjectURL(blob);
+
+        ChannelActions.loadFile(this.props.hash, this.isAudio | this.isVideo | this.isImage, this.isVideo && !hasIPFS, (err, blob, url, stream) => {
+          if (err) {
+            console.error(err)
+            return
+          }
+
+          let previewContent = 'Unable to display file.'
+          if (blob || url || stream) {
+            if (!url && !stream) url = window.URL.createObjectURL(blob)
             if (this.isAudio) {
-              previewContent = <audio height={200} src={url} controls autoPlay={true} />;
+              previewContent = <audio height={200} src={url} controls autoPlay={true} />
             } else if (this.isImage) {
-              previewContent = <img height={200} src={url} />;
+              previewContent = <img height={200} src={url} />
             } else if (this.isVideo) {
-              previewContent = <video height={200} src={url} controls autoPlay={false} />;;
-            } else {
-              var fileReader = new FileReader();
-              fileReader.onload = (event) => {
-                const text = readUTF8String(new Uint8Array(event.target.result));
-                if (this.isHighlightable) {
-                  previewContent = <Highlight>{text}</Highlight>;
-                } else {
-                  previewContent = text;
+              if (hasIPFS) {
+                previewContent = <video height={200} src={url} ref="videoPlayer" controls autoPlay={true} />
+                return
+              } else {
+                function toArrayBuffer(buffer) {
+                  var ab = new ArrayBuffer(buffer.length);
+                  var view = new Uint8Array(ab);
+                  for (var i = 0; i < buffer.length; ++i) {
+                      view[i] = buffer[i];
+                  }
+                  return ab;
                 }
-                this.setState({ previewContent });
-              };
-              fileReader.readAsArrayBuffer(blob);
-              return;
+
+                const mimeCodec = 'video/mp4; codecs="avc1.42E01E, mp4a.40.2"'
+                const source = new MediaSource()
+                url = window.URL.createObjectURL(source)
+
+                source.addEventListener('sourceopen', (e) => {
+                  let sourceBuffer = source.addSourceBuffer(mimeCodec)
+                  let buf = []
+
+                  sourceBuffer.addEventListener('updateend', () => {
+                    if(buf.length > 0)
+                      sourceBuffer.appendBuffer(buf.shift())
+                  })
+
+                  stream.on('data', (data) => {
+                    if(!sourceBuffer.updating)
+                      sourceBuffer.appendBuffer(toArrayBuffer(data));
+                    else
+                      buf.push(toArrayBuffer(data));
+                  });
+                  stream.on('end', () => {
+                    setTimeout(() => {
+                      if(source.readyState === 'open')
+                        source.endOfStream()
+                      // this.refs.videoPlayer.play();
+                    }, 100);
+                  });
+                  stream.on('error', (e) => console.error(e))
+                })
+
+                previewContent = <video height={200} src={url} controls autoPlay={false} />
+              }
+            } else {
+              var fileReader = new FileReader()
+              fileReader.onload = (event) => {
+                previewContent = this.isHighlightable ? <Highlight>{event.target.result}</Highlight> : <pre>{event.target.result}</pre>
+                this.setState({ previewContent })
+              }
+              fileReader.readAsText(blob, 'utf-8')
+              return
             }
           }
-          this.setState({ previewContent });
-        });
+          this.setState({ previewContent })
+        })
       }
-    });
+    })
   }
 
   render() {
@@ -136,10 +140,10 @@ class File extends React.Component {
         <TransitionGroup
           transitionName="fileAnimation"
           transitionEnter={true}
-          transitionLeave={true}
+          transitionLeave={false}
           transitionAppearTimeout={0}
-          transitionEnterTimeout={2000}
-          transitionLeaveTimeout={1000}
+          transitionEnterTimeout={1000}
+          transitionLeaveTimeout={0}
           component="div"
           className="content">
             <span className="text" onClick={this.handleClick.bind(this)}>{this.props.name}</span>
