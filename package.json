@@ -33,6 +33,7 @@
     "test": "./node_modules/.bin/mocha",
     "build": "./node_modules/.bin/grunt build",
     "dev:electron": "ENV=dev ./node_modules/.bin/electron .",
+    "electron": "./node_modules/.bin/electron .",
     "start": "./node_modules/.bin/http-server -c-1 -p 8081 & open http://localhost:8081/client/dist/index.html & wait"
   },
   "repository": {
