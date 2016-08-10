@@ -7,12 +7,12 @@ import ChannelControls from 'components/ChannelControls';
 import NewMessageNotification from 'components/NewMessageNotification';
 import Dropzone from 'react-dropzone';
 import MessageStore from 'stores/MessageStore';
-import ChannelStore from 'stores/ChannelStore';
 import LoadingStateStore from 'stores/LoadingStateStore';
 import UIActions from 'actions/UIActions';
 import ChannelActions from 'actions/ChannelActions';
 import 'styles/Channel.scss';
 import Logger from 'logplease';
+
 const logger = Logger.create('Channel', { color: Logger.Colors.Cyan });
 
 class Channel extends React.Component {
@@ -38,7 +38,6 @@ class Channel extends React.Component {
     this.scrollTimer = null;
     this.topMargin = 120;
     this.bottomMargin = 20;
-    this.stopListeningChannelState = ChannelActions.reachedChannelStart.listen(this._onReachedChannelStart.bind(this));
   }
 
   componentWillReceiveProps(nextProps) {
@@ -63,20 +62,18 @@ class Channel extends React.Component {
       appSettings: nextProps.appSettings,
       theme: nextProps.theme
     });
-
-    // this._updateLoadingState(nextProps.channelInfo);
   }
 
   componentDidMount() {
-    this.stopListeningLoadingState = LoadingStateStore.listen(this._updateLoadingState.bind(this))
-    this.stopListeningChannelUpdates = ChannelStore.listen(this._onChannelStateChanged.bind(this))
+    this.unsubscribeFromLoadingState = LoadingStateStore.listen(this._updateLoadingState.bind(this))
     this.unsubscribeFromMessageStore = MessageStore.listen(this.onNewMessages.bind(this))
     this.unsubscribeFromErrors = UIActions.raiseError.listen(this._onError.bind(this))
+    this.stopListeningChannelState = ChannelActions.reachedChannelStart.listen(this._onReachedChannelStart.bind(this))
     this.node = this.refs.MessagesView
   }
 
   _updateLoadingState(state) {
-    logger.debug("CHANNEL STATE CHANGED", state, this.state.channelName);
+    // logger.debug("CHANNEL STATE CHANGED", state, this.state.channelName);
     const channel = state[this.state.channelName]
     if(channel && channel.loadHistory) {
       this.setState({ loading: true, loadingText: channel.loadHistory.message })
@@ -87,31 +84,23 @@ class Channel extends React.Component {
     }
   }
 
-  _onChannelStateChanged(channels) {
-    const channelInfo = channels[this.state.channelName];
-    logger.debug(`Channel state updated for ${this.state.channelName}`)
-    // if(channelInfo)
-    //   this._updateLoadingState(channelInfo);
-  }
-
   _onError(errorMessage) {
-    console.error("Channel:", errorMessage);
-    this.setState({ error: errorMessage });
+    console.error("Channel:", errorMessage)
+    this.setState({ error: errorMessage })
   }
 
   _onReachedChannelStart() {
-    logger.warn("REACHED CHANNEL START")
-    this.setState({ reachedChannelStart: true });
+    // logger.warn("REACHED CHANNEL START")
+    this.setState({ reachedChannelStart: true })
   }
 
   componentWillUnmount() {
-    clearTimeout(this.scrollTimer);
-    this.unsubscribeFromMessageStore();
-    this.unsubscribeFromErrors();
-    this.stopListeningLoadingState();
-    // this.stopListeningChannelState();
-    this.stopListeningChannelUpdates();
-    this.setState({ messages: [] });
+    clearTimeout(this.scrollTimer)
+    this.unsubscribeFromMessageStore()
+    this.unsubscribeFromErrors()
+    this.unsubscribeFromLoadingState()
+    this.stopListeningChannelState()
+    this.setState({ messages: [] })
   }
 
   onNewMessages(channel: string, messages) {
@@ -194,6 +183,7 @@ class Channel extends React.Component {
         this.sendFile(file.path, null, meta);
       } else {
         // In browsers, read the files returned by the event
+        // TODO: add buffering support
         const reader = new FileReader();
         reader.onload = (event) => {
           this.sendFile(file.name, event.target.result, meta);

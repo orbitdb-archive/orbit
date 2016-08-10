@@ -88,9 +88,9 @@ const MessageStore = Reflux.createStore({
 
       });
 
-      feed.events.on('load', (name) => {
+      feed.events.on('load', (name, hash) => {
         // TODO: started loading feed's history
-        console.log("-------------------------------- LOAD", name)
+        console.log("-------------------------------- LOAD", name, hash)
         UIActions.startLoading(name, "loadHistory", "Loading history...");
         if(this.connectTimeout[name]) clearTimeout(this.connectTimeout[name]);
         this.connectTimeout[name] = setTimeout(() => {
