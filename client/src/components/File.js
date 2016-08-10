@@ -66,7 +66,7 @@ class File extends React.Component {
         const isMedia = this.isAudio | this.isVideo | this.isImage
         const asURL = isElectron & isMedia
         const asStream = this.isVideo
-        let blob
+        let blob = new Blob([])
 
         ChannelActions.loadFile(this.props.hash, asURL, asStream, (err, buffer, url, stream) => {
           if (err) {
@@ -77,9 +77,11 @@ class File extends React.Component {
           let previewContent = 'Unable to display file.'
           if (buffer || url || stream) {
 
-            if (buffer && this.state.meta.mimeType) {
+            if (buffer && this.state.meta.mimeType && !isElectron) {
               const arrayBufferView = toArrayBuffer(buffer)
               blob = new Blob([arrayBufferView], { type: this.state.meta.mimeType })
+            } else if(isElectron) {
+              blob = buffer
               url = window.URL.createObjectURL(blob)
             }
 
@@ -126,6 +128,7 @@ class File extends React.Component {
             } else {
               var fileReader = new FileReader()
               fileReader.onload = (event) => {
+                console.log("TEXT", event.target.result)
                 previewContent = this.isHighlightable ? <Highlight>{event.target.result}</Highlight> : <pre>{event.target.result}</pre>
                 this.setState({ previewContent })
               }

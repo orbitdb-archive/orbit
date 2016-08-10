@@ -308,16 +308,16 @@ const MessageStore = Reflux.createStore({
       })
   },
   onLoadFile: function(hash: string, asURL: boolean, asStream: boolean, callback) {
-    const hasIPFS = !!window.ipfs;
-    if(hasIPFS && asURL) {
+    const isElectron = !!window.ipfs;
+    if(isElectron && asURL) {
       callback(null, null, `http://localhost:8080/ipfs/${hash}`)
-    } else if(hasIPFS) {
+    } else if(isElectron) {
       var xhr = new XMLHttpRequest()
       xhr.open('GET', `http://localhost:8080/ipfs/${hash}`, true)
       xhr.responseType = 'blob'
       xhr.onload = function(e) {
         if(this.status == 200) {
-          // console.log("RESPONSE", typeof this.response, this.response)
+          console.log("RESPONSE", typeof this.response, this.response)
           callback(null, this.response) // this.response is a Blob
         }
       }
