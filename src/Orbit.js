@@ -138,7 +138,7 @@ class Orbit {
       limit: amount || 1,
       lt: lessThanHash || null,
       gte: greaterThanHash || null
-    };
+    }
 
     return this._getChannelFeed(channel)
       .then((feed) => feed.iterator(options).collect())
@@ -227,14 +227,14 @@ class Orbit {
       .then((result) => {
         logger.info("Added file '" + source.filename + "' as ", result)
         // Create a post
-        const type = result.isDirectory ? Post.Types.Directory : Post.Types.File;
+        const type = result.isDirectory ? Post.Types.Directory : Post.Types.File
         const data = {
           name: name,
           hash: result.Hash,
           size: size,
           from: this.user.id,
           meta: source.meta || {}
-        };
+        }
         return this._postMessage(feed, type, data, this.user.signKey)
       })
   }
@@ -259,27 +259,27 @@ class Orbit {
 
   _getChannelFeed(channel) {
     if(!channel || channel === '')
-      return Promise.reject(`Channel not specified`);
+      return Promise.reject(`Channel not specified`)
 
     return new Promise((resolve, reject) => {
-      const feed = this._channels[channel] && this._channels[channel].feed ? this._channels[channel].feed : null;
-      if(!feed) reject(`Haven't joined #${channel}`);
-      resolve(feed);
-    });
+      const feed = this._channels[channel] && this._channels[channel].feed ? this._channels[channel].feed : null
+      if(!feed) reject(`Haven't joined #${channel}`)
+      resolve(feed)
+    })
   }
 
   // TODO: tests for everything below
   _handleError(e) {
-    logger.error(e);
-    logger.error("Stack trace:\n", e.stack);
-    this.events.emit('error', e.message);
-    throw e;
+    logger.error(e)
+    logger.error("Stack trace:\n", e.stack)
+    this.events.emit('error', e.message)
+    throw e
   }
 
   _handleMessage(channel, message) {
-    // logger.debug("new messages in ", channel, message);
+    // logger.debug("new messages in ", channel, message)
     if(this._channels[channel])
-      this.events.emit('message', channel, message);
+      this.events.emit('message', channel, message)
   }
 
   _startPollingForPeers() {
@@ -296,18 +296,18 @@ class Orbit {
       // js-_ipfs
       return new Promise((resolve, reject) => {
         this._ipfs.libp2p.swarm.peers((err, peers) => {
-          if(err) reject(err);
-          resolve(peers);
-        });
+          if(err) reject(err)
+          resolve(peers)
+        })
       })
       .then((peers) => Object.keys(peers).map((e) => peers[e].multiaddrs[0].toString()))
     } else {
       // js-_ipfs-api
       return new Promise((resolve, reject) => {
         return this._ipfs.swarm.peers((err, res) => {
-          if(err) reject(err);
-          resolve(res);
-        });
+          if(err) reject(err)
+          resolve(res)
+        })
       })
       .then((peers) => peers.Strings)
     }
@@ -315,4 +315,4 @@ class Orbit {
 
 }
 
-module.exports = Orbit;
+module.exports = Orbit
