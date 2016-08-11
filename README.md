@@ -27,11 +27,11 @@ Orbit can be run either in a browser or as a native desktop application. The bro
 
 [http://orbit.libp2p.io/](http://orbit.libp2p.io)
 
-*The live demo is an old version of Orbit. It is recommended to follow the instructions belows to run the latest version.*
+*The live demo is an old version of Orbit. It is recommended to follow the instructions below to run the latest version.*
 
 #### Browser
 
-*Chrome is recommended to run Orbit in a browser.*
+*Chrome is recommended to run Orbit in the browser.*
 
 ```
 git clone https://github.com/haadcode/orbit.git
