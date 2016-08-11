@@ -3,95 +3,83 @@
 const path         = require('path')
 const EventEmitter = require('events').EventEmitter
 const OrbitDB      = require('orbit-db')
+const Crypto       = require('orbit-crypto')
 const Post         = require('ipfs-post')
 const Logger       = require('logplease')
-const logger       = Logger.create("Orbit", { color: Logger.Colors.Green })
 const bs58         = require('bs58')
+const logger       = Logger.create("Orbit", { color: Logger.Colors.Green })
 
-// TODO: move utils to the main process in Electron version so that fs can be used
-const utils = require('./utils')
+const getAppPath = () => process.type && process.env.ENV !== "dev" ? process.resourcesPath + "/app/" : process.cwd()
 
 const defaultOptions = {
-  cacheFile: path.join(utils.getAppPath(), "/orbit-data.json"), // path to orbit-db cache file
+  cacheFile: path.join(getAppPath(), "/orbit-data.json"), // path to orbit-db cache file
   maxHistory: 64 // how many messages to retrieve from history on joining a channel
 }
 
-const Crypto = require('orbit-crypto')
 let signKey
 
 class Orbit {
   constructor(ipfs, options) {
-    this.events = new EventEmitter();
-    this._ipfs = ipfs;
-    this._orbitdb = null;
-    this._channels = {};
-    this._peers = [];
-    this._options = defaultOptions;
-    Object.assign(this._options, options);
+    this.events = new EventEmitter()
+    this._ipfs = ipfs
+    this._orbitdb = null
+    this._user = null
+    this._channels = {}
+    this._peers = []
+    this._options = defaultOptions
+    this._pollPeersTimer = null
+    Object.assign(this._options, options)
   }
 
   /* Properties */
 
   get user() {
-    return this._orbitdb ? this._orbitdb.user : null;
+    return this._user
   }
 
   get network() {
-    return this._orbitdb ? this._orbitdb.network : null;
+    return this._orbitdb ? this._orbitdb.network : null
   }
 
   get channels() {
-    return this._channels;//Object.keys(this._channels).map((f) => this._channels[f]);
+    return this._channels
   }
 
   get peers() {
-    return this._peers;
+    return this._peers
   }
 
   /* Public methods */
 
   connect(host, username, password) {
-    const user = { username: username, password: password };
-    logger.debug("Load cache from:", this._options.cacheFile);
-    logger.info(`Connecting to network '${host}' as '${username}`);
+    logger.debug("Load cache from:", this._options.cacheFile)
+    logger.info(`Connecting to network '${host}' as '${username}`)
 
-    return OrbitDB.connect(host, user.username, user.password, this._ipfs)
+    return OrbitDB.connect(host, username, password, this._ipfs)
       .then((orbitdb) => {
-        this._orbitdb = orbitdb;
-
-        // Subscribe to database events
-        // this._orbitdb.events.on('data', this._handleMessage2.bind(this));
-        // this._orbitdb.events.on('write', this._handleMessage.bind(this));
-        this._orbitdb.events.on('data', this._handleMessage.bind(this));
-        // this._orbitdb.events.on('load', this._handleStartLoading.bind(this));
-        // this._orbitdb.events.on('ready', this._handleDatabaseReady.bind(this));
-        // this._orbitdb.events.on('sync', this._handleSync.bind(this));
-        // this._orbitdb.events.on('synced', this._handleSynced.bind(this));
-
-        // Get peers from libp2p and update the local peers array
-        setInterval(() => {
-          this._updateSwarmPeers().then((peers) => {
-            this._peers = peers;
-            this.events.emit('peers', this._peers);
-          });
-        }, 1000);
+        this._orbitdb = orbitdb
+        this._user = orbitdb.user
+        this._orbitdb.events.on('data', this._handleMessage.bind(this)) // Subscribe to updates in the database
+        this._startPollingForPeers() // Get peers from libp2p and update the local peers array
       })
       .then(() => Crypto.generateKey())
-      .then((key) => signKey = key)
+      .then((key) => this._user.signKey = key)
       .then(() => {
-        logger.info(`Connected to '${this._orbitdb.network.name}' at '${this._orbitdb.network.publishers[0]}' as '${user.username}`)
-        this.events.emit('connected', this.network, this.user);
-        return this;
+        logger.info(`Connected to '${this._orbitdb.network.name}' at '${this._orbitdb.network.publishers[0]}' as '${this.user.username}`)
+        this.events.emit('connected', this.network, this.user)
+        return this
       })
   }
 
   disconnect() {
     if(this._orbitdb) {
-      logger.warn(`Disconnected from '${this._orbitdb.network.name}' at '${this._orbitdb.network.publishers[0]}'`);
-      this._orbitdb.disconnect();
-      this._orbitdb = null;
-      this._channels = {};
-      this.events.emit('disconnected');
+      logger.warn(`Disconnected from '${this.network.name}' at '${this.network.publishers[0]}'`)
+      this._orbitdb.disconnect()
+      this._orbitdb = null
+      this._user = null
+      this._channels = {}
+      if(this._pollPeersTimer) clearInterval(this._pollPeersTimer)
+      this.events.emit('disconnected')
     }
   }
 
@@ -112,9 +100,7 @@ class Orbit {
     this._channels[channel] = {
       name: channel,
       password: null,
-      // feed is the database instance
-      feed: this._orbitdb.eventlog(channel, dbOptions),
-      state: { loading: true, syncing: 0 }
+      feed: this._orbitdb.eventlog(channel, dbOptions) // feed is the database instance
     }
 
     this.events.emit('joined', channel)
@@ -123,11 +109,11 @@ class Orbit {
 
   leave(channel) {
     if(this._channels[channel]) {
-      this._channels[channel].feed.close();
-      delete this._channels[channel];
-      logger.debug("Left channel #" + channel);
+      this._channels[channel].feed.close()
+      delete this._channels[channel]
+      logger.debug("Left channel #" + channel)
     }
-    this.events.emit('left', channel);
+    this.events.emit('left', channel)
   }
 
   send(channel, message) {
@@ -142,7 +128,7 @@ class Orbit {
     }
 
     return this._getChannelFeed(channel)
-      .then((feed) => this._postMessage(feed, Post.Types.Message, data))
+      .then((feed) => this._postMessage(feed, Post.Types.Message, data, this.user.signKey))
   }
 
   get(channel, lessThanHash, greaterThanHash, amount) {
@@ -159,32 +145,34 @@ class Orbit {
   }
 
   getPost(hash) {
-    let data, signKey
+    // TODO:
+    // return this._ipfs.object.get(hash, { enc: 'base58' })
+    //   .then((res) => post = Post.fromDAGNode(res))
+    //   .then(() => Crypto.importKeyFromIpfs(this._ipfs, post.signKey))
+    //   .then((key) => Post.verify(post, key))
+    //   .then(() => post)
+    let post, signKey
     return this._ipfs.object.get(hash, { enc: 'base58' })
-      .then((res) => data = JSON.parse(res.toJSON().Data))
-      .then(() => Crypto.importKeyFromIpfs(this._ipfs, data.signKey))
+      .then((res) => post = JSON.parse(res.toJSON().Data))
+      .then(() => Crypto.importKeyFromIpfs(this._ipfs, post.signKey))
       .then((signKey) => Crypto.verify(
-        new Uint8Array(data.sig),
+        new Uint8Array(post.sig),
         signKey,
         new Buffer(JSON.stringify({
-          content: data.content,
-          meta: data.meta,
-          replyto: data.replyto
+          content: post.content,
+          meta: post.meta,
+          replyto: post.replyto
         })))
        )
-      // .catch((e) => data)
-      .then(() => data)
+      .then(() => post)
   }
 
-  // _verifyPost(postData) {
-  // }
-
   /*
-    addFile(channel, source) where source:
+    addFile(channel, source) where source is:
     {
       // for all files, filename must be specified
       filename: <filepath>,    // add an individual file
-      // use either of these
+      // and optionally use one of these in addition
       directory: <path>,       // add a directory
       buffer: <Buffer>,        // add a file from buffer
       // optional meta data
@@ -192,94 +180,82 @@ class Orbit {
     }
   */
   addFile(channel, source) {
-    if(!source || !source.filename)
-      return Promise.reject(`Filename not specified`)
+    if(!source || (!source.filename && !source.directory))
+      return Promise.reject(`Filename or directory not specified`)
 
-    const addToIpfsJs = (ipfs, filename, buffer) => {
-      // TODO: refactor this when js-ipfs returns { Hash, Name, Size} objects instead of DAGNodes
-      return new Promise((resolve, reject) => {
-        const data = new Buffer(buffer)
-        ipfs.files.add(data).then((result) => {
-          // console.log("hash", result, filename)
-          // console.log("ADDED A FILE")
-          resolve({ Hash: bs58.encode(result[0].node.multihash()).toString(), isDirectory: false })
+    const addToIpfsJs = (ipfs, data) => {
+      return ipfs.files.add(new Buffer(data))
+        .then((result) => {
+          return {
+            Hash: bs58.encode(result[0].node.multihash()).toString(),
+            isDirectory: false
+          }
         })
-      })
     }
 
-    const addToIpfsGo = (ipfs, filePath) => {
-      return new Promise((resolve, reject) => {
-        ipfs.add(filePath, { recursive: true })
-          .then((result) => {
-            const length = result.length
-            const filename = filePath.split('/').pop()
-            // console.log("hash", result, filename, length)
-            // TODO check if still true: "ipfs-api returns an empty dir name as the last hash, ignore this"
-            // last added hash is the filename --> we added a directory
-            if(result[length - 1].Name === filename) {
-              // console.log("ADDED A DIRECTORY")
-              resolve({ Hash: result[length - 1].Hash, isDirectory: true })
-            } else if(result[0].Name === filePath) {
-              // console.log("ADDED A FILE")
-              // first added hash is the filename --> we added a file
-              resolve({ Hash: result[0].Hash, isDirectory: false })
-            }
-          }).catch(reject)
-      })
+    const addToIpfsGo = (ipfs, filename, filePath) => {
+      return ipfs.add(filePath, { recursive: true })
+        .then((result) => {
+          // last added hash is the filename --> we added a directory
+          // first added hash is the filename --> we added a file
+          const isDirectory = result[result.length - 1].Name === filename
+          return {
+            Hash: isDirectory ? result[result.length - 1].Hash : result[0].Hash,
+            isDirectory: isDirectory
+          }
+        })
     }
 
     logger.info("Adding file from path '" + source.filename + "'")
 
     const isBuffer = (source.buffer && source.filename) ? true : false
-    // const isDirectory = source.directory ? true : false
-    const filename = source.directory ? source.directory.split("/").pop() : source.filename.split("/").pop()
+    const name = source.directory ? source.directory.split("/").pop() : source.filename.split("/").pop()
     const size = (source.meta && source.meta.size) ? source.meta.size : 0
 
-    let result, feed
-    let addToIpfs
+    let feed, addToIpfs
 
     if(isBuffer) // Adding from browsers
-      addToIpfs = () => addToIpfsJs(this._ipfs, source.filename, source.buffer)
+      addToIpfs = () => addToIpfsJs(this._ipfs, source.buffer)
     else if(source.directory) // Adding from Electron
-      addToIpfs = () => addToIpfsGo(this._ipfs, source.directory)
+      addToIpfs = () => addToIpfsGo(this._ipfs, name, source.directory)
     else
-      addToIpfs = () => addToIpfsGo(this._ipfs, source.filename)
+      addToIpfs = () => addToIpfsGo(this._ipfs, name, source.filename)
 
     return this._getChannelFeed(channel)
       .then((res) => feed = res)
       .then(() => addToIpfs())
-      .then((res) => result = res)
-      // .then(() => isBuffer ? source.buffer.byteLength : utils.getFileSize(source.directory))
-      // .then((res) => size = res)
-      .then(() => logger.info("Added file '" + source.filename + "' as ", result))
-      .then(() => {
+      .then((result) => {
+        logger.info("Added file '" + source.filename + "' as ", result)
         // Create a post
         const type = result.isDirectory ? Post.Types.Directory : Post.Types.File;
         const data = {
-          name: filename,
+          name: name,
           hash: result.Hash,
           size: size,
-          from: this._orbitdb.user.id,
+          from: this.user.id,
           meta: source.meta || {}
         };
-        return this._postMessage(feed, type, data);
+        return this._postMessage(feed, type, data, this.user.signKey)
       })
   }
 
   getFile(hash) {
-    // Use if .cat doesn't seem to work
-    // return new Promise((resolve, reject) => {
-    //   const stream = request(`http://localhost:8080/ipfs/${hash}`);
-    //   resolve(stream);
-    // });
-    return this._ipfs.cat(hash);
+    return this._ipfs.cat(hash)
   }
 
   getDirectory(hash) {
-    return this._ipfs.ls(hash).then((res) => res.Objects[0].Links);
+    return this._ipfs.ls(hash).then((res) => res.Objects[0].Links)
   }
 
   /* Private methods */
+
+  _postMessage(feed, postType, data, signKey) {
+    let post
+    return Post.create(this._ipfs, postType, data, signKey)
+      .then((res) => post = res)
+      .then(() => feed.add(post.Hash))
+      .then(() => post)
+  }
 
   _getChannelFeed(channel) {
     if(!channel || channel === '')
@@ -290,14 +266,6 @@ class Orbit {
       if(!feed) reject(`Haven't joined #${channel}`);
       resolve(feed);
     });
-  }
-
-  _postMessage(feed, postType, data) {
-    let post
-    return Post.create(this._ipfs, postType, data, signKey)
-      .then((res) => post = res)
-      .then(() => feed.add(post.Hash))
-      .then(() => post)
   }
 
   // TODO: tests for everything below
@@ -312,6 +280,15 @@ class Orbit {
     // logger.debug("new messages in ", channel, message);
     if(this._channels[channel])
       this.events.emit('message', channel, message);
+  }
+
+  _startPollingForPeers() {
+    this._pollPeersTimer = setInterval(() => {
+      this._updateSwarmPeers().then((peers) => {
+        this._peers = peers
+        this.events.emit('peers', this._peers)
+      })
+    }, 1000)
   }
 
   _updateSwarmPeers() {

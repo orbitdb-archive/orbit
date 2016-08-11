@@ -84,7 +84,6 @@ IpfsApis.forEach(function(ipfsApi) {
 
     let orbit, client, client2;
     let channel = 'orbit-tests';
-    // const cacheFile = path.join(process.cwd(), '/test', 'orbit-db-test-cache.json');
 
     before(function (done) {
       ipfsApi.start()
@@ -153,30 +152,46 @@ IpfsApis.forEach(function(ipfsApi) {
       });
 
       it('emits \'connected\' event when connected to a network', (done) => {
-        orbit = new Orbit(ipfs);
+        orbit = new Orbit(ipfs)
         orbit.events.on('connected', (networkInfo, userInfo) => {
-          assert.notEqual(networkInfo, null);
-          assert.notEqual(userInfo, null);
-          assert.equal(networkInfo.name, 'Orbit DEV Network');
-          assert.equal(networkInfo.publishers.length, 1);
-          assert.equal(networkInfo.publishers[0], 'localhost:3333');
-          assert.equal(userInfo.username, username);
-          assert.equal(userInfo.id, username);
-          done();
+          assert.notEqual(networkInfo, null)
+          assert.notEqual(userInfo, null)
+          assert.equal(networkInfo.name, 'Orbit DEV Network')
+          assert.equal(networkInfo.publishers.length, 1)
+          assert.equal(networkInfo.publishers[0], 'localhost:3333')
+          assert.equal(userInfo.username, username)
+          assert.equal(userInfo.id, username)
+          done()
         });
         return orbit.connect(network, username, password).catch(done)
-      });
+      })
+
+      it('user is defined when connected', (done) => {
+        orbit = new Orbit(ipfs)
+        orbit.connect(network, username, password)
+          .then((res) => {
+            assert.notEqual(orbit.user, null)
+            assert.equal(orbit.user.id, username)
+            assert.equal(orbit.user.username, username)
+            assert.notEqual(orbit.user.signKey, null)
+            orbit.disconnect()
+            done()
+          })
+          .catch(done)
+      })
+
     });
 
     describe('disconnect', function() {
       it('disconnects from a network', (done) => {
-        orbit = new Orbit(ipfs);
+        orbit = new Orbit(ipfs)
         orbit.connect(network, username, password)
           .then((res) => {
-            orbit.disconnect();
-            assert.equal(orbit.orbitdb, null);
-            assert.equal(_.isEqual(orbit._channels, {}), true);
-            done();
+            orbit.disconnect()
+            assert.equal(orbit.orbitdb, null)
+            assert.equal(orbit.user, null)
+            assert.equal(_.isEqual(orbit._channels, {}), true)
+            done()
           })
           .catch(done)
       });
@@ -296,23 +311,6 @@ IpfsApis.forEach(function(ipfsApi) {
             done();
           })
       });
-
-      // it('emits \'ready\' event after joining an existing channel', (done) => {
-      //   const channel = 'test1';
-      //   orbit.join(channel).then(() => {
-      //     orbit.events.on('ready', (channelName) => {
-      //       const channels = orbit.channels;
-      //       assert.equal(channelName, channel);
-      //       assert.equal(channels[0].name, channel);
-      //       assert.equal(channels[0].password, null);
-      //       assert.notEqual(channels[0].feed, null);
-      //       assert.notEqual(orbit._channels[channel], null);
-      //       assert.equal(channels.length, 1);
-      //       done();
-      //     });
-      //     orbit.join(channel);
-      //   }).catch(done);
-      // });
     });
 
     describe('leave', function() {
@@ -720,20 +718,11 @@ IpfsApis.forEach(function(ipfsApi) {
           })
       });
 
-      it('throws an error if filePath parameter is not given', (done) => {
+      it('throws an error if neither filename or directory parameter is not given', (done) => {
         orbit.join(channel)
           .then(() => orbit.addFile(channel, null))
           .catch((e) => {
-            assert.equal(e, "Filename not specified");
-            done();
-          })
-      });
-
-      it.skip('throws an error if neither buffer or directory is not given', (done) => {
-        orbit.join(channel)
-          .then(() => orbit.addFile(channel, { filename: "test" }))
-          .catch((e) => {
-            assert.equal(e, "TODO");
+            assert.equal(e, "Filename or directory not specified");
             done();
           })
       });
