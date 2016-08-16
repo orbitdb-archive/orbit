@@ -8,6 +8,10 @@ import BackgroundAnimation from 'components/BackgroundAnimation';
 import Themes from 'app/Themes';
 import 'styles/LoginView.scss';
 
+import Web3 from 'web3'
+import Uport from 'uport-lib'
+// import Persona from 'uport-persona'
+
 var maxNicknameLength = 32;
 var maxLogoSize = 320;
 
@@ -89,6 +93,35 @@ class LoginView extends React.Component{
     this.setState({ currentLength: remainingCharacters < maxNicknameLength ? maxNicknameLength - this.refs.username.value.length : null });
   }
 
+  onUportLogin() {
+    const web3   = new Web3()
+    const uport  = new Uport("Orbit")
+
+    const rpcUrl = "http://localhost:8545"
+    const uportProvider = uport.getUportProvider(rpcUrl)
+
+    web3.setProvider(uportProvider)
+
+    console.log("Waiting for authorization...")
+    web3.eth.getCoinbase((err, res) => {
+      console.log("Profile >", res, err)
+
+      // TODO:
+      // - get name from uport Persona
+      // - change Nickname field name to Uport Name field
+      this.refs.username.value = res
+      this.refs.username.focus()
+
+      /*
+      var p = new Persona(myAddress);
+      console.log(">", p)
+      var ipfsProvider = ipfsApi(<hostname>, <port>);
+      p.setProviders(ipfsProvider, web3.currentProvider);
+      p.load().then(() => {...});
+      */
+    })
+  }
+
   render() {
     if(this.state.connected)
       return (<div></div>);
@@ -126,6 +159,16 @@ class LoginView extends React.Component{
         <div className="row">
           {errorMsg}
         </div>
+        <div className="row lastrow">
+          <span className="center">Login with</span>
+          <img
+            onClick={this.onUportLogin.bind(this)}
+            className="logo"
+            src="assets/uport.png"
+            height="48"
+          />
+        </div>
+
       </TransitionGroup>
     ) : (<span></span>);
 
