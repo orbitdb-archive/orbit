@@ -6,7 +6,6 @@ import NetworkStore from 'stores/NetworkStore';
 import NetworkActions from "actions/NetworkActions";
 import BackgroundAnimation from 'components/BackgroundAnimation';
 import Themes from 'app/Themes';
-import DotLoader from 'components/plugins/DotLoader';
 import 'styles/LoginView.scss';
 
 var maxNicknameLength = 32;

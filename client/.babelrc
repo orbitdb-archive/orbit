@@ -1,9 +1,9 @@
 {
   "plugins": [
+    "transform-async-to-generator",
     "transform-regenerator",
     "syntax-async-functions",
     "syntax-async-generators",
-    "transform-async-to-generator",
     "syntax-flow",
     "transform-flow-strip-types"
   ],

@@ -2,7 +2,7 @@
 
 import _ from 'lodash';
 import React from "react";
-import TransitionGroup from "react-addons-css-transition-group"; //eslint-disable-line
+import TransitionGroup from "react-addons-css-transition-group";
 import ReactEmoji from "react-emoji";
 import ReactAutolink from "react-autolink";
 import ReactIpfsLink from "components/plugins/react-ipfs-link";

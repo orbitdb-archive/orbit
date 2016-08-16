@@ -2,19 +2,18 @@
 
 if(process.env.ENV === 'dev') delete process.versions['electron'];
 
-const fs       = require('fs');
-const path     = require('path');
-const electron = require('electron');
-const app      = electron.app;
+const fs            = require('fs');
+const path          = require('path');
+const electron      = require('electron');
+const app           = electron.app;
 const BrowserWindow = electron.BrowserWindow;
-const Menu     = electron.Menu;
-const ipcMain  = electron.ipcMain;
-const ipfsd    = require('ipfsd-ctl');
-const Logger   = require('logplease');
-const logger   = Logger.create("Orbit.Index-Native");
+const Menu          = electron.Menu;
+const ipcMain       = electron.ipcMain;
+const ipfsd         = require('ipfsd-ctl');
+const Logger        = require('logplease');
+const utils         = require('./src/utils');
 
-const utils = require('./src/utils');
-
+const logger = Logger.create("Orbit.Index-Native");
 // require('crash-reporter').start();
 
 const appDataPath = path.resolve(process.env.ENV === 'dev' ? process.cwd() : process.resourcesPath + "/app")

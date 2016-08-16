@@ -1,8 +1,8 @@
-'use strict';
+'use strict'
 
-import React from 'react';
-import TransitionGroup from "react-addons-css-transition-group"; //eslint-disable-line
-import 'styles/JoinChannel.scss';
+import React from 'react'
+import TransitionGroup from "react-addons-css-transition-group"
+import 'styles/JoinChannel.scss'
 
 var initialStatusMessage   = "This channel requires a password";
 

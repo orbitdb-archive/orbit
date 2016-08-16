@@ -8,6 +8,7 @@ const Post         = require('ipfs-post')
 const Logger       = require('logplease')
 const bs58         = require('bs58')
 const logger       = Logger.create("Orbit", { color: Logger.Colors.Green })
+require('logplease').setLogLevel('ERROR')
 
 const getAppPath = () => process.type && process.env.ENV !== "dev" ? process.resourcesPath + "/app/" : process.cwd()
 
@@ -51,7 +52,7 @@ class Orbit {
 
   /* Public methods */
 
-  connect(host, username, password) {
+  connect(host = 'localhost:3333', username, password = '') {
     logger.debug("Load cache from:", this._options.cacheFile)
     logger.info(`Connecting to network '${host}' as '${username}`)
 
@@ -117,10 +118,11 @@ class Orbit {
   }
 
   send(channel, message) {
-    logger.debug(`Send message to #${channel}: ${message}`)
 
     if(!message || message === '')
       return Promise.reject(`Can't send an empty message`)
+
+    logger.debug(`Send message to #${channel}: ${message}`)
 
     const data = {
       content: message,
@@ -131,13 +133,13 @@ class Orbit {
       .then((feed) => this._postMessage(feed, Post.Types.Message, data, this.user.signKey))
   }
 
-  get(channel, lessThanHash, greaterThanHash, amount) {
+  get(channel, lessThanHash = null, greaterThanHash = null, amount = 1) {
     logger.debug(`Get messages from #${channel}: ${lessThanHash}, ${greaterThanHash}, ${amount}`)
 
     let options = {
-      limit: amount || 1,
-      lt: lessThanHash || null,
-      gte: greaterThanHash || null
+      limit: amount,
+      lt: lessThanHash,
+      gte: greaterThanHash,
     }
 
     return this._getChannelFeed(channel)
@@ -154,6 +156,7 @@ class Orbit {
     let post, signKey
     return this._ipfs.object.get(hash, { enc: 'base58' })
       .then((res) => post = JSON.parse(res.toJSON().Data))
+      // .then(() => console.log(JSON.stringify(post)))
       .then(() => Crypto.importKeyFromIpfs(this._ipfs, post.signKey))
       .then((signKey) => Crypto.verify(
         new Uint8Array(post.sig),
@@ -277,7 +280,7 @@ class Orbit {
   }
 
   _handleMessage(channel, message) {
-    // logger.debug("new messages in ", channel, message)
+    logger.debug("New message in #", channel, "\n" + JSON.stringify(message, null, 2))
     if(this._channels[channel])
       this.events.emit('message', channel, message)
   }
