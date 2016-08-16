@@ -5,9 +5,9 @@ const path = require('path');
 
 const babel = {
   "plugins": [
-    "transform-regenerator",
+    // "transform-regenerator",
     "syntax-async-functions",
-    "syntax-async-generators",
+    // "syntax-async-generators",
     "transform-async-to-generator",
     "syntax-flow",
     "transform-flow-strip-types"
@@ -16,6 +16,15 @@ const babel = {
 }
 
 module.exports = {
+  entry: {
+    app: './src/components/App.js',
+    vendor: [
+      'react', 'react-dom', 'react-router', 'react-addons-css-transition-group',
+      'lodash', 'logplease', 'fs',
+      'react-dropzone', 'react-emoji', 'react-autolink', 'emoji-annotation-to-unicode',
+      'highlight.js', 'clipboard', 'pleasejs', 'halogen'
+    ]
+  },
   output: {
     publicPath: '/assets/',
     path: 'dist/assets/',
@@ -23,9 +32,6 @@ module.exports = {
   },
   debug: false,
   devtool: false,
-  entry: [
-    './src/components/App.js'
-  ],
   node: {
     console: false,
     process: 'mock',
@@ -36,6 +42,7 @@ module.exports = {
     reasons: false
   },
   plugins: [
+    new webpack.optimize.CommonsChunkPlugin({ name: "vendor", filename: "vendor.js" }),
     new webpack.optimize.UglifyJsPlugin(),
     new webpack.NoErrorsPlugin()
   ],

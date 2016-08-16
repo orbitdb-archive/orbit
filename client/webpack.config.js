@@ -8,13 +8,21 @@ module.exports = {
     filename: 'main.js',
     publicPath: '/assets/'
   },
+  entry: {
+    app: [
+      'webpack/hot/only-dev-server',
+      './src/components/App.js'
+    ],
+    vendor: [
+      'react', 'react-dom', 'react-router', 'react-addons-css-transition-group',
+      'lodash', 'logplease', 'fs',
+      'react-dropzone', 'react-emoji', 'react-autolink', 'emoji-annotation-to-unicode',
+      'highlight.js', 'clipboard', 'pleasejs', 'halogen'
+    ]
+  },
   cache: false,
   debug: true,
   devtool: 'sourcemap',
-  entry: [
-    'webpack/hot/only-dev-server',
-    './src/components/App.js'
-  ],
   node: {
     console: false,
     process: 'mock',
@@ -24,6 +32,10 @@ module.exports = {
     colors: true,
     reasons: true
   },
+  plugins: [
+    new webpack.optimize.CommonsChunkPlugin({ name: "vendor", filename: "vendor.js" }),
+    new webpack.HotModuleReplacementPlugin()
+  ],
   resolveLoader: {
     root: path.join(__dirname, 'node_modules')
   },
@@ -70,9 +82,6 @@ module.exports = {
       loader: 'json'
     }]
   },
-  plugins: [
-    new webpack.HotModuleReplacementPlugin()
-  ],
   externals: {
     du: '{}',
     net: '{}',
