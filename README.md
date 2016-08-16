@@ -81,7 +81,7 @@ npm test
 ```
 cd client/
 npm install
-npm dev
+npm run dev
 ```
 
 This will open webpack dev-server at [http://localhost:8000/webpack-dev-server](http://localhost:8000/webpack-dev-server).
@@ -90,7 +90,7 @@ This will open webpack dev-server at [http://localhost:8000/webpack-dev-server](
 ```
 cd client/
 npm install
-npm build
+npm run build
 ```
 
 This will create `client/dist` directory which contains all the files needed to distribute the Orbit browser application.
@@ -106,7 +106,7 @@ Then, start the UI development environment:
 ```
 cd client/
 npm install
-npm dev
+npm run dev
 ```
 
 ##### Build
@@ -114,7 +114,7 @@ npm dev
 *Run this is in project's root directory, not in `client/`.*
 
 ```
-npm build
+npm run build
 ```
 
 The builds are in `dist/`.
@@ -129,4 +129,4 @@ Get https://github.com/haadcode/orbit-server and start the server. In Orbit's lo
 
 Would be happy to accept PRs! If you want to work on something, it'd be good to talk beforehand to make sure nobody else is working on it. You can reach me on Twitter [@haadcode](https://twitter.com/haadcode) or on IRC #ipfs on Freenode, or in the comments of the [issues section](https://github.com/haadcode/orbit/issues).
 
-Good place to start is to take a look at the ["help wanted"](https://github.com/haadcode/orbit/issues?q=is%3Aopen+is%3Aissue+label%3A%22help+wanted%22) issues or the project's [status board](https://waffle.io/haadcode/orbit).
+Good place to start is to take a look at the ["help wanted"](https://github.com/haadcode/orbit/issues?q=is%3Aopen+is%3Aissue+label%3A%22help+wanted%22+sort%3Areactions-%2B1-desc) issues or the project's [status board](https://waffle.io/haadcode/orbit).
