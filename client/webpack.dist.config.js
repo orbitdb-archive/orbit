@@ -2,12 +2,11 @@
 
 const webpack = require('webpack');
 const path = require('path');
+const CopyWebpackPlugin = require('copy-webpack-plugin');
 
 const babel = {
   "plugins": [
-    // "transform-regenerator",
     "syntax-async-functions",
-    // "syntax-async-generators",
     "transform-async-to-generator",
     "syntax-flow",
     "transform-flow-strip-types"
@@ -16,19 +15,25 @@ const babel = {
 }
 
 module.exports = {
-  entry: {
-    app: './src/components/App.js',
-    vendor: [
-      'react', 'react-dom', 'react-router', 'react-addons-css-transition-group',
-      'lodash', 'logplease', 'fs',
-      'react-dropzone', 'react-emoji', 'react-autolink', 'emoji-annotation-to-unicode',
-      'highlight.js', 'clipboard', 'pleasejs', 'halogen'
-    ]
-  },
   output: {
     publicPath: '/assets/',
     path: 'dist/assets/',
-    filename: 'main.js'
+    filename: '[name].js'
+  },
+  entry: {
+    app: './src/components/App.js',
+    vendor: [
+      // 'ipfs',
+      'react', 'react-dom', 'react-router', 'react-addons-css-transition-group',
+      'reflux',
+      'lodash', 'logplease', 'fs',
+      'react-dropzone', 'react-autolink',
+      'highlight.js', 'clipboard', 'pleasejs', 'halogen',
+      'web3', 'uport-lib'
+    ],
+    emojis: [
+      'react-emoji', 'emoji-annotation-to-unicode', './src/components/EmojiPicker.js'
+    ]
   },
   debug: false,
   devtool: false,
@@ -42,7 +47,12 @@ module.exports = {
     reasons: false
   },
   plugins: [
-    new webpack.optimize.CommonsChunkPlugin({ name: "vendor", filename: "vendor.js" }),
+    new CopyWebpackPlugin([
+      { from: path.join(__dirname + '/node_modules', 'ipfs/dist/index.min.js'), to: 'ipfs.js' }
+    ]),
+    new webpack.optimize.CommonsChunkPlugin({ name: "emojis", filename: "emojis.js", chunks: ['emojis'], children: true }),
+    new webpack.optimize.CommonsChunkPlugin({ name: "vendor", filename: "vendor.js", chunks: ['vendor'], children: true }),
+    new webpack.optimize.AggressiveMergingPlugin(),
     new webpack.optimize.UglifyJsPlugin(),
     new webpack.NoErrorsPlugin()
   ],

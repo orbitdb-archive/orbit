@@ -2,10 +2,12 @@
 
 const webpack = require('webpack');
 const path = require('path');
+const ChunkManifestPlugin = require('chunk-manifest-webpack-plugin');
+const CopyWebpackPlugin = require('copy-webpack-plugin');
 
 module.exports = {
   output: {
-    filename: 'main.js',
+    filename: '[name].js',
     publicPath: '/assets/'
   },
   entry: {
@@ -14,15 +16,43 @@ module.exports = {
       './src/components/App.js'
     ],
     vendor: [
+      // 'ipfs',
       'react', 'react-dom', 'react-router', 'react-addons-css-transition-group',
-      'lodash', 'logplease', 'fs',
-      'react-dropzone', 'react-emoji', 'react-autolink', 'emoji-annotation-to-unicode',
-      'highlight.js', 'clipboard', 'pleasejs', 'halogen'
+      'reflux',
+      'lodash', 'logplease', 'fs', 'html5-fs',
+      'react-dropzone', 'react-autolink',
+      'highlight.js', 'clipboard', 'pleasejs', 'halogen',
+      'web3', 'uport-lib'
+    ],
+    emojis: [
+      'react-emoji', 'emoji-annotation-to-unicode', './src/components/EmojiPicker.js'
     ]
+    // ipfs: [
+    //   // './src/main.js'
+    //   // // 'ipfs'
+    //   path.join(__dirname + '/node_modules', 'ipfs/dist/index.js')
+    // ]
   },
+  plugins: [
+    new CopyWebpackPlugin([
+      { from: path.join(__dirname + '/node_modules', 'ipfs/dist/index.js'), to: 'ipfs.js' }
+    ]),
+    new ChunkManifestPlugin({
+      filename: "manifest.json",
+      manifestVariable: "webpackManifest"
+    }),
+    // new webpack.optimize.CommonsChunkPlugin({ name: "ipfs", filename: "ipfs.js", chunks: ['ipfs'] }),
+    new webpack.optimize.CommonsChunkPlugin({ name: "emojis", filename: "emojis.js", chunks: ['emojis'] }),
+    new webpack.optimize.CommonsChunkPlugin({ name: "vendor", filename: "vendor.js", chunks: ['vendor'] }),
+    new webpack.optimize.AggressiveMergingPlugin(),
+    new webpack.HotModuleReplacementPlugin()
+  ],
   cache: false,
   debug: true,
   devtool: 'sourcemap',
+  devServer: {
+    headers: { "Access-Control-Allow-Origin": "*" }
+  },
   node: {
     console: false,
     process: 'mock',
@@ -32,10 +62,6 @@ module.exports = {
     colors: true,
     reasons: true
   },
-  plugins: [
-    new webpack.optimize.CommonsChunkPlugin({ name: "vendor", filename: "vendor.js" }),
-    new webpack.HotModuleReplacementPlugin()
-  ],
   resolveLoader: {
     root: path.join(__dirname, 'node_modules')
   },
@@ -47,6 +73,7 @@ module.exports = {
     ],
     alias: {
       'node_modules': path.join(__dirname + '/node_modules'),
+      // 'ipfs': path.join(__dirname + '/node_modules', 'ipfs/dist/index.js'),
       'libp2p-ipfs': 'libp2p-ipfs-browser',
       'fs': path.join(__dirname + '/node_modules', 'html5-fs'),
       'node-webcrypto-ossl': path.join(__dirname + '/node_modules', 'webcrypto'),
