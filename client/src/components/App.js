@@ -53,7 +53,7 @@ const views = {
   "Channel": "/channel/"
 };
 
-const hasIPFS = !!window.ipfs;
+const hasIPFS = !!window.ipfsInstance;
 console.log("hasIPFS:", hasIPFS)
 let orbit// = hasIPFS ? window.orbit : null;
 
@@ -80,7 +80,7 @@ var App = React.createClass({
   },
   componentDidMount: function() {
     const signalServerAddress = this.props.location.query.local ? '0.0.0.0' : '178.62.241.75';
-    const ipfsApi = hasIPFS ? window.ipfs : null; // Main.start creates js-ipfs instance if needed
+    const ipfsApi = hasIPFS ? window.ipfsInstance : null; // Main.start creates js-ipfs instance if needed
     const ipcRenderer = hasIPFS ? window.ipcRenderer : null;
     const dataPath = '/tmp/orbit-demo-2-';
 
