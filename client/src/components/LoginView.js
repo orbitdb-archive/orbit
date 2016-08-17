@@ -10,7 +10,7 @@ import 'styles/LoginView.scss';
 
 import Web3 from 'web3'
 import Uport from 'uport-lib'
-// import Persona from 'uport-persona'
+import Persona from 'uport-persona'
 
 var maxNicknameLength = 32;
 var maxLogoSize = 320;
@@ -112,13 +112,17 @@ class LoginView extends React.Component{
       this.refs.username.value = res
       this.refs.username.focus()
 
-      /*
-      var p = new Persona(myAddress);
+      var p = new Persona(res);
       console.log(">", p)
-      var ipfsProvider = ipfsApi(<hostname>, <port>);
+      var ipfsProvider = NetworkStore.orbit._ipfs;
+      console.log("aaa")
       p.setProviders(ipfsProvider, web3.currentProvider);
-      p.load().then(() => {...});
-      */
+      console.log("bbb")
+      p.load().then(() => {
+        console.log("ccc")
+        var profile = p.getProfile();
+        console.log("Profile>", profile)
+      });
     })
   }
 
