@@ -105,6 +105,9 @@ module.exports = {
       test: /\.(png|jpg|woff|woff2)$/,
       loader: 'url-loader?limit=8192'
     }, {
+      test: /\.(png|jpg)$/,
+      loader: 'file?name=[path][name].[ext]',
+    }, {
       test: /\.json$/,
       loader: 'json'
     }]

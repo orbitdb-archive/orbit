@@ -164,11 +164,10 @@ class LoginView extends React.Component{
           {errorMsg}
         </div>
         <div className="row lastrow">
-          <span className="center">Login with</span>
           <img
             onClick={this.onUportLogin.bind(this)}
             className="logo"
-            src="assets/uport.png"
+            src="images/uport.png"
             height="48"
           />
         </div>
