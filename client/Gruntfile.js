@@ -27,6 +27,7 @@ module.exports = function (grunt) {
     'webpack-dev-server': {
       options: {
         hot: true,
+        inline: true,
         port: 8000,
         webpack: webpackDevConfig,
         publicPath: '/assets/',
@@ -60,7 +61,8 @@ module.exports = function (grunt) {
         delay: 500
       },
       dev: {
-        path: 'http://localhost:<%= connect.options.port %>/webpack-dev-server/'
+        // path: 'http://localhost:<%= connect.options.port %>/webpack-dev-server/'
+        path: 'http://localhost:<%= connect.options.port %>/'
       },
       dist: {
         path: 'http://localhost:<%= connect.options.port %>/'
