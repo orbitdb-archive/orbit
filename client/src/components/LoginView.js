@@ -122,7 +122,7 @@ class LoginView extends React.Component{
         console.log("ccc")
         var profile = p.getProfile();
         console.log("Profile>", profile)
-      });
+      }).catch((e) => console.error(e))
     })
   }
 
