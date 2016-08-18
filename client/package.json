@@ -26,7 +26,8 @@
     "react-emoji": "^0.4.4",
     "react-router": "^2.4.0",
     "reflux": "^0.4.1",
-    "uport-lib": "https://github.com/ConsenSys/uport-lib"
+    "uport-lib": "https://github.com/ConsenSys/uport-lib",
+    "uport-registry": "https://github.com/haadcode/uport-registry/tree/ipfs-provider"
   },
   "devDependencies": {
     "babel": "^6.5.2",
