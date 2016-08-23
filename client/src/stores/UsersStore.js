@@ -2,15 +2,19 @@
 
 import _ from 'lodash';
 import Reflux from 'reflux';
+import AppActions from 'actions/AppActions';
 import NetworkActions from 'actions/NetworkActions';
 import UserActions from 'actions/UserActions';
 import Logger from 'logplease';
 const logger = Logger.create('UsersStore', { color: Logger.Colors.Cyan });
 
 var UsersStore = Reflux.createStore({
-  listenables: [NetworkActions, UserActions],
+  listenables: [AppActions, NetworkActions, UserActions],
   init: function() {
     this.users  = [];
+  },
+  onInitialize: function(orbit) {
+    this.orbit = orbit
   },
   onDisconnect: function() {
     this.users = [];
@@ -19,6 +23,11 @@ var UsersStore = Reflux.createStore({
   onAddUser: function(user) {
     if(!_.includes(this.users, user))
       this.users.push(user);
+  },
+  onGetUser: function(id, callback) {
+    this.orbit.getUser(id).then((user) => {
+      callback(null, user)
+    })
   }
   // onGetUserInfo: function(hash, callback) {
   //   if(!this.users[hash]) {

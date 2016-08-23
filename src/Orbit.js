@@ -52,7 +52,7 @@ class Orbit {
 
   /* Public methods */
 
-  connect(host = 'localhost:3333', username, password = '') {
+  connect(host = 'localhost:3333', username, password = '', profileData = { type: 'orbit' }) {
     logger.debug("Load cache from:", this._options.cacheFile)
     logger.info(`Connecting to network '${host}' as '${username}`)
 
@@ -60,11 +60,36 @@ class Orbit {
       .then((orbitdb) => {
         this._orbitdb = orbitdb
         this._user = orbitdb.user
+
         this._orbitdb.events.on('data', this._handleMessage.bind(this)) // Subscribe to updates in the database
         this._startPollingForPeers() // Get peers from libp2p and update the local peers array
+
+        // WIP: user profile
+        let key
+        return Crypto.generateKey()
+          .then((res) => {
+            key = res
+            return Crypto.exportKeyToIpfs(this._ipfs, key)
+          })
+          .then((hash) => {
+            if(profileData.type === 'uport')
+              return Orbit.createUser(profileData.name, profileData.residenceCountry, profileData.image[0].contentUrl.replace('/ipfs/', ''), hash, 'uport', profileData.id)
+
+            return Orbit.createUser(username, null, null, hash, 'orbit', null)
+          })
+          .then((user) => {
+            return this._ipfs.object.put(new Buffer(JSON.stringify(user)))
+              .then((res) => {
+                user.id = res.toJSON().Hash
+                this._user = user
+                this._user._key = key
+                console.log("USER", this._user)
+                return this._user
+              })
+          })
       })
-      .then(() => Crypto.generateKey())
-      .then((key) => this._user.signKey = key)
+      // .then(() => Crypto.generateKey())
+      // .then((key) => this._user.signKey = key)
       .then(() => {
         logger.info(`Connected to '${this._orbitdb.network.name}' at '${this._orbitdb.network.publishers[0]}' as '${this.user.username}`)
         this.events.emit('connected', this.network, this.user)
@@ -126,11 +151,11 @@ class Orbit {
 
     const data = {
       content: message,
-      from: this._orbitdb.user.id
+      from: this.user.id
     }
 
     return this._getChannelFeed(channel)
-      .then((feed) => this._postMessage(feed, Post.Types.Message, data, this.user.signKey))
+      .then((feed) => this._postMessage(feed, Post.Types.Message, data, this.user._key))
   }
 
   get(channel, lessThanHash = null, greaterThanHash = null, amount = 1) {
@@ -248,6 +273,24 @@ class Orbit {
 
   getDirectory(hash) {
     return this._ipfs.ls(hash).then((res) => res.Objects[0].Links)
+  }
+
+  getUser(hash) {
+    return this._ipfs.object.get(hash, { enc: 'base58' })
+      .then((res) => Object.assign(JSON.parse(res.toJSON().Data), { id: hash }))
+  }
+
+  static createUser(username, country, picture, signKey, identityProvider = null, linkTo = null) {
+    return {
+      name: username,
+      country: country,
+      image: picture,
+      signKey: signKey,
+      identityProvider: {
+        provider: identityProvider,
+        id: linkTo
+      }
+    }
   }
 
   /* Private methods */

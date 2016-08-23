@@ -105,7 +105,7 @@ var App = React.createClass({
 
     document.title = 'Orbit';
 
-    SkynetActions.start.listen((username) => orbit.connect(null, username, ''));
+    // SkynetActions.start.listen((username) => orbit.connect(null, username, ''));
     UIActions.joinChannel.listen(this.joinChannel);
     NetworkActions.joinedChannel.listen(this.onJoinedChannel);
     NetworkActions.joinChannelError.listen(this.onJoinChannelError);

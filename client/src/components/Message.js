@@ -7,6 +7,7 @@ import File from "components/File";
 import TextMessage from "components/TextMessage";
 import Directory from "components/Directory";
 import ChannelActions from 'actions/ChannelActions';
+import UserActions from 'actions/UserActions';
 import NotificationActions from 'actions/NotificationActions';
 import TransitionGroup from "react-addons-css-transition-group"; //eslint-disable-line
 import { getFormattedTime } from '../utils/utils.js';
@@ -18,10 +19,12 @@ class Message extends React.Component {
     super(props);
     this.state = {
       post: null,
+      user: null,
       hasHighlights: false,
       isCommand: false,
       formattedTime: getFormattedTime(props.message.meta.ts),
       showSignature: false,
+      showProfile: null
     };
   }
 
@@ -31,6 +34,10 @@ class Message extends React.Component {
         post: post
       };
       if (post && post.content) {
+        UserActions.getUser(post.meta.from, (err, user) => {
+          this.setState({ user: user });
+        });
+
         if (post.content.startsWith('/me')) {
           state.isCommand = true;
         }
@@ -47,7 +54,7 @@ class Message extends React.Component {
   }
 
   onShowVerification(show, evt) {
-    console.log("SIGNED BY:", this.state.post.signKey)
+    // console.log("SIGNED BY:", this.state.post.signKey)
     this.setState({ showSignature: true })
     // if(this.showVerificationTimer) clearTimeout(this.showVerificationTimer)
     // this.showVerificationTimer = setTimeout(() => {
@@ -115,17 +122,21 @@ class Message extends React.Component {
     </span> : null
   }
 
+
   render() {
     const { message, colorifyUsername, style, onDragEnter } = this.props;
-    const { post, isCommand, hasHighlights, formattedTime } = this.state;
+    const { user, post, isCommand, hasHighlights, formattedTime } = this.state;
     const className = hasHighlights ? "Message highlighted" : "Message";
+
     return (
       <div className={className} style={style} onDragEnter={onDragEnter}>
         <span className="Timestamp">{formattedTime}</span>
         <User
-          userId={post ? post.meta.from : null}
+          user={user}
           colorify={colorifyUsername}
-          highlight={isCommand} />
+          highlight={isCommand}
+          onShowProfile={this.props.onShowProfile.bind(this, user)}
+          />
         {this.renderContent()}
         {this.renderVerification()}
       </div>

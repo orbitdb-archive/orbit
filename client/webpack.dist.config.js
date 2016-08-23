@@ -23,16 +23,18 @@ module.exports = {
   entry: {
     app: './src/components/App.js',
     vendor: [
-      // 'ipfs',
       'react', 'react-dom', 'react-router', 'react-addons-css-transition-group',
       'reflux',
       'lodash', 'logplease', 'fs',
       'react-dropzone', 'react-autolink',
       'highlight.js', 'clipboard', 'pleasejs', 'halogen',
-      'web3', 'uport-lib'
+      // 'web3', 'uport-lib'
     ],
     emojis: [
       'react-emoji', 'emoji-annotation-to-unicode', './src/components/EmojiPicker.js'
+    ],
+    ipfsdist: [
+      'ipfs'
     ]
   },
   debug: false,
@@ -50,10 +52,11 @@ module.exports = {
     new CopyWebpackPlugin([
       { from: path.join(__dirname + '/node_modules', 'ipfs/dist/index.min.js'), to: 'ipfs.js' }
     ]),
-    new webpack.optimize.CommonsChunkPlugin({ name: "emojis", filename: "emojis.js", chunks: ['emojis'], children: true }),
-    new webpack.optimize.CommonsChunkPlugin({ name: "vendor", filename: "vendor.js", chunks: ['vendor'], children: true }),
+    // new webpack.optimize.CommonsChunkPlugin({ name: "ipfsdist", filename: "_remove.js", chunks: ['ipfsdist'] }),
+    new webpack.optimize.CommonsChunkPlugin({ name: "emojis", filename: "emojis.js", chunks: ['emojis'] }),
+    new webpack.optimize.CommonsChunkPlugin({ name: "vendor", filename: "vendor.js", chunks: ['vendor'] }),
     new webpack.optimize.AggressiveMergingPlugin(),
-    new webpack.optimize.UglifyJsPlugin(),
+    // new webpack.optimize.UglifyJsPlugin(),
     new webpack.NoErrorsPlugin()
   ],
   resolveLoader: {

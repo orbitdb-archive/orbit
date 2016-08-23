@@ -22,7 +22,7 @@ module.exports = {
       'lodash', 'logplease', 'fs', 'html5-fs',
       'react-dropzone', 'react-autolink',
       'highlight.js', 'clipboard', 'pleasejs', 'halogen',
-      'web3', 'uport-lib', 'uport-persona'
+      // 'web3', 'uport-lib', 'uport-persona', 'uport-registry'
     ],
     emojis: [
       'react-emoji', 'emoji-annotation-to-unicode', './src/components/EmojiPicker.js'

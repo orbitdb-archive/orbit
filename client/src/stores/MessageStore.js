@@ -266,7 +266,7 @@ const MessageStore = Reflux.createStore({
     this.onLoadPost(message.value, (err, post) => {
       UserActions.addUser(post.meta.from);
       if(post && post.content) {
-        if(hasMentions(post.content.toLowerCase(), UserStore.user.username.toLowerCase()))
+        if(hasMentions(post.content.toLowerCase(), UserStore.user.name.toLowerCase()))
           NotificationActions.mention(channel, post.content);
       }
     });
@@ -294,7 +294,7 @@ const MessageStore = Reflux.createStore({
         // logger.debug(post)
         // UIActions.stopLoading(channel, "send");
       })
-      .catch((e) => console.log(e))
+      .catch((e) => console.error(e))
   },
   onAddFile: function(channel: string, filePath: string, buffer, meta) {
     logger.debug("--> Add file: " + filePath + buffer !== null);

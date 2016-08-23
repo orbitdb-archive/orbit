@@ -11,6 +11,7 @@ import 'styles/LoginView.scss';
 import Web3 from 'web3'
 import Uport from 'uport-lib'
 import Persona from 'uport-persona'
+import bs58  from 'bs58'
 
 var maxNicknameLength = 32;
 var maxLogoSize = 320;
@@ -75,7 +76,7 @@ class LoginView extends React.Component{
   // }
 
   register(e) {
-    e.preventDefault();
+    if(e) e.preventDefault();
     var network  = this.refs.network.value.trim();
     var username = this.refs.username.value.trim();
     var password = this.refs.password.value.trim();
@@ -98,7 +99,8 @@ class LoginView extends React.Component{
     const uport  = new Uport("Orbit")
 
     const rpcUrl = "http://localhost:8545"
-    const uportProvider = uport.getUportProvider(rpcUrl)
+    const uportProvider = uport.getUportProvider()
+    const web3Prov = new web3.providers.HttpProvider('https://consensysnet.infura.io:8545');
 
     web3.setProvider(uportProvider)
 
@@ -109,19 +111,32 @@ class LoginView extends React.Component{
       // TODO:
       // - get name from uport Persona
       // - change Nickname field name to Uport Name field
-      this.refs.username.value = res
-      this.refs.username.focus()
 
       var p = new Persona(res);
       console.log(">", p)
       var ipfsProvider = NetworkStore.orbit._ipfs;
       console.log("aaa")
-      p.setProviders(ipfsProvider, web3.currentProvider);
+      p.setProviders(null, web3Prov);
       console.log("bbb")
-      p.load().then(() => {
-        console.log("ccc")
+      p.load().then((res) => {
+        console.log(JSON.stringify(res,null,2))
         var profile = p.getProfile();
         console.log("Profile>", profile)
+        console.log(JSON.stringify(p.getAllClaims(),null,2))
+        // var pk = p.getPublicSigningKey()
+        // var pk2 = p.pubSignKey
+        // console.log("PK2>", pk2)
+        this.refs.username.value = profile.name
+        var network = this.refs.network.value.trim()
+        var username = this.refs.username.value.trim()
+        var str = p.address.slice(2)
+        console.log(str)
+        profile.id = p.address//bs58.encode(new Buffer(p.address, 'hex'))
+        profile.type = 'uport'
+        profile.signKey = 'TODO'
+        NetworkActions.connect(network, username, null, profile)
+        // this.register()
+        // this.refs.username.focus()
       }).catch((e) => console.error(e))
     })
   }
@@ -183,7 +198,7 @@ class LoginView extends React.Component{
           </TransitionGroup>
           {form}
         </form>
-        <BackgroundAnimation style={{ margin: "16px"}} size={this.state.logoSize} theme={this.state.theme}/>
+        <BackgroundAnimation style={{ top: "0", left: "0" }} size={this.state.logoSize} theme={this.state.theme}/>
       </div>
     );
   }

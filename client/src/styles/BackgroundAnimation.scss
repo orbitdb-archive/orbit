@@ -2,61 +2,26 @@
 
 .BackgroundAnimation {
   position: absolute;
-  top: 0;
-  left: 0;
+  // top: 0;
+  // left: 0;
   width: 100%;
   display: flex;
   justify-content: center;
   z-index: -1;
 
+ -webkit-transform-style: preserve-3d;
+  transform-style: preserve-3d;
+  -webkit-backface-visibility: hidden;
+  backface-visibility: hidden;
+
   .transparent {
-    // transform: translateX(-50%);
     opacity: 0.3;
     position: absolute;
   }
 
   .opaque {
-    // transform: translateX(-50%);
     opacity: 1.0;
     position: absolute;
-  }
-
-    -webkit-transform-style: preserve-3d;
-    transform-style: preserve-3d;
-    -webkit-backface-visibility: hidden;
-    backface-visibility: hidden;
-
-  .circles {
-    position: absolute;
-    -webkit-transform: translate3D(0, 0, 0);
-    transform: translate3D(0, 0, 0);
-    -webkit-backface-visibility: hidden;
-    backface-visibility: hidden;
-    -webkit-transform-style: preserve-3d;
-    transform-style: preserve-3d;
-  }
-
-  // .circle {
-  //   position: absolute;
-  //   -webkit-backface-visibility: hidden;
-  //   backface-visibility: hidden;
-  //   -webkit-transform-style: preserve-3d;
-  //   transform-style: preserve-3d;
-  //   -webkit-transform: translate3D(0, 0, 0);
-  //   transform: translate3D(0, 0, 0);
-  // }
-
-  @keyframes rot {
-    0% {
-      transform: rotate(0deg)
-                 translate(-32px)
-                 rotate(0deg);
-    }
-    100% {
-      transform: rotate(360deg)
-                 translate(-32px)
-                 rotate(-360deg);
-    }
   }
 
   circle {
@@ -78,12 +43,6 @@
     animation-fill-mode: both;
     -webkit-animation-timing-function: linear;
     animation-timing-function: linear;
-
-    // -webkit-animation-iteration-count: infinite;
-    // animation-iteration-count: infinite;
-
-    // -webkit-animation-direction: alternate;
-    // animation-direction: alternate;
   }
 
 }

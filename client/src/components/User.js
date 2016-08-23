@@ -1,44 +1,50 @@
-'use strict';
+'use strict'
 
-import React from 'react';
-import Please from "pleasejs";
+import React from 'react'
+import Profile from "components/Profile"
+import Please from "pleasejs"
 
-import 'styles/User.scss';
+import 'styles/User.scss'
 
 class User extends React.Component {
   constructor(props) {
-    super(props);
+    super(props)
     this.state = {
-      uid: this.props.userId,
-      username: this.props.userId,
+      user: this.props.user,
       colorify: props.colorify,
       highlight: props.highlight
-    };
+    }
   }
 
   componentWillReceiveProps(nextProps) {
     this.setState({
-      uid: nextProps.userId,
-      username: nextProps.userId,
+      user: nextProps.user,
       colorify: nextProps.colorify,
       highlight: nextProps.highlight
-    });
+    })
   }
 
   render() {
     const color = this.state.colorify ? Please.make_color({
-      seed: this.state.username,
+      seed: this.state.user ? this.state.user.name : '',
       saturation: 0.4,
       value: 0.9,
       golden: false
-    }) : "";
+    }) : ""
 
-    const className = this.state.highlight ? "User command" : "User";
+    const className = this.state.highlight ? "User command" : "User"
+    const { user, showProfileDetails } = this.state
 
     return (
-      <div className={className} style={{color: color}}>{this.state.username}</div>
-    );
+      <div
+        className={className}
+        style={{color: color}}
+        onClick={this.props.onShowProfile}
+      >
+        {user ? user.name : ''}
+      </div>
+    )
   }
 }
 
-export default User;
+export default User
