@@ -6,6 +6,7 @@ import BackgroundAnimation from 'components/BackgroundAnimation';
 import TransitionGroup from "react-addons-css-transition-group";
 import Please from "pleasejs"
 import 'styles/Profile.scss'
+import Countries from '../lib/countries.json'
 
 class Profile extends React.Component {
   constructor(props) {
@@ -61,10 +62,13 @@ class Profile extends React.Component {
 
   render() {
     const { user, picture, x, y, showRawData, userColor } = this.state
+    const country = Countries[user.country]
+    const location = country ? country + ", Earth" : "Earth"
+
     const rawData = showRawData ? <pre>{JSON.stringify(user, null, 2)}</pre> : null
     const profileData = showRawData ? null :
       (<div className="profileDataContainer">
-        <div className="country">{user.country ? user.country + ", Earth" : "Earth"}</div>
+        <div className="country">{location}</div>
         <br/><br/><br/><br/>
         <div className="title">Identity Provider:</div>
         <div className="identityProvider">{user.identityProvider.provider}</div>
