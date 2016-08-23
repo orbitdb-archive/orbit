@@ -25,10 +25,10 @@ module.exports = {
     vendor: [
       'react', 'react-dom', 'react-router', 'react-addons-css-transition-group',
       'reflux',
-      'lodash', 'logplease', 'fs',
+      'lodash', 'logplease', 'fs', 'html5-fs', 'bs58',
       'react-dropzone', 'react-autolink',
       'highlight.js', 'clipboard', 'pleasejs', 'halogen',
-      'web3', 'uport-lib', 'uport-persona'
+      // 'web3', 'uport-lib', 'uport-persona'
     ],
     emojis: [
       'react-emoji', 'emoji-annotation-to-unicode', './src/components/EmojiPicker.js'

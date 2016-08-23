@@ -73,7 +73,6 @@ module.exports = {
     ],
     alias: {
       'node_modules': path.join(__dirname + '/node_modules'),
-      // 'ipfs': path.join(__dirname + '/node_modules', 'ipfs/dist/index.js'),
       'libp2p-ipfs': 'libp2p-ipfs-browser',
       'fs': path.join(__dirname + '/node_modules', 'html5-fs'),
       'node-webcrypto-ossl': path.join(__dirname + '/node_modules', 'webcrypto'),
