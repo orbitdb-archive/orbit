@@ -24,15 +24,15 @@ const defaultOptions = {
 let signKey
 
 class Orbit {
-  constructor(ipfs, options) {
+  constructor(ipfs, options = {}) {
     this.events = new EventEmitter()
     this._ipfs = ipfs
     this._orbitdb = null
     this._user = null
     this._channels = {}
     this._peers = []
-    this._options = defaultOptions
     this._pollPeersTimer = null
+    this._options = Object.assign({}, defaultOptions)
     Object.assign(this._options, options)
     Crypto.useKeyStore(this._options.keystorePath)
   }
@@ -72,6 +72,7 @@ class Orbit {
         this._orbitdb = orbitdb
         this._orbitdb.events.on('data', this._handleMessage.bind(this)) // Subscribe to updates in the database
         this._startPollingForPeers() // Get peers from libp2p and update the local peers array
+        return
       })
       .then(() => {
         logger.info(`Connected to '${this._orbitdb.network.name}' at '${this._orbitdb.network.publishers[0]}' as '${this.user.name}`)
