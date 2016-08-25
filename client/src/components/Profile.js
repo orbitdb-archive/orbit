@@ -5,8 +5,8 @@ import ChannelActions from 'actions/ChannelActions';
 import BackgroundAnimation from 'components/BackgroundAnimation';
 import TransitionGroup from "react-addons-css-transition-group";
 import Please from "pleasejs"
-import 'styles/Profile.scss'
 import Countries from '../lib/countries.json'
+import 'styles/Profile.scss'
 
 class Profile extends React.Component {
   constructor(props) {
@@ -52,6 +52,8 @@ class Profile extends React.Component {
       ChannelActions.loadFile(this.state.user.image, true, false, (err, buffer, url, stream) => {
         this.setState({ picture: url })
       })
+    } else {
+      this.setState({ picture: '/images/earth.png' })
     }
   }
 
@@ -62,7 +64,7 @@ class Profile extends React.Component {
 
   render() {
     const { user, picture, x, y, showRawData, userColor } = this.state
-    const country = Countries[user.country]
+    const country = Countries[user.location]
     const location = country ? country + ", Earth" : "Earth"
 
     const rawData = showRawData ? <pre>{JSON.stringify(user, null, 2)}</pre> : null
@@ -79,7 +81,13 @@ class Profile extends React.Component {
     return (
       <div className="Profile" style={{ left: x, top: y }}>
         <span className="close" onClick={this.props.onClose.bind(this, user)}>X</span>
-        <TransitionGroup transitionName="profilePictureAnimation" transitionAppear={true} component="div" transitionAppearTimeout={5000} transitionEnterTimeout={5000} transitionLeaveTimeout={5000}>
+        <TransitionGroup
+          transitionName="profilePictureAnimation"
+          transitionAppear={true} component="div"
+          transitionAppearTimeout={1500}
+          transitionEnterTimeout={0}
+          transitionLeaveTimeout={0}
+        >
           <img className="picture" src={picture} />
         </TransitionGroup>
         <div className="name">{user.name}<span style={{ color: userColor, fontSize: '0.5em', marginLeft: '0.2em' }}>{user.name}</span></div>

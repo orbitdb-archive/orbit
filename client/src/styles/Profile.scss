@@ -1,3 +1,5 @@
+$height: 27.25vh;
+
 .Profile {
   position: absolute;
   // transform: translateY(-102%);
@@ -6,8 +8,9 @@
   // left: 3em;
 
   z-index: 1000;
-  overflow-x: hidden;
-  overflow-y: auto;
+  // overflow-x: hidden;
+  // overflow-y: hidden;
+  overflow: hidden;
   white-space: pre;
 
   color: rgba(232, 232, 232, 1);
@@ -41,10 +44,11 @@
   }
 
   .picture {
-    height: 5em;
+    height: 4em;
     -webkit-clip-path: circle(32px at center);
-    transform: translate(2px, -8px);
+    transform: translate(11px, 0px);
     z-index: 0;
+    opacity: 0.6;
   }
 
   .name {
@@ -100,7 +104,7 @@
   }
 
   .profileDataContainer {
-    min-height: 25vh;
+    min-height: $height;
     box-sizing: border-box;
   }
 
@@ -115,14 +119,13 @@
     box-sizing: border-box;
     overflow-x: auto;
     overflow-y: auto;
-    height: 25vh;
-    // width: 27.4em;
+    height: $height;
     box-sizing: border-box;
   }
 
   .profilePictureAnimation-appear {
-    $duration: 1.0s;
-    $animation-name: fadeIn;
+    $duration: 1.5s;
+    $animation-name: fadeIn06;
 
     -webkit-animation: $animation-name;
     animation: $animation-name;
