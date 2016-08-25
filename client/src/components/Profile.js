@@ -53,7 +53,7 @@ class Profile extends React.Component {
         this.setState({ picture: url })
       })
     } else {
-      this.setState({ picture: '/images/earth.png' })
+      this.setState({ picture: 'images/earth.png' })
     }
   }
 
