@@ -26,7 +26,7 @@ class OrbitIdentityProvider {
           location: 'Earth',
           image: null,
           signKey: pubKeyHash,
-          updated: new Date().getTime(),
+          updated: null,
           identityProvider: {
             provider: OrbitIdentityProvider.id,
             id: null

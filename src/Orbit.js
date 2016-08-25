@@ -61,7 +61,7 @@ class Orbit {
     logger.debug("Load cache from:", this._options.cacheFile)
     logger.info(`Connecting to network '${host}' as '${JSON.stringify(credentials)}`)
 
-    if(typeof credentials !== 'string') {
+    if(typeof credentials === 'string') {
       credentials = { provider: 'orbit', username: credentials }
     }
 
