@@ -33,8 +33,8 @@ const menu = Menu.buildFromTemplate(template)
 let events
 
 const setWindowToNormal = () => {
-  const pos  = mainWindow.getPosition()
-  const size = mainWindow.getSize()
+  const pos  = mainWindow.getPosition() || [0, 0]
+  const size = mainWindow.getSize() || [connectWindowSize.width, connectWindowSize.height]
   const x    = (pos[0] + size[0]/2) - mainWindowSize.width/2
   const y    = (pos[1] + size[1]/2) - mainWindowSize.height/2
   mainWindow.setSize(mainWindowSize.width, mainWindowSize.height)
@@ -42,8 +42,8 @@ const setWindowToNormal = () => {
 }
 
 const setWindowToLogin = () => {
-  const pos  = mainWindow.getPosition()
-  const size = mainWindow.getSize()
+  const pos  = mainWindow.getPosition() || [0, 0]
+  const size = mainWindow.getSize() || [mainWindowSize.width, mainWindowSize.height]
   const x    = (pos[0] + size[0]/2) - connectWindowSize.width/2
   const y    = (pos[1] + size[1]/2) - connectWindowSize.height/2
   mainWindow.setSize(connectWindowSize.width, connectWindowSize.height)
