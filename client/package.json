@@ -9,7 +9,6 @@
   "mainInput": "App",
   "mainOutput": "main",
   "dependencies": {
-    "bs58": "^3.0.0",
     "clipboard": "^1.5.12",
     "emoji-annotation-to-unicode": "^0.2.4",
     "halogen": "^0.2.0",
@@ -26,9 +25,7 @@
     "react-dropzone": "^3.4.0",
     "react-emoji": "^0.4.4",
     "react-router": "^2.4.0",
-    "reflux": "^0.4.1",
-    "uport-lib": "https://github.com/ConsenSys/uport-lib",
-    "uport-persona": "https://github.com/ConsenSys/uport-persona.git"
+    "reflux": "^0.4.1"
   },
   "devDependencies": {
     "babel-cli": "^6.5.2",

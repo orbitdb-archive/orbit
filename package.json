@@ -4,15 +4,17 @@
   "description": "Distributed peer-to-peer chat built on IPFS",
   "main": "index.js",
   "dependencies": {
-    "bs58": "^3.0.0",
     "du": "^0.1.0",
-    "ipfs-post": "^0.0.10",
+    "ipfs-post": "^0.0.11",
     "ipfsd-ctl": "^0.14.0",
     "lodash": "^4.14.0",
     "logplease": "^1.2.7",
-    "node-webcrypto-ossl": "https://github.com/haadcode/node-webcrypto-ossl.git",
-    "orbit-crypto": "0.0.4",
-    "orbit-db": "^0.11.1"
+    "orbit-crypto": "0.0.5",
+    "orbit-db": "^0.11.1",
+    "text-encoding": "^0.6.0",
+    "uport-lib": "git+https://github.com/ConsenSys/uport-lib.git",
+    "uport-persona": "git+https://github.com/ConsenSys/uport-persona.git",
+    "web3": "^0.17.0-alpha"
   },
   "devDependencies": {
     "bluebird": "^3.4.1",
