@@ -67,7 +67,7 @@ class BackgroundAnimation extends React.Component {
       const color = `rgba(196, 196, 196, ${0.3 - ((i + 1) * 0.03)})`
       const mul   = (Math.random() < 0.5 ? -1 : 1) // randomize between negative and positive pos
       const pos   = (minSize + (i * inc)) * mul // starting position for the dot
-      const speed = (Math.random() * 14) + 8
+      const speed = (i + 1) * 9.80665
       const size  = (Math.random() * 2) + 1
       const startRadians = Math.floor(Math.random() * 360)
       let keyframes = `@keyframes rot${i} {
