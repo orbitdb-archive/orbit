@@ -250,7 +250,7 @@ class Channel extends React.Component {
       // else
       //   console.log("clicked on the top half")
 
-      const profilePopupHeight = 424
+      const profilePopupHeight = 440
       let padBottom = false
       if(evt.pageY + profilePopupHeight > height) {
         // console.log("can't fit it on the screen")

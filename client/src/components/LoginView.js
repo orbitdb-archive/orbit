@@ -8,11 +8,6 @@ import BackgroundAnimation from 'components/BackgroundAnimation';
 import Themes from 'app/Themes';
 import 'styles/LoginView.scss';
 
-import Web3 from 'web3'
-import Uport from 'uport-lib'
-import Persona from 'uport-persona'
-import bs58  from 'bs58'
-
 var maxNicknameLength = 32;
 var maxLogoSize = 320;
 
@@ -83,7 +78,7 @@ class LoginView extends React.Component{
 
     if(network !== '' && username !== '') {
       this.setState({ error: null, connecting: true, username: username, password: password });
-      NetworkActions.connect(network, username, password);
+      NetworkActions.connect(network, username);
     }
 
     return;
@@ -95,50 +90,8 @@ class LoginView extends React.Component{
   }
 
   onUportLogin() {
-    const web3   = new Web3()
-    const uport  = new Uport("Orbit")
-
-    const rpcUrl = "http://localhost:8545"
-    const uportProvider = uport.getUportProvider()
-    const web3Prov = new web3.providers.HttpProvider('https://consensysnet.infura.io:8545');
-
-    web3.setProvider(uportProvider)
-
-    console.log("Waiting for authorization...")
-    web3.eth.getCoinbase((err, res) => {
-      console.log("Profile >", res, err)
-
-      // TODO:
-      // - get name from uport Persona
-      // - change Nickname field name to Uport Name field
-
-      var p = new Persona(res);
-      console.log(">", p)
-      var ipfsProvider = NetworkStore.orbit._ipfs;
-      console.log("aaa")
-      p.setProviders(null, web3Prov);
-      console.log("bbb")
-      p.load().then((res) => {
-        console.log(JSON.stringify(res,null,2))
-        var profile = p.getProfile();
-        console.log("Profile>", profile)
-        console.log(JSON.stringify(p.getAllClaims(),null,2))
-        // var pk = p.getPublicSigningKey()
-        // var pk2 = p.pubSignKey
-        // console.log("PK2>", pk2)
-        this.refs.username.value = profile.name
-        var network = this.refs.network.value.trim()
-        var username = this.refs.username.value.trim()
-        var str = p.address.slice(2)
-        console.log(str)
-        profile.id = p.address//bs58.encode(new Buffer(p.address, 'hex'))
-        profile.type = 'uport'
-        profile.signKey = 'TODO'
-        NetworkActions.connect(network, username, null, profile)
-        // this.register()
-        // this.refs.username.focus()
-      }).catch((e) => console.error(e))
-    })
+    const network = this.refs.network.value.trim()
+    NetworkActions.connect(network, { provider: 'uPort' })
   }
 
   render() {

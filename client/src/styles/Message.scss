@@ -72,10 +72,9 @@ $timestamp-color:  rgba(240, 240, 240, 0.6);
   }
 
   .Verified {
-    font-size: 0.8em;
+    font-size: 0.6em;
     display: flex;
-    align-items: center;
-    justify-content: center;
+    align-self: center;
     margin-right: 0.5em;
     color: rgb(64, 64, 64);
   }
