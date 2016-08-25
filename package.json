@@ -12,7 +12,7 @@
     "lodash": "^4.14.0",
     "logplease": "^1.2.7",
     "node-webcrypto-ossl": "https://github.com/haadcode/node-webcrypto-ossl.git",
-    "orbit-crypto": "0.0.4",
+    "orbit-crypto": "0.0.6",
     "orbit-db": "^0.11.1"
   },
   "devDependencies": {
