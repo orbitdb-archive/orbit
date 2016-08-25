@@ -90,36 +90,9 @@ class Message extends React.Component {
   }
 
   renderVerification() {
-    return this.state.post && this.state.post.signKey ?
-      <span className="popout"
-        onMouseLeave={this.onShowVerification.bind(this, false)}
-        onMouseOver={this.onShowVerification.bind(this, true)}>
-      {this.state.showSignature ?
-          <span className="row">
-            <TransitionGroup
-              transitionName="textAnimation"
-              transitionAppear={true}
-              transitionAppearTimeout={1000}
-              transitionEnterTimeout={0}
-              transitionLeaveTimeout={0}>
-              <div className="Popup">
-                <b>Signed by:</b><br/>
-                {this.state.post.meta.from}
-                <br/><br/>
-                <b>Signing key:</b><br/>
-                {this.state.post.signKey}
-              </div>
-            </TransitionGroup>
-            <span
-              className="Verified flaticon-linked1"
-            />
-          </span>
-        :
-        (<span
-          className="Verified flaticon-linked1"
-        />)
-      }
-    </span> : null
+    return this.state.post && this.state.post.signKey
+      ? <span className="Verified flaticon-linked1"/>
+      : null
   }
 
 
