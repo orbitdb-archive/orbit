@@ -15,7 +15,7 @@ class uPortIdentityProvider {
     if (credentials.provider !== uPortIdentityProvider.id)
       throw new Error(`uPortIdentityProvider can't handle provider type '${credentials.provider}'`)
 
-    console.log("Waiting for uPort authorization...")
+    // console.log("Waiting for uPort authorization...")
     const web3 = new Web3()
     const uport = new Uport("Orbit")
     const uportProvider = uport.getUportProvider()

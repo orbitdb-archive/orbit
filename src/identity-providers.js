@@ -11,7 +11,7 @@ const enabledProviders = [
 let identityProviders = {}
 enabledProviders.forEach((p) => {
   identityProviders[p.id] = p
-  console.log("Added Identity Provider:", p.id)
+  // console.log("Added Identity Provider:", p.id)
 })
 
 class IdentityProviders {

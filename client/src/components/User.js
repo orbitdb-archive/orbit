@@ -21,7 +21,7 @@ class User extends React.Component {
       user: props.user,
       colorify: props.colorify,
       highlight: props.highlight,
-      color: props.colorify ? colorify(props.user ? props.user.name : '')
+      color: props.colorify ? colorify(props.user ? props.user.name : '') : null
     }
   }
 
@@ -30,7 +30,7 @@ class User extends React.Component {
       user: nextProps.user,
       colorify: nextProps.colorify,
       highlight: nextProps.highlight,
-      color: nextProps.colorify ? colorify(nextProps.user ? nextProps.user.name : '')
+      color: nextProps.colorify ? colorify(nextProps.user ? nextProps.user.name : '') : null
     })
   }
 
