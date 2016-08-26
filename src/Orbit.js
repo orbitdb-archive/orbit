@@ -307,6 +307,7 @@ class Orbit {
     this._pollPeersTimer = setInterval(() => {
       this._updateSwarmPeers().then((peers) => {
         this._peers = peers
+        // TODO: get unique (new) peers and emit 'peer' for each instead of all at once
         this.events.emit('peers', this._peers)
       })
     }, 1000)

@@ -61,7 +61,7 @@ const MessageStore = Reflux.createStore({
       // });
 
       feed.events.on('history', (name, messages) => {
-        console.log("-------------------------------- HISTORY", name, messages)
+        // console.log("-------------------------------- HISTORY", name, messages)
         if(messages[0] && messages[0].next.length > 0)
           this.channels[channel].canLoadMore = true;
         this._addMessages(channel, _.take(messages.reverse(), messagesBatchSize - 1), true)
@@ -90,7 +90,7 @@ const MessageStore = Reflux.createStore({
 
       feed.events.on('load', (name, hash) => {
         // TODO: started loading feed's history
-        console.log("-------------------------------- LOAD", name, hash)
+        // console.log("-------------------------------- LOAD", name, hash)
         UIActions.startLoading(name, "loadHistory", "Loading history...");
         if(this.connectTimeout[name]) clearTimeout(this.connectTimeout[name]);
         this.connectTimeout[name] = setTimeout(() => {
@@ -101,7 +101,7 @@ const MessageStore = Reflux.createStore({
 
       feed.events.on('ready', (name) => {
         // TODO: feed's history loaded
-        console.log("-------------------------------- READY", name)
+        // console.log("-------------------------------- READY", name)
         clearTimeout(this.connectTimeout[name]);
         delete this.connectTimeout[name];
         UIActions.stopLoading(name, "loadHistory");
@@ -170,7 +170,7 @@ const MessageStore = Reflux.createStore({
     this._reset();
   },
   onJoinChannel: function(channel, password) {
-    console.log("JOIN", channel)
+    // console.log("JOIN", channel)
     this._resetChannelState(this.currentChannel);
     if(!this.channels[channel])
       this.channels[channel] = { messages: [], isReady: false, loading: false, canLoadMore: true };
@@ -186,7 +186,7 @@ const MessageStore = Reflux.createStore({
     this._resetChannelState(channel);
   },
   onLoadMessages: function(channel: string) {
-    console.log("onLoadMessages", channel)
+    // console.log("onLoadMessages", channel)
     if(this.channels[channel])
       this.trigger(channel, this.channels[channel].messages);
   },
@@ -276,7 +276,7 @@ const MessageStore = Reflux.createStore({
     if(!this.posts[hash]) {
       this.orbit.getPost(hash)
         .then((data) => {
-          console.log(data)
+          // console.log(data)
           this.posts[hash] = data;
           callback(null, data);
         })
@@ -310,19 +310,25 @@ const MessageStore = Reflux.createStore({
   onLoadFile: function(hash: string, asURL: boolean, asStream: boolean, callback) {
     const isElectron = !!window.ipfs;
     if(isElectron && asURL) {
+      console.log("1")
       callback(null, null, `http://localhost:8080/ipfs/${hash}`)
     } else if(isElectron) {
+      console.log("2")
       var xhr = new XMLHttpRequest()
       xhr.open('GET', `http://localhost:8080/ipfs/${hash}`, true)
       xhr.responseType = 'blob'
       xhr.onload = function(e) {
+        console.log("EE", e, this)
         if(this.status == 200) {
           console.log("RESPONSE", typeof this.response, this.response)
           callback(null, this.response) // this.response is a Blob
+        } else {
+          console.log("NOPE!")
         }
       }
       xhr.send()
     } else {
+      console.log("3")
       this.orbit.getFile(hash)
         .then((stream) => {
           // console.log("got stream", stream)
@@ -351,7 +357,7 @@ const MessageStore = Reflux.createStore({
     // TODO: refactor
     this.orbit.getDirectory(hash)
       .then((result) => {
-        console.log("DIRECTORY", result)
+        // console.log("DIRECTORY", result)
         result = result.map((e) => {
           return {
             hash: e.Hash,
@@ -360,7 +366,7 @@ const MessageStore = Reflux.createStore({
             name: e.Name
           };
         });
-        console.log("DIRECTORY2", result)
+        // console.log("DIRECTORY2", result)
         callback(null, result)
       })
   }

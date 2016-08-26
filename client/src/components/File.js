@@ -13,6 +13,8 @@ import 'styles/File.scss';
 import Logger from 'logplease';
 const logger = Logger.create('Clipboard', { color: Logger.Colors.Magenta });
 
+const isElectron = !!window.ipfsInstance;
+
 class File extends React.Component {
   constructor(props) {
     super(props);
@@ -31,15 +33,15 @@ class File extends React.Component {
   }
 
   get isVideo() {
-    return this.ext === 'mp4' || this.ext === 'webm' || this.ext === 'ogv';
+    return this.ext === 'mp4' || this.ext === 'webm' || this.ext === 'ogv' || this.ext === 'avi' || this.ext === 'mkv';
   }
 
   get isAudio() {
-    return this.ext === 'mp3' || this.ext === 'ogg';
+    return this.ext === 'mp3' || this.ext === 'ogg' || this.ext === 'wav';
   }
 
   get isImage() {
-    return this.ext === 'png' || this.ext === 'jpg' || this.ext === 'gif' || this.ext === 'svg';
+    return this.ext === 'png' || this.ext === 'jpg' || this.ext === 'gif' || this.ext === 'svg' || this.ext === 'bmp';
   }
 
   get isHighlightable() {
@@ -60,7 +62,6 @@ class File extends React.Component {
       showPreview: !this.state.showPreview,
       previewContent: 'Loading...',
     }, () => {
-      const isElectron = !!window.ipfs;
       if (this.state.showPreview) {
 
         const isMedia = this.isAudio | this.isVideo | this.isImage
@@ -78,8 +79,10 @@ class File extends React.Component {
           if (buffer || url || stream) {
 
             if(buffer && isElectron) {
+              console.log("BLOB!")
               blob = buffer
             } else if (buffer && this.state.meta.mimeType) {
+              console.log("OMG")
               const arrayBufferView = toArrayBuffer(buffer)
               blob = new Blob([arrayBufferView], { type: this.state.meta.mimeType })
             }
@@ -100,10 +103,12 @@ class File extends React.Component {
               previewContent = <img height={200} src={url} />
             } else if (this.isVideo) {
               if (isElectron) {
+              console.log("VIDEO")
                 previewContent = <video height={200} src={url} controls autoPlay={true} />
                 this.setState({ previewContent })
                 return
               } else {
+              console.log("VIDEO NOT ELECTRON")
                 const mimeCodec = 'video/mp4; codecs="avc1.42E01E, mp4a.40.2"'
                 const source = new MediaSource()
                 url = window.URL.createObjectURL(source)
@@ -136,6 +141,7 @@ class File extends React.Component {
                 previewContent = <video height={200} src={url} controls autoPlay={false} />
               }
             } else {
+              console.log("FILE")
               var fileReader = new FileReader()
               fileReader.onload = (event) => {
                 console.log("TEXT", event.target.result)
@@ -153,6 +159,7 @@ class File extends React.Component {
   }
 
   render() {
+    var openLink = (isElectron ? "http://localhost:8080/ipfs/" : "https://ipfs.io/ipfs/") + this.props.hash;
     const size = getHumanReadableBytes(this.props.size);
     const className = `clipboard-${this.props.hash} download`;
     const preview = (
@@ -172,10 +179,8 @@ class File extends React.Component {
           component="div"
           className="content">
             <span className="text" onClick={this.handleClick.bind(this)}>{this.props.name}</span>
-            {/*
             <a className="download" href={openLink} target="_blank">Open</a>
-            <a className="download" href={downloadLink}>Download</a>
-            */}
+            <a className="download" href={openLink} download={this.props.name}>Download</a>
             <span className={className}>Hash</span>
             <span className="size">{size}</span>
             {this.state.showPreview && preview}

@@ -33,21 +33,23 @@ class Message extends React.Component {
       const state = {
         post: post
       };
-      if (post && post.content) {
+      if (post) {
         UserActions.getUser(post.meta.from, (err, user) => {
           this.setState({ user: user });
         });
 
-        if (post.content.startsWith('/me')) {
-          state.isCommand = true;
-        }
-        post.content.split(' ').forEach((word) => {
-          const highlight = MentionHighlighter.highlight(word, this.props.highlightWords);
-          if(typeof highlight[0] !== 'string' && this.props.highlightWords !== post.meta.from) {
-            state.hasHighlights = true;
-            NotificationActions.mention(this.state.channelName, post.content); // TODO: where does channelName come from?
+        if (post.content) {
+          if (post.content.startsWith('/me')) {
+            state.isCommand = true;
           }
-        });
+          post.content.split(' ').forEach((word) => {
+            const highlight = MentionHighlighter.highlight(word, this.props.highlightWords);
+            if(typeof highlight[0] !== 'string' && this.props.highlightWords !== post.meta.from) {
+              state.hasHighlights = true;
+              NotificationActions.mention(this.state.channelName, post.content); // TODO: where does channelName come from?
+            }
+          });
+        }
       }
       this.setState(state);
     });
