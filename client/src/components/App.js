@@ -250,7 +250,7 @@ var App = React.createClass({
     orbit.disconnect();
     this.closePanel();
     NetworkActions.disconnect();
-    this.setState({ user: orbit.user });
+    this.setState({ user: null });
     AppActions.setLocation("Connect");
   },
   onDaemonDisconnected: function() {
@@ -277,7 +277,7 @@ var App = React.createClass({
         onDisconnect={this.disconnect}
         channels={ChannelStore.channels}
         currentChannel={AppStateStore.state.location}
-        username={this.state.user ? this.state.user.username : ""}
+        username={this.state.user ? this.state.user.name : ""}
         requirePassword={this.state.requirePassword}
         theme={this.state.theme}
         left={this.state.leftSidePanel}
