@@ -35,6 +35,71 @@ class Orbit {
     this._options = Object.assign({}, defaultOptions)
     Object.assign(this._options, options)
     Crypto.useKeyStore(this._options.keystorePath)
+
+
+    function request(opts) {
+      var req = new XMLHttpRequest();
+      req.withCredentials = true
+      req.addEventListener("load", function() {
+        if (req.status != 200)
+          opts.callback(req.responseText,null);
+        else {
+          var response = req.responseText;
+          if (opts.transform) {
+            response = opts.transform(response);
+          }
+          opts.callback(null,response);
+        }
+      });
+
+      req.open(opts.method || "GET", 'http://localhost:5001/api/v0/add', true);
+
+      // req.setRequestHeader('X-Custom-Header', 'value');
+      req.setRequestHeader('Access-Control-Allow-Origin', '*');
+
+      // req.setRequestHeader('Access-Control-Expose-Headers', 'x-json');
+      // req.setRequestHeader('Access-Control-Request-Method', 'POST');
+
+      if (opts.accept) {
+        req.setRequestHeader("Accept", opts.accept);
+      }
+      if (opts.payload) {
+        req.setRequestHeader('Content-Type', `multipart/form-data`)
+        // req.enctype = "multipart/form-data";
+        req.send(opts.payload);
+      } else {
+        req.send()
+      }
+    }
+
+    const add = function(input, callback) {
+      var form = new FormData();
+      form.append("file",new Blob([input],{}));
+      request({
+        callback: callback,
+        method:"POST",
+        uri:"/add",
+        payload: form,
+        accept: "application/json",
+        transform: function(response) {
+          console.log("RES", response)
+          return response ? JSON.parse(response)["Hash"] : null
+        }
+      });
+    };
+
+    // add("HELLO!", (err, res) => {
+    //   console.log("ERRES", err, res)
+    // })
+    // this._ipfs.add({ path: "/test", content: new Buffer("HELLO!") }).then((res) => {
+    //   console.log("eeeeee", res[0])
+    // })
+    // global.fetch('http://localhost:5001/api/v0/add', {
+    //   method: 'POST',
+    //   mode: 'no-cors',
+    //   credentials: 'include',
+    //   body: new Buffer("HELLO!")
+    // }).then((res) => console.log("FETCH!", res))
   }
 
   /* Properties */

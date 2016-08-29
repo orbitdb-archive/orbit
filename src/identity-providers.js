@@ -2,10 +2,12 @@
 
 const OrbitIdentifyProvider = require('./identityprovider-orbit')
 const uPortIdentifyProvider = require('./identityprovider-uport')
+const YubikeyIdentityProvider = require('./identityprovider-yubikey')
 
 const enabledProviders = [
   OrbitIdentifyProvider,
   uPortIdentifyProvider,
+  YubikeyIdentityProvider,
 ]
 
 let identityProviders = {}

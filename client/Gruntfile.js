@@ -32,10 +32,10 @@ module.exports = function (grunt) {
         webpack: webpackDevConfig,
         publicPath: '/assets/',
         contentBase: './<%= pkg.src %>/',
-        headers: {
-          "Access-Control-Allow-Origin": "*",
-          "Access-Control-Allow-Credentials": "true"
-        },
+        // headers: {
+        //   "Access-Control-Allow-Origin": "*",
+        //   "Access-Control-Allow-Credentials": "true"
+        // },
       },
 
       start: {

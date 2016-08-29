@@ -2,6 +2,7 @@
 
 const Crypto = require('orbit-crypto')
 const OrbitUser = require('./orbit-user')
+const UserProfile = require('./orbit-user-profile')
 
 class OrbitIdentityProvider {
   static get id() {
@@ -21,7 +22,7 @@ class OrbitIdentityProvider {
         return Crypto.exportKeyToIpfs(ipfs, keys.publicKey)
       })
       .then((pubKeyHash) => {
-        profileData = {
+        profileData = new UserProfile({
           name: credentials.username,
           location: 'Earth',
           image: null,
@@ -31,8 +32,18 @@ class OrbitIdentityProvider {
             provider: OrbitIdentityProvider.id,
             id: null
           }
-        }
-
+        })
+        // profileData = {
+        //   name: credentials.username,
+        //   location: 'Earth',
+        //   image: null,
+        //   signKey: pubKeyHash,
+        //   updated: null,
+        //   identityProvider: {
+        //     provider: OrbitIdentityProvider.id,
+        //     id: null
+        //   }
+        // }
         return ipfs.object.put(new Buffer(JSON.stringify(profileData)))
           .then((res) => res.toJSON().Hash)
       })

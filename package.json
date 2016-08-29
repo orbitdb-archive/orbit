@@ -15,7 +15,8 @@
     "text-encoding": "^0.6.0",
     "uport-lib": "https://github.com/haadcode/uport-lib.git",
     "uport-persona": "git+https://github.com/haadcode/uport-persona.git",
-    "web3": "^0.17.0-alpha"
+    "web3": "^0.17.0-alpha",
+    "yub": "^0.11.1"
   },
   "devDependencies": {
     "bluebird": "^3.4.1",

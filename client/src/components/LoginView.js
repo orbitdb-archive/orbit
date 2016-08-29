@@ -1,22 +1,22 @@
-'use strict';
+'use strict'
 
-import React from 'react';
-import TransitionGroup from "react-addons-css-transition-group";
-import NetworkStore from 'stores/NetworkStore';
-import NetworkActions from "actions/NetworkActions";
-import BackgroundAnimation from 'components/BackgroundAnimation';
-import Themes from 'app/Themes';
-import 'styles/LoginView.scss';
+import React from 'react'
+import TransitionGroup from "react-addons-css-transition-group"
+import NetworkStore from 'stores/NetworkStore'
+import NetworkActions from "actions/NetworkActions"
+import BackgroundAnimation from 'components/BackgroundAnimation'
+import Themes from 'app/Themes'
+import 'styles/LoginView.scss'
 
-var maxNicknameLength = 32;
-var maxLogoSize = 320;
+var maxNicknameLength = 32
+var maxLogoSize = 320
 
-const defaultNetworkHost = window.DEV ? 'localhost:3333' : '178.62.241.75:3333'; // localhost or dev network
+const defaultNetworkHost = window.DEV ? 'localhost:3333' : '178.62.241.75:3333' // localhost or dev network
 
 class LoginView extends React.Component{
   constructor(props) {
-    super(props);
-    this.state = this._getInitialState(props);
+    super(props)
+    this.state = this._getInitialState(props)
   }
 
   _getInitialState(props) {
@@ -30,63 +30,63 @@ class LoginView extends React.Component{
       currentLength: null,
       theme: Themes.Default,
       logoSize: Math.min(window.innerWidth, maxLogoSize)
-    };
+    }
   }
 
   componentDidMount() {
-    // window.addEventListener('resize', this.onResize.bind(this));
+    // window.addEventListener('resize', this.onResize.bind(this))
 
-    if(this.refs.username) this.refs.username.focus();
+    if(this.refs.username) this.refs.username.focus()
 
-    this.unsubscribeFromNetworkStore = NetworkStore.listen(this.onNetworkUpdated.bind(this));
+    this.unsubscribeFromNetworkStore = NetworkStore.listen(this.onNetworkUpdated.bind(this))
 
     NetworkActions.registerError.listen((err) => {
       if(err.toString().replace(/\"/g, "") === "Invalid username or password")
-        this.setState({ error: err.toString().replace(/\"/g, ""), connecting: false, displayPasswordField: true });
+        this.setState({ error: err.toString().replace(/\"/g, ""), connecting: false, displayPasswordField: true })
       else
-      this.setState({ error: err.toString().replace(/\"/g, ""), connecting: false });
-    });
+      this.setState({ error: err.toString().replace(/\"/g, ""), connecting: false })
+    })
   }
 
   onNetworkUpdated(network) {
     if(network) {
-      this.setState({ error: null, connecting: false, connected: true });
+      this.setState({ error: null, connecting: false, connected: true })
     } else {
-      this.setState(this._getInitialState());
+      this.setState(this._getInitialState())
     }
   }
 
   componentWillUnmount() {
-    // window.removeEventListener('resize', this.onResize.bind(this));
-    this.unsubscribeFromNetworkStore();
+    // window.removeEventListener('resize', this.onResize.bind(this))
+    this.unsubscribeFromNetworkStore()
   }
 
   componentDidUpdate() {
-    if(this.refs.password) this.refs.password.focus();
+    // if(this.refs.password) this.refs.password.focus()
   }
 
   // onResize() {
-  //   var size = Math.min(window.innerWidth, maxLogoSize);
-  //   this.setState({ logoSize: size });
+  //   var size = Math.min(window.innerWidth, maxLogoSize)
+  //   this.setState({ logoSize: size })
   // }
 
   register(e) {
-    if(e) e.preventDefault();
-    var network  = this.refs.network.value.trim();
-    var username = this.refs.username.value.trim();
-    var password = this.refs.password.value.trim();
+    if(e) e.preventDefault()
+    const network  = this.refs.network.value.trim()
+    const username = this.refs.username.value.trim()
+    const password = this.refs.password.value.trim()
 
     if(network !== '' && username !== '') {
-      this.setState({ error: null, connecting: true, username: username, password: password });
-      NetworkActions.connect(network, username);
+      this.setState({ error: null, connecting: true, username: username, password: password })
+      NetworkActions.connect(network, username)
     }
 
-    return;
+    return
   }
 
   calculateNicknameLength() {
-    var remainingCharacters = maxNicknameLength - this.refs.username.value.length;
-    this.setState({ currentLength: remainingCharacters < maxNicknameLength ? maxNicknameLength - this.refs.username.value.length : null });
+    var remainingCharacters = maxNicknameLength - this.refs.username.value.length
+    this.setState({ currentLength: remainingCharacters < maxNicknameLength ? maxNicknameLength - this.refs.username.value.length : null })
   }
 
   onUportLogin() {
@@ -94,14 +94,27 @@ class LoginView extends React.Component{
     NetworkActions.connect(network, { provider: 'uPort' })
   }
 
+  onYubikeyLogin() {
+    const network = this.refs.network.value.trim()
+    const username = this.refs.username.value.trim()
+    const password = this.refs.password.value
+    NetworkActions.connect(network, {
+      provider: 'Yubikey',
+      username: username,
+      otp: password,
+      clientId: '29875',
+      secretKey: '+OlNjRQ2NEAK/sB53nPFS430EsI='
+    })
+  }
+
   render() {
     if(this.state.connected)
-      return (<div></div>);
+      return (<div></div>)
 
-    // var color = "rgba(100, 48, 128, 0.5)";
-    var color = "rgba(180, 180, 180, 0.5)";
-    var errorMsg   = this.state.error ? <div className="error">{this.state.error}</div> : "";
-    var passwordFieldStyle = this.state.displayPasswordField ? "row" : "hidden";
+    // var color = "rgba(100, 48, 128, 0.5)"
+    var color = "rgba(180, 180, 180, 0.5)"
+    var errorMsg   = this.state.error ? <div className="error">{this.state.error}</div> : ""
+    var passwordFieldStyle = this.state.displayPasswordField ? "row" : "row"
 
     var form = !this.state.connecting ? (
       <TransitionGroup transitionName="loginScreenAnimation" transitionAppear={true} component="div" className="inputs" transitionAppearTimeout={5000} transitionEnterTimeout={5000} transitionLeaveTimeout={5000}>
@@ -126,7 +139,7 @@ class LoginView extends React.Component{
           <input type="password" ref="password" placeholder={this.state.password ? "" : "..."} defaultValue={this.state.password ? this.state.password : ""}/>
         </div>
         <div className="row">
-          <input type="submit" value="Connect" style={this.state.theme}/>
+          <input type="button" value="Connect" style={this.state.theme}/>
         </div>
         <div className="row">
           {errorMsg}
@@ -138,10 +151,16 @@ class LoginView extends React.Component{
             src="images/uport.png"
             height="48"
           />
+          <img
+            onClick={this.onYubikeyLogin.bind(this)}
+            className="logo"
+            src="images/earth.png"
+            height="48"
+          />
         </div>
 
       </TransitionGroup>
-    ) : (<span></span>);
+    ) : (<span></span>)
 
     return (
       <div className="LoginView">
@@ -153,9 +172,9 @@ class LoginView extends React.Component{
         </form>
         <BackgroundAnimation style={{ top: "0", left: "0" }} size={this.state.logoSize} theme={this.state.theme}/>
       </div>
-    );
+    )
   }
 
 }
 
-export default LoginView;
+export default LoginView
