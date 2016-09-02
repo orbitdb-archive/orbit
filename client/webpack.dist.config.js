@@ -28,7 +28,6 @@ module.exports = {
       'lodash', 'logplease', 'fs', 'html5-fs', 'bs58',
       'react-dropzone', 'react-autolink',
       'highlight.js', 'clipboard', 'pleasejs', 'halogen',
-      // 'web3', 'uport-lib', 'uport-persona'
     ],
     emojis: [
       'react-emoji', 'emoji-annotation-to-unicode', './src/components/EmojiPicker.js'
@@ -56,9 +55,9 @@ module.exports = {
     new webpack.optimize.CommonsChunkPlugin({ name: "emojis", filename: "emojis.js", chunks: ['emojis'] }),
     new webpack.optimize.CommonsChunkPlugin({ name: "vendor", filename: "vendor.js", chunks: ['vendor'] }),
     new webpack.optimize.AggressiveMergingPlugin(),
-    // new webpack.optimize.UglifyJsPlugin({
-    //   exclude: /ipfsdist.js/
-    // }),
+    new webpack.optimize.UglifyJsPlugin({
+      exclude: /ipfsdist.js/
+    }),
     new webpack.NoErrorsPlugin()
   ],
   resolveLoader: {
