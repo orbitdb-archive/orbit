@@ -12,10 +12,7 @@
     "logplease": "^1.2.7",
     "orbit-crypto": "0.0.6",
     "orbit-db": "^0.11.1",
-    "text-encoding": "^0.6.0",
-    "uport-lib": "git+https://github.com/haadcode/uport-lib.git",
-    "uport-persona": "git+https://github.com/haadcode/uport-persona.git",
-    "web3": "^0.17.0-alpha"
+    "text-encoding": "^0.6.0"
   },
   "devDependencies": {
     "bluebird": "^3.4.1",
