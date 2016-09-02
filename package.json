@@ -25,7 +25,6 @@
     "grunt-electron": "^2.0.1",
     "http-server": "^0.9.0",
     "ipfs": "^0.14.3",
-    "ipfs-api": "^6.0.3",
     "load-grunt-tasks": "^3.5.0",
     "mocha": "^2.5.3",
     "orbit-server": "^0.2.3"
