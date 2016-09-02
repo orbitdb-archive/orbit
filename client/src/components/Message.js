@@ -7,6 +7,7 @@ import File from "components/File";
 import TextMessage from "components/TextMessage";
 import Directory from "components/Directory";
 import ChannelActions from 'actions/ChannelActions';
+import UserActions from 'actions/UserActions';
 import NotificationActions from 'actions/NotificationActions';
 import TransitionGroup from "react-addons-css-transition-group"; //eslint-disable-line
 import { getFormattedTime } from '../utils/utils.js';
@@ -18,10 +19,12 @@ class Message extends React.Component {
     super(props);
     this.state = {
       post: null,
+      user: null,
       hasHighlights: false,
       isCommand: false,
       formattedTime: getFormattedTime(props.message.meta.ts),
       showSignature: false,
+      showProfile: null
     };
   }
 
@@ -30,29 +33,43 @@ class Message extends React.Component {
       const state = {
         post: post
       };
-      if (post && post.content) {
-        if (post.content.startsWith('/me')) {
-          state.isCommand = true;
-        }
-        post.content.split(' ').forEach((word) => {
-          const highlight = MentionHighlighter.highlight(word, this.props.highlightWords);
-          if(typeof highlight[0] !== 'string' && this.props.highlightWords !== post.meta.from) {
-            state.hasHighlights = true;
-            NotificationActions.mention(this.state.channelName, post.content); // TODO: where does channelName come from?
-          }
+      if (post) {
+        UserActions.getUser(post.meta.from, (err, user) => {
+          this.setState({ user: user });
         });
+
+        if (post.content) {
+          if (post.content.startsWith('/me')) {
+            state.isCommand = true;
+          }
+          post.content.split(' ').forEach((word) => {
+            const highlight = MentionHighlighter.highlight(word, this.props.highlightWords);
+            if(typeof highlight[0] !== 'string' && this.props.highlightWords !== post.meta.from) {
+              state.hasHighlights = true;
+              NotificationActions.mention(this.state.channelName, post.content); // TODO: where does channelName come from?
+            }
+          });
+        }
       }
       this.setState(state);
     });
   }
 
+  onReplyTo(event) {
+    const { post, user } = this.state
+    const hash = this.props.message.value
+    this.setState({ replyto: hash })
+    console.log(post)
+    this.props.onReplyTo({
+      hash: hash,
+      content: post.meta.type === 'text' ? post.content : post.name,
+      user: user,
+    })
+  }
+
   onShowVerification(show, evt) {
-    console.log("SIGNED BY:", this.state.post.signKey)
     this.setState({ showSignature: true })
-    // if(this.showVerificationTimer) clearTimeout(this.showVerificationTimer)
-    // this.showVerificationTimer = setTimeout(() => {
-      this.setState({ showSignature: show })
-    // }, 1000)
+    this.setState({ showSignature: show })
   }
 
   renderContent() {
@@ -66,6 +83,7 @@ class Message extends React.Component {
           content = (
             <TextMessage
               text={post.content}
+              replyto={post.replyToContent}
               useEmojis={useEmojis}
               highlightWords={post.meta.from !== highlightWords ? highlightWords : ''}
               key={post.hash} />
@@ -79,53 +97,30 @@ class Message extends React.Component {
           break;
       }
     }
-    return <div className={contentClass}>{content}</div>;
+    return <div className={contentClass} onClick={this.onReplyTo.bind(this)}>{content}</div>;
   }
 
   renderVerification() {
-    return this.state.post && this.state.post.signKey ?
-      <span className="popout"
-        onMouseLeave={this.onShowVerification.bind(this, false)}
-        onMouseOver={this.onShowVerification.bind(this, true)}>
-      {this.state.showSignature ?
-          <span className="row">
-            <TransitionGroup
-              transitionName="textAnimation"
-              transitionAppear={true}
-              transitionAppearTimeout={1000}
-              transitionEnterTimeout={0}
-              transitionLeaveTimeout={0}>
-              <div className="Popup">
-                <b>Signed by:</b><br/>
-                {this.state.post.meta.from}
-                <br/><br/>
-                <b>Signing key:</b><br/>
-                {this.state.post.signKey}
-              </div>
-            </TransitionGroup>
-            <span
-              className="Verified flaticon-linked1"
-            />
-          </span>
-        :
-        (<span
-          className="Verified flaticon-linked1"
-        />)
-      }
-    </span> : null
+    return this.state.post && this.state.post.signKey
+      ? <span className="Verified flaticon-linked1"/>
+      : null
   }
+
 
   render() {
     const { message, colorifyUsername, style, onDragEnter } = this.props;
-    const { post, isCommand, hasHighlights, formattedTime } = this.state;
+    const { user, post, isCommand, hasHighlights, formattedTime } = this.state;
     const className = hasHighlights ? "Message highlighted" : "Message";
+
     return (
       <div className={className} style={style} onDragEnter={onDragEnter}>
         <span className="Timestamp">{formattedTime}</span>
         <User
-          userId={post ? post.meta.from : null}
+          user={user}
           colorify={colorifyUsername}
-          highlight={isCommand} />
+          highlight={isCommand}
+          onShowProfile={this.props.onShowProfile.bind(this, user)}
+          />
         {this.renderContent()}
         {this.renderVerification()}
       </div>

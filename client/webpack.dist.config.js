@@ -2,12 +2,11 @@
 
 const webpack = require('webpack');
 const path = require('path');
+const CopyWebpackPlugin = require('copy-webpack-plugin');
 
 const babel = {
   "plugins": [
-    // "transform-regenerator",
     "syntax-async-functions",
-    // "syntax-async-generators",
     "transform-async-to-generator",
     "syntax-flow",
     "transform-flow-strip-types"
@@ -16,19 +15,26 @@ const babel = {
 }
 
 module.exports = {
+  output: {
+    publicPath: '/assets/',
+    path: 'dist/assets/',
+    filename: '[name].js'
+  },
   entry: {
     app: './src/components/App.js',
     vendor: [
       'react', 'react-dom', 'react-router', 'react-addons-css-transition-group',
-      'lodash', 'logplease', 'fs',
-      'react-dropzone', 'react-emoji', 'react-autolink', 'emoji-annotation-to-unicode',
-      'highlight.js', 'clipboard', 'pleasejs', 'halogen'
+      'reflux',
+      'lodash', 'logplease', 'fs', 'html5-fs', 'bs58',
+      'react-dropzone', 'react-autolink',
+      'highlight.js', 'clipboard', 'pleasejs', 'halogen',
+    ],
+    emojis: [
+      'react-emoji', 'emoji-annotation-to-unicode', './src/components/EmojiPicker.js'
+    ],
+    ipfsdist: [
+      'ipfs'
     ]
-  },
-  output: {
-    publicPath: '/assets/',
-    path: 'dist/assets/',
-    filename: 'main.js'
   },
   debug: false,
   devtool: false,
@@ -42,8 +48,16 @@ module.exports = {
     reasons: false
   },
   plugins: [
-    new webpack.optimize.CommonsChunkPlugin({ name: "vendor", filename: "vendor.js" }),
-    new webpack.optimize.UglifyJsPlugin(),
+    new CopyWebpackPlugin([
+      { from: path.join(__dirname + '/node_modules', 'ipfs/dist/index.min.js'), to: 'ipfs.js' }
+    ]),
+    // new webpack.optimize.CommonsChunkPlugin({ name: "ipfsdist", filename: "_remove.js", chunks: ['ipfsdist'] }),
+    new webpack.optimize.CommonsChunkPlugin({ name: "emojis", filename: "emojis.js", chunks: ['emojis'] }),
+    new webpack.optimize.CommonsChunkPlugin({ name: "vendor", filename: "vendor.js", chunks: ['vendor'] }),
+    new webpack.optimize.AggressiveMergingPlugin(),
+    new webpack.optimize.UglifyJsPlugin({
+      exclude: /ipfsdist.js/
+    }),
     new webpack.NoErrorsPlugin()
   ],
   resolveLoader: {
@@ -63,6 +77,7 @@ module.exports = {
       'components': __dirname + '/src/components/',
       'stores': __dirname + '/src/stores/',
       'actions': __dirname + '/src/actions/',
+      'lib': __dirname + '/src/lib/',
       'utils': __dirname + '/src/utils/'
     }
   },
@@ -86,6 +101,9 @@ module.exports = {
     }, {
       test: /\.(png|jpg|woff|woff2)$/,
       loader: 'url-loader?limit=8192'
+    }, {
+      test: /\.(png|jpg)$/,
+      loader: 'file?name=[path][name].[ext]',
     }, {
       test: /\.json$/,
       loader: 'json'

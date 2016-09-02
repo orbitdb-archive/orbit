@@ -53,7 +53,7 @@ const views = {
   "Channel": "/channel/"
 };
 
-const hasIPFS = !!window.ipfs;
+const hasIPFS = !!window.ipfsInstance;
 console.log("hasIPFS:", hasIPFS)
 let orbit// = hasIPFS ? window.orbit : null;
 
@@ -80,7 +80,7 @@ var App = React.createClass({
   },
   componentDidMount: function() {
     const signalServerAddress = this.props.location.query.local ? '0.0.0.0' : '178.62.241.75';
-    const ipfsApi = hasIPFS ? window.ipfs : null; // Main.start creates js-ipfs instance if needed
+    const ipfsApi = hasIPFS ? window.ipfsInstance : null; // Main.start creates js-ipfs instance if needed
     const ipcRenderer = hasIPFS ? window.ipcRenderer : null;
     const dataPath = '/tmp/orbit-demo-2-';
 
@@ -105,7 +105,7 @@ var App = React.createClass({
 
     document.title = 'Orbit';
 
-    SkynetActions.start.listen((username) => orbit.connect(null, username, ''));
+    // SkynetActions.start.listen((username) => orbit.connect(null, username, ''));
     UIActions.joinChannel.listen(this.joinChannel);
     NetworkActions.joinedChannel.listen(this.onJoinedChannel);
     NetworkActions.joinChannelError.listen(this.onJoinChannelError);
@@ -161,12 +161,20 @@ var App = React.createClass({
       AppActions.setLocation("Connect");
     } else {
       this.setState({ networkName: network.name });
-      const channels = JSON.parse(localStorage.getItem( "orbit.app." + this.state.user.username + "." + network.name + ".channels")) || [];
+      const channels = this._getSavedChannels(this.state.networkName, this.state.user.name)
       channels.forEach((channel) => NetworkActions.joinChannel(channel.name, ''));
     }
   },
   _makeChannelsKey: function(username, networkName) {
     return "orbit.app." + username + "." + networkName + ".channels";
+  },
+  _getSavedChannels: function(networkName, username) {
+    const channelsKey = this._makeChannelsKey(username, networkName)
+    return JSON.parse(localStorage.getItem(channelsKey)) || []
+  },
+  _saveChannels: function(networkName, username, channels) {
+    const channelsKey = this._makeChannelsKey(username, networkName)
+    localStorage.setItem(channelsKey, JSON.stringify(channels))
   },
   _showConnectView: function() {
     this.setState({ user: null });
@@ -208,21 +216,20 @@ var App = React.createClass({
     document.title = `#${channel}`;
     logger.debug("Set title: " + document.title);
     AppActions.setCurrentChannel(channel);
-    const channelsKey = this._makeChannelsKey(this.state.user.username, this.state.networkName);
-    let channels = JSON.parse(localStorage.getItem(channelsKey)) || [];
-    if (!_.some(channels, { name: channel })){
+    let channels = this._getSavedChannels(this.state.networkName, this.state.user.name)
+    if (!_.some(channels, { name: channel })) {
       channels.push({ name: channel });
-      localStorage.setItem(channelsKey, JSON.stringify(channels));
+      this._saveChannels(this.state.networkName, this.state.user.name, channels)
     }
   },
   onLeaveChannel: function(channel) {
-    const channelsKey = this._makeChannelsKey(this.state.user.username, this.state.networkName);
-    let channels = JSON.parse(localStorage.getItem(channelsKey));
-    channels = channels.filter((c) => c.name !== channel);
+    const { user, networkName } = this.state
+    const channelsKey = this._makeChannelsKey(user.name, networkName)
+    const channels = this._getSavedChannels(networkName, user.name).filter((c) => c.name !== channel)
     if (channels.length === 0)
       localStorage.removeItem(channelsKey);
     else
-      localStorage.setItem(channelsKey, JSON.stringify(channels));
+      this._saveChannels(this.state.networkName, this.state.user.name, channels)
   },
   openSettings: function() {
     this.closePanel();
@@ -243,7 +250,7 @@ var App = React.createClass({
     orbit.disconnect();
     this.closePanel();
     NetworkActions.disconnect();
-    this.setState({ user: orbit.user });
+    this.setState({ user: null });
     AppActions.setLocation("Connect");
   },
   onDaemonDisconnected: function() {
@@ -270,7 +277,7 @@ var App = React.createClass({
         onDisconnect={this.disconnect}
         channels={ChannelStore.channels}
         currentChannel={AppStateStore.state.location}
-        username={this.state.user ? this.state.user.username : ""}
+        username={this.state.user ? this.state.user.name : ""}
         requirePassword={this.state.requirePassword}
         theme={this.state.theme}
         left={this.state.leftSidePanel}

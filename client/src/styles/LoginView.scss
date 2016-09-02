@@ -67,6 +67,28 @@ $text-color: rgba(228, 228, 228, 0.9);
       width: 100%;
     }
 
+    .center {
+      display: flex;
+      justify-content: center;
+    }
+
+    .lastrow {
+      // margin-top: 0.5em;
+      justify-content: center;
+      align-items: center;
+      flex-direction: column;
+    }
+
+    .logo {
+      align-self: center;
+      opacity: 0.75;
+      margin-top: 0.2em
+    }
+
+    .logo:hover {
+      opacity: 1;
+    }
+
     .label {
       display: flex;
       flex: 1 1 8%;
@@ -91,7 +113,7 @@ $text-color: rgba(228, 228, 228, 0.9);
     }
 
     input[type=submit] {
-      margin-top: 1em;
+      // margin-top: 1em;
     }
 
     input[type=text], input[type=password] {

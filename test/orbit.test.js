@@ -1,16 +1,19 @@
 'use strict'
 
-const _           = require('lodash')
-const fs          = require('fs')
-const path        = require('path')
-const assert      = require('assert')
-const Promise     = require('bluebird')
-const ipfsd       = require('ipfsd-ctl')
-const IPFS        = require('ipfs')
-const OrbitServer = require('orbit-server/src/server')
-const EventStore  = require('orbit-db-eventstore')
-const Post        = require('ipfs-post')
-const Orbit       = require('../src/Orbit')
+const _            = require('lodash')
+const fs           = require('fs')
+const path         = require('path')
+const assert       = require('assert')
+const Promise      = require('bluebird')
+const ipfsd        = require('ipfsd-ctl')
+const IPFS         = require('ipfs')
+const OrbitServer  = require('orbit-server/src/server')
+const EventStore   = require('orbit-db-eventstore')
+const Post         = require('ipfs-post')
+const Orbit        = require('../src/Orbit')
+
+// Init storage for saving test keys
+const keystorePath = path.join(process.cwd(), '/test/keys')
 
 // Mute logging
 require('logplease').setLogLevel('ERROR')
@@ -18,39 +21,39 @@ require('logplease').setLogLevel('ERROR')
 // Orbit
 const network = 'localhost:3333'
 const username = 'testrunner'
-const password = ''
+let userId = 'QmXWWRTZzygRCnWP8sBcTuygreYBTaQR73zVpZvyxeuUqA'
 
 let ipfs, ipfsDaemon
 const IpfsApis = [
-// {
-//   // js-ipfs
-//   name: 'js-ipfs',
-//   start: () => {
-//     return new Promise((resolve, reject) => {
-//       const ipfs = new IPFS('/tmp/orbit-tests')
-//       ipfs.init({}, (err) => {
-//         if(err) {
-//           if(err.message === 'repo already exists')
-//             return resolve(ipfs)
-//           return reject(err)
-//         }
-//         ipfs.goOnline((err) => {
-//           if(err) reject(err)
-//           resolve(ipfs)
-//         })
-//       })
-//     })
-//   },
-//   // stop: () => Promise.resolve()
-//   stop: () => new Promise((resolve, reject) => {
-//     if(!ipfs._bitswap && !ipfs._libp2pNode)
-//       resolve()
-//     ipfs.goOffline((err) => {
-//       if(err) console.log("Error", err)
-//       resolve()
-//     })
-//   })
-// },
+{
+  // js-ipfs
+  name: 'js-ipfs',
+  start: () => {
+    return new Promise((resolve, reject) => {
+      const ipfs = new IPFS('/tmp/orbit-tests')
+      ipfs.init({}, (err) => {
+        if(err) {
+          if(err.message === 'repo already exists')
+            return resolve(ipfs)
+          return reject(err)
+        }
+        ipfs.goOnline((err) => {
+          if(err) reject(err)
+          resolve(ipfs)
+        })
+      })
+    })
+  },
+  // stop: () => Promise.resolve()
+  stop: () => new Promise((resolve, reject) => {
+    if(!ipfs._bitswap && !ipfs._libp2pNode)
+      resolve()
+    ipfs.goOffline((err) => {
+      if(err) console.log("Error", err)
+      resolve()
+    })
+  })
+},
 {
   // js-ipfs-api via local daemon
   name: 'js-ipfs-api',
@@ -80,9 +83,9 @@ OrbitServer.start()
 IpfsApis.forEach(function(ipfsApi) {
 
   describe('Orbit with ' + ipfsApi.name, function() {
-    this.timeout(10000)
+    this.timeout(20000)
 
-    let orbit, client, client2
+    let orbit
     let channel = 'orbit-tests'
 
     before(function (done) {
@@ -90,8 +93,27 @@ IpfsApis.forEach(function(ipfsApi) {
         .then((res) => {
           ipfs = res
           done()
+          // let key, publicKey, privateKey
+          // return Crypto.generateKey()
+          //   .then((keyPair) => key = keyPair)
+          //   .then(() => Crypto.exportPrivateKey(key))
+          //   .then((privKey) => privateKey = privKey)
+          //   .then(() => Crypto.exportPublicKey(key))
+          //   .then((pubKey) => publicKey = pubKey)
+          //   .then(() =>{
+          //     localStorage.setItem(username, JSON.stringify({ publicKey: publicKey, privateKey: privateKey }))
+          //     done()
+          //   })
         })
         .catch(done)
+    })
+
+    beforeEach(function (done) {
+      if(orbit)
+        orbit.disconnect()
+
+      orbit = new Orbit(ipfs, { keystorePath: keystorePath })
+      done()
     })
 
     after((done) => {
@@ -100,16 +122,12 @@ IpfsApis.forEach(function(ipfsApi) {
 
       orbit = null
 
-      if(ipfs) {
-        ipfsApi.stop()
-          .then(done)
-          .catch(done)
-      }
+      if(ipfs)
+        ipfsApi.stop().then(done).catch(done)
     })
 
     describe('constructor', function() {
       it('creates an instance', () => {
-        orbit = new Orbit(ipfs)
         assert.notEqual(orbit, null)
         assert.notEqual(orbit._ipfs, null)
         assert.equal(orbit._orbitdb, null)
@@ -119,17 +137,16 @@ IpfsApis.forEach(function(ipfsApi) {
       })
 
       it('creates an instance with options', () => {
-        orbit = new Orbit(ipfs, { cacheFile: null, maxHistory: 0 })
-        assert.equal(orbit._orbitdb, null)
-        assert.equal(orbit._options.maxHistory, 0)
-        assert.equal(orbit._options.cacheFile, null)
+        const orbitNoCache = new Orbit(ipfs, { cacheFile: null, maxHistory: 0, keystorePath: keystorePath })
+        assert.equal(orbitNoCache._orbitdb, null)
+        assert.equal(orbitNoCache._options.maxHistory, 0)
+        assert.equal(orbitNoCache._options.cacheFile, null)
       })
     })
 
     describe('connect', function() {
       it('connects to a network', (done) => {
-        orbit = new Orbit(ipfs)
-        orbit.connect(network, username, password)
+        orbit.connect(network, username)
           .then((res) => {
             assert.notEqual(orbit._orbitdb, null)
             assert.equal(orbit._orbitdb.events.listenerCount('data'), 1)
@@ -140,8 +157,7 @@ IpfsApis.forEach(function(ipfsApi) {
       })
 
       it('handles connection error', (done) => {
-        orbit = new Orbit(ipfs)
-        orbit.connect('localhost:61523', username, password)
+        orbit.connect('localhost:61523', username)
           .catch((e) => {
             assert.notEqual(e, null)
             assert.equal(orbit._orbitdb, null)
@@ -152,40 +168,36 @@ IpfsApis.forEach(function(ipfsApi) {
       })
 
       it('emits \'connected\' event when connected to a network', (done) => {
-        orbit = new Orbit(ipfs)
-        orbit.events.on('connected', (networkInfo, userInfo) => {
+        orbit.events.on('connected', (networkInfo, user) => {
           assert.notEqual(networkInfo, null)
-          assert.notEqual(userInfo, null)
+          assert.notEqual(user, null)
           assert.equal(networkInfo.name, 'Orbit DEV Network')
           assert.equal(networkInfo.publishers.length, 1)
           assert.equal(networkInfo.publishers[0], 'localhost:3333')
-          assert.equal(userInfo.username, username)
-          assert.equal(userInfo.id, username)
+          assert.equal(user.name, username)
+          assert.equal(user.id, userId)
           done()
         })
-        return orbit.connect(network, username, password).catch(done)
+        orbit.connect(network, username)
       })
 
       it('user is defined when connected', (done) => {
-        orbit = new Orbit(ipfs)
-        orbit.connect(network, username, password)
+        orbit.connect(network, username)
           .then((res) => {
             assert.notEqual(orbit.user, null)
-            assert.equal(orbit.user.id, username)
-            assert.equal(orbit.user.username, username)
+            assert.equal(orbit.user.id, userId)
+            assert.equal(orbit.user.name, username)
             assert.notEqual(orbit.user.signKey, null)
             orbit.disconnect()
             done()
           })
           .catch(done)
       })
-
     })
 
     describe('disconnect', function() {
       it('disconnects from a network', (done) => {
-        orbit = new Orbit(ipfs)
-        orbit.connect(network, username, password)
+        orbit.connect(network, username)
           .then((res) => {
             orbit.disconnect()
             assert.equal(orbit.orbitdb, null)
@@ -197,8 +209,7 @@ IpfsApis.forEach(function(ipfsApi) {
       })
 
       it('emits \'disconnected\' event when disconnected from a network', (done) => {
-        orbit = new Orbit(ipfs)
-        orbit.connect(network, username, password)
+        orbit.connect(network, username)
           .then(() => {
             orbit.events.on('disconnected', (networkInfo, userInfo) => {
               assert.equal(orbit.network, null)
@@ -213,8 +224,7 @@ IpfsApis.forEach(function(ipfsApi) {
 
     describe('join', function() {
       beforeEach((done) => {
-        orbit = new Orbit(ipfs, { cacheFile: null, maxHistory: 0 })
-        orbit.connect(network, username, password)
+        orbit.connect(network, username)
           .then((res) => done())
           .catch(done)
       })
@@ -315,8 +325,7 @@ IpfsApis.forEach(function(ipfsApi) {
 
     describe('leave', function() {
       beforeEach((done) => {
-        orbit = new Orbit(ipfs, { cacheFile: null })
-        orbit.connect(network, username, password)
+        orbit.connect(network, username)
           .then((res) => done())
           .catch(done)
       })
@@ -353,11 +362,8 @@ IpfsApis.forEach(function(ipfsApi) {
     })
 
     describe('getters', function() {
-      describe('defaults', function() {
-        before(() => {
-          orbit = new Orbit(ipfs, { cacheFile: null })
-        })
 
+      describe('defaults', function() {
         it('no users', () => {
           assert.equal(orbit.user, null)
         })
@@ -371,22 +377,22 @@ IpfsApis.forEach(function(ipfsApi) {
           assert.equal(orbit.peers.length, 0)
         })
       })
+
       describe('return', function() {
-        before((done) => {
-          orbit = new Orbit(ipfs, { cacheFile: null })
-          orbit.connect(network, username, password)
+        beforeEach((done) => {
+          orbit.connect(network, username)
             .then((res) => done())
             .catch(done)
         })
 
-        after(() => {
+        afterEach(() => {
           orbit.disconnect()
         })
 
         it('user', () => {
           assert.notEqual(orbit.user, null)
-          assert.equal(orbit.user.username, username)
-          assert.equal(orbit.user.id, username)
+          assert.equal(orbit.user.name, username)
+          assert.equal(orbit.user.id, userId)
         })
 
         it('network', () => {
@@ -399,21 +405,25 @@ IpfsApis.forEach(function(ipfsApi) {
         })
 
         describe('channels', function() {
-          it('returns a joined channel', () => {
-            const channel2 = 'test2'
-            return orbit.join(channel2).then(() => {
+          it('returns a joined channel', (done) => {
+            orbit.join(channel).then(() => {
               assert.equal(Object.keys(orbit.channels).length, 1)
-              assert.equal(orbit.channels[channel2].name, channel2)
+              assert.equal(orbit.channels[channel].name, channel)
+              done()
             })
           })
 
-          it('returns the channels in correct format', () => {
-            return orbit.join(channel).then(() => {
-              const c = orbit.channels[channel]
-              assert.equal(Object.keys(orbit.channels).length, 2)
-              assert.equal(c.name, channel)
-              assert.equal(c.password, null)
-              assert.equal(Object.prototype.isPrototypeOf(c.feed, EventStore), true)
+          it('returns the channels in correct format', (done) => {
+            const channel2 = 'test2'
+            orbit.join(channel2).then(() => {
+              orbit.join(channel).then(() => {
+                const c = orbit.channels[channel]
+                assert.equal(Object.keys(orbit.channels).length, 2)
+                assert.equal(c.name, channel)
+                assert.equal(c.password, null)
+                assert.equal(Object.prototype.isPrototypeOf(c.feed, EventStore), true)
+                done()
+              })
             })
           })
         })
@@ -422,8 +432,7 @@ IpfsApis.forEach(function(ipfsApi) {
 
     describe('send', function() {
       beforeEach((done) => {
-        orbit = new Orbit(ipfs, { cacheFile: null, maxHistory: 0 })
-        orbit.connect(network, username, password)
+        orbit.connect(network, username)
           .then((res) => done())
           .catch(done)
       })
@@ -463,7 +472,7 @@ IpfsApis.forEach(function(ipfsApi) {
             assert.equal(Object.keys(message.Post.meta).length, 4)
             assert.equal(message.Post.meta.type, "text")
             assert.equal(message.Post.meta.size, 15)
-            assert.equal(message.Post.meta.from, username)
+            assert.equal(message.Post.meta.from, userId)
             assert.notEqual(message.Post.meta.ts, null)
             done()
           })
@@ -480,7 +489,7 @@ IpfsApis.forEach(function(ipfsApi) {
             assert.equal(data.meta.type, "text")
             assert.equal(data.meta.size, 15)
             assert.notEqual(data.meta.ts, null)
-            assert.equal(data.meta.from, username)
+            assert.equal(data.meta.from, userId)
             done()
           })
           .catch(done)
@@ -530,25 +539,16 @@ IpfsApis.forEach(function(ipfsApi) {
     })
 
     describe('get', function() {
-      beforeEach((done) => {
-        orbit = new Orbit(ipfs, { cacheFile: null, maxHistory: 0 })
-        orbit.connect(network, username, password)
-          .then((res) => done())
-          .catch(done)
-      })
-
-      afterEach(() => {
-        orbit.disconnect()
-      })
-
       it('returns the latest message', (done) => {
         const ts = new Date().getTime()
         const content = 'hello' + ts
         let message
-        orbit.join(channel)
-          .then(() => orbit.send(channel, content))
+        const orbitNoCache = new Orbit(ipfs, { cacheFile: null, maxHistory: 0, keystorePath: keystorePath })
+        orbitNoCache.connect(network, username)
+          .then(() => orbitNoCache.join(channel))
+          .then(() => orbitNoCache.send(channel, content))
           .then((res) => message = res)
-          .then(() => orbit.get(channel, null, null, 10))
+          .then(() => orbitNoCache.get(channel, null, null, 10))
           .then((messages) => {
             assert.equal(messages.length, 1)
             assert.equal(messages[0].payload.op, 'ADD')
@@ -557,21 +557,25 @@ IpfsApis.forEach(function(ipfsApi) {
             assert.notEqual(messages[0].payload.meta.ts, null)
             assert.equal(messages[0].hash.startsWith('Qm'), true)
             assert.equal(messages[0].next.length, 0)
+            orbitNoCache.disconnect()
             done()
           })
           .catch(done)
       })
 
       it('returns all messages in the right order', (done) => {
+        const orbitNoCache = new Orbit(ipfs, { cacheFile: null, maxHistory: 0, keystorePath: keystorePath })
         const content = 'hello'
         const channel2 = 'channel-' + new Date().getTime()
         let result
-        orbit.join(channel2)
+
+        orbitNoCache.connect(network, username)
+          .then(() => orbitNoCache.join(channel2))
           .then(() => {
-            return Promise.mapSeries([1, 2, 3, 4, 5], (i) => orbit.send(channel2, content + i), { concurrency: 1 })
+            return Promise.mapSeries([1, 2, 3, 4, 5], (i) => orbitNoCache.send(channel2, content + i), { concurrency: 1 })
           })
           .then((res) => result = res)
-          .then(() => orbit.get(channel2, null, null, -1))
+          .then(() => orbitNoCache.get(channel2, null, null, -1))
           .then((messages) => {
             assert.equal(messages.length, 5)
             messages.forEach((msg, index) => {
@@ -581,6 +585,7 @@ IpfsApis.forEach(function(ipfsApi) {
               assert.notEqual(msg.payload.meta.ts, null)
               assert.equal(msg.hash.startsWith('Qm'), true)
               assert.equal(msg.next.length, index === 0 ? 0 : 1)
+              orbitNoCache.disconnect()
             })
             done()
           })
@@ -588,10 +593,13 @@ IpfsApis.forEach(function(ipfsApi) {
       })
 
       it('throws an error if trying to get from a channel that hasn\'t been joined', (done) => {
-        orbit.get(channel)
+        const orbitNoCache = new Orbit(ipfs, { cacheFile: null, maxHistory: 0, keystorePath: keystorePath })
+        orbitNoCache.connect(network, username)
+          .then(() => orbitNoCache.get(channel))
           .then((res) => done(new Error("Got result but not joined on channel!")))
           .catch((e) => {
             assert.equal(e, `Haven't joined #${channel}`)
+            orbitNoCache.disconnect()
             done()
           })
       })
@@ -602,8 +610,7 @@ IpfsApis.forEach(function(ipfsApi) {
       let message
 
       beforeEach((done) => {
-        orbit = new Orbit(ipfs, { cacheFile: null, maxHistory: 0 })
-        orbit.connect(network, username, password)
+        orbit.connect(network, username)
           .then((res) => orbit.join(channel))
           .then(() => orbit.send(channel, content))
           .then((res) => message = res)
@@ -623,7 +630,7 @@ IpfsApis.forEach(function(ipfsApi) {
             assert.equal(data.meta.type, "text")
             assert.equal(data.meta.size, 15)
             assert.notEqual(data.meta.ts, null)
-            assert.equal(data.meta.from, username)
+            assert.equal(data.meta.from, userId)
             done()
           })
           .catch(done)
@@ -632,7 +639,10 @@ IpfsApis.forEach(function(ipfsApi) {
       it('throws an error when trying to get a Post with invalid hash', (done) => {
         orbit.getPost("Qm...Foo")
           .catch((e) => {
-            assert.equal(e.message, "invalid ipfs ref path")
+            if (ipfsApi.name === 'js-ipfs')
+              assert.equal(e.message, "Invalid Key")
+            else
+              assert.equal(e.message, "invalid ipfs ref path")
             done()
           })
       })
@@ -649,8 +659,7 @@ IpfsApis.forEach(function(ipfsApi) {
 
     describe('addFile', function() {
       beforeEach((done) => {
-        orbit = new Orbit(ipfs, { cacheFile: null, maxHistory: 0 })
-        orbit.connect(network, username, password)
+        orbit.connect(network, username)
           .then(() => done())
           .catch(done)
       })
@@ -661,8 +670,14 @@ IpfsApis.forEach(function(ipfsApi) {
 
       it('adds a file', (done) => {
         const filename = 'mocha.opts'
+        const filePath = path.join(process.cwd(), '/test' , filename)
+
+        const file = ipfsApi.name === 'js-ipfs-api'
+          ? { filename: filePath }
+          : { filename: filename, buffer: new Buffer(fs.readFileSync(filePath)) }
+
         orbit.join(channel)
-          .then(() => orbit.addFile(channel, { filename: path.join(process.cwd(), '/test' , filename) }))
+          .then(() => orbit.addFile(channel, file))
           .then((res) => {
             assert.notEqual(res.Post, null)
             assert.equal(res.Post instanceof Post.Types.File, true)
@@ -671,7 +686,7 @@ IpfsApis.forEach(function(ipfsApi) {
             assert.equal(res.Post.size, -1)
             assert.equal(Object.keys(res.Post.meta).length, 4)
             assert.equal(res.Post.meta.size, 15)
-            assert.equal(res.Post.meta.from, username)
+            assert.equal(res.Post.meta.from, userId)
             assert.notEqual(res.Post.meta.ts, null)
             done()
           })
@@ -679,33 +694,44 @@ IpfsApis.forEach(function(ipfsApi) {
       })
 
       it('adds a directory recursively', (done) => {
-        const directory = 'assets'
-        orbit.join(channel)
-          .then(() => orbit.addFile(channel,  { filename: directory, directory: path.join(process.cwd(), directory) }))
-          .then((res) => {
-            assert.notEqual(res.Post, null)
-            assert.equal(res.Post instanceof Post.Types.Directory, true)
-            assert.equal(res.Hash.startsWith('Qm'), true)
-            assert.equal(res.Post.name, directory)
-            // assert.equal(res.Post.size === 409363 || res.Post.size === 409449, true)
-            assert.equal(Object.keys(res.Post.meta).length, 4)
-            // assert.equal(res.Post.meta.size === 409363 || res.Post.meta.size === 409449, true)
-            assert.equal(res.Post.meta.from, username)
-            assert.notEqual(res.Post.meta.ts, null)
-            done()
-          })
-          .catch(done)
+        if (ipfsApi.name !== 'js-ipfs') {
+          const directory = 'assets'
+          const p = path.join(process.cwd(), directory)
+          const dir = { filename: directory, directory: p }
+
+          orbit.join(channel)
+            .then(() => orbit.addFile(channel, dir))
+            .then((res) => {
+              assert.notEqual(res.Post, null)
+              assert.equal(res.Post instanceof Post.Types.Directory, true)
+              assert.equal(res.Hash.startsWith('Qm'), true)
+              assert.equal(res.Post.name, directory)
+              // assert.equal(res.Post.size === 409363 || res.Post.size === 409449, true)
+              assert.equal(Object.keys(res.Post.meta).length, 4)
+              // assert.equal(res.Post.meta.size === 409363 || res.Post.meta.size === 409449, true)
+              assert.equal(res.Post.meta.from, userId)
+              assert.notEqual(res.Post.meta.ts, null)
+              done()
+            })
+            .catch(done)
+        } else {
+          done()
+        }
       })
 
       it('throws an error if file not found', (done) => {
-        const filename = 'non-existent'
-        const filePath = path.join(process.cwd(), '/test' , filename)
-        orbit.join(channel)
-          .then(() => orbit.addFile(channel, { filename: filePath }))
-          .catch((e) => {
-            assert.equal(e.message.toString(), `ENOENT: no such file or directory, stat '${filePath}'`)
-            done()
-          })
+        if (ipfsApi.name !== 'js-ipfs') {
+          const filename = 'non-existent'
+          const filePath = path.join(process.cwd(), '/test' , filename)
+          orbit.join(channel)
+            .then(() => orbit.addFile(channel, { filename: filePath }))
+            .catch((e) => {
+              assert.equal(e.message.toString(), `ENOENT: no such file or directory, stat '${filePath}'`)
+              done()
+            })
+        } else {
+          done()
+        }
       })
 
 
@@ -739,13 +765,16 @@ IpfsApis.forEach(function(ipfsApi) {
     describe('getFile', function() {
       const filename = 'mocha.opts'
       const filePath = path.join(process.cwd(), '/test' , filename)
+      const file = ipfsApi.name === 'js-ipfs-api'
+        ? { filename: filePath }
+        : { filename: filename, buffer: new Buffer(fs.readFileSync(filePath)) }
+
       let hash
 
       beforeEach((done) => {
-        orbit = new Orbit(ipfs, { cacheFile: null, maxHistory: 0 })
-        orbit.connect(network, username, password)
+        orbit.connect(network, username)
           .then(() => orbit.join(channel))
-          .then(() => orbit.addFile(channel, { filename: filePath }))
+          .then(() => orbit.addFile(channel, file))
           .then((res) => hash = res.Post.hash)
           .then(() => done())
           .catch(done)
@@ -771,41 +800,41 @@ IpfsApis.forEach(function(ipfsApi) {
     })
 
     describe('getDirectory', function() {
-      const directory = 'assets'
-      const filePath = path.join(process.cwd(), directory)
-      let hash
+      if (ipfsApi.name !== 'js-ipfs') {
+        const directory = 'assets'
+        const filePath = path.join(process.cwd(), directory)
+        let hash
 
-      beforeEach((done) => {
-        orbit = new Orbit(ipfs, { cacheFile: null, maxHistory: 0 })
-        orbit.connect(network, username, password)
-          .then(() => orbit.join(channel))
-          .then(() => orbit.addFile(channel, { filename: "test directory", directory: filePath }))
-          .then((res) => hash = res.Post.hash)
-          .then(() => done())
-          .catch(done)
-      })
+        beforeEach((done) => {
+          orbit.connect(network, username)
+            .then(() => orbit.join(channel))
+            .then(() => orbit.addFile(channel, { filename: "test directory", directory: filePath }))
+            .then((res) => hash = res.Post.hash)
+            .then(() => done())
+            .catch(done)
+        })
 
-      afterEach(() => {
-        orbit.disconnect()
-      })
+        afterEach(() => {
+          orbit.disconnect()
+        })
 
-      it('returns a directory', (done) => {
-        orbit.getDirectory(hash)
-          .then((res) => {
-            assert.notEqual(res, null)
-            assert.equal(res.length, 3)
-            assert.equal(Object.keys(res[0]).length, 4)
-            done()
-          })
-          .catch(done)
-      })
+        it('returns a directory', (done) => {
+          orbit.getDirectory(hash)
+            .then((res) => {
+              assert.notEqual(res, null)
+              assert.equal(res.length, 3)
+              assert.equal(Object.keys(res[0]).length, 4)
+              done()
+            })
+            .catch(done)
+        })
+      }
     })
 
     describe('events', function() {
       beforeEach((done) => {
-        orbit = new Orbit(ipfs, { cacheFile: null })
         orbit.events.on('joined', () => done())
-        orbit.connect(network, username, password)
+        orbit.connect(network, username)
           .then(() => orbit.join(channel))
           .catch(done)
       })

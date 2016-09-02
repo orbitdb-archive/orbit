@@ -1,7 +1,13 @@
 # Changelog for Orbit
 
-**master**
-- Try right-aligned channels panels
+**3.1.0** *(2016-09-02)*
+
+- Signed messages
+- Identities (click a username to see the profile)
+- Can now "Reply-to" a message (click a message to reply)
+- Right-aligned channels panels (flag in options)
+- Polished animations ("Fix planetary physics")
+- Fixed a lot of bugs, improved developer resources
 
 **3.0.0**
 - Massive re-write, everything was changed

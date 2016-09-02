@@ -10,9 +10,9 @@ import MessageStore from 'stores/MessageStore';
 import LoadingStateStore from 'stores/LoadingStateStore';
 import UIActions from 'actions/UIActions';
 import ChannelActions from 'actions/ChannelActions';
+import Profile from "components/Profile"
 import 'styles/Channel.scss';
 import Logger from 'logplease';
-
 const logger = Logger.create('Channel', { color: Logger.Colors.Cyan });
 
 class Channel extends React.Component {
@@ -28,11 +28,14 @@ class Channel extends React.Component {
       reachedChannelStart: false,
       channelMode: "Public",
       error: null,
+      replyto: null,
       dragEnter: false,
       username: props.user ? props.user.username : '',
       unreadMessages: 0,
       appSettings: props.appSettings,
-      theme: props.theme
+      theme: props.theme,
+      showUserProfile: null,
+      userProfilePosition: null
     };
 
     this.scrollTimer = null;
@@ -122,9 +125,11 @@ class Channel extends React.Component {
     this.setState({ messages: messages });
   }
 
-  sendMessage(text: string) {
-    if(text !== '')
-      ChannelActions.sendMessage(this.state.channelName, text);
+  sendMessage(text: string, replyto: string) {
+    if(text !== '') {
+      ChannelActions.sendMessage(this.state.channelName, text, replyto);
+      this.setState({ replyto: null })
+    }
   }
 
   sendFile(source) {
@@ -234,6 +239,47 @@ class Channel extends React.Component {
     this.node.scrollTop = this.node.scrollHeight + this.node.clientHeight;
   }
 
+  onShowProfile(user, evt) {
+    evt.persist()
+    evt.stopPropagation()
+    // console.log("PROFILE", user, evt)
+    if(!this.state.showUserProfile || (this.state.showUserProfile && user.id !== this.state.showUserProfile.id)) {
+
+      var body = document.body, html = document.documentElement;
+      var height = Math.max(body.scrollHeight, body.offsetHeight, html.clientHeight, html.scrollHeight, html.offsetHeight);
+
+      // if(evt.pageY > height / 2)
+      //   console.log("clicked on the bottom half")
+      // else
+      //   console.log("clicked on the top half")
+
+      const profilePopupHeight = 440
+      let padBottom = false
+      if(evt.pageY + profilePopupHeight > height) {
+        // console.log("can't fit it on the screen")
+        padBottom = true
+      }
+
+      const x = 0;
+      const y = 0;
+
+      this.setState({
+        showUserProfile: user,
+        userProfilePosition: {
+          x: evt.target.clientWidth + evt.target.offsetLeft,
+          y: padBottom ? (height - profilePopupHeight) : evt.pageY
+        }
+      })
+    } else {
+      this.setState({ showUserProfile: null, userProfilePosition: null })
+    }
+  }
+
+ onReplyTo(message) {
+    this.setState({ replyto: message })
+    UIActions.focusOnSendMessage();
+  }
+
   renderMessages() {
     const { messages, username, channelName, loading, loadingText, reachedChannelStart, appSettings } = this.state;
     const { colorifyUsernames, useEmojis, useMonospaceFont, font, monospaceFont, spacing } = appSettings;
@@ -241,6 +287,8 @@ class Channel extends React.Component {
       <Message
         message={message.payload}
         key={message.hash}
+        onReplyTo={this.onReplyTo.bind(this)}
+        onShowProfile={this.onShowProfile.bind(this)}
         onDragEnter={this.onDragEnter.bind(this)}
         highlightWords={username}
         colorifyUsername={colorifyUsernames}
@@ -281,9 +329,20 @@ class Channel extends React.Component {
   }
 
   render() {
-    const { unreadMessages, loading, channelMode, appSettings, theme } = this.state;
+    const { showUserProfile, userProfilePosition, unreadMessages, loading, channelMode, appSettings, replyto, theme } = this.state;
+
+    const profile = showUserProfile ?
+      <Profile
+        user={showUserProfile}
+        x={userProfilePosition.x}
+        y={userProfilePosition.y}
+        theme={theme}
+        onClose={this.onShowProfile.bind(this)}/>
+      : null
+
     return (
       <div className="Channel flipped" onDragEnter={this.onDragEnter.bind(this)}>
+        <div>{profile}</div>
         <div className="Messages" ref="MessagesView" onScroll={this.onScroll.bind(this)}>
           {this.renderMessages()}
         </div>
@@ -296,7 +355,9 @@ class Channel extends React.Component {
           isLoading={loading}
           channelMode={channelMode}
           appSettings={appSettings}
-          theme={theme} />
+          theme={theme}
+          replyto={replyto}
+        />
         {this.renderFileDrop()}
       </div>
     );

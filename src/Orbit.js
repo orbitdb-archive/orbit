@@ -7,12 +7,16 @@ const Crypto       = require('orbit-crypto')
 const Post         = require('ipfs-post')
 const Logger       = require('logplease')
 const bs58         = require('bs58')
-const logger       = Logger.create("Orbit", { color: Logger.Colors.Green })
+const OrbitUser    = require('./orbit-user')
+const IdentityProviders = require('./identity-providers')
+
+const logger = Logger.create("Orbit", { color: Logger.Colors.Green })
 require('logplease').setLogLevel('ERROR')
 
 const getAppPath = () => process.type && process.env.ENV !== "dev" ? process.resourcesPath + "/app/" : process.cwd()
 
 const defaultOptions = {
+  keystorePath: path.join(getAppPath(), "/keys"), // path where to keep generates keys
   cacheFile: path.join(getAppPath(), "/orbit-data.json"), // path to orbit-db cache file
   maxHistory: 64 // how many messages to retrieve from history on joining a channel
 }
@@ -20,22 +24,23 @@ const defaultOptions = {
 let signKey
 
 class Orbit {
-  constructor(ipfs, options) {
+  constructor(ipfs, options = {}) {
     this.events = new EventEmitter()
     this._ipfs = ipfs
     this._orbitdb = null
     this._user = null
     this._channels = {}
     this._peers = []
-    this._options = defaultOptions
     this._pollPeersTimer = null
+    this._options = Object.assign({}, defaultOptions)
     Object.assign(this._options, options)
+    Crypto.useKeyStore(this._options.keystorePath)
   }
 
   /* Properties */
 
   get user() {
-    return this._user
+    return this._user ? this._user.profile : null
   }
 
   get network() {
@@ -52,21 +57,25 @@ class Orbit {
 
   /* Public methods */
 
-  connect(host = 'localhost:3333', username, password = '') {
+  connect(host = 'localhost:3333', credentials = {}) {
     logger.debug("Load cache from:", this._options.cacheFile)
-    logger.info(`Connecting to network '${host}' as '${username}`)
+    logger.info(`Connecting to network '${host}' as '${JSON.stringify(credentials)}`)
 
-    return OrbitDB.connect(host, username, password, this._ipfs)
+    if(typeof credentials === 'string') {
+      credentials = { provider: 'orbit', username: credentials }
+    }
+
+    return IdentityProviders.authorizeUser(this._ipfs, credentials)
+      .then((user) => this._user = user)
+      .then(() => OrbitDB.connect(host, this.user.identityProvider.id, null, this._ipfs))
       .then((orbitdb) => {
         this._orbitdb = orbitdb
-        this._user = orbitdb.user
         this._orbitdb.events.on('data', this._handleMessage.bind(this)) // Subscribe to updates in the database
         this._startPollingForPeers() // Get peers from libp2p and update the local peers array
+        return
       })
-      .then(() => Crypto.generateKey())
-      .then((key) => this._user.signKey = key)
       .then(() => {
-        logger.info(`Connected to '${this._orbitdb.network.name}' at '${this._orbitdb.network.publishers[0]}' as '${this.user.username}`)
+        logger.info(`Connected to '${this._orbitdb.network.name}' at '${this._orbitdb.network.publishers[0]}' as '${this.user.name}`)
         this.events.emit('connected', this.network, this.user)
         return this
       })
@@ -117,8 +126,7 @@ class Orbit {
     this.events.emit('left', channel)
   }
 
-  send(channel, message) {
-
+  send(channel, message, replyToHash) {
     if(!message || message === '')
       return Promise.reject(`Can't send an empty message`)
 
@@ -126,11 +134,12 @@ class Orbit {
 
     const data = {
       content: message,
-      from: this._orbitdb.user.id
+      replyto: replyToHash || null,
+      from: this.user.id
     }
 
     return this._getChannelFeed(channel)
-      .then((feed) => this._postMessage(feed, Post.Types.Message, data, this.user.signKey))
+      .then((feed) => this._postMessage(feed, Post.Types.Message, data, this._user._keys))
   }
 
   get(channel, lessThanHash = null, greaterThanHash = null, amount = 1) {
@@ -147,19 +156,12 @@ class Orbit {
   }
 
   getPost(hash) {
-    // TODO:
-    // return this._ipfs.object.get(hash, { enc: 'base58' })
-    //   .then((res) => post = Post.fromDAGNode(res))
-    //   .then(() => Crypto.importKeyFromIpfs(this._ipfs, post.signKey))
-    //   .then((key) => Post.verify(post, key))
-    //   .then(() => post)
     let post, signKey
     return this._ipfs.object.get(hash, { enc: 'base58' })
       .then((res) => post = JSON.parse(res.toJSON().Data))
-      // .then(() => console.log(JSON.stringify(post)))
       .then(() => Crypto.importKeyFromIpfs(this._ipfs, post.signKey))
       .then((signKey) => Crypto.verify(
-        new Uint8Array(post.sig),
+        post.sig,
         signKey,
         new Buffer(JSON.stringify({
           content: post.content,
@@ -238,7 +240,7 @@ class Orbit {
           from: this.user.id,
           meta: source.meta || {}
         }
-        return this._postMessage(feed, type, data, this.user.signKey)
+        return this._postMessage(feed, type, data, this._user._keys)
       })
   }
 
@@ -248,6 +250,23 @@ class Orbit {
 
   getDirectory(hash) {
     return this._ipfs.ls(hash).then((res) => res.Objects[0].Links)
+  }
+
+  getUser(hash) {
+    return this._ipfs.object.get(hash, { enc: 'base58' })
+      .then((res) => {
+        const profileData = Object.assign(JSON.parse(res.toJSON().Data))
+        Object.assign(profileData, { id: hash })
+        return IdentityProviders.loadProfile(this._ipfs, profileData)
+          .then((profile) => {
+            Object.assign(profile || profileData, { id: hash })
+            return profile
+          })
+          .catch((e) => {
+            logger.error(e)
+            return profileData
+          })
+      })
   }
 
   /* Private methods */
@@ -289,6 +308,7 @@ class Orbit {
     this._pollPeersTimer = setInterval(() => {
       this._updateSwarmPeers().then((peers) => {
         this._peers = peers
+        // TODO: get unique (new) peers and emit 'peer' for each instead of all at once
         this.events.emit('peers', this._peers)
       })
     }, 1000)

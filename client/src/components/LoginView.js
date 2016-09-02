@@ -71,14 +71,14 @@ class LoginView extends React.Component{
   // }
 
   register(e) {
-    e.preventDefault();
+    if(e) e.preventDefault();
     var network  = this.refs.network.value.trim();
     var username = this.refs.username.value.trim();
     var password = this.refs.password.value.trim();
 
     if(network !== '' && username !== '') {
       this.setState({ error: null, connecting: true, username: username, password: password });
-      NetworkActions.connect(network, username, password);
+      NetworkActions.connect(network, username);
     }
 
     return;
@@ -87,6 +87,11 @@ class LoginView extends React.Component{
   calculateNicknameLength() {
     var remainingCharacters = maxNicknameLength - this.refs.username.value.length;
     this.setState({ currentLength: remainingCharacters < maxNicknameLength ? maxNicknameLength - this.refs.username.value.length : null });
+  }
+
+  onUportLogin() {
+    const network = this.refs.network.value.trim()
+    NetworkActions.connect(network, { provider: 'uPort' })
   }
 
   render() {
@@ -126,6 +131,7 @@ class LoginView extends React.Component{
         <div className="row">
           {errorMsg}
         </div>
+
       </TransitionGroup>
     ) : (<span></span>);
 
@@ -137,7 +143,7 @@ class LoginView extends React.Component{
           </TransitionGroup>
           {form}
         </form>
-        <BackgroundAnimation style={{ margin: "16px"}} size={this.state.logoSize} theme={this.state.theme}/>
+        <BackgroundAnimation style={{ top: "0", left: "0" }} size={this.state.logoSize} theme={this.state.theme}/>
       </div>
     );
   }

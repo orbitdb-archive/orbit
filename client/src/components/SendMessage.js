@@ -17,6 +17,7 @@ class SendMessage extends React.Component {
       theme: props.theme,
       useEmojis: props.useEmojis,
       emojiPickerActive: false,
+      replyto: null,
       lastWord: null
     };
   }
@@ -33,15 +34,19 @@ class SendMessage extends React.Component {
   }
 
   componentWillReceiveProps(nextProps) {
-    this.setState({ theme: nextProps.theme });
+    this.setState({
+      theme: nextProps.theme,
+      replyto: nextProps.replyto
+    });
   }
 
   sendMessage(event) {
     event.preventDefault();
     var text = this.refs.message.value.trim();
-    this.props.onSendMessage(text);
+    this.props.onSendMessage(text, this.state.replyto);
     this.refs.message.value = '';
     this.refs.message.focus();
+    this.setState({ replyto: null })
     return;
   }
 

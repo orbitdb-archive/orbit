@@ -7,7 +7,8 @@ const Logger       = require('logplease');
 const logger       = Logger.create("Orbit.Main", { color: Logger.Colors.Yellow });
 const utils        = require('../../src/utils');
 const Orbit        = require('../../src/Orbit');
-const IPFS         = require('exports?Ipfs!ipfs/dist/index.js')
+// const IPFS         = require('exports?Ipfs!ipfs/dist/index.js')
+// const IPFS = require('ipfs')
 
 var ENV = process.env["ENV"] || "release";
 logger.debug("Running in '" + ENV + "' mode");
@@ -36,7 +37,7 @@ const start = exports.start = (ipfsApiInstance, repositoryPath, signalServerAddr
   } else {
     const startTime = new Date().getTime();
     logger.info("Starting IPFS...");
-    return utils.ipfsDaemon(IPFS, repositoryPath, signalServerAddress)
+    return utils.jsIpfsDaemon(window.Ipfs, repositoryPath, signalServerAddress)
       .then((res) => {
         ipfs = res;
         orbit = new Orbit(ipfs, { dataPath: dataPath });

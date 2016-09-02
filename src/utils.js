@@ -47,7 +47,7 @@ exports.deleteDirectoryRecursive = deleteDirectoryRecursive;
 
 // TODO: move to its own file 'IpfsJsDaemon'
 // TODO: create 'IpfsGoDaemon' for js-ipfs-api
-exports.ipfsDaemon = (IPFS, repo, signalServerAddress) => {
+exports.jsIpfsDaemon = (IPFS, repo, signalServerAddress) => {
   repo = repo || '/tmp/orbit';
   signalServerAddress = signalServerAddress || '0.0.0.0';
   console.log("Signalling server: " + signalServerAddress);

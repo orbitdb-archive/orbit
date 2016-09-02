@@ -27,7 +27,7 @@ var SettingsStore = Reflux.createStore({
       this.username = "";
       UserStore.listen((user) => {
         if(user) {
-          this.username = user.username;
+          this.username = user.name;
           this.initSettings();
         }
       });
