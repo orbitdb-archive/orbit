@@ -1,6 +1,6 @@
 {
   "name": "orbit",
-  "version": "3.0.1",
+  "version": "3.1.0",
   "description": "Distributed peer-to-peer chat built on IPFS",
   "main": "index.js",
   "dependencies": {
