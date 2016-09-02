@@ -33,7 +33,7 @@ class ChannelControls extends React.Component {
         >
         <div className="Controls" key="controls">
           <Spinner isLoading={isLoading} color="rgba(255, 255, 255, 0.7)" size="16px" />
-          <span className="replyto">{replyto ? `Reply to:  "<${replyto.user.name}> ${replyto.post.content}"` : ""}</span>
+          <span className="replyto">{replyto ? `Reply to:  "<${replyto.user.name}> ${replyto.content}"` : ""}</span>
           <SendMessage onSendMessage={onSendMessage} theme={theme} useEmojis={appSettings.useEmojis} replyto={replyto ? replyto.hash : null} />
           <Dropzone className="dropzone2" onDrop={onSendFiles}>
             <div className="icon flaticon-tool490" style={theme} />

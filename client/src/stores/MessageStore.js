@@ -279,18 +279,38 @@ const MessageStore = Reflux.createStore({
       this.orbit.getPost(hash)
         .then((post) => {
           this.posts[hash] = post;
-          if(post.replyto) {
-            if(this.posts[post.replyto] && this.posts[post.replyto].content) {
-              this.orbit.getUser(this.posts[post.replyto].meta.from).then((user) => {
-                self.posts[hash].replyToContent = "<" + user.name + "> " + this.posts[post.replyto].content;
+          const replyToHash = post.replyto
+          console.log("1", replyToHash, post)
+          if(replyToHash) {
+            const cached = this.posts[replyToHash]
+          console.log("2", cached)
+            if(cached && cached.content) {
+              this.orbit.getUser(cached.meta.from).then((user) => {
+                let content = ''
+                if(cached.meta.type === 'text')
+                  content = cached.content
+                else
+                  content = cached.name
+
+                console.log("--2", content)
+                self.posts[hash].replyToContent = "<" + user.name + "> " + content;
                 callback(null, self.posts[hash]);
               })
             } else {
-              this.onLoadPost(post.replyto, (data) => {
+          console.log("3")
+              this.onLoadPost(replyToHash, (err, data) => {
+          console.log("4", data)
                 if(data) {
                   this.orbit.getUser(data.meta.from).then((user) => {
-                    self.posts[hash] = data;
-                    self.posts[hash].replyToContent = "<" + user.name + "> " + data.content;
+                    let content = ''
+                    if(data.meta.type === 'text')
+                      content = data.content
+                    else
+                      content = data.name
+
+                    console.log("--1", content)
+                    self.posts[replyToHash] = data;
+                    self.posts[hash].replyToContent = "<" + user.name + "> " + content;
                     callback(null, self.posts[hash]);
                   })
                 }
@@ -323,12 +343,12 @@ const MessageStore = Reflux.createStore({
       .then((post) => UIActions.stopLoading(channel, "file"))
       .catch((e) => {
         const error = e.toString();
-        logger.error(`Couldn't add file: ${filePath} -  ${error}`);
+        logger.error(`Couldn't add file: ${JSON.stringify(filePath)} -  ${error}`);
         UIActions.raiseError(error);
       })
   },
   onLoadFile: function(hash: string, asURL: boolean, asStream: boolean, callback) {
-    const isElectron = !!window.ipfs;
+    const isElectron = !!window.ipfsInstance;
     if(isElectron && asURL) {
       callback(null, null, `http://localhost:8080/ipfs/${hash}`)
     } else if(isElectron) {

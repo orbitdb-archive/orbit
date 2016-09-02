@@ -56,8 +56,15 @@ class Message extends React.Component {
   }
 
   onReplyTo(event) {
-    this.setState({ replyto: this.props.message.value })
-    this.props.onReplyTo({ hash: this.props.message.value, post: this.state.post, user: this.state.user })
+    const { post, user } = this.state
+    const hash = this.props.message.value
+    this.setState({ replyto: hash })
+    console.log(post)
+    this.props.onReplyTo({
+      hash: hash,
+      content: post.meta.type === 'text' ? post.content : post.name,
+      user: user,
+    })
   }
 
   onShowVerification(show, evt) {

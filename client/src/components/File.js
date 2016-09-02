@@ -48,7 +48,9 @@ class File extends React.Component {
     return highlight.getLanguage(this.ext);
   }
 
-  handleClick(name) {
+  handleClick(evt) {
+    evt.stopPropagation()
+
     function toArrayBuffer(buffer) {
       var ab = new ArrayBuffer(buffer.length);
       var view = new Uint8Array(ab);

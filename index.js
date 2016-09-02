@@ -80,13 +80,15 @@ app.on('ready', () => {
     mainWindow = new BrowserWindow(connectWindowSize)
     mainWindow.webContents.session.setDownloadPath(path.resolve(getUserHome() + '/Downloads'))
 
+    global.DEV = MODE === 'dev'
+    global.isElectron = true
+
     let ipfsDaemon
     ipfsd.local((err, node) => {
       if(err) reject(err)
       ipfsDaemon = node
       ipfsDaemon.startDaemon((err, ipfs) => {
         global.ipfsInstance = ipfs
-        global.DEV = MODE === 'dev'
         if(MODE === 'dev')
           mainWindow.loadURL('http://localhost:8000/')
         else

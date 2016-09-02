@@ -72,8 +72,6 @@ class TextMessage extends React.Component {
     // finalText = this._ipfsfy(finalText);
     finalText = this.state.useEmojis ? this._emojify(finalText) : finalText;
 
-    console.log("REPLYTO", this.state.replyto)
-
     if(this.state.replyto) {
       const emojified = this.state.useEmojis ? this._emojify([`${this.state.replyto}`], '12px') : this.state.replyto
       const element = (<span className="reply" key={Math.random()}>{emojified}</span>)
