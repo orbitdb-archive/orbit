@@ -126,7 +126,7 @@ class Orbit {
     this.events.emit('left', channel)
   }
 
-  send(channel, message) {
+  send(channel, message, replyToHash) {
     if(!message || message === '')
       return Promise.reject(`Can't send an empty message`)
 
@@ -134,6 +134,7 @@ class Orbit {
 
     const data = {
       content: message,
+      replyto: replyToHash || null,
       from: this.user.id
     }
 

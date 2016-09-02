@@ -28,6 +28,7 @@ class Channel extends React.Component {
       reachedChannelStart: false,
       channelMode: "Public",
       error: null,
+      replyto: null,
       dragEnter: false,
       username: props.user ? props.user.username : '',
       unreadMessages: 0,
@@ -124,9 +125,11 @@ class Channel extends React.Component {
     this.setState({ messages: messages });
   }
 
-  sendMessage(text: string) {
-    if(text !== '')
-      ChannelActions.sendMessage(this.state.channelName, text);
+  sendMessage(text: string, replyto: string) {
+    if(text !== '') {
+      ChannelActions.sendMessage(this.state.channelName, text, replyto);
+      this.setState({ replyto: null })
+    }
   }
 
   sendFile(source) {
@@ -272,6 +275,11 @@ class Channel extends React.Component {
     }
   }
 
+ onReplyTo(message) {
+    this.setState({ replyto: message })
+    UIActions.focusOnSendMessage();
+  }
+
   renderMessages() {
     const { messages, username, channelName, loading, loadingText, reachedChannelStart, appSettings } = this.state;
     const { colorifyUsernames, useEmojis, useMonospaceFont, font, monospaceFont, spacing } = appSettings;
@@ -279,6 +287,7 @@ class Channel extends React.Component {
       <Message
         message={message.payload}
         key={message.hash}
+        onReplyTo={this.onReplyTo.bind(this)}
         onShowProfile={this.onShowProfile.bind(this)}
         onDragEnter={this.onDragEnter.bind(this)}
         highlightWords={username}
@@ -320,7 +329,7 @@ class Channel extends React.Component {
   }
 
   render() {
-    const { showUserProfile, userProfilePosition, unreadMessages, loading, channelMode, appSettings, theme } = this.state;
+    const { showUserProfile, userProfilePosition, unreadMessages, loading, channelMode, appSettings, replyto, theme } = this.state;
 
     const profile = showUserProfile ?
       <Profile
@@ -346,7 +355,9 @@ class Channel extends React.Component {
           isLoading={loading}
           channelMode={channelMode}
           appSettings={appSettings}
-          theme={theme} />
+          theme={theme}
+          replyto={replyto}
+        />
         {this.renderFileDrop()}
       </div>
     );

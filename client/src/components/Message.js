@@ -55,13 +55,14 @@ class Message extends React.Component {
     });
   }
 
+  onReplyTo(event) {
+    this.setState({ replyto: this.props.message.value })
+    this.props.onReplyTo({ hash: this.props.message.value, post: this.state.post, user: this.state.user })
+  }
+
   onShowVerification(show, evt) {
-    // console.log("SIGNED BY:", this.state.post.signKey)
     this.setState({ showSignature: true })
-    // if(this.showVerificationTimer) clearTimeout(this.showVerificationTimer)
-    // this.showVerificationTimer = setTimeout(() => {
-      this.setState({ showSignature: show })
-    // }, 1000)
+    this.setState({ showSignature: show })
   }
 
   renderContent() {
@@ -75,6 +76,7 @@ class Message extends React.Component {
           content = (
             <TextMessage
               text={post.content}
+              replyto={post.replyToContent}
               useEmojis={useEmojis}
               highlightWords={post.meta.from !== highlightWords ? highlightWords : ''}
               key={post.hash} />
@@ -88,7 +90,7 @@ class Message extends React.Component {
           break;
       }
     }
-    return <div className={contentClass}>{content}</div>;
+    return <div className={contentClass} onClick={this.onReplyTo.bind(this)}>{content}</div>;
   }
 
   renderVerification() {

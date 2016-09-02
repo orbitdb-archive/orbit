@@ -273,22 +273,42 @@ const MessageStore = Reflux.createStore({
   },
   onLoadPost: function(hash: string, callback) {
     // TODO: change to Promise instead of callback
+    var self = this
+
     if(!this.posts[hash]) {
       this.orbit.getPost(hash)
-        .then((data) => {
-          // console.log(data)
-          this.posts[hash] = data;
-          callback(null, data);
+        .then((post) => {
+          this.posts[hash] = post;
+          if(post.replyto) {
+            if(this.posts[post.replyto] && this.posts[post.replyto].content) {
+              this.orbit.getUser(this.posts[post.replyto].meta.from).then((user) => {
+                self.posts[hash].replyToContent = "<" + user.name + "> " + this.posts[post.replyto].content;
+                callback(null, self.posts[hash]);
+              })
+            } else {
+              this.onLoadPost(post.replyto, (data) => {
+                if(data) {
+                  this.orbit.getUser(data.meta.from).then((user) => {
+                    self.posts[hash] = data;
+                    self.posts[hash].replyToContent = "<" + user.name + "> " + data.content;
+                    callback(null, self.posts[hash]);
+                  })
+                }
+              })
+            }
+          } else {
+            callback(null, post);
+          }
         })
         .catch((e) => logger.error(e))
     } else {
       callback(null, this.posts[hash]);
     }
   },
-  onSendMessage: function(channel: string, text: string) {
-    logger.debug("--> Send message: " + text);
+  onSendMessage: function(channel: string, text: string, replyToHash: string) {
+    logger.debug("--> Send message: " + text, replyToHash);
     // UIActions.startLoading(channel, "send");
-    this.orbit.send(channel, text)
+    this.orbit.send(channel, text, replyToHash)
       .then((post) => {
         logger.debug("Sent:", post.content)
         // logger.debug(post)
@@ -310,42 +330,32 @@ const MessageStore = Reflux.createStore({
   onLoadFile: function(hash: string, asURL: boolean, asStream: boolean, callback) {
     const isElectron = !!window.ipfs;
     if(isElectron && asURL) {
-      console.log("1")
       callback(null, null, `http://localhost:8080/ipfs/${hash}`)
     } else if(isElectron) {
-      console.log("2")
       var xhr = new XMLHttpRequest()
       xhr.open('GET', `http://localhost:8080/ipfs/${hash}`, true)
       xhr.responseType = 'blob'
       xhr.onload = function(e) {
-        console.log("EE", e, this)
         if(this.status == 200) {
-          console.log("RESPONSE", typeof this.response, this.response)
           callback(null, this.response) // this.response is a Blob
-        } else {
-          console.log("NOPE!")
         }
       }
       xhr.send()
     } else {
-      console.log("3")
       this.orbit.getFile(hash)
         .then((stream) => {
-          // console.log("got stream", stream)
           if(asStream) {
             callback(null, null, null, stream)
           } else {
             let buf = new Uint8Array(0)
             stream.on('error', () => callback(err, null));
             stream.on('data', (chunk) => {
-              // console.log("DATA", chunk)
               const tmp = new Uint8Array(buf.length + chunk.length)
               tmp.set(buf)
               tmp.set(chunk, buf.length)
               buf = tmp
             });
             stream.on('end', () => {
-              // console.log("END")
               callback(null, buf)
             });
           }

@@ -14,6 +14,7 @@ class TextMessage extends React.Component {
     super(props);
     this.state = {
       text: props.text,
+      replyto: props.replyto,
       useEmojis: props.useEmojis,
       highlightWords: props.highlightWords,
     };
@@ -21,6 +22,7 @@ class TextMessage extends React.Component {
 
   componentWillReceiveProps(nextProps) {
     this.setState({
+      replyto: nextProps.replyto,
       useEmojis: nextProps.useEmojis,
       highlightWords: nextProps.highlightWords
     });
@@ -42,10 +44,10 @@ class TextMessage extends React.Component {
   }
 
   // Create emojis
-  _emojify(items) {
+  _emojify(items, size) {
     const emojiOpts = {
       emojiType: 'emojione',
-      attributes: { width: '16px', height: '16px' }
+      attributes: { width: size || '16px', height: size || '16px' }
     };
 
     return _.flatten(items.map((item) => {
@@ -67,8 +69,19 @@ class TextMessage extends React.Component {
     // Create links from urls
     let finalText = ReactAutolink.autolink(this.state.text, { target: "_blank", rel: "nofollow", key: Math.random() });
     finalText = this._highlight(finalText);
-    finalText = this.state.useEmojis ? this._emojify(finalText) : finalText;
     // finalText = this._ipfsfy(finalText);
+    finalText = this.state.useEmojis ? this._emojify(finalText) : finalText;
+
+    console.log("REPLYTO", this.state.replyto)
+
+    if(this.state.replyto) {
+      const emojified = this.state.useEmojis ? this._emojify([`${this.state.replyto}`], '12px') : this.state.replyto
+      const element = (<span className="reply" key={Math.random()}>{emojified}</span>)
+      console.log(element)
+      finalText.push(" ⇾ ")
+      finalText.push(element)
+    }
+
 
     const content = (
       <TransitionGroup
