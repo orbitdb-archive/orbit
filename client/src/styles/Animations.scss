@@ -133,6 +133,20 @@
     }
 }
 
+@keyframes fadeInDown2 {
+    0% {
+        opacity: 0;
+        transform: translateY(-40px);
+    }
+    50% {
+        opacity: 0.3;
+    }
+    100% {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
 $bounce-amount: 2px;
 
 @keyframes bounceInLeft {

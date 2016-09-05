@@ -1,7 +1,7 @@
 'use strict';
 
 var Themes = {
-  "Default": { WebkitFilter: "hue-rotate(50deg)" }, // "Red"
+  "Default": {}, // None
   "Purple": { WebkitFilter: "hue-rotate(0deg)" },
   "Magenta": { WebkitFilter: "hue-rotate(20deg)" },
   "Red": { WebkitFilter: "hue-rotate(50deg)" },

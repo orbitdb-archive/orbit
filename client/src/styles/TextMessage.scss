@@ -1,6 +1,6 @@
 .TextMessage {
-  padding-left: 0.3em;
-  padding-right: 0.3em;
+  // padding-left: 0.3em;
+  // padding-right: 0.3em;
   display: flex;
   flex: 1 0;
   align-items: center;
@@ -13,11 +13,31 @@
   -moz-hyphens: auto;
   hyphens: auto;
 
+  text-align: justify;
+  // padding-left: 1em;
+  // margin-top: 0.2em;
+
   .reply {
-    font-size: 0.8em;
-    color: rgba(128, 128, 128, 0.8);
+    font-size: 0.7em;
+    color: rgba(96, 96, 96, 1);
     font-style: italic;
+
+    flex-direction: row;
+    display: flex;
+    align-items: baseline;
     align-self: center;
+
+    margin-top: 0.75em;
+    margin-left: 0.5em;
+  }
+
+  .replyToIcon {
+    display: inline-block;
+    transform: rotate3d(0, 0, 1, 180deg) rotate3d(1, 0, 0, 180deg);
+    color: rgba(128, 128, 128, 0.2);
+    padding: 0.3em;
+    padding-right: 0;
+    font-style: normal;
   }
 
   a {
@@ -45,11 +65,11 @@
 }
 
 .TextMessage:hover {
-  color: rgba(240, 244, 240, 0.9);
+  // color: rgba(240, 244, 240, 0.9);
 }
 
 .loading {
-  color: rgba(240, 244, 240, 0.1);
+  // color: rgba(240, 244, 240, 0.1);
 }
 
 .textAnimation-appear {

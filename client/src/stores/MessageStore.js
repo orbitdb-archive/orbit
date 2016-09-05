@@ -14,7 +14,7 @@ import UserStore from 'stores/UserStore';
 import Logger from 'logplease';
 const logger = Logger.create('MessageStore', { color: Logger.Colors.Magenta });
 
-const messagesBatchSize = 8;
+const messagesBatchSize = 4;
 
 const MessageStore = Reflux.createStore({
   listenables: [AppActions, UIActions, NetworkActions, SocketActions, ChannelActions],
@@ -22,6 +22,7 @@ const MessageStore = Reflux.createStore({
     this.currentChannel = null;
     this.channels = {};
     this.posts = {}; // simple cache for message contents
+    this.feedStream = null
     this._reset();
 
     this.loading = false;
@@ -35,6 +36,9 @@ const MessageStore = Reflux.createStore({
         if(i === amount) clearInterval(timer);
       }, interval);
     };
+  },
+  onSetFeedStreamDatabase: function(db) {
+    this.feedStream = db
   },
   onInitialize: function(orbit) {
     this.orbit = orbit
@@ -90,7 +94,7 @@ const MessageStore = Reflux.createStore({
 
       feed.events.on('load', (name, hash) => {
         // TODO: started loading feed's history
-        // console.log("-------------------------------- LOAD", name, hash)
+        console.log("-------------------------------- LOAD", name, hash)
         UIActions.startLoading(name, "loadHistory", "Loading history...");
         if(this.connectTimeout[name]) clearTimeout(this.connectTimeout[name]);
         this.connectTimeout[name] = setTimeout(() => {
@@ -101,11 +105,11 @@ const MessageStore = Reflux.createStore({
 
       feed.events.on('ready', (name) => {
         // TODO: feed's history loaded
-        // console.log("-------------------------------- READY", name)
+        console.log("-------------------------------- READY", name)
         clearTimeout(this.connectTimeout[name]);
         delete this.connectTimeout[name];
         UIActions.stopLoading(name, "loadHistory");
-        this.channels[name].canLoadMore = true;
+        if(this.channels[name]) this.channels[name].canLoadMore = true;
       });
     })
   },
@@ -164,7 +168,8 @@ const MessageStore = Reflux.createStore({
     }
   },
   getOldestMessage: function(channel: string) {
-    return this.channels[channel] && this.channels[channel].messages.length > 0 ? this.channels[channel].messages[0].hash : null;
+    // return this.channels[channel] && this.channels[channel].messages.length > 0 ? this.channels[channel].messages[0].hash : null;
+    return this.channels[channel] && this.channels[channel].messages.length > 0 ? this.channels[channel].messages[this.channels[channel].messages.length - 1].hash : null;
   },
   onDisconnect: function() {
     this._reset();
@@ -173,7 +178,7 @@ const MessageStore = Reflux.createStore({
     // console.log("JOIN", channel)
     this._resetChannelState(this.currentChannel);
     if(!this.channels[channel])
-      this.channels[channel] = { messages: [], isReady: false, loading: false, canLoadMore: true };
+      this.channels[channel] = { messages: [], isReady: false, loading: false, canLoadMore: true, new: false, ready: false };
     this.currentChannel = channel;
   },
   onJoinedChannel: function(channel) {
@@ -185,17 +190,22 @@ const MessageStore = Reflux.createStore({
   onLeaveChannel: function(channel: string) {
     this._resetChannelState(channel);
   },
+  reachedChannelStart: function(channel: string) {
+    if (this.channels[channel]) this.channels[channel].new = true
+  },
   onLoadMessages: function(channel: string) {
     // console.log("onLoadMessages", channel)
-    if(this.channels[channel])
+    if (this.channels[channel])
       this.trigger(channel, this.channels[channel].messages);
   },
   onLoadMoreMessages: function(channel: string) {
-    if(channel !== this.currentChannel)
+    console.log(this.loading, this.channels[channel].canLoadMore, channel, this.currentChannel)
+
+    if (channel !== this.currentChannel)
       return;
 
     // if(!this.channels[channel].loading && this.channels[channel].canLoadMore) {
-      if(!this.loading && this.channels[channel].canLoadMore) {
+      if (!this.loading && this.channels[channel].canLoadMore) {
         logger.debug("load more messages from #" + channel);
         // this.channels[channel].canLoadMore = true;
         this.loadMessages(channel, this.getOldestMessage(channel), null, messagesBatchSize);
@@ -206,13 +216,17 @@ const MessageStore = Reflux.createStore({
     logger.debug("--> GET MESSAGES #" + channel + ", " + olderThanHash + " " + newerThanHash  + " " + amount);
     // this.channels[channel].loading = true;
       this.loading = true
-    // UIActions.startLoading(channel, "loadMessages", "Loading more messages...");
+    UIActions.startLoading(channel, "loadMessages", "Loading more messages...");
     this.orbit.get(channel, olderThanHash, newerThanHash, amount)
       .then((messages) => {
         this._addMessages(channel, messages, olderThanHash !== null);
         this.loading = false
+        UIActions.stopLoading(channel, "loadMessages");
         // this.channels[channel].loading = false;
-        // UIActions.stopLoading(channel, "loadMessages");
+      })
+      .catch((e) => {
+        console.error(e)
+        this.loading = false
       })
   },
   _addMessages: function(channel: string, newMessages: Array, older: boolean) {
@@ -221,16 +235,16 @@ const MessageStore = Reflux.createStore({
     var unique = _.differenceWith(newMessages, this.channels[channel].messages, _.isEqual);
     logger.debug("Unique new messages: " + unique.length);
 
-    if(unique.length > 0) {
+    if (unique.length > 0) {
       // If we received more than 1 message, there are more messages to be loaded
       this.channels[channel].canLoadMore = true;
       if(unique.length === 1 && this.channels[channel].messages.length === 0 && older) {
         // Special case for a channel that has only one message
-        ChannelActions.reachedChannelStart();
+        ChannelActions.reachedChannelStart(channel);
       }
 
       // Append the new messages either at the end (newer) or at the beginning (older)
-      if(older)
+      if (older)
         this.channels[channel].messages = unique.concat(this.channels[channel].messages);
       else
         this.channels[channel].messages = this.channels[channel].messages.concat(unique);
@@ -239,16 +253,16 @@ const MessageStore = Reflux.createStore({
       unique.reverse().forEach((f) => this._loadPost(channel, f.payload));
 
       // Sort by timestamp
-      this.channels[channel].messages = _.sortBy(this.channels[channel].messages, (e) => e.payload.meta.ts);
+      this.channels[channel].messages = _.orderBy(this.channels[channel].messages, (e) => e.payload.meta.ts, ['desc']);
 
       NotificationActions.newMessage(channel);
       this.trigger(channel, this.channels[channel].messages);
-    } else if(older) {
+    } else if (older) {
       this.channels[channel].canLoadMore = false;
-      ChannelActions.reachedChannelStart();
-    } else if(!older && this.channels[channel].messages.length === 0) {
+      ChannelActions.reachedChannelStart(channel);
+    } else if (!older && this.channels[channel].messages.length === 0) {
       this.channels[channel].canLoadMore = false;
-      ChannelActions.reachedChannelStart();
+      ChannelActions.reachedChannelStart(channel);
     }
     // logger.debug("Messages added:", unique.length, ", oldest", this.getOldestMessage(channel), this.channels[channel].isReady, older, this.channels[channel].messages.length === 0);
   },
@@ -265,8 +279,8 @@ const MessageStore = Reflux.createStore({
 
     this.onLoadPost(message.value, (err, post) => {
       UserActions.addUser(post.meta.from);
-      if(post && post.content) {
-        if(hasMentions(post.content.toLowerCase(), UserStore.user.name.toLowerCase()))
+      if (post && post.content) {
+        if (hasMentions(post.content.toLowerCase(), UserStore.user.name.toLowerCase()))
           NotificationActions.mention(channel, post.content);
       }
     });
@@ -280,10 +294,10 @@ const MessageStore = Reflux.createStore({
         .then((post) => {
           this.posts[hash] = post;
           const replyToHash = post.replyto
-          console.log("1", replyToHash, post)
+          // console.log("1", replyToHash, post)
           if(replyToHash) {
             const cached = this.posts[replyToHash]
-          console.log("2", cached)
+          // console.log("2", cached)
             if(cached && cached.content) {
               this.orbit.getUser(cached.meta.from).then((user) => {
                 let content = ''
@@ -292,14 +306,18 @@ const MessageStore = Reflux.createStore({
                 else
                   content = cached.name
 
-                console.log("--2", content)
-                self.posts[hash].replyToContent = "<" + user.name + "> " + content;
+                // console.log("--2", content)
+                // self.posts[hash].replyToContent = "<" + user.name + "> " + content;
+                self.posts[hash].replyToContent = {
+                  user: user,
+                  post: cached,
+                }
                 callback(null, self.posts[hash]);
               })
             } else {
-          console.log("3")
+          // console.log("3")
               this.onLoadPost(replyToHash, (err, data) => {
-          console.log("4", data)
+          // console.log("4", data)
                 if(data) {
                   this.orbit.getUser(data.meta.from).then((user) => {
                     let content = ''
@@ -310,7 +328,11 @@ const MessageStore = Reflux.createStore({
 
                     console.log("--1", content)
                     self.posts[replyToHash] = data;
-                    self.posts[hash].replyToContent = "<" + user.name + "> " + content;
+                    // self.posts[hash].replyToContent = "<" + user.name + "> " + content;
+                    self.posts[hash].replyToContent = {
+                      user: user,
+                      post: data,
+                    }
                     callback(null, self.posts[hash]);
                   })
                 }
@@ -328,7 +350,8 @@ const MessageStore = Reflux.createStore({
   onSendMessage: function(channel: string, text: string, replyToHash: string) {
     logger.debug("--> Send message: " + text, replyToHash);
     // UIActions.startLoading(channel, "send");
-    this.orbit.send(channel, text, replyToHash)
+    this.orbit.send("--planet-express." + this.orbit.user.id, text, replyToHash)
+    // this.orbit.send(channel, text, replyToHash)
       .then((post) => {
         logger.debug("Sent:", post.content)
         // logger.debug(post)
@@ -354,6 +377,7 @@ const MessageStore = Reflux.createStore({
     } else if(isElectron) {
       var xhr = new XMLHttpRequest()
       xhr.open('GET', `http://localhost:8080/ipfs/${hash}`, true)
+      xhr.withCredentials = true
       xhr.responseType = 'blob'
       xhr.onload = function(e) {
         if(this.status == 200) {

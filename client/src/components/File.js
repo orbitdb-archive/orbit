@@ -21,7 +21,7 @@ class File extends React.Component {
     this.ext = /(?:\.([^.]+))?$/.exec(props.name)[1];
     this.state = {
       meta: props.meta,
-      showPreview: false,
+      showPreview: true,
       previewContent: "Loading...",
     };
     this.clipboard = new Clipboard('.clipboard-' + props.hash, {
@@ -48,9 +48,11 @@ class File extends React.Component {
     return highlight.getLanguage(this.ext);
   }
 
-  handleClick(evt) {
-    evt.stopPropagation()
+  componentDidMount() {
+    this.loadPreview()
+  }
 
+  loadPreview() {
     function toArrayBuffer(buffer) {
       var ab = new ArrayBuffer(buffer.length);
       var view = new Uint8Array(ab);
@@ -60,104 +62,95 @@ class File extends React.Component {
       return ab;
     }
 
-    this.setState({
-      showPreview: !this.state.showPreview,
-      previewContent: 'Loading...',
-    }, () => {
-      if (this.state.showPreview) {
+    if (this.state.showPreview) {
+      const isMedia = this.isAudio | this.isVideo | this.isImage
+      const asURL = isElectron & isMedia
+      const asStream = this.isVideo
+      let blob = new Blob([])
 
-        const isMedia = this.isAudio | this.isVideo | this.isImage
-        const asURL = isElectron & isMedia
-        const asStream = this.isVideo
-        let blob = new Blob([])
+      ChannelActions.loadFile(this.props.hash, asURL, asStream, (err, buffer, url, stream) => {
+        if (err) {
+          console.error(err)
+          return
+        }
 
-        ChannelActions.loadFile(this.props.hash, asURL, asStream, (err, buffer, url, stream) => {
-          if (err) {
-            console.error(err)
-            return
+        let previewContent = 'Unable to display file.'
+        if (buffer || url || stream) {
+
+          if(buffer && isElectron) {
+            console.log("BLOB!")
+            blob = buffer
+          } else if (buffer && this.state.meta.mimeType) {
+            console.log("OMG")
+            const arrayBufferView = toArrayBuffer(buffer)
+            blob = new Blob([arrayBufferView], { type: this.state.meta.mimeType })
           }
 
-          let previewContent = 'Unable to display file.'
-          if (buffer || url || stream) {
+          if(buffer)
+            url = window.URL.createObjectURL(blob)
 
-            if(buffer && isElectron) {
-              console.log("BLOB!")
-              blob = buffer
-            } else if (buffer && this.state.meta.mimeType) {
-              console.log("OMG")
-              const arrayBufferView = toArrayBuffer(buffer)
-              blob = new Blob([arrayBufferView], { type: this.state.meta.mimeType })
-            }
-
-            if(buffer)
-              url = window.URL.createObjectURL(blob)
-            // if (buffer && this.state.meta.mimeType && isMedia) {
-            //   const arrayBufferView = toArrayBuffer(buffer)
-            //   blob = new Blob([arrayBufferView], { type: this.state.meta.mimeType })
-            // } else if (isElectron) {
-            //   blob = buffer
-            //   url = window.URL.createObjectURL(blob)
-            // }
-
-            if (this.isAudio) {
-              previewContent = <audio height={200} src={url} controls autoPlay={true} />
-            } else if (this.isImage) {
-              previewContent = <img height={200} src={url} />
-            } else if (this.isVideo) {
-              if (isElectron) {
+          if (this.isAudio) {
+            previewContent = <audio src={url} controls autoPlay={false} />
+          } else if (this.isImage) {
+            previewContent = <img src={url} />
+          } else if (this.isVideo) {
+            if (isElectron) {
               console.log("VIDEO")
-                previewContent = <video height={200} src={url} controls autoPlay={true} />
-                this.setState({ previewContent })
-                return
-              } else {
+              previewContent = <video src={url} controls autoPlay={true} />
+              this.setState({ previewContent })
+              return
+            } else {
               console.log("VIDEO NOT ELECTRON")
-                const mimeCodec = 'video/mp4; codecs="avc1.42E01E, mp4a.40.2"'
-                const source = new MediaSource()
-                url = window.URL.createObjectURL(source)
+              const mimeCodec = 'video/mp4; codecs="avc1.42E01E, mp4a.40.2"'
+              const source = new MediaSource()
+              url = window.URL.createObjectURL(source)
 
-                source.addEventListener('sourceopen', (e) => {
-                  let sourceBuffer = source.addSourceBuffer(mimeCodec)
-                  let buf = []
+              source.addEventListener('sourceopen', (e) => {
+                let sourceBuffer = source.addSourceBuffer(mimeCodec)
+                let buf = []
 
-                  sourceBuffer.addEventListener('updateend', () => {
-                    if(buf.length > 0)
-                      sourceBuffer.appendBuffer(buf.shift())
-                  })
-
-                  stream.on('data', (data) => {
-                    if(!sourceBuffer.updating)
-                      sourceBuffer.appendBuffer(toArrayBuffer(data));
-                    else
-                      buf.push(toArrayBuffer(data));
-                  });
-                  stream.on('end', () => {
-                    setTimeout(() => {
-                      if(source.readyState === 'open')
-                        source.endOfStream()
-                      // this.refs.videoPlayer.play();
-                    }, 100);
-                  });
-                  stream.on('error', (e) => console.error(e))
+                sourceBuffer.addEventListener('updateend', () => {
+                  if(buf.length > 0)
+                    sourceBuffer.appendBuffer(buf.shift())
                 })
 
-                previewContent = <video height={200} src={url} controls autoPlay={false} />
-              }
-            } else {
-              console.log("FILE")
-              var fileReader = new FileReader()
-              fileReader.onload = (event) => {
-                console.log("TEXT", event.target.result)
-                previewContent = this.isHighlightable ? <Highlight>{event.target.result}</Highlight> : <pre>{event.target.result}</pre>
-                this.setState({ previewContent })
-              }
-              fileReader.readAsText(blob, 'utf-8')
-              return
+                stream.on('data', (data) => {
+                  if(!sourceBuffer.updating)
+                    sourceBuffer.appendBuffer(toArrayBuffer(data));
+                  else
+                    buf.push(toArrayBuffer(data));
+                });
+                stream.on('end', () => {
+                  setTimeout(() => {
+                    if(source.readyState === 'open')
+                      source.endOfStream()
+                    // this.refs.videoPlayer.play();
+                  }, 100);
+                });
+                stream.on('error', (e) => console.error(e))
+              })
+
+              previewContent = <video height={200} src={url} controls autoPlay={false} />
             }
+          } else {
+            console.log("FILE")
+            var fileReader = new FileReader()
+            fileReader.onload = (event) => {
+              console.log("TEXT", event.target.result)
+              previewContent = this.isHighlightable ? <Highlight>{event.target.result}</Highlight> : <pre>{event.target.result}</pre>
+              this.setState({ previewContent })
+            }
+            fileReader.readAsText(blob, 'utf-8')
+            return
           }
-          this.setState({ previewContent })
-        })
-      }
-    })
+        }
+        this.setState({ previewContent })
+      })
+    }
+  }
+
+  handleClick(evt) {
+    evt.stopPropagation()
   }
 
   render() {
@@ -166,7 +159,9 @@ class File extends React.Component {
     const className = `clipboard-${this.props.hash} download`;
     const preview = (
       <div className="preview smallText">
-        {this.state.previewContent}
+        <a href={openLink} target="_blank">
+          {this.state.previewContent}
+        </a>
       </div>
     );
     return (
@@ -180,12 +175,11 @@ class File extends React.Component {
           transitionLeaveTimeout={0}
           component="div"
           className="content">
-            <span className="text" onClick={this.handleClick.bind(this)}>{this.props.name}</span>
-            <a className="download" href={openLink} target="_blank">Open</a>
-            <a className="download" href={openLink} download={this.props.name}>Download</a>
-            <span className={className}>Hash</span>
-            <span className="size">{size}</span>
+            <div className="text">{this.props.name}</div>
             {this.state.showPreview && preview}
+            <a className="download" href={openLink} download={this.props.name}>Download</a>
+            <span className="spacer">  |  </span>
+            <span className={className}>Copy Hash</span>
         </TransitionGroup>
       </div>
     );

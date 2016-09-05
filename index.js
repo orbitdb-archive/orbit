@@ -24,12 +24,32 @@ if(!fs.existsSync(appDataPath))
 Logger.setLogfile(path.join(appDataPath, 'debug.log'))
 logger.debug("Run index.js in '" + MODE + "' mode")
 
-const connectWindowSize = { width: 500, height: 430, center: true, minWidth: 500, minHeight: 430, "web-preferences": {
-      "web-security": false
-    } }
-const mainWindowSize    = { width: 1200, height: 800, center: true, minWidth: 256, minHeight: 256, "web-preferences": {
-      "web-security": false
-    } }
+const widht = 700
+const height = 900
+const minWidth = 650
+
+const connectWindowSize = {
+  width: widht,
+  height: height,
+  center: true,
+  minWidth: minWidth,
+  minHeight: 512,
+  "web-preferences": {
+    "web-security": false
+  }
+}
+
+const mainWindowSize = {
+  width: widht,
+  height: height,
+  center: true,
+  minWidth: minWidth,
+  minHeight: 512,
+  "web-preferences": {
+    "web-security": false
+  }
+}
+
 let mainWindow = null
 
 const template = require('./menu-native')(app)

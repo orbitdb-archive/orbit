@@ -1,0 +1,77 @@
+@import 'Animations';
+@import 'Colors';
+
+.Dashboard {
+  overflow: hidden;
+
+  background-color: #202020;
+  // background-image: url("../images/background2.png");
+  // background-repeat: repeat;
+  // background-size: contain;
+
+  justify-content: center;
+  display: flex;
+  flex-direction: column;
+
+  padding: 1.5em;
+  z-index: 100;
+  cursor: pointer;
+
+  border-bottom: 1vh solid rgba(255, 255, 255, 0.4);
+
+  // background-image: url("images/earth.png");
+  // background-size: contain;
+
+  .username {
+    // font-size: 1.0em;
+    // font-weight: 300;
+    opacity: 0.8;
+    font-size: 4vh;
+    // font-weight: 300;
+    // color: lighten($header-color, 20%)
+    color: rgb(96, 96, 96);
+    padding: 0.1em;
+    background-color: rgba(255, 255, 255, 0.6);
+  }
+
+  .picture {
+    // width: 96px;
+    // height: 96px;
+    height: 9vh;
+    align-self: center;
+  }
+
+  // .loading {
+  //   font-size: 1em;
+  //   color: lighten($header-color, 50%);
+  //   display: flex;
+  //   justify-content: center;
+  //   font-weight: 100;
+  // }
+}
+
+// .Username {
+//   font-size: 2em;
+//   font-weight: 300;
+//   color: lighten($header-color, 20%)
+// }
+
+// .Feed {
+//   font-weight: 100;
+//   font-size: 1.25em;
+//   padding: 0.1em;
+//   margin-left: 0.25em;
+// }
+
+// .feedAnimation-enter {
+//   $duration: 0.3s;
+
+//   -webkit-animation-name: fadeIn;
+//   animation-name: fadeIn;
+//   -webkit-animation-duration: $duration;
+//   animation-duration: $duration;
+//   -webkit-animation-fill-mode: both;
+//   animation-fill-mode: both;
+//   -webkit-animation-timing-function: ease-in;
+//   animation-timing-function: ease-in;
+// }

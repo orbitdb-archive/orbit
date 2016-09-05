@@ -18,10 +18,11 @@ class ChannelControls extends React.Component {
       appSettings: PropTypes.object,
       theme: PropTypes.object,
       replyto: PropTypes.object,
+      onClearReplyTo: PropTypes.func,
   };
 
   render() {
-    const { onSendMessage, onSendFiles, isLoading, channelMode, appSettings, theme, replyto } = this.props;
+    const { onSendMessage, onSendFiles, onClearReplyTo, isLoading, channelMode, appSettings, theme, replyto } = this.props;
     return (
       <TransitionGroup
         component="div"
@@ -32,13 +33,14 @@ class ChannelControls extends React.Component {
         transitionLeaveTimeout={0}
         >
         <div className="Controls" key="controls">
-          <Spinner isLoading={isLoading} color="rgba(255, 255, 255, 0.7)" size="16px" />
-          <span className="replyto">{replyto ? `Reply to:  "<${replyto.user.name}> ${replyto.content}"` : ""}</span>
-          <SendMessage onSendMessage={onSendMessage} theme={theme} useEmojis={appSettings.useEmojis} replyto={replyto ? replyto.hash : null} />
-          <Dropzone className="dropzone2" onDrop={onSendFiles}>
-            <div className="icon flaticon-tool490" style={theme} />
-          </Dropzone>
-          <div className="statusMessage" style={theme}>{channelMode}</div>
+          <SendMessage
+            onSendMessage={onSendMessage}
+            theme={theme}
+            useEmojis={appSettings.useEmojis}
+            replyto={replyto}
+            onClearReplyTo={onClearReplyTo}
+          />
+          <Dropzone className="dropzone2" onDrop={onSendFiles} />
         </div>
       </TransitionGroup>
     );

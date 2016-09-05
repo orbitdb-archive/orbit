@@ -31,7 +31,7 @@ class User extends React.Component {
     const color = colorify ? Please.make_color({
       seed: user ? user.name : '',
       saturation: 0.4,
-      value: 0.9,
+      value: 0.7,
       golden: false
     }) : ""
 
@@ -39,7 +39,7 @@ class User extends React.Component {
       <div
         className={className}
         style={{ color: user ? color : 'rgb(96, 96, 96)' }}
-        onClick={this.props.onShowProfile}
+        onClick={this.props.onShowProfile ? this.props.onShowProfile.bind(this, user) : null}
       >
         {user ? user.name : 'Anonymous'}
       </div>

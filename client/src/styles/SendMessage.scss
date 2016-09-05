@@ -2,42 +2,53 @@
 @import 'Colors';
 
 .SendMessage {
+  width: 100%;
   box-sizing: border-box;
-  font-family: "Source Sans Pro";
+  font-family: "Lato";
   font-weight: 100;
   font-size: 0.9em;
   padding: 0.1em;
-  color: rgb(128, 128, 128);
+  // color: rgb(128, 128, 128);
   display: flex;
-  flex: 1 1 auto;
-  max-width: 60vmax;
-  margin-top: 0;
+  // flex: 1 1 auto;
+  // max-width: 60vmax;
+  // margin-top: 0.5em;
+  flex-direction: column;
+  margin-top: 0.5em;
+
+  .InputMessage {
+    font-style: italic;
+    font-size: 1.2em;
+    color: #353535;
+    cursor: not-allowed;
+    padding: 0.5em 0.25em;
+  }
 
   form {
     display: flex;
     flex: 1 1 auto;
-    margin-right: 0.5em;
+    // margin-right: 0.5em;
   }
 
   input[type=text] {
-    margin: 0.25em;
-    margin-top: 0.5em;
-    margin-bottom: 0.5em;
     flex: 1 1 100%;
-  }
-
-  .username {
-    display: flex;
-    align-items: center;
-    color: $main-text-color;
-    margin-right: 0.5em;
-    padding: 0em 0.25em;
+    font-size: 1.75em;
+    // border-bottom: 1px dashed rgba(255, 255, 255, 0.2);
+    border-bottom: 1px dashed rgba(32, 32, 32, 0.3);
+    margin: 0;
+    margin-top: 0;
+    margin-bottom: 0;
+    // padding: 0.25em 0.25em;
+    padding: 0.5em;
+    // padding-top: 0.25em;
+    color: lighten(black, 10%);
+    background-color: rgb(255, 255, 255);
   }
 }
 
 .emojiPreview-appear {
   $duration: .1s;
-  $animation-name: fadeInUp2;
+  $animation-name: fadeInDown2;
 
   -webkit-animation: $animation-name;
   animation: $animation-name;

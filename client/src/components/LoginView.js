@@ -11,7 +11,7 @@ import 'styles/LoginView.scss';
 var maxNicknameLength = 32;
 var maxLogoSize = 320;
 
-const defaultNetworkHost = window.DEV ? 'localhost:3333' : '178.62.241.75:3333'; // localhost or dev network
+const defaultNetworkHost = window.DEV ? '178.62.241.75:3333' : '178.62.241.75:3333'; // localhost or dev network
 
 class LoginView extends React.Component{
   constructor(props) {
@@ -105,15 +105,14 @@ class LoginView extends React.Component{
 
     var form = !this.state.connecting ? (
       <TransitionGroup transitionName="loginScreenAnimation" transitionAppear={true} component="div" className="inputs" transitionAppearTimeout={5000} transitionEnterTimeout={5000} transitionLeaveTimeout={5000}>
-        <div className="row">
+        <div className="row hidden">
           <span className="label">Network</span><input type="text" ref="network" defaultValue={defaultNetworkHost} style={this.state.theme}/>
         </div>
         <div className="row">
-          <span className="label">Nickname</span>
+          <span className="label">Login</span>
           <input
             type="text"
             ref="username"
-            placeholder={this.state.username ? "" : "..."}
             defaultValue={this.state.username ? this.state.username : ""}
             maxLength="32"
             autoFocus
@@ -139,11 +138,10 @@ class LoginView extends React.Component{
       <div className="LoginView">
         <form onSubmit={this.register.bind(this)} style={{ marginTop: (this.state.logoSize / 2 - 83)}}>
           <TransitionGroup className="row" transitionName="loginHeaderAnimation" transitionAppear={true} component="div" transitionAppearTimeout={5000} transitionEnterTimeout={5000} transitionLeaveTimeout={5000}>
-            <h1>Orbit</h1>
+            <h1>Planet Express</h1>
           </TransitionGroup>
           {form}
         </form>
-        <BackgroundAnimation style={{ top: "0", left: "0" }} size={this.state.logoSize} theme={this.state.theme}/>
       </div>
     );
   }

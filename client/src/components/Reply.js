@@ -7,11 +7,9 @@ import ReactEmoji from "react-emoji";
 import ReactAutolink from "react-autolink";
 import ReactIpfsLink from "components/plugins/react-ipfs-link";
 import MentionHighlighter from 'components/plugins/mention-highlighter';
-import User from "components/User";
-import moment from 'moment'
 import "styles/TextMessage.scss";
 
-class TextMessage extends React.Component {
+class Reply extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -53,13 +51,12 @@ class TextMessage extends React.Component {
       attributes: { width: size, height: size }
     };
 
-    return _.flatten(items).map((item) => {
+    return _.flatten(items.map((item) => {
       if(typeof item !== 'string') return item;
-      // console.log(item)
-      // if(item.trim().charAt(0) !== ':' && item.trim().endsWith('d:')) return item; // Handle 'd:' as a special case
+      if(item[0] !== ':' && item.indexOf('d:') > 0) return item; // Handle 'd:' specially
       emojiOpts.attributes.alt = item.trim();
       return ReactEmoji.emojify(item, emojiOpts);
-    });
+    }));
   }
 
   // Create linkss from IPFS hashes
@@ -77,28 +74,10 @@ class TextMessage extends React.Component {
     finalText = this.state.useEmojis ? this._emojify(finalText) : finalText;
 
     if(this.state.replyto) {
-      const content = this.state.replyto.post.content ? this.state.replyto.post.content : this.state.replyto.post.name
-
-      let replyText = ReactAutolink.autolink(content, { target: "_blank", rel: "nofollow", key: Math.random() });
-      replyText = this.state.useEmojis ? this._emojify([replyText], '12px') : content
-
-      const element = (
-        <div className="reply" key={Math.random()}>
-          <span className="replyToIcon">↩︎</span>
-          <div>
-            <div className="row">
-              <User
-                user={this.state.replyto.user}
-                colorify={true}
-                highlight={false}
-                onShowProfile={this.props.onShowProfile}
-                />
-              <span className="Timestamp">{moment(this.state.replyto.post.meta.ts).fromNow()}</span>
-            </div>
-            <div style={{ marginTop: "0.1em" }}>{replyText}</div>
-          </div>
-        </div>
-      )
+      const emojified = this.state.useEmojis ? this._emojify([`${this.state.replyto}`], '12px') : this.state.replyto
+      const title = <div className="reply" key={Math.random()}></div>
+      const element = <div className="reply" key={Math.random()}><span className="replyToIcon">↩︎</span>{emojified}</div>
+      // finalText.push(title)
       finalText.push(element)
     }
 
@@ -119,4 +98,4 @@ class TextMessage extends React.Component {
   }
 }
 
-export default TextMessage;
+export default Reply;

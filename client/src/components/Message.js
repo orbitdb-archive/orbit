@@ -10,7 +10,9 @@ import ChannelActions from 'actions/ChannelActions';
 import UserActions from 'actions/UserActions';
 import NotificationActions from 'actions/NotificationActions';
 import TransitionGroup from "react-addons-css-transition-group"; //eslint-disable-line
-import { getFormattedTime } from '../utils/utils.js';
+// import { getFormattedTime } from '../utils/utils.js';
+import moment from 'moment'
+
 import "styles/Message.scss";
 
 class Message extends React.Component {
@@ -22,7 +24,7 @@ class Message extends React.Component {
       user: null,
       hasHighlights: false,
       isCommand: false,
-      formattedTime: getFormattedTime(props.message.meta.ts),
+      formattedTime: moment(props.message.meta.ts).fromNow(),
       showSignature: false,
       showProfile: null
     };
@@ -86,7 +88,9 @@ class Message extends React.Component {
               replyto={post.replyToContent}
               useEmojis={useEmojis}
               highlightWords={post.meta.from !== highlightWords ? highlightWords : ''}
-              key={post.hash} />
+              key={post.hash}
+              onShowProfile={this.props.onShowProfile}
+            />
           );
           break;
         case 'file':
@@ -97,7 +101,8 @@ class Message extends React.Component {
           break;
       }
     }
-    return <div className={contentClass} onClick={this.onReplyTo.bind(this)}>{content}</div>;
+    // return <div className={contentClass} onClick={this.onReplyTo.bind(this)}>{content}</div>;
+    return <div className={contentClass}>{content}</div>;
   }
 
   renderVerification() {
@@ -106,23 +111,41 @@ class Message extends React.Component {
       : null
   }
 
+  renderReply() {
+    return null
+  }
 
   render() {
     const { message, colorifyUsername, style, onDragEnter } = this.props;
     const { user, post, isCommand, hasHighlights, formattedTime } = this.state;
     const className = hasHighlights ? "Message highlighted" : "Message";
+    const picture = "images/earth.png"
 
     return (
       <div className={className} style={style} onDragEnter={onDragEnter}>
-        <span className="Timestamp">{formattedTime}</span>
-        <User
-          user={user}
-          colorify={colorifyUsername}
-          highlight={isCommand}
-          onShowProfile={this.props.onShowProfile.bind(this, user)}
-          />
-        {this.renderContent()}
-        {this.renderVerification()}
+        <div className="row2">
+          <div className="Body">
+            <div style={{
+                display: "flex",
+                marginBottom: "0.25em",
+                alignItems: "center"
+            }}>
+              <img className="Picture" src={picture} />
+              <div className="column">
+                <User
+                  user={user}
+                  colorify={colorifyUsername}
+                  highlight={isCommand}
+                  onShowProfile={this.props.onShowProfile.bind(this, user)}
+                  />
+                <div className="Timestamp">{formattedTime}</div>
+              </div>
+            </div>
+            {this.renderContent()}
+            {this.renderReply()}
+            <div className="ActionButton" onClick={this.onReplyTo.bind(this)}>Reply</div>
+          </div>
+        </div>
       </div>
     );
   }

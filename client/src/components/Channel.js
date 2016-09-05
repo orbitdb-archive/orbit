@@ -10,10 +10,13 @@ import MessageStore from 'stores/MessageStore';
 import LoadingStateStore from 'stores/LoadingStateStore';
 import UIActions from 'actions/UIActions';
 import ChannelActions from 'actions/ChannelActions';
+import NetworkActions from 'actions/NetworkActions';
 import Profile from "components/Profile"
+import Spinner from 'components/Spinner';
 import 'styles/Channel.scss';
 import Logger from 'logplease';
 const logger = Logger.create('Channel', { color: Logger.Colors.Cyan });
+
 
 class Channel extends React.Component {
   constructor(props) {
@@ -30,12 +33,14 @@ class Channel extends React.Component {
       error: null,
       replyto: null,
       dragEnter: false,
+      user: props.user,
       username: props.user ? props.user.username : '',
       unreadMessages: 0,
       appSettings: props.appSettings,
       theme: props.theme,
       showUserProfile: null,
-      userProfilePosition: null
+      userProfilePosition: null,
+      loadCount: 0,
     };
 
     this.scrollTimer = null;
@@ -52,7 +57,9 @@ class Channel extends React.Component {
         loading: true,
         loadingText: 'Loading...',
         reachedChannelStart: false,
-        messages: []
+        messages: [],
+        replyto: null,
+        loadCount: 0,
       });
       UIActions.focusOnSendMessage();
       ChannelActions.loadMessages(nextProps.channel);
@@ -60,7 +67,8 @@ class Channel extends React.Component {
 
     this.setState({
       channelName: nextProps.channel,
-      username: nextProps.user ? nextProps.user.username : '',
+      user: nextProps.user,
+      username: nextProps.user ? nextProps.user.name : '',
       appSettings: nextProps.appSettings,
       theme: nextProps.theme
     });
@@ -77,12 +85,19 @@ class Channel extends React.Component {
   _updateLoadingState(state) {
     // logger.debug("CHANNEL STATE CHANGED", state, this.state.channelName);
     const channel = state[this.state.channelName]
-    if(channel && channel.loadHistory) {
-      this.setState({ loading: true, loadingText: channel.loadHistory.message })
+    // if(channel && channel.loadHistory) {
+    //   this.setState({ loading: true, loadingText: channel.loadHistory.message })
+    // } else if(channel && channel.loadMessages) {
+    //   this.setState({ loading: true, loadingText: channel.loadMessages.message })
+    // } else {
+    //   this.setState({ loading: false, loadingText: 'Load more messages...' })
+    // }
+    if(channel && channel.loadHistory && !channel.loadMessages) {
+      this.setState({ loading: true })
     } else if(channel && channel.loadMessages) {
-      this.setState({ loading: true, loadingText: channel.loadMessages.message })
+      this.setState({ loading: true })
     } else {
-      this.setState({ loading: false, loadingText: 'Load more messages...' })
+      this.setState({ loading: false })
     }
   }
 
@@ -93,7 +108,7 @@ class Channel extends React.Component {
 
   _onReachedChannelStart() {
     // logger.warn("REACHED CHANNEL START")
-    this.setState({ reachedChannelStart: true })
+    // this.setState({ reachedChannelStart: true })
   }
 
   componentWillUnmount() {
@@ -105,9 +120,10 @@ class Channel extends React.Component {
     this.setState({ messages: [] })
   }
 
-  onNewMessages(channel: string, messages) {
-    console.log("MESSAGES", channel, messages)
-    console.log(this.state.channelName)
+  onNewMessages(channel: string, res) {
+    const messages = res
+    // console.log("MESSAGES", channel, messages)
+    // console.log(this.state.channelName)
 
     if(channel !== this.state.channelName)
       return;
@@ -122,7 +138,16 @@ class Channel extends React.Component {
       });
     }
 
-    this.setState({ messages: messages });
+    const beginning = messages.length === 0 && this.state.loadCount !== 0
+
+    this.setState({
+      messages: messages,
+      reachedChannelStart: beginning,
+      loadCount: messages.length,
+      // loading: !beginning,
+    });
+
+    this.onScroll()
   }
 
   sendMessage(text: string, replyto: string) {
@@ -138,6 +163,7 @@ class Channel extends React.Component {
   }
 
   loadOlderMessages() {
+    console.log(this.state.loading)
     if(!this.state.loading) {
       ChannelActions.loadMoreMessages(this.state.channelName);
     }
@@ -150,35 +176,37 @@ class Channel extends React.Component {
   }
 
   componentDidUpdate() {
-    this.node = this.refs.MessagesView;
-    this.scrollAmount = this.node.scrollHeight - this.scrollHeight;
-    this.keepScrollPosition = (this.scrollAmount > 0 && this.scrollTop > (0 + this.topMargin)) || this.state.reachedChannelStart;
-    this.shouldScrollToBottom = (this.node.scrollTop + this.node.clientHeight + this.bottomMargin) >= this.scrollHeight;
+    // this.node = this.refs.MessagesView;
+    // this.scrollAmount = this.node.scrollHeight - this.scrollHeight;
+    // this.keepScrollPosition = (this.scrollAmount > 0 && this.scrollTop > (0 + this.topMargin)) || this.state.reachedChannelStart;
+    // this.shouldScrollToBottom = (this.node.scrollTop + this.node.clientHeight + this.bottomMargin) >= this.scrollHeight;
 
-    if(!this.keepScrollPosition)
-      this.node.scrollTop += this.scrollAmount;
+    // if(!this.keepScrollPosition)
+    //   this.node.scrollTop += this.scrollAmount;
 
-    if(this.shouldScrollToBottom)
-      this.node.scrollTop = this.node.scrollHeight + this.node.clientHeight;
+    // if(this.shouldScrollToBottom)
+    //   this.node.scrollTop = this.node.scrollHeight + this.node.clientHeight;
 
-    // If the channel was changed, scroll to bottom to avoid weird positioning
-    // TODO: replace with remembering each channel's scroll position on channel change
-    if(this.state.channelChanged) {
-      this.onScrollToBottom();
-      this.setState({ channelChanged: false });
-    }
+    // // If the channel was changed, scroll to bottom to avoid weird positioning
+    // // TODO: replace with remembering each channel's scroll position on channel change
+    // if(this.state.channelChanged) {
+    //   this.onScrollToBottom();
+    //   this.setState({ channelChanged: false });
+    // }
 
-    // Wait for the render (paint) cycle to finish before checking.
-    // The DOM element sizes (ie. scrollHeight and clientHeight) are not updated until the paint cycle finishes.
-    if(this.loadMoreTimeout) clearTimeout(this.loadMoreTimeout);
-    this.loadMoreTimeout = setTimeout(() => {
-      if(this._shouldLoadMoreMessages())
-        this.loadOlderMessages();
-    }, 20);
+    // // Wait for the render (paint) cycle to finish before checking.
+    // // The DOM element sizes (ie. scrollHeight and clientHeight) are not updated until the paint cycle finishes.
+    // if(this.loadMoreTimeout) clearTimeout(this.loadMoreTimeout);
+    // this.loadMoreTimeout = setTimeout(() => {
+    //   if(this._shouldLoadMoreMessages())
+    //     this.loadOlderMessages();
+    // }, 20);
   }
 
   _shouldLoadMoreMessages() {
-    return this.node && (this.node.scrollTop - this.topMargin <= 0 || this.node.scrollHeight === this.node.clientHeight);
+    console.log(this.node.scrollTop + this.node.clientHeight > this.node.scrollHeight - this.topMargin, this.node.scrollTop, this.node.clientHeight, this.node.scrollHeight, this.topMargin)
+    return (this.node.scrollTop + this.node.clientHeight) > (this.node.scrollHeight - this.topMargin)
+    // return this.node && (this.node.scrollTop - this.topMargin <= 0 || this.node.scrollHeight === this.node.clientHeight);
   }
 
   onDrop(files) {
@@ -218,7 +246,7 @@ class Channel extends React.Component {
 
     // After scroll has finished, check if we should load more messages
     // Using timeout here because of OS-applied scroll inertia
-    this.setState({ loadingText: 'Loading more messages...' })
+    this.setState({ loadingText: 'Loading more...' })
     this.scrollTimer = setTimeout(() => {
       if(this._shouldLoadMoreMessages())
         this.loadOlderMessages();
@@ -275,9 +303,21 @@ class Channel extends React.Component {
     }
   }
 
- onReplyTo(message) {
+  onReplyTo(message) {
+    console.log("REPLYTO", message)
     this.setState({ replyto: message })
     UIActions.focusOnSendMessage();
+  }
+
+  onClearReplyTo() {
+    console.log("CLEAR REPLYTO")
+    this.setState({ replyto: null })
+    UIActions.focusOnSendMessage();
+  }
+
+  onOpenFeed(user) {
+    this.setState({ replyto: null })
+    NetworkActions.joinChannel("--planet-express." + user.id)
   }
 
   renderMessages() {
@@ -288,7 +328,7 @@ class Channel extends React.Component {
         message={message.payload}
         key={message.hash}
         onReplyTo={this.onReplyTo.bind(this)}
-        onShowProfile={this.onShowProfile.bind(this)}
+        onShowProfile={this.onOpenFeed.bind(this)}
         onDragEnter={this.onDragEnter.bind(this)}
         highlightWords={username}
         colorifyUsername={colorifyUsernames}
@@ -297,13 +337,12 @@ class Channel extends React.Component {
           fontFamily: useMonospaceFont ? monospaceFont : font,
           fontSize: useMonospaceFont ? '0.9em' : '1.0em',
           fontWeight: useMonospaceFont ? '100' : '300',
-          padding: spacing,
         }}
       />
     ));
-    elements.unshift(
+    elements.push(
       <div className="firstMessage" key="firstMessage" onClick={this.loadOlderMessages.bind(this)}>
-        {reachedChannelStart && !loading ? `Beginning of #${channelName}` : loadingText }
+        {loading ? loadingText : ""}
       </div>
     );
     return elements;
@@ -329,7 +368,18 @@ class Channel extends React.Component {
   }
 
   render() {
-    const { showUserProfile, userProfilePosition, unreadMessages, loading, channelMode, appSettings, replyto, theme } = this.state;
+    const {
+      showUserProfile,
+      userProfilePosition,
+      unreadMessages,
+      loading,
+      channelMode,
+      appSettings,
+      replyto,
+      theme,
+      channelName,
+      user
+    } = this.state;
 
     const profile = showUserProfile ?
       <Profile
@@ -340,24 +390,34 @@ class Channel extends React.Component {
         onClose={this.onShowProfile.bind(this)}/>
       : null
 
+    const showControls = channelName && user && (channelName.split(".")[1] === user.id || replyto !== null)
+
+    const controls = showControls
+      ? <ChannelControls
+          onSendMessage={this.sendMessage.bind(this)}
+          onDrop={this.onDrop.bind(this)}
+          onClearReplyTo={this.onClearReplyTo.bind(this)}
+          appSettings={appSettings}
+          isLoading={true}
+          theme={null}
+          replyto={replyto}
+        />
+      : null
+
+    // console.log("ISLOADING", loading)
+    // const loadingIndicator = loading ? <Spinner isLoading={true} color="rgba(64, 64, 64, 0.5)" size="16px" /> : null
+
     return (
-      <div className="Channel flipped" onDragEnter={this.onDragEnter.bind(this)}>
-        <div>{profile}</div>
-        <div className="Messages" ref="MessagesView" onScroll={this.onScroll.bind(this)}>
-          {this.renderMessages()}
-        </div>
+      <div className="Channel" onDragEnter={this.onDragEnter.bind(this)}>
+        {controls}
+        <Spinner isLoading={loading} color="rgba(64, 64, 64, 0.5)" size="16px" />
+        <div className="user">{profile}</div>
         <NewMessageNotification
           onClick={this.onScrollToBottom.bind(this)}
           unreadMessages={unreadMessages} />
-        <ChannelControls
-          onSendMessage={this.sendMessage.bind(this)}
-          onSendFiles={this.onDrop.bind(this)}
-          isLoading={loading}
-          channelMode={channelMode}
-          appSettings={appSettings}
-          theme={theme}
-          replyto={replyto}
-        />
+        <div className="Messages" ref="MessagesView" onScroll={this.onScroll.bind(this)}>
+          {this.renderMessages()}
+        </div>
         {this.renderFileDrop()}
       </div>
     );

@@ -1,11 +1,13 @@
 @import 'App';
+@import 'Colors';
 
-$border:         1px solid $input-border-color;
-$border-focused: 1px solid $main-color;
+$border:         1px solid rgba(64, 64, 64, 0.2);
+$border-focused: 1px solid rgba(64, 64, 64, 0.5);
 
 input[type=text], input[type=password], input[type=checkbox] {
-  color: $input-text-color;
-  background-color: rgba(0, 0, 0, 0.0);
+  color: $main-text-color;
+  // color: $input-text-color;
+  // background-color: rgba(0, 0, 0, 0.0);
 
   border: 0;
   border-bottom: $border;

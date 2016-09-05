@@ -35,6 +35,3 @@ test/tests.bundle*
 
 # Other
 stats.json
-
-# Distribution build
-dist/

@@ -1,0 +1,19 @@
+@import 'Colors';
+
+.ActionButton {
+  display: inline-block;
+  color: $second-text-color;
+  font-size: 0.7em;
+  cursor: pointer;
+  user-select: none;
+  padding: 0em 0em;
+  // padding-left: 0.5em;
+  // padding-right: 0.5em;
+  // margin-top: 0.8em;
+}
+
+.ActionButton:hover {
+  color: $main-text-color;
+  background-color: $button-higlight-color;
+}
+

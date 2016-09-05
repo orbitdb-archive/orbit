@@ -1,18 +1,39 @@
 @import 'Animations';
 @import 'Colors';
 
-$background-color: rgb(40, 40, 40);
+// $background-color: rgb(40, 40, 40);
 $border-color: 		 rgb(36, 36, 36);
-$timestamp-color:  rgba(240, 240, 240, 0.6);
+$timestamp-color:  lighten($main-text-color, 50%);
 
 .highlighted {
-  background-color: rgb(37, 37, 37) !important;
+  // background-color: rgb(37, 37, 37) !important;
 }
 
 .command {
   font-style: italic;
   color: rgba(240, 240, 240, 1) !important;
   margin-left: 0em !important;
+}
+
+.column {
+  display: flex;
+  flex-direction: column;
+  align-items: baseline;
+}
+
+.row {
+  display: flex;
+  flex-direction: row;
+  align-items: baseline;
+}
+
+.row2 {
+  display: flex;
+  flex-direction: row;
+  align-items: flex-start;
+  width: 100%;
+  padding-bottom: 0.25em;
+  padding-top: 0.25em;
 }
 
 .Message {
@@ -22,33 +43,73 @@ $timestamp-color:  rgba(240, 240, 240, 0.6);
 
   display: flex;
   flex: 1 1 100%;
-  flex-direction: row;
+  flex-direction: column;
   justify-content: flex-start;
   align-items: baseline;
-  background-color: rgb(35, 35, 35);
-  border-bottom: 1px solid rgba(34, 34, 34, 0);
-  padding-bottom: 0;
 
-  color: rgba(255, 255, 255, 0.6);
+  // border-left: 4px solid rgba(255, 255, 255, 1);
+  // margin-left: 1.5em;
+  // margin-right: 1.5em;
+  padding: 0em 1em;
+  box-sizing: border-box;
+  // background-color: rgb(35, 35, 35);
+  // border-bottom: 1px solid rgba(34, 34, 34, 0);
+  // padding-bottom: 0;
+  // margin-top: 0.5em;
+  // margin-bottom: 1em;
+
+//  color: rgba(255, 255, 255, 0.6);
+
+  // border-bottom: 1px solid rgba(64, 64, 64, 0.1);
+  // padding: 0;
+  // padding-bottom: 0.5em;
+  // padding-top: 0.5em;
 
   overflow: hidden;
+
+  // .PictureContainer {
+  //   background-image: url("images/background1.png");
+  //   background-repeat: repeat-y;
+  //   background-position-x: 50%;
+  // }
+
+  .Picture {
+    height: 2.5em;
+    // margin-left: 0.5em;
+    margin-right: 0.5em;
+  }
+
+  .Body {
+    // flex-direction: "column";
+    // align-items: "center";
+    width: 100%;
+    // border: 1px solid rgb(248, 248, 248);
+    // padding: 0.5em;
+    border: 1px solid rgba(232, 232, 232, 0.8);
+    padding: 0.75em;
+    background-color: rgb(255, 255, 255);
+  }
 
   .Timestamp {
     display: flex;
     color: $timestamp-color;
     font-weight: 300;
     font-size: 0.8em;
-    padding-left: 0.2em;
-    padding-right: 0.5em;
-    border-right: 1px solid rgba(255, 255, 255, 0.2);
+    // padding-left: 0.75em;
+    // padding-right: 0.5em;
+    // border-right: 1px solid rgba(255, 255, 255, 0.2);
   }
 
   .Content {
-    margin-left: 0.2em;
-    margin-right: 0.5em;
+    // margin-left: 0.2em;
+    // margin-right: 0.5em;
     display: flex;
     flex: 1;
     overflow: hidden;
+    font-size: 1.25em;
+    padding: 0.5em 0;
+    padding-top: 0.25em;
+    // margin-top: 0.3em;
   }
 
   .popout {
@@ -57,17 +118,17 @@ $timestamp-color:  rgba(240, 240, 240, 0.6);
     right: 0;
   }
 
-  .row {
-    display: flex;
-    align-items: flex-start;
-  }
+  // .row {
+  //   display: flex;
+  //   align-items: flex-start;
+  // }
 
   .Popup {
     border: 1px solid rgb(48, 48, 48);
     font-size: 0.75em;
     margin-right: 0.5em;
     color: rgba(228, 228, 228, 0.8);
-    background: rgb(32, 32, 32);
+    // background: rgb(32, 32, 32);
     padding: 1.0em;
   }
 

@@ -7,45 +7,54 @@ $directory-link-hover-color:  rgba(136, 204, 255, 1);
 $directory-link-hover-color2: rgba(240, 240, 240, 0.9);
 
 .File {
-  padding-left: 0.3em;
-  padding-right: 0.3em;
+  // padding-left: 0.3em;
+  // padding-right: 0.3em;
   display: inline-block;
   white-space: nowrap;
   font-weight: 300;
   width: 100%;
-    overflow: hidden;
- box-sizing: content-box;
+  overflow: hidden;
+  box-sizing: content-box;
+
+  img {
+    max-height: 200px;
+  }
+
+  video {
+    max-height: 200px;
+  }
 
   .content {
     // width: 100%;
     // margin-bottom: 0.2em;
- box-sizing: content-box;
+    box-sizing: content-box;
+    font-size: 0.8em;
   }
 
   .preview {
     margin-top: 0.5em;
     // margin-bottom: 0.25em;
-    margin-left: 0.25em;
-    margin-right: 0.25em;
+    // margin-left: 0.25em;
+    // margin-right: 0.25em;
 
     padding-left: 0.5em;
     padding-right: 0.5em;
     padding-top: 0.5em;
     padding-bottom: 0.5em;
 
-    background-color: rgba(0, 0, 0, 0.075);
-    border-left: 1px dotted rgba(255, 255, 255, 0.1);
+    // background-color: rgba(0, 0, 0, 0.075);
+    // border-left: 1px dotted rgba(64, 64, 64, 0.5);
     overflow: hidden;
     display: flex;
     max-height: 30em;
     box-sizing: content-box;
   }
 
-  .preview:hover {
-    border-left: 1px dotted rgba(224, 224, 224, 0.5);
-    // border-left: 1px dotted $main-color-highligth;
-    // -webkit-filter: hue-rotate(50deg) saturate(80%) brightness(80%) !important;
-  }
+  // .preview:hover {
+  //   // border-left: 1px dotted rgba(224, 224, 224, 0.5);
+  //   // border-left: 1px dotted $main-color-highligth;
+  //   // -webkit-filter: hue-rotate(50deg) saturate(80%) brightness(80%) !important;
+  // }
 
   .smallText {
     font-size: 0.8em;
@@ -72,11 +81,26 @@ $directory-link-hover-color2: rgba(240, 240, 240, 0.9);
 
   .download {
     user-select: none;
-    visibility: hidden;
+    // visibility: hidden;
     font-weight: 100;
     margin: 0;
     font-size: 0.9em;
     cursor: pointer;
+    padding-left: 0.2em;
+    padding-right: 0.2em;
+    // margin-left: 0.5em;
+    // margin-right: 0.5em;
+  }
+
+  .spacer {
+    user-select: none;
+    // visibility: hidden;
+    font-weight: 100;
+    margin: 0;
+    font-size: 0.9em;
+    cursor: pointer;
+    padding-left: 0.2em;
+    padding-right: 0.2em;
     // margin-left: 0.5em;
     // margin-right: 0.5em;
   }
@@ -96,81 +120,83 @@ $directory-link-hover-color2: rgba(240, 240, 240, 0.9);
 
   .text {
     // margin-right: 0.25em;
-    color: $directory-link-color;
+    // color: $directory-link-color;
     text-decoration: none;
-    cursor: pointer;
+    // cursor: pointer;
   }
 
   a {
+    color: $second-text-color;
     user-select: none;
-    color: $directory-link-color;
+    // color: $directory-link-color;
     text-decoration: none;
     margin-right: 0.1em;
     margin-left: 0.1em;
   }
 
   a:hover {
-    color: $directory-link-hover-color2;
+    // color: $directory-link-hover-color2;
     text-decoration: none;
   }
 
 }
 
 .File:hover {
-  color: $directory-link-hover-color2;
+  // color: $directory-link-hover-color2;
   // background-color: $directory-hover-color;
   // border: 0px solid transparent;
   // border-radius: 4px;
 
   .download {
     visibility: visible;
-    color: $directory-link-color2;
+    // color: $directory-link-color2;
     padding-left: 0.2em;
     padding-right: 0.2em;
   }
 
   .download:hover {
+    color: rgb(32, 32, 32);
     background-color: rgba(128, 128, 128, 0.2);
-    color: $directory-link-hover-color2;
+    // color: $directory-link-hover-color2;
   }
 
-  .pin {
-    visibility: visible;
-    color: $directory-link-color2;
-    margin-right: 0.5em;
-    cursor: pointer;
-  }
+  // .pin {
+  //   visibility: visible;
+  //   color: $directory-link-color2;
+  //   margin-right: 0.5em;
+  //   cursor: pointer;
+  // }
 
-  .pin:hover {
-    background-color: rgba(128, 128, 128, 0.4);
-    color: $directory-link-hover-color2;
-  }
+  // .pin:hover {
+  //   background-color: rgba(128, 128, 128, 0.4);
+  //   color: $directory-link-hover-color2;
+  // }
 
   .text {
-    margin-right: 0.5em;
-    color: $directory-link-hover-color2;
+    // margin-right: 0.5em;
+    // color: $directory-link-hover-color2;
     text-decoration: none;
     cursor: pointer;
   }
 
-  .size {
-    visibility: visible;
-    font-size: 0.8em;
-    font-weight: 100;
-    color: rgba(128, 196, 128, 0.8);
-    cursor: default;
-  }
+  // .size {
+  //   visibility: visible;
+  //   font-size: 0.8em;
+  //   font-weight: 100;
+  //   color: rgba(128, 196, 128, 0.8);
+  //   cursor: default;
+  // }
 
-  a {
-    color: $directory-link-hover-color2;
-  }
+  // a {
+  //   // color: $directory-link-hover-color2;
+  // }
 }
 
-.loading {
-  a {
-    color: rgba(240, 244, 240, 0.1);
-  }
-}
+// .loading {
+//   a {
+//     // color: rgba(240, 244, 240, 0.1);
+//   }
+// }
 
 .fileAnimation-appear {
   $duration: 0.2s;

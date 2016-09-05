@@ -17,7 +17,7 @@ class SendMessage extends React.Component {
       theme: props.theme,
       useEmojis: props.useEmojis,
       emojiPickerActive: false,
-      replyto: null,
+      replyto: props.replyto,
       lastWord: null
     };
   }
@@ -43,7 +43,7 @@ class SendMessage extends React.Component {
   sendMessage(event) {
     event.preventDefault();
     var text = this.refs.message.value.trim();
-    this.props.onSendMessage(text, this.state.replyto);
+    this.props.onSendMessage(text, this.state.replyto ? this.state.replyto.hash : null);
     this.refs.message.value = '';
     this.refs.message.focus();
     this.setState({ replyto: null })
@@ -77,8 +77,14 @@ class SendMessage extends React.Component {
     }
   }
 
+  onClearReplyTo() {
+    this.props.onClearReplyTo()
+  }
+
   render() {
-    const emojiPicker = this.state.emojiPickerActive ?
+    const { replyto, lastWord, emojiPickerActive, theme } = this.state
+
+    const emojiPicker = emojiPickerActive ?
       <TransitionGroup
         component="div"
         transitionName="emojiPreview"
@@ -89,22 +95,31 @@ class SendMessage extends React.Component {
         >
         <EmojiPicker ref='emojipicker'
           elemsPerRow={8}
-          filterText={this.state.lastWord}
+          filterText={lastWord}
           onClose={this.onCloseEmojiPicker.bind(this)}
           onSelectEmoji={this.onSelectEmoji.bind(this)}/>
       </TransitionGroup>
       : <span/>
 
+    const inputLabel = replyto
+      ? <div
+          className="InputMessage"
+          onClick={this.onClearReplyTo.bind(this)}
+        >
+          {replyto ? `Reply to:  "<${replyto.user.name}> ${replyto.content}"` : ""}
+        </div>
+      : null
+
     return (
       <div className="SendMessage">
+        {inputLabel}
         <form onSubmit={this.sendMessage.bind(this)}>
           {emojiPicker}
           <input
             type="text"
             ref="message"
-            placeholder="Type a message..."
-            autoComplete={true}
-            style={this.state.theme}
+            placeholder={replyto ? "Type your response..." : "What's up?"}
+            style={theme}
             onKeyDown={this.onKeyDown.bind(this)}
             onInput={this.onInput.bind(this)}
             />

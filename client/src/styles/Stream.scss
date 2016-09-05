@@ -1,0 +1,55 @@
+@import 'Animations';
+@import 'Colors';
+
+.Stream {
+  flex: 0 1 25%;
+  overflow: auto;
+  z-index: 100;
+  cursor: pointer;
+  padding: 1em;
+  padding-top: 1em;
+
+  h1.header {
+    // font-size: 1.0em;
+    // font-weight: 300;
+    font-size: 2em;
+    // font-weight: 300;
+    color: lighten($header-color, 20%);
+    margin-bottom: 0.25em;
+  }
+
+  .loading {
+    font-size: 1em;
+    color: lighten($header-color, 50%);
+    display: flex;
+    justify-content: flex-start;
+    font-weight: 100;
+    margin-left: 0.2em;
+  }
+}
+
+// .Username {
+//   font-size: 2em;
+//   font-weight: 300;
+//   color: lighten($header-color, 20%)
+// }
+
+.Feed {
+  font-weight: 100;
+  font-size: 1.25em;
+  padding: 0.1em;
+  margin-left: 0.5em;
+}
+
+.feedAnimation-enter {
+  $duration: 0.3s;
+
+  -webkit-animation-name: fadeIn;
+  animation-name: fadeIn;
+  -webkit-animation-duration: $duration;
+  animation-duration: $duration;
+  -webkit-animation-fill-mode: both;
+  animation-fill-mode: both;
+  -webkit-animation-timing-function: ease-in;
+  animation-timing-function: ease-in;
+}

@@ -26,12 +26,16 @@ import UsersStore from 'stores/UsersStore';
 import SettingsStore from 'stores/SettingsStore';
 import LoadingStateStore from 'stores/LoadingStateStore';
 import SwarmStore from 'stores/SwarmStore';
+import FeedStreamStore from 'stores/FeedStreamStore';
 
 import ChannelsPanel from 'components/ChannelsPanel';
 import ChannelView from 'components/ChannelView';
 import SettingsView from 'components/SettingsView';
 import SwarmView from 'components/SwarmView';
 import LoginView from 'components/LoginView';
+import Stream from 'components/Stream';
+import Dashboard from 'components/Dashboard';
+import ChannelControls from 'components/ChannelControls';
 import Header from 'components/Header';
 import Themes from 'app/Themes';
 
@@ -39,6 +43,7 @@ import 'normalize.css';
 import '../styles/main.css';
 import 'styles/App.scss';
 import 'styles/Scrollbars.scss';
+import "styles/Buttons.scss";
 import 'highlight.js/styles/hybrid.css';
 
 import Main from '../main'
@@ -50,7 +55,8 @@ const views = {
   "Settings": "/settings",
   "Swarm": "/swarm",
   "Connect": "/connect",
-  "Channel": "/channel/"
+  "Channel": "/channel/",
+  "Stream": "/stream"
 };
 
 const hasIPFS = !!window.ipfsInstance;
@@ -65,6 +71,9 @@ fs.init(1 * 1024 * 1024, (err) => {
   }
 })
 
+const feedStream = "--planet-express-feeds"
+let db // feed stream database
+
 var App = React.createClass({
   getInitialState: function() {
     return {
@@ -75,7 +84,9 @@ var App = React.createClass({
       joiningToChannel: null,
       requirePassword: false,
       theme: null,
-      networkName: "Unknown Network"
+      networkName: "Unknown Network",
+      showStream: false,
+      feedUser: null,
     };
   },
   componentDidMount: function() {
@@ -95,15 +106,17 @@ var App = React.createClass({
         orbit.events.on('disconnected', () => ipcRenderer.send('disconnected'));
       }
 
+
       AppActions.initialize(orbit);
       NetworkActions.updateNetwork(null) // start the App
+
     })
     .catch((e) => {
       logger.error(e.message);
       logger.error("Stack trace:\n", e.stack);
     });
 
-    document.title = 'Orbit';
+    document.title = 'Planet Express';
 
     // SkynetActions.start.listen((username) => orbit.connect(null, username, ''));
     UIActions.joinChannel.listen(this.joinChannel);
@@ -128,6 +141,10 @@ var App = React.createClass({
       // AppActions.windowOnFocus();
       // logger.debug("Got focus!");
     };
+
+    window.temp = () => {
+      this.setState({ showStream: !this.state.showStream })
+    }
   },
   _handleAppStateChange: function(state) {
     let prefix = '', suffix = '';
@@ -142,10 +159,10 @@ var App = React.createClass({
       prefix = '!';
 
     if(state.currentChannel) {
-      document.title = prefix + ' ' + AppStateStore.state.location + ' ' + suffix;
+      // document.title = prefix + ' ' + AppStateStore.state.location + ' ' + suffix;
       this.goToLocation(state.currentChannel, views.Channel + encodeURIComponent(state.currentChannel));
     } else {
-      document.title = prefix + ' Orbit';
+      // document.title = prefix + ' Orbit';
       this.goToLocation(state.location, views[state.location]);
     }
   },
@@ -160,9 +177,36 @@ var App = React.createClass({
       this._reset();
       AppActions.setLocation("Connect");
     } else {
+      // "CONNECTED"
       this.setState({ networkName: network.name });
       const channels = this._getSavedChannels(this.state.networkName, this.state.user.name)
-      channels.forEach((channel) => NetworkActions.joinChannel(channel.name, ''));
+      // channels.forEach((channel) => NetworkActions.joinChannel(channel.name, ''));
+
+      // WIP
+      const dbOptions = {
+        cacheFile: '/' + this.state.user.id + "/planet-express-data.json",
+        maxHistory: 1000
+      }
+
+      logger.debug(`Open feedStream database '${feedStream}'`);
+      db = orbit._orbitdb.eventlog(feedStream, dbOptions)
+      orbit._orbitdb.events.on('data', this._handleFeedStreamMessage) // Subscribe to updates in the database
+      db.events.on('ready', (name) => {
+        // feed's history loaded
+        // console.log("---------------------------------------------")
+        // console.log(JSON.stringify(db.iterator({ limit: -1 }).collect()))
+        // console.log("---------------------------------------------")
+        this.setState({ showStream: true })
+      });
+
+      this.setState({ feedUser: this.state.user })
+      AppActions.setFeedStreamDatabase(db)
+      NetworkActions.joinChannel("--planet-express." + this.state.user.id)
+    }
+  },
+  _handleFeedStreamMessage(channel, message) {
+    if (channel === feedStream) {
+      logger.debug("New post in feed\n", JSON.stringify(message, null, 2))
     }
   },
   _makeChannelsKey: function(username, networkName) {
@@ -203,7 +247,7 @@ var App = React.createClass({
       return;
     }
     logger.debug("Join channel #" + channelName);
-    NetworkActions.joinChannel(channelName, password);
+    NetworkActions.joinChannel("--planet-express." + channelName, password);
   },
   onJoinChannelError: function(channel, err) {
     if(!this.state.panelOpen) this.setState({ panelOpen: true });
@@ -212,9 +256,16 @@ var App = React.createClass({
   onJoinedChannel: function(channel) {
     logger.debug("Joined channel #" + channel);
     // this.showChannel(channel);
+
+    orbit.getUser(channel.split('.')[1])
+      .then((user) => {
+        this.setState({ feedUser: user })
+        // NetworkActions.joinChannel("--planet-express." + id)
+        document.title = `@${user.name}`;
+        logger.debug("Set title: " + document.title);
+      })
+
     this.closePanel();
-    document.title = `#${channel}`;
-    logger.debug("Set title: " + document.title);
     AppActions.setCurrentChannel(channel);
     let channels = this._getSavedChannels(this.state.networkName, this.state.user.name)
     if (!_.some(channels, { name: channel })) {
@@ -259,40 +310,94 @@ var App = React.createClass({
   goToLocation: function(name, url) {
     hashHistory.push(url ? url : '/');
   },
+  onOpenFeed: function(id) {
+    logger.debug("Open feed " + id)
+    // orbit.getUser(id)
+    //   .then((user) => {
+    //     this.setState({ feedUser: user })
+    //   })
+        NetworkActions.joinChannel("--planet-express." + id)
+  },
+  onGoHome: function() {
+    this.setState({ feedUser: this.state.user })
+    NetworkActions.joinChannel("--planet-express." + this.state.user.id)
+  },
+  sendMessage(text: string, replyto: string) {
+    if(text !== '') {
+      ChannelActions.sendMessage(this.state.channelName, text, replyto);
+      this.setState({ replyto: null })
+    }
+  },
+  onDrop(files) {
+    console.log("OBSOLETE FILES", files)
+  },
   render: function() {
-    const header = AppStateStore.state.location && AppStateStore.state.location !== "Connect" ? (
-      <Header
-        onClick={this.openPanel}
-        title={AppStateStore.state.location}
-        channels={ChannelStore.channels}
-        theme={this.state.theme}>
-      </Header>
-    ) : null;
+    // const header = AppStateStore.state.location && AppStateStore.state.location !== "Connect" ? (
+    //   <Header
+    //     onClick={this.openPanel}
+    //     title={AppStateStore.state.location}
+    //     channels={ChannelStore.channels}
+    //     theme={this.state.theme}>
+    //   </Header>
+    // ) : null;
+    // const header = <div className="Header">HEADER</div>
 
-    const panel = this.state.panelOpen ? (
-      <ChannelsPanel
-        onClose={this.closePanel}
-        onOpenSwarmView={this.openSwarmView}
-        onOpenSettings={this.openSettings}
-        onDisconnect={this.disconnect}
-        channels={ChannelStore.channels}
-        currentChannel={AppStateStore.state.location}
-        username={this.state.user ? this.state.user.name : ""}
-        requirePassword={this.state.requirePassword}
-        theme={this.state.theme}
-        left={this.state.leftSidePanel}
-        networkName={this.state.networkName}
-        joiningToChannel={this.state.joiningToChannel}
-      />
-    ) : "";
+    const header = this.state.feedUser
+      ? <Dashboard
+          user={this.state.feedUser}
+          onOpenFeed={this.onOpenFeed}
+          appSettings={SettingsStore.settings}
+        />
+      : null
+
+    const showControls = AppStateStore.state.currentChannel && AppStateStore.state.currentChannel.split(".")[1] === this.state.user.id
+
+    // const controls = showControls
+    //   ? <ChannelControls
+    //       onSendMessage={this.sendMessage}
+    //       onDrop={this.onDrop}
+    //       appSettings={SettingsStore.settings}
+    //       isLoading={false}
+    //       theme={null}
+    //       replyto={null}
+    //     />
+    //   : null
+
+    const stream = this.state.showStream
+      ? <Stream
+          user={this.state.user}
+          onOpenFeed={this.onOpenFeed}
+          onGoHome={this.onGoHome}
+        />
+      : null
 
     return (
       <div className="App view">
-        {panel}
-        {header}
-        {this.props.children}
+        <div className="Container">
+          {header}
+          <div style={{ display: "flex", flex: "1" }}>
+            {stream}
+            {this.props.children}
+          </div>
+        </div>
       </div>
     );
+    // const panel = this.state.panelOpen ? (
+    //   <ChannelsPanel
+    //     onClose={this.closePanel}
+    //     onOpenSwarmView={this.openSwarmView}
+    //     onOpenSettings={this.openSettings}
+    //     onDisconnect={this.disconnect}
+    //     channels={ChannelStore.channels}
+    //     currentChannel={AppStateStore.state.location}
+    //     username={this.state.user ? this.state.user.name : ""}
+    //     requirePassword={this.state.requirePassword}
+    //     theme={this.state.theme}
+    //     left={this.state.leftSidePanel}
+    //     networkName={this.state.networkName}
+    //     joiningToChannel={this.state.joiningToChannel}
+    //   />
+    // ) : "";
   }
 });
 

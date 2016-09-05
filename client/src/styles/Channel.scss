@@ -5,12 +5,13 @@ $controls-height: 2.8em;
 
 .Channel {
   width: 100%;
+  max-width: 35em;
   display: flex;
   flex-direction: column;
   overflow: hidden;
   transform-style: preserve-3d;
 
-  background-color: rgb(32, 32, 32);
+  // background-color: rgb(32, 32, 32);
 
   .center {
     display: flex;
@@ -25,9 +26,9 @@ $controls-height: 2.8em;
   }
 
   .active {
-    background-color: $main-color;
+    // background-color: $main-color;
     &:hover {
-      background-color: $main-color-highligth;
+      // background-color: $main-color-highligth;
     }
   }
 
@@ -37,7 +38,7 @@ $controls-height: 2.8em;
   position: absolute;
   bottom: 2.75em;
   width: 100%;
-  background-color: rgba(32, 32, 32, 0.8);
+  // background-color: rgba(32, 32, 32, 0.8);
   display: flex;
   justify-content: center;
   padding: 0.2em;
@@ -58,7 +59,7 @@ $controls-height: 2.8em;
   height: 100%;
   padding: 0;
   margin: 0;
-  color: #fff;
+//  color: #fff;
   display: flex;
   overflow: auto;
 }
@@ -89,7 +90,11 @@ $controls-height: 2.8em;
   padding: 0.5em;
   margin-left: 0.2em;
   margin-right: 0.2em;
-  color: $main-text-color;
+//  color: $main-text-color;
+}
+
+.username {
+  padding: 0.25em;
 }
 
 .icon-active {
@@ -102,22 +107,22 @@ $controls-height: 2.8em;
   padding: 0.5em;
   margin-left: 0.2em;
   margin-right: 0.2em;
-  color: $main-text-color;
-  background-color: $main-color;
+  //color: $main-text-color;
+  // background-color: $main-color;
   border-radius: 32px;
 }
 .icon-active:hover {
-  background-color: $main-color;
+  // background-color: $main-color;
   border-radius: 32px;
 }
 
 .icon:hover {
-  background-color: rgba(48, 48, 48, 1);
+  // background-color: rgba(48, 48, 48, 1);
   border-radius: 32px;
 }
 
 .icon:active {
-  background-color: $main-color;
+  // background-color: $main-color;
   border-radius: 32px;
 }
 
@@ -177,13 +182,13 @@ $controls-height: 2.8em;
   .headerText {
     font-size: 0.8em;
     margin-bottom: 0.5em;
-    color: $main-text-color;
+//    color: $main-text-color;
   }
 
   .instructionText {
     font-size: 0.8em;
     display: flex;
-    color: $placeholder-color;
+  //  color: $placeholder-color;
     font-style: italic;
   }
 }
@@ -219,28 +224,47 @@ input[type=button], .channelOptionsButton {
   }
 
 .Controls {
-  background-color: $bar-background-color;
+//  background-color: $bar-background-color;
   box-sizing: border-box;
   display: flex;
-  justify-content: center;
+  flex-direction: column;
   align-items: center;
-  max-height: $controls-height;
-  min-height: $controls-height;
-  border-top: 1px solid $bar-border-color;
-  border-bottom: 1px solid $bar-border-color;
+  justify-content: center;
+  // justify-content: center;
+  // align-items: center;
+  // width: 100%;
+  // max-height: $controls-height;
+  // min-height: $controls-height;
+  // border-top: 1px solid $bar-border-color;
+  // border-bottom: 1px solid $bar-border-color;
 
   font-family: "Source Sans Pro";
   font-weight: 100;
-  color: rgb(128, 128, 128);
+//  color: rgb(128, 128, 128);
+  // width: 50vw;
+  // min-width: 25em;
+
+  margin: auto;
+  // margin-top: 1em;
+  align-self: center;
+  // width: 100vw;
+
+  padding: 0em 1em;
+  padding-right: 1.5em;
+  padding-bottom: 0.5em;
+
+  // min-width: 30em;
+  // padding: 1.5em;
+  // padding-top: 0.5em;
 
   .replyto {
     // flex: 0 0 30%;
-    min-width: 5vw;
-    max-width: 30vw;
+    // min-width: 5vw;
+    // max-width: 30vw;
     justify-content: flex-start;
     overflow: hidden;
     white-space: pre;
-    font-size: 0.8em;
+    font-size: 0.9em;
     font-style: italic;
     margin-right: 0.2em;
   }
@@ -285,6 +309,11 @@ input[type=button], .channelOptionsButton {
   display: block;
   position: relative;
   box-sizing: border-box;
+
+  // padding: 0em 1em;
+  // padding-right: 0.5em;
+  // padding-top: 0.5em;
+
   width: 100%;
   // height: 100%;
   overflow: auto;
@@ -294,14 +323,16 @@ input[type=button], .channelOptionsButton {
   .firstMessage {
     display: flex;
     justify-content: center;
-    background-color: rgb(36, 36, 36);
-    color: $second-text-color;
+    // background-color: rgb(36, 36, 36);
+//    color: $second-text-color;
     font-weight: 300;
     font-size: 0.8em;
-    padding: 0.2em;
+    padding: 1em;
+    margin-bottom: 0.25em;
     // user-select: none;
     // -webkit-user-select: none;
     cursor: default;
+    color: rgb(96, 96, 96);
   }
 
 }
@@ -312,7 +343,7 @@ input[type=button], .channelOptionsButton {
 
 .controlsAnimation-appear {
   $duration: .3s;
-  $animation-name: fadeInUp;
+  $animation-name: fadeInDown2;
 
   -webkit-animation: $animation-name;
   animation: $animation-name;
@@ -344,13 +375,13 @@ input[type=button], .channelOptionsButton {
   font-family: "Lato";
   font-weight: 300;
   font-size: 4em;
-  color: $main-text-color;
+//  color: $main-text-color;
   background-color: rgba(0, 0, 0, 0.6);
   border: 2px dotted $main-color;
 }
 
 .dropzoneActive {
-  color: $main-text-color;
+//  color: $main-text-color;
   background-color: rgba(0, 0, 0, 0.6);
   border: 2px dotted $main-color;
 }

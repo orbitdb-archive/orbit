@@ -1,0 +1,15 @@
+- move input field to the feed
+- use "golden" color generator option
+- move reply input inline (under reply-to message)
+- add max-height to header
+- add user's location the header
+- fix File width
+- per-feed view
+- delete post
+- aggregate view
+- add "follow" button and data structure
+- "retweet" functionality
+- change headr background and per-user settings data structure
+- somehow notify replied-to feed of a reply
+- uPort integration
+- planet express bot that caches *everything*
