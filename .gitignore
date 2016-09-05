@@ -18,6 +18,6 @@ cache.db
 user.json
 orbit-db-cache.json
 
-Vagrantfile
+/Vagrantfile
 
 data/
