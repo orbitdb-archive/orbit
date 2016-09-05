@@ -1,0 +1,43 @@
+Vagrant.configure(2) do |config|
+  config.vm.box = "digital_ocean"
+  config.vm.synced_folder ".", "/vagrant", disabled: true
+
+  config.vm.define "orbit-bot" do |node|
+    node.vm.provision "shell", inline: <<-SHELL
+      sudo fallocate -l 4G /swapfile
+      sudo mkswap /swapfile
+      sudo swapon /swapfile
+
+      sudo apt-get update
+      sudo apt-get install -y python gcc make g++ git
+      sudo apt-get install -y wget htop screen nano
+
+      wget --quiet https://nodejs.org/dist/v6.5.0/node-v6.5.0-linux-x64.tar.xz
+      tar -C /usr/local -xf node-v6.5.0-linux-x64.tar.xz --strip 1
+
+      sudo mkdir -p /orbit
+      cd /orbit
+
+      git clone -b bot https://github.com/haadcode/orbit.git
+
+      cd orbit
+      npm install
+
+      ./node_modules/go-ipfs-dep/go-ipfs/ipfs init
+
+      cd src/bot
+      screen -S bot -d -m node index <botname> <channel>
+    SHELL
+
+    node.vm.provider :digital_ocean do |provider, override|
+      override.ssh.private_key_path = "~/.ssh/<Digital_Ocean_Key>"
+      override.vm.box               = 'digital_ocean'
+      override.vm.box_url           = "https://github.com/smdahlen/vagrant-digitalocean/raw/master/box/digital_ocean.box"
+      provider.token                = '<Your_Digital_Ocean_Token>'
+      provider.image                = 'ubuntu-14-04-x64'
+      provider.region               = 'AMS3'
+      provider.size                 = '1GB'
+    end
+  end
+
+end
