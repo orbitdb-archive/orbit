@@ -73,7 +73,7 @@ class TextMessage extends React.Component {
     // Create links from urls
     let finalText = ReactAutolink.autolink(this.state.text, { target: "_blank", rel: "nofollow", key: Math.random() });
     finalText = this._highlight(finalText);
-    // finalText = this._ipfsfy(finalText);
+    finalText = this._ipfsfy(finalText);
     finalText = this.state.useEmojis ? this._emojify(finalText) : finalText;
 
     if(this.state.replyto) {

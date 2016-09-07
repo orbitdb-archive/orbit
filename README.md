@@ -3,10 +3,13 @@
 **WIP branch for a Twitter-like demo using Orbit and IPFS**
 
 ## Run
+
 ```
 git clone -b tests https://github.com/haadcode/orbit.git
 cd orbit/
 npm install
+rm -rf node_modules/ipfs/node_modules/ipfs-api/
+rm -rf node_modules/ipfsd-ctl/node_modules/ipfs-api/
 npm run electron
 ```
 
@@ -21,6 +24,7 @@ npm run electron
 
 First start the Electron app:
 ```
+rm -rf client/node_modules/ipfs/node_modules/ipfs-api/
 npm run dev:electron
 ```
 

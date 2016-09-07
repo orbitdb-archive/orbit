@@ -64,7 +64,7 @@ class File extends React.Component {
 
     if (this.state.showPreview) {
       const isMedia = this.isAudio | this.isVideo | this.isImage
-      const asURL = isElectron & isMedia
+      const asURL = isElectron & isMedia === 1
       const asStream = this.isVideo
       let blob = new Blob([])
 
@@ -77,9 +77,11 @@ class File extends React.Component {
         let previewContent = 'Unable to display file.'
         if (buffer || url || stream) {
 
-          if(buffer && isElectron) {
+          if(buffer) {
             console.log("BLOB!")
-            blob = buffer
+            const arrayBufferView = toArrayBuffer(buffer)
+            blob = new Blob([arrayBufferView], { type: this.state.meta.mimeType })
+            // blob = buffer
           } else if (buffer && this.state.meta.mimeType) {
             console.log("OMG")
             const arrayBufferView = toArrayBuffer(buffer)
@@ -149,9 +151,9 @@ class File extends React.Component {
     }
   }
 
-  handleClick(evt) {
-    evt.stopPropagation()
-  }
+  // handleClick(evt) {
+  //   evt.stopPropagation()
+  // }
 
   render() {
     var openLink = (isElectron ? "http://localhost:8080/ipfs/" : "https://ipfs.io/ipfs/") + this.props.hash;

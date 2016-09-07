@@ -44,7 +44,7 @@ import '../styles/main.css';
 import 'styles/App.scss';
 import 'styles/Scrollbars.scss';
 import "styles/Buttons.scss";
-import 'highlight.js/styles/hybrid.css';
+// import 'highlight.js/styles/hybrid.css';
 
 import Main from '../main'
 
@@ -71,7 +71,7 @@ fs.init(1 * 1024 * 1024, (err) => {
   }
 })
 
-const feedStream = "--planet-express-feeds"
+const feedStream = "--planet-express-feeds2"
 let db // feed stream database
 
 var App = React.createClass({

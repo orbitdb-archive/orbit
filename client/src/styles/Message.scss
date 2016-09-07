@@ -88,6 +88,7 @@ $timestamp-color:  lighten($main-text-color, 50%);
     border: 1px solid rgba(232, 232, 232, 0.8);
     padding: 0.75em;
     background-color: rgb(255, 255, 255);
+    overflow: hidden;
   }
 
   .Timestamp {

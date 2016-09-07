@@ -15,7 +15,7 @@ let ReactIpfsLink = () => {
 
           return React.createElement(
             'a',
-            assign({href: url}, options),
+            assign({ href: url, className: 'ipfsLink' }, options),
             word + " "
           );
         } else {

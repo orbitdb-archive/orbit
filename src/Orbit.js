@@ -199,13 +199,13 @@ class Orbit {
     }
 
     const addToIpfsGo = (ipfs, filename, filePath) => {
-      return ipfs.add(filePath, { recursive: true })
+      return ipfs.util.addFromFs(filePath, { recursive: true })
         .then((result) => {
           // last added hash is the filename --> we added a directory
           // first added hash is the filename --> we added a file
           const isDirectory = result[result.length - 1].Name === filename
           return {
-            Hash: isDirectory ? result[result.length - 1].Hash : result[0].Hash,
+            Hash: isDirectory ? result[result.length - 1].hash : result[0].hash,
             isDirectory: isDirectory
           }
         })

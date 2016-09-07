@@ -46,7 +46,7 @@ $directory-link-hover-color2: rgba(240, 240, 240, 0.9);
     // border-left: 1px dotted rgba(64, 64, 64, 0.5);
     overflow: hidden;
     display: flex;
-    max-height: 30em;
+    max-height: 15em;
     box-sizing: content-box;
   }
 
@@ -59,6 +59,10 @@ $directory-link-hover-color2: rgba(240, 240, 240, 0.9);
   .smallText {
     font-size: 0.8em;
     padding: 0;
+
+    a {
+      border: 1px solid rgba(196, 196, 196, 0.2);
+    }
   }
 
   pre {
@@ -132,7 +136,9 @@ $directory-link-hover-color2: rgba(240, 240, 240, 0.9);
     text-decoration: none;
     margin-right: 0.1em;
     margin-left: 0.1em;
+    overflow: hidden;
   }
+
 
   a:hover {
     // color: $directory-link-hover-color2;

@@ -5,6 +5,8 @@
 import React, { Component, PropTypes } from 'react'
 import { findDOMNode } from 'react-dom'
 import highlight from 'highlight.js'
+// import 'highlight.js/styles/hybrid.css'
+import "highlight.js/styles/github.css"
 
 class Highlight extends Component {
   componentDidMount () {
@@ -12,23 +14,23 @@ class Highlight extends Component {
     highlight.highlightBlock(findDOMNode(this))
   }
 
-  onScroll(evt) {
-    if(this.refs.root.scrollHeight > this.refs.root.clientHeight) {
-      if(evt.deltaY > 0 && (this.refs.root.clientHeight + this.refs.root.scrollTop) >= this.refs.root.scrollHeight) {
-        evt.stopPropagation();
-        evt.preventDefault();
-      } else if(evt.deltaY < 0 && this.refs.root.scrollTop === 0) {
-        evt.stopPropagation();
-        evt.preventDefault();
-      }
-    }
-  }
+  // onScroll(evt) {
+  //   if(this.refs.root.scrollHeight > this.refs.root.clientHeight) {
+  //     if(evt.deltaY > 0 && (this.refs.root.clientHeight + this.refs.root.scrollTop) >= this.refs.root.scrollHeight) {
+  //       evt.stopPropagation();
+  //       evt.preventDefault();
+  //     } else if(evt.deltaY < 0 && this.refs.root.scrollTop === 0) {
+  //       evt.stopPropagation();
+  //       evt.preventDefault();
+  //     }
+  //   }
+  // }
 
   render () {
     const { children, language } = this.props
 
     return (
-      <pre ref="root" onWheel={this.onScroll.bind(this)}>
+      <pre ref="root">
         <code className={language}>
           {children}
         </code>

@@ -374,17 +374,27 @@ const MessageStore = Reflux.createStore({
     const isElectron = !!window.ipfsInstance;
     if(isElectron && asURL) {
       callback(null, null, `http://localhost:8080/ipfs/${hash}`)
-    } else if(isElectron) {
-      var xhr = new XMLHttpRequest()
-      xhr.open('GET', `http://localhost:8080/ipfs/${hash}`, true)
-      xhr.withCredentials = true
-      xhr.responseType = 'blob'
-      xhr.onload = function(e) {
-        if(this.status == 200) {
-          callback(null, this.response) // this.response is a Blob
-        }
-      }
-      xhr.send()
+    // } else if(isElectron) {
+    //   fetch(`http://localhost:8080/ipfs/${hash}`)
+    //     .then(function(response) {
+    //       return response.blob();
+    //     })
+    //     .then(function(myBlob) {
+    //       // var objectURL = URL.createObjectURL(myBlob);
+    //       // myImage.src = objectURL;
+    //       callback(null, myBlob) // this.response is a Blob
+    //     });
+
+    //   // var xhr = new XMLHttpRequest()
+    //   // xhr.open('GET', `http://localhost:8080/ipfs/${hash}`, true)
+    //   // xhr.withCredentials = true
+    //   // xhr.responseType = 'blob'
+    //   // xhr.onload = function(e) {
+    //   //   if(this.status == 200) {
+    //   //     callback(null, this.response) // this.response is a Blob
+    //   //   }
+    //   // }
+    //   // xhr.send()
     } else {
       this.orbit.getFile(hash)
         .then((stream) => {
@@ -398,8 +408,13 @@ const MessageStore = Reflux.createStore({
               tmp.set(buf)
               tmp.set(chunk, buf.length)
               buf = tmp
+              // for some reason stream never fires 'end' or 'close'
+              callback(null, buf) // TEMP HACK TO MAKE SURE WE RETURN.
             });
             stream.on('end', () => {
+              callback(null, buf)
+            });
+            stream.on('close', () => {
               callback(null, buf)
             });
           }
