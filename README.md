@@ -4,6 +4,16 @@
 
 ## Run
 
+### Browser
+```
+git clone -b tests https://github.com/haadcode/orbit.git
+cd orbit/
+npm install
+npm start
+```
+
+### Electron
+
 ```
 git clone -b tests https://github.com/haadcode/orbit.git
 cd orbit/

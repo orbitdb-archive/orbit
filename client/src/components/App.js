@@ -71,7 +71,7 @@ fs.init(1 * 1024 * 1024, (err) => {
   }
 })
 
-const feedStream = "--planet-express-feeds2"
+const feedStream = '--planet-express-feeds2-' + (hasIPFS ? 'goipfs' : 'jsipfs')
 let db // feed stream database
 
 var App = React.createClass({
