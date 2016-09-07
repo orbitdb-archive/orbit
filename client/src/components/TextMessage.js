@@ -80,6 +80,7 @@ class TextMessage extends React.Component {
       const content = this.state.replyto.post.content ? this.state.replyto.post.content : this.state.replyto.post.name
 
       let replyText = ReactAutolink.autolink(content, { target: "_blank", rel: "nofollow", key: Math.random() });
+      replyText = this._ipfsfy(replyText);
       replyText = this.state.useEmojis ? this._emojify([replyText], '12px') : content
 
       const element = (
