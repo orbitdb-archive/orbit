@@ -11,6 +11,7 @@ import NotificationActions from 'actions/NotificationActions';
 import UserActions from 'actions/UserActions';
 import ChannelStore from 'stores/ChannelStore';
 import UserStore from 'stores/UserStore';
+import ReplyStore from 'stores/ReplyStore'
 import Logger from 'logplease';
 const logger = Logger.create('MessageStore', { color: Logger.Colors.Magenta });
 
@@ -19,6 +20,8 @@ const messagesBatchSize = 4;
 const MessageStore = Reflux.createStore({
   listenables: [AppActions, UIActions, NetworkActions, SocketActions, ChannelActions],
   init: function() {
+    this.unsubscribeFromReplies = ReplyStore.listen((channel) => this.trigger(this.channels[channel].messages))
+
     this.currentChannel = null;
     this.channels = {};
     this.posts = {}; // simple cache for message contents
@@ -44,28 +47,18 @@ const MessageStore = Reflux.createStore({
     this.orbit = orbit
 
     this.orbit.events.on('message', (channel, message) => {
-      // logger.info("-->", channel, message)
-      // this.loadMessages(channel, null, null, messagesBatchSize);
+      logger.info("-->", channel, message)
       this._addMessages(channel, [message], false)
     })
 
     this.orbit.events.on('joined', (channel) => {
       logger.info(`Joined #${channel}`);
       const feed = this.orbit.channels[channel].feed;
-      // feed.events.on('write', (name, newItems) => {
-      //   logger.info("New messages in #" + channel);
-      //   // this.loadMessages(channel, null, null, messagesBatchSize);
-      //   this._addMessages(name, newItems, false)
-      // });
 
-      // feed.events.on('data', (name, hash) => {
-      //   // logger.info("Sent message to #" + channel);
-      //   logger.info("New messages in #" + channel);
-      //   this.loadMessages(channel, null, null, messagesBatchSize);
-      // });
+      if(!this.channels[channel])
+        this.channels[channel] = { messages: [], replies: {}, isReady: false, loading: false, canLoadMore: true, new: false, ready: false };
 
       feed.events.on('history', (name, messages) => {
-        // console.log("-------------------------------- HISTORY", name, messages)
         if(messages[0] && messages[0].next.length > 0)
           this.channels[channel].canLoadMore = true;
         this._addMessages(channel, _.take(messages.reverse(), messagesBatchSize - 1), true)
@@ -73,28 +66,10 @@ const MessageStore = Reflux.createStore({
 
       feed.events.on('sync', (name) => {
         // TODO: started loading new items
-        // console.log("-------------------------------- SYNC")
-        // logger.debug("Syncing");
-        // UIActions.startLoading(channel.name, "sync", "Syncing...");
-        // if(this.syncTimeout[channel.name]) clearTimeout(this.syncTimeout[channel.name])
-        // this.syncTimeout[channel.name] = setTimeout(() => {
-        //   const text = `Syncing is taking a long time. This usually means connection problems with the network.`
-        //   UIActions.startLoading(channel.name, "synctimeout", text)
-        // }, 10000)
-
-        // setTimeout(() => {
-        //   logger.debug("Clear")
-        //   clearTimeout(this.syncTimeout[channel.name])
-        //   delete this.syncTimeout[channel.name]
-        //   UIActions.stopLoading(channel.name, "sync")
-        //   UIActions.stopLoading(channel.name, "synctimeout")
-        // }, 60000)
-
       });
 
       feed.events.on('load', (name, hash) => {
         // TODO: started loading feed's history
-        console.log("-------------------------------- LOAD", name, hash)
         UIActions.startLoading(name, "loadHistory", "Loading history...");
         if(this.connectTimeout[name]) clearTimeout(this.connectTimeout[name]);
         this.connectTimeout[name] = setTimeout(() => {
@@ -105,7 +80,6 @@ const MessageStore = Reflux.createStore({
 
       feed.events.on('ready', (name) => {
         // TODO: feed's history loaded
-        console.log("-------------------------------- READY", name)
         clearTimeout(this.connectTimeout[name]);
         delete this.connectTimeout[name];
         UIActions.stopLoading(name, "loadHistory");
@@ -113,41 +87,6 @@ const MessageStore = Reflux.createStore({
       });
     })
   },
-  // _updateLoadingState: function(channel) {
-  //   logger.debug("Update channel state", channel);
-  //   if(channel) {
-  //     this.channels[channel.name].isReady = !channel.state.loading && !channel.state.syncing;
-  //     this.channels[channel.name].loading = channel.state.loading;
-  //     this.channels[channel.name].syncing = channel.state.syncing;
-
-  //     if(channel.state.loading) {
-  //       UIActions.startLoading(channel.name, "loadhistory", "Connecting...");
-  //       if(this.connectTimeout[channel.name]) clearTimeout(this.connectTimeout[channel.name]);
-  //       this.connectTimeout[channel.name] = setTimeout(() => {
-  //         UIActions.startLoading(channel.name, "loadhistory", `Connecting to the channel is taking a long time. This usually means connection problems with the network.`);
-  //       }, 10000);
-  //     } else {
-  //       clearTimeout(this.connectTimeout[channel.name]);
-  //       delete this.connectTimeout[channel.name];
-  //       UIActions.stopLoading(channel.name, "loadhistory");
-  //     }
-
-  //     if(channel.state.syncing > 0 && !this.syncTimeout[channel.name]) {
-  //       logger.debug("Syncing");
-  //       UIActions.startLoading(channel.name, "sync", "Syncing...");
-  //       if(this.syncTimeout[channel.name]) clearTimeout(this.syncTimeout[channel.name]);
-  //       this.syncTimeout[channel.name] = setTimeout(() => {
-  //         UIActions.startLoading(channel.name, "synctimeout", "Syncing is taking a long time. This usually means connection problems with the network.");
-  //       }, 10000);
-  //     } else {
-  //       logger.debug("Clear");
-  //       clearTimeout(this.syncTimeout[channel.name]);
-  //       delete this.syncTimeout[channel.name];
-  //       UIActions.stopLoading(channel.name, "sync");
-  //       UIActions.stopLoading(channel.name, "synctimeout");
-  //     }
-  //   }
-  // },
   _reset: function() {
     this.channels = {};
     this.posts = {};
@@ -163,29 +102,20 @@ const MessageStore = Reflux.createStore({
     if(channel) {
       this.channels[channel].isReady = false;
       this.channels[channel].loading = false;
-      // this.channels[channel].syncing = false;
       this.channels[channel].canLoadMore = true;
     }
   },
   getOldestMessage: function(channel: string) {
-    // return this.channels[channel] && this.channels[channel].messages.length > 0 ? this.channels[channel].messages[0].hash : null;
     return this.channels[channel] && this.channels[channel].messages.length > 0 ? this.channels[channel].messages[this.channels[channel].messages.length - 1].hash : null;
   },
   onDisconnect: function() {
     this._reset();
   },
   onJoinChannel: function(channel, password) {
-    // console.log("JOIN", channel)
     this._resetChannelState(this.currentChannel);
-    if(!this.channels[channel])
-      this.channels[channel] = { messages: [], isReady: false, loading: false, canLoadMore: true, new: false, ready: false };
     this.currentChannel = channel;
   },
   onJoinedChannel: function(channel) {
-    // console.log("JOINED", channel, this.channels)
-    // this.currentChannel = channel;
-    // const c = ChannelStore.channels.find((e) => e.name === this.currentChannel);
-    // this._updateLoadingState(c);
   },
   onLeaveChannel: function(channel: string) {
     this._resetChannelState(channel);
@@ -194,7 +124,6 @@ const MessageStore = Reflux.createStore({
     if (this.channels[channel]) this.channels[channel].new = true
   },
   onLoadMessages: function(channel: string) {
-    // console.log("onLoadMessages", channel)
     if (this.channels[channel])
       this.trigger(channel, this.channels[channel].messages);
   },
@@ -204,25 +133,20 @@ const MessageStore = Reflux.createStore({
     if (channel !== this.currentChannel)
       return;
 
-    // if(!this.channels[channel].loading && this.channels[channel].canLoadMore) {
-      if (!this.loading && this.channels[channel].canLoadMore) {
-        logger.debug("load more messages from #" + channel);
-        // this.channels[channel].canLoadMore = true;
-        this.loadMessages(channel, this.getOldestMessage(channel), null, messagesBatchSize);
-      }
-    // }
+    if (!this.loading && this.channels[channel].canLoadMore) {
+      logger.debug("load more messages from #" + channel);
+      this.loadMessages(channel, this.getOldestMessage(channel), null, messagesBatchSize);
+    }
   },
   loadMessages: function(channel: string, olderThanHash: string, newerThanHash: string, amount: number) {
     logger.debug("--> GET MESSAGES #" + channel + ", " + olderThanHash + " " + newerThanHash  + " " + amount);
-    // this.channels[channel].loading = true;
-      this.loading = true
+    this.loading = true
     UIActions.startLoading(channel, "loadMessages", "Loading more messages...");
     this.orbit.get(channel, olderThanHash, newerThanHash, amount)
       .then((messages) => {
         this._addMessages(channel, messages, olderThanHash !== null);
         this.loading = false
         UIActions.stopLoading(channel, "loadMessages");
-        // this.channels[channel].loading = false;
       })
       .catch((e) => {
         console.error(e)
@@ -280,8 +204,8 @@ const MessageStore = Reflux.createStore({
     this.onLoadPost(message.value, (err, post) => {
       UserActions.addUser(post.meta.from);
       if (post && post.content) {
-        if (hasMentions(post.content.toLowerCase(), UserStore.user.name.toLowerCase()))
-          NotificationActions.mention(channel, post.content);
+        // if (hasMentions(post.content.toLowerCase(), UserStore.user.name.toLowerCase()))
+        //   NotificationActions.mention(channel, post.content);
       }
     });
   },
@@ -347,17 +271,32 @@ const MessageStore = Reflux.createStore({
       callback(null, this.posts[hash]);
     }
   },
-  onSendMessage: function(channel: string, text: string, replyToHash: string) {
-    logger.debug("--> Send message: " + text, replyToHash);
-    // UIActions.startLoading(channel, "send");
-    this.orbit.send("--planet-express." + this.orbit.user.id, text, replyToHash)
-    // this.orbit.send(channel, text, replyToHash)
-      .then((post) => {
-        logger.debug("Sent:", post.content)
-        // logger.debug(post)
-        // UIActions.stopLoading(channel, "send");
-      })
-      .catch((e) => console.error(e))
+  onSendMessage: function(channel: string, text: string, replyToPost: string) {
+    logger.debug("--> Send message: " + text, replyToPost);
+    if (replyToPost) {
+      // POST A REPLY (TO TARGET USER'S REPLY FEED)
+      const replyChannel = "--planet-express." + replyToPost.user.id + ".replies"
+      this.orbit.join(replyChannel)
+        .then(() => {
+          return this.orbit.send(replyChannel, text, replyToPost.hash)
+          // return this.orbit.send(replyChannel, {
+          //   post: replyToPost.hash,
+          //   reply: post.Hash,
+          // })
+        })
+        .then((post) => {
+          logger.debug("Sent reply:", post.Hash)
+        })
+        .catch((e) => console.error(e))
+    } else {
+      // POST A REGULAR MESSAGE (TO USER'S OWN FEED)
+      // this.orbit.send("--planet-express." + this.orbit.user.id, text, replyToPost ? replyToPost.hash : null)
+      this.orbit.send("--planet-express." + this.orbit.user.id, text)
+        .then((post) => {
+          logger.debug("Sent:", post.content)
+        })
+        .catch((e) => console.error(e))
+    }
   },
   onAddFile: function(channel: string, filePath: string, buffer, meta) {
     logger.debug("--> Add file: " + filePath + buffer !== null);

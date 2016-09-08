@@ -109,8 +109,28 @@ $timestamp-color:  lighten($main-text-color, 50%);
     overflow: hidden;
     font-size: 1.25em;
     padding: 0.5em 0;
-    padding-top: 0.25em;
+    padding-top: 0.5em;
     // margin-top: 0.3em;
+  }
+
+  .Replies {
+    font-size: 0.8em;
+    // background-color: rgba(196, 196, 196, 0.2);
+    // border-left: 1px dashed rgba(196, 196, 196, 1);
+    margin-top: 0.5em;
+    // padding: 0.5em;
+    // padding-top: 0.25em;
+    padding: 0;
+    // margin-left: 0.25em;
+    user-select: none;
+
+    .header {
+      color: rgb(96, 96, 96);
+      margin-top: 0em;
+      user-select: none;
+      cursor: pointer;
+      // margin-bottom: 0.75em;
+    }
   }
 
   .popout {

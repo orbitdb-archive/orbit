@@ -43,7 +43,7 @@ class SendMessage extends React.Component {
   sendMessage(event) {
     event.preventDefault();
     var text = this.refs.message.value.trim();
-    this.props.onSendMessage(text, this.state.replyto ? this.state.replyto.hash : null);
+    this.props.onSendMessage(text, this.state.replyto);
     this.refs.message.value = '';
     this.refs.message.focus();
     this.setState({ replyto: null })

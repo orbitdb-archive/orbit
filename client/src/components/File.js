@@ -78,12 +78,10 @@ class File extends React.Component {
         if (buffer || url || stream) {
 
           if(buffer) {
-            console.log("BLOB!")
             const arrayBufferView = toArrayBuffer(buffer)
             blob = new Blob([arrayBufferView], { type: this.state.meta.mimeType })
             // blob = buffer
           } else if (buffer && this.state.meta.mimeType) {
-            console.log("OMG")
             const arrayBufferView = toArrayBuffer(buffer)
             blob = new Blob([arrayBufferView], { type: this.state.meta.mimeType })
           }
@@ -97,12 +95,10 @@ class File extends React.Component {
             previewContent = <img src={url} />
           } else if (this.isVideo) {
             if (isElectron) {
-              console.log("VIDEO")
-              previewContent = <video src={url} controls autoPlay={true} />
+              previewContent = <video src={url} controls autoPlay={false} />
               this.setState({ previewContent })
               return
             } else {
-              console.log("VIDEO NOT ELECTRON")
               const mimeCodec = 'video/mp4; codecs="avc1.42E01E, mp4a.40.2"'
               const source = new MediaSource()
               url = window.URL.createObjectURL(source)
@@ -135,10 +131,8 @@ class File extends React.Component {
               previewContent = <video height={200} src={url} controls autoPlay={false} />
             }
           } else {
-            console.log("FILE")
             var fileReader = new FileReader()
             fileReader.onload = (event) => {
-              console.log("TEXT", event.target.result)
               previewContent = this.isHighlightable ? <Highlight>{event.target.result}</Highlight> : <pre>{event.target.result}</pre>
               this.setState({ previewContent })
             }

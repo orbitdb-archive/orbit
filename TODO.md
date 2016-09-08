@@ -1,15 +1,18 @@
-- move input field to the feed
-- use "golden" color generator option
 - move reply input inline (under reply-to message)
-- add max-height to header
-- add user's location the header
-- fix File width
-- per-feed view
 - delete post
+- "retweet" functionality ("pin")
 - aggregate view
+- per-feed view
+- add user's location the header
 - add "follow" button and data structure
-- "retweet" functionality
-- change headr background and per-user settings data structure
-- somehow notify replied-to feed of a reply
 - uPort integration
 - planet express bot that caches *everything*
+- ~~somehow notify replied-to feed of a reply~~
+- ~~move input field to the feed~~
+- ~~use "golden" color generator option~~
+- ~~add max-height to header~~
+- ~~fix File width~~
+- ~~change headr background and per-user settings data structure~~
+- ~~post replies only to reply feed (not to your own feed)~~
+- ~~Message inside Message --> Reply (don't display replyTo)~~
+- ~~Move reply functionality from MessageStore to ReplyStore~~

@@ -41,7 +41,7 @@ class User extends React.Component {
         style={{ color: user ? color : 'rgb(96, 96, 96)' }}
         onClick={this.props.onShowProfile ? this.props.onShowProfile.bind(this, user) : null}
       >
-        {user ? user.name : 'Anonymous'}
+        {user ? user.name : ''}
       </div>
     )
   }

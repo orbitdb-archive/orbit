@@ -17,6 +17,7 @@ class TextMessage extends React.Component {
     this.state = {
       text: props.text,
       replyto: props.replyto,
+      animate: props.animate || true,
       useEmojis: props.useEmojis,
       highlightWords: props.highlightWords,
     };
@@ -25,6 +26,7 @@ class TextMessage extends React.Component {
   componentWillReceiveProps(nextProps) {
     this.setState({
       replyto: nextProps.replyto,
+      animate: nextProps.animate || true,
       useEmojis: nextProps.useEmojis,
       highlightWords: nextProps.highlightWords
     });
@@ -46,8 +48,7 @@ class TextMessage extends React.Component {
   }
 
   // Create emojis
-  _emojify(items, size = '20px') {
-    // size = _.flatten(items).length === 1 ? '32px' : size
+  _emojify(items, size = '20em') {
     const emojiOpts = {
       emojiType: 'emojione',
       attributes: { width: size, height: size }
@@ -64,6 +65,8 @@ class TextMessage extends React.Component {
 
   // Create linkss from IPFS hashes
   _ipfsfy(items) {
+    if (typeof items === 'string') items = [items]
+
     return _.flatten(items.map((item) => {
       return (typeof item === 'string') ? ReactIpfsLink.linkify(item, { target: "_blank", rel: "nofollow", key: Math.random() }) : item;
     }));
@@ -76,45 +79,17 @@ class TextMessage extends React.Component {
     finalText = this._ipfsfy(finalText);
     finalText = this.state.useEmojis ? this._emojify(finalText) : finalText;
 
-    if(this.state.replyto) {
-      const content = this.state.replyto.post.content ? this.state.replyto.post.content : this.state.replyto.post.name
-
-      let replyText = ReactAutolink.autolink(content, { target: "_blank", rel: "nofollow", key: Math.random() });
-      replyText = this._ipfsfy(replyText);
-      replyText = this.state.useEmojis ? this._emojify([replyText], '12px') : content
-
-      const element = (
-        <div className="reply" key={Math.random()}>
-          <span className="replyToIcon">↩︎</span>
-          <div>
-            <div className="row">
-              <User
-                user={this.state.replyto.user}
-                colorify={true}
-                highlight={false}
-                onShowProfile={this.props.onShowProfile}
-                />
-              <span className="Timestamp">{moment(this.state.replyto.post.meta.ts).fromNow()}</span>
-            </div>
-            <div style={{ marginTop: "0.1em" }}>{replyText}</div>
-          </div>
-        </div>
-      )
-      finalText.push(element)
-    }
-
-
-    const content = (
-      <TransitionGroup
-        transitionName="textAnimation"
-        transitionAppear={true}
-        transitionAppearTimeout={1000}
-        transitionEnterTimeout={0}
-        transitionLeaveTimeout={0}
-        className="content2">
-        <span className="content2" key={"1"}>{finalText}</span>
-      </TransitionGroup>
-    );
+    const content = this.props.animate
+      ? <TransitionGroup
+          transitionName="textAnimation"
+          transitionAppear={true}
+          transitionAppearTimeout={1000}
+          transitionEnterTimeout={0}
+          transitionLeaveTimeout={0}
+          className="content2">
+          <span className="content2" key={Math.random() * 10000}>{finalText}</span>
+        </TransitionGroup>
+      : <span className="content2" key={Math.random() * 10000}>{finalText}</span>
 
     return (<div className="TextMessage">{content}</div>);
   }

@@ -40,6 +40,9 @@ var ChannelStore = Reflux.createStore({
       NetworkActions.joinedChannel(channel);
       this.channels = this.orbit.channels;
       this.trigger(this.channels);
+      this.orbit.join(channel + ".replies").then((channelName) => {
+        logger.debug(`Joined replychannel #${channelName}`);
+      });
     });
   },
   onLeaveChannel: function(channel) {
