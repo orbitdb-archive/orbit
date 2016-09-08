@@ -223,6 +223,32 @@ input[type=button], .channelOptionsButton {
     font-weight: 400;
   }
 
+.ControlsContainer {
+  padding: 0em 1em;
+  padding-right: 1.5em;
+  padding-bottom: 0.5em;
+  padding-top: 1em;
+}
+
+.ControlsContainerEmbedded {
+  padding: 0em 2em;
+  /* padding-right: 1.5em; */
+  padding-bottom: 0.5em;
+  margin-top: 0em;
+  font-size: 0.8em;
+  z-index: -2000;
+
+  input[type=text] {
+    border-bottom: 1px dashed rgba(32, 32, 32, 0.3);
+    border-top: 0px;
+    background-color: rgb(255, 255, 255);
+  }
+}
+
+.disabled {
+  opacity: 0.25;
+}
+
 .Controls {
 //  background-color: $bar-background-color;
   box-sizing: border-box;
@@ -249,9 +275,10 @@ input[type=button], .channelOptionsButton {
   align-self: center;
   // width: 100vw;
 
-  padding: 0em 1em;
-  padding-right: 1.5em;
-  padding-bottom: 0.5em;
+  // padding: 0em 1em;
+  // padding-right: 1.5em;
+  // padding-bottom: 0.5em;
+  // padding-top: 1em;
 
   // min-width: 30em;
   // padding: 1.5em;
@@ -313,6 +340,7 @@ input[type=button], .channelOptionsButton {
   // padding: 0em 1em;
   // padding-right: 0.5em;
   // padding-top: 0.5em;
+  padding-top: 1em;
 
   width: 100%;
   // height: 100%;
@@ -342,8 +370,8 @@ input[type=button], .channelOptionsButton {
 }
 
 .controlsAnimation-appear {
-  $duration: .3s;
-  $animation-name: fadeInDown2;
+  $duration: .7s;
+  $animation-name: fadeInDown3;
 
   -webkit-animation: $animation-name;
   animation: $animation-name;

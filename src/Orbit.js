@@ -110,7 +110,7 @@ class Orbit {
     this._channels[channel] = {
       name: channel,
       password: null,
-      feed: this._orbitdb.eventlog(channel, dbOptions) // feed is the database instance
+      feed: this._orbitdb.feed(channel, dbOptions) // feed is the database instance
     }
 
     this.events.emit('joined', channel)

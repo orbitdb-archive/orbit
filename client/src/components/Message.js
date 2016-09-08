@@ -116,7 +116,7 @@ class Message extends React.Component {
 
   renderReplies() {
     // render message from latest to oldest (reverse)
-    const sorted = _.orderBy(this.state.replies, (e) => e.post.meta.ts, ['desc'])
+    const sorted = _.orderBy(this.state.replies, (e) => e.post.meta.ts, ['asc'])
     const replies = sorted.map((e) => {
       return <Reply
         replies={[]}
@@ -168,6 +168,13 @@ class Message extends React.Component {
             {this.renderContent(this.state.post)}
             {this.renderReplies()}
             <div className="ActionButton" onClick={this.onReplyTo.bind(this)}>Reply</div>
+            {user && this.props.currentUserId === user.id
+              ? <span>
+                  <span className="spacer">  |  </span>
+                  <div className="ActionButton" onClick={this.props.onRemove.bind(this)}>Remove</div>
+                </span>
+              : null
+            }
           </div>
         </div>
       </div>

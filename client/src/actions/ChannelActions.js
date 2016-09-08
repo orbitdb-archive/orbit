@@ -8,6 +8,7 @@ var ChannelActions = Reflux.createActions([
   "loadMessages",
   "loadMoreMessages",
   "sendMessage",
+  "removeMessage",
   "addFile",
   "loadPost",
   "loadFile",

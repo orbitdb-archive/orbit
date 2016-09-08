@@ -235,7 +235,7 @@ class Channel extends React.Component {
         this.setState({ loadingText: "Loading..." })
         this.loadOlderMessages()
         setTimeout(() => {
-          this.setState({ loadingText: '' })
+          this.setState({ loadingText: <br/> })
         }, 1000)
       }
     }, 800)
@@ -308,26 +308,39 @@ class Channel extends React.Component {
     NetworkActions.joinChannel("--planet-express." + user.id)
   }
 
-  renderMessages() {
+  _removePost(hash) {
+    console.log("!!!", hash)
+    ChannelActions.removeMessage(this.state.channelName, hash)
+  }
+
+  renderMessages(renderReplyField) {
     const { messages, username, channelName, loading, loadingText, reachedChannelStart, appSettings } = this.state
     const { colorifyUsernames, useEmojis, useMonospaceFont, font, monospaceFont, spacing } = appSettings
     const elements = messages.map((message) => {
-      return <Message
-        replies={this.state.replies[message.payload.value] || []}
-        message={message.payload.value}
-        key={message.hash}
-        onReplyTo={this.onReplyTo.bind(this)}
-        onShowProfile={this.onOpenFeed.bind(this)}
-        onDragEnter={this.onDragEnter.bind(this)}
-        highlightWords={username}
-        colorifyUsername={colorifyUsernames}
-        useEmojis={useEmojis}
-        style={{
-          fontFamily: useMonospaceFont ? monospaceFont : font,
-          fontSize: useMonospaceFont ? '0.9em' : '1.0em',
-          fontWeight: useMonospaceFont ? '100' : '300',
-        }}
-      />
+      return <div>
+        <Message
+          currentUserId={this.state.user.id}
+          replies={this.state.replies[message.payload.value] || []}
+          message={message.payload.value}
+          key={message.hash}
+          onReplyTo={this.onReplyTo.bind(this)}
+          onShowProfile={this.onOpenFeed.bind(this)}
+          onDragEnter={this.onDragEnter.bind(this)}
+          highlightWords={username}
+          colorifyUsername={colorifyUsernames}
+          useEmojis={useEmojis}
+          onRemove={this._removePost.bind(this, message.hash)}
+          style={{
+            fontFamily: useMonospaceFont ? monospaceFont : font,
+            fontSize: useMonospaceFont ? '0.9em' : '1.0em',
+            fontWeight: useMonospaceFont ? '100' : '300',
+          }}
+        />
+        {renderReplyField && renderReplyField.hash === message.payload.value
+          ? this.renderInput(true, false, this.state.replyto)
+          : null
+        }
+      </div>
     })
     elements.push(
       <div className="firstMessage" key="firstMessage" onClick={this.loadOlderMessages.bind(this)}>
@@ -335,6 +348,20 @@ class Channel extends React.Component {
       </div>
     )
     return elements
+  }
+
+  renderInput(embedded = false, disabled = false, replyto) {
+    return <ChannelControls
+      embedded={embedded}
+      disabled={disabled}
+      onSendMessage={this.sendMessage.bind(this)}
+      onDrop={this.onDrop.bind(this)}
+      onClearReplyTo={this.onClearReplyTo.bind(this)}
+      appSettings={this.state.appSettings}
+      isLoading={true}
+      theme={null}
+      replyto={replyto}
+    />
   }
 
   renderFileDrop() {
@@ -358,54 +385,23 @@ class Channel extends React.Component {
 
   render() {
     const {
-      showUserProfile,
-      userProfilePosition,
       unreadMessages,
-      loading,
-      channelMode,
-      appSettings,
       replyto,
-      theme,
       channelName,
       user
     } = this.state
 
-    const profile = showUserProfile ?
-      <Profile
-        user={showUserProfile}
-        x={userProfilePosition.x}
-        y={userProfilePosition.y}
-        theme={theme}
-        onClose={this.onShowProfile.bind(this)}/>
-      : null
-
-    const showControls = channelName && user && (channelName.split(".")[1] === user.id || replyto !== null)
-
-    const controls = showControls
-      ? <ChannelControls
-          onSendMessage={this.sendMessage.bind(this)}
-          onDrop={this.onDrop.bind(this)}
-          onClearReplyTo={this.onClearReplyTo.bind(this)}
-          appSettings={appSettings}
-          isLoading={true}
-          theme={null}
-          replyto={replyto}
-        />
-      : null
-
-    // console.log("ISLOADING", loading)
-    // const loadingIndicator = loading ? <Spinner isLoading={true} color="rgba(64, 64, 64, 0.5)" size="16px" /> : null
+    const showControls = channelName && user && channelName.split(".")[1] === user.id
+    const controls = showControls ? this.renderInput(false, replyto) : null
 
     return (
       <div className="Channel" onDragEnter={this.onDragEnter.bind(this)}>
         {controls}
-        <Spinner isLoading={loading} color="rgba(64, 64, 64, 0.5)" size="16px" />
-        <div className="user">{profile}</div>
         <NewMessageNotification
           onClick={this.onScrollToBottom.bind(this)}
           unreadMessages={unreadMessages} />
         <div className="Messages" ref="MessagesView" onScroll={this.onScroll.bind(this)}>
-          {this.renderMessages()}
+          {this.renderMessages(replyto)}
         </div>
         {this.renderFileDrop()}
       </div>

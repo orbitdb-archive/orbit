@@ -25,6 +25,7 @@ class ChannelControls extends React.Component {
     const { onSendMessage, onSendFiles, onClearReplyTo, isLoading, channelMode, appSettings, theme, replyto } = this.props;
     return (
       <TransitionGroup
+        className={!this.props.embedded ? "ControlsContainer" : "ControlsContainerEmbedded"}
         component="div"
         transitionName="controlsAnimation"
         transitionAppear={true}
@@ -32,7 +33,7 @@ class ChannelControls extends React.Component {
         transitionEnterTimeout={0}
         transitionLeaveTimeout={0}
         >
-        <div className="Controls" key="controls">
+        <div className={this.props.disabled ? "Controls disabled" : "Controls"} key="controls">
           <SendMessage
             onSendMessage={onSendMessage}
             theme={theme}

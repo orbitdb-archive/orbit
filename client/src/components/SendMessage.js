@@ -74,6 +74,9 @@ class SendMessage extends React.Component {
     this.autoComplete.onKeyDown(event, this.refs.message.value, UsersStore.users);
     if (this.state.emojiPickerActive) {
       this.refs.emojipicker.onKeyDown(event);
+    } else {
+      if (event.which === 27)
+        this.props.onClearReplyTo()
     }
   }
 
@@ -101,18 +104,8 @@ class SendMessage extends React.Component {
       </TransitionGroup>
       : <span/>
 
-    const inputLabel = replyto
-      ? <div
-          className="InputMessage"
-          onClick={this.onClearReplyTo.bind(this)}
-        >
-          {replyto ? `Reply to:  "<${replyto.user.name}> ${replyto.content}"` : ""}
-        </div>
-      : null
-
     return (
       <div className="SendMessage">
-        {inputLabel}
         <form onSubmit={this.sendMessage.bind(this)}>
           {emojiPicker}
           <input

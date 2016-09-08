@@ -1,14 +1,17 @@
-- move reply input inline (under reply-to message)
-- delete post
 - "retweet" functionality ("pin")
-- aggregate view
-- per-feed view
-- add user's location the header
+    + needs its own post and react renderer (like Message or Reply)
+- fix feed history lengths, ie. how many items to display at a time (need to do on UI side now)
 - add "follow" button and data structure
+- aggregate view
 - uPort integration
+- add user's location the header
 - planet express bot that caches *everything*
+- proper urls to access feeds
+- ~~delete post~~
+- ~~move reply input inline (under reply-to message)~~
 - ~~somehow notify replied-to feed of a reply~~
 - ~~move input field to the feed~~
+- ~~per-feed view~~
 - ~~use "golden" color generator option~~
 - ~~add max-height to header~~
 - ~~fix File width~~

@@ -40,6 +40,10 @@ const MessageStore = Reflux.createStore({
       }, interval);
     };
   },
+  onRemoveMessage: function(channel, hash) {
+    console.log("REMOVE", channel, hash)
+    this.orbit.channels[channel].feed.remove(hash)
+  },
   onSetFeedStreamDatabase: function(db) {
     this.feedStream = db
   },
@@ -48,7 +52,14 @@ const MessageStore = Reflux.createStore({
 
     this.orbit.events.on('message', (channel, message) => {
       logger.info("-->", channel, message)
-      this._addMessages(channel, [message], false)
+      // this._addMessages(channel, [message], false)
+      const feed = this.orbit.channels[channel].feed
+      const m = feed.iterator({ limit: -1 }).collect()
+      // this._addMessages(channel, m.reverse(), true)
+      // this._addMessages(channel, _.take(messages.reverse(), messagesBatchSize - 1), true)
+      this.channels[channel].messages = _.orderBy(m, (e) => e.payload.meta.ts, ['desc']);
+      NotificationActions.newMessage(channel);
+      this.trigger(channel, this.channels[channel].messages);
     })
 
     this.orbit.events.on('joined', (channel) => {
@@ -58,10 +69,22 @@ const MessageStore = Reflux.createStore({
       if(!this.channels[channel])
         this.channels[channel] = { messages: [], replies: {}, isReady: false, loading: false, canLoadMore: true, new: false, ready: false };
 
+      feed.events.on('data', (name, messages) => {
+        const m = feed.iterator({ limit: 1 }).collect()
+        this._addMessages(channel, m, false)
+      });
+
       feed.events.on('history', (name, messages) => {
         if(messages[0] && messages[0].next.length > 0)
           this.channels[channel].canLoadMore = true;
-        this._addMessages(channel, _.take(messages.reverse(), messagesBatchSize - 1), true)
+
+        console.log("HISTORY!!!!-----------------------------------------------")
+        const m = feed.iterator({ limit: -1 }).collect()
+        // this._addMessages(channel, m.reverse(), true)
+        // this._addMessages(channel, _.take(messages.reverse(), messagesBatchSize - 1), true)
+        this.channels[channel].messages = _.orderBy(m, (e) => e.payload.meta.ts, ['desc']);
+        NotificationActions.newMessage(channel);
+        this.trigger(channel, this.channels[channel].messages);
       });
 
       feed.events.on('sync', (name) => {
@@ -84,6 +107,8 @@ const MessageStore = Reflux.createStore({
         delete this.connectTimeout[name];
         UIActions.stopLoading(name, "loadHistory");
         if(this.channels[name]) this.channels[name].canLoadMore = true;
+        // const m = feed.iterator({ limit: -1 }).collect()
+        // this._addMessages(channel, m.reverse(), true)
       });
     })
   },
