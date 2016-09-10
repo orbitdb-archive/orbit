@@ -1,12 +1,15 @@
-- "retweet" functionality ("pin")
-    + needs its own post and react renderer (like Message or Reply)
-- fix feed history lengths, ie. how many items to display at a time (need to do on UI side now)
-- add "follow" button and data structure
-- aggregate view
 - uPort integration
+- aggregate view
+- add "follow" button and data structure
+- re-check fonts
+- fix feed history lengths, ie. how many items to display at a time (need to do on UI side now)
 - add user's location the header
 - planet express bot that caches *everything*
 - proper urls to access feeds
+
+- ~~if isPin, send 'remove' to .pins channel"~~
+- ~~"retweet" functionality ("pin")~~
+    + ~~needs its own post and react renderer (like Message or Reply)~~
 - ~~delete post~~
 - ~~move reply input inline (under reply-to message)~~
 - ~~somehow notify replied-to feed of a reply~~

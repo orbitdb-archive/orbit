@@ -2,76 +2,69 @@
 
 import _ from 'lodash'
 import Reflux from 'reflux'
-import AppActions from 'actions/AppActions'
-import UIActions from 'actions/UIActions'
+import AppActions from 'actions/AppActions';
 import NetworkActions from 'actions/NetworkActions'
 import ChannelActions from 'actions/ChannelActions'
-import SocketActions from 'actions/SocketActions'
-import NotificationActions from 'actions/NotificationActions'
-import UserActions from 'actions/UserActions'
-import ChannelStore from 'stores/ChannelStore'
-import UserStore from 'stores/UserStore'
 import Logger from 'logplease'
-const logger = Logger.create('MessageStore', { color: Logger.Colors.Magenta })
+const logger = Logger.create('ReplyStore', { color: Logger.Colors.Yellow })
 
 const ReplyStore = Reflux.createStore({
-  listenables: [AppActions, UIActions, NetworkActions, SocketActions, ChannelActions],
+  listenables: [AppActions, NetworkActions, ChannelActions],
   init: function() {
     this.replies = {}
   },
-  onInitialize: function(orbit) {
-
-    // TODO: don't use orbit but orbit-db directly for reply channel
-    this.orbit = orbit
-
-    this.orbit.events.on('message', (channel, message) => {
-      logger.info("Reply -->", channel, message)
-      if (channel.endsWith(".replies")) {
-        const c = channel.split('.')[0] + "." + channel.split('.')[1] // remove '.replies'
-        this._processReply(c, message)
-      }
-    })
-
-    this.orbit.events.on('joined', (channel) => {
-      if (!this.replies[channel])
-        this.replies[channel] = {}
-
-      if (channel.endsWith(".replies")) {
-        const feed = this.orbit.channels[channel].feed
-        const c = channel.split('.')[0] + "." + channel.split('.')[1] // remove '.replies'
-
-        if (!this.replies[c])
-          this.replies[c] = {}
-
-        feed.events.on('history', (name, messages) => {
-          messages.forEach((e) => this._processReply(c, e))
-        })
-      }
-    })
+  onDisconnect: function() {
+    this.replies = {}
   },
-  _processReply: function(channel, message) {
-    this.orbit.getPost(message.payload.value)
+  onInitialize: function(orbit) {
+    this.orbit = orbit
+  },
+  onLoadReplies: function(hash) {
+    const replyChannel = "--planet-express." + hash + ".replies"
+
+    if (!this.replies[hash])
+      this.replies[hash] = []
+
+    this.orbit.join(replyChannel)
+      .then((joined) => {
+        if(joined) {
+          logger.info(`Joined #${replyChannel}`)
+          const feed = this.orbit.channels[replyChannel].feed
+
+          feed.events.on('data', (name, item) => {
+            this._getReplies(feed, hash)
+          })
+
+          feed.events.on('history', (name, items) => {
+            this._getReplies(feed, hash)
+          })
+        }
+
+        // update subscribers with whatever we have atm
+        this.trigger(hash, this.replies[hash])
+      })
+      .catch((e) => console.error(e))
+  },
+  _getReplies: function(feed, hash) {
+    const replies = feed.iterator({ limit: -1 })
+      .collect()
+      .map((e) => e.payload.value)
+
+    const current = this.replies[hash].map((e) => e.hash)//.concat(replies)
+    const newReplies = _.difference(replies, current).map((e) => this._processReply(e))
+    Promise.all(newReplies).then((res) => this.trigger(hash, this.replies[hash]))
+  },
+  _processReply: function(replyHash) {
+    return this.orbit.getPost(replyHash)
       .then((post) => {
         const hash = post.replyto
 
-        if (!this.replies[channel])
-          this.replies[channel] = {}
-
-        if (!this.replies[channel][hash])
-          this.replies[channel][hash] = []
-
-        if (!this.replies[channel][hash].map((e) => e.hash).includes(message.payload.value)) {
-          this.replies[channel][hash].push({ hash: message.payload.value, post: post })
-          // TODO: orderBy(e.meta.ts)
-          this.trigger(channel, this.replies[channel])
+        if (!this.replies[hash].map((e) => e.hash).includes(replyHash)) {
+          this.replies[hash].push({ hash: replyHash, post: post })
         }
+
+        return
       })
-  },
-  _reset: function() {
-    this.replies = {}
-  },
-  onDisconnect: function() {
-    this._reset()
   },
 })
 

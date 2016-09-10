@@ -142,6 +142,21 @@ class Orbit {
       .then((feed) => this._postMessage(feed, Post.Types.Message, data, this._user._keys))
   }
 
+  pin(channel, hash) {
+    if(!hash || hash === '')
+      return Promise.reject(`Hash not specified`)
+
+    logger.debug(`Pin ${hash} from #${channel}`)
+
+    const data = {
+      pinned: hash,
+      from: this.user.id
+    }
+
+    return this._getChannelFeed(channel)
+      .then((feed) => this._postMessage(feed, Post.Types.Pin, data, this._user._keys))
+  }
+
   get(channel, lessThanHash = null, greaterThanHash = null, amount = 1) {
     logger.debug(`Get messages from #${channel}: ${lessThanHash}, ${greaterThanHash}, ${amount}`)
 
@@ -271,9 +286,9 @@ class Orbit {
 
   /* Private methods */
 
-  _postMessage(feed, postType, data, signKey) {
+  _postMessage(feed, postType, data, signKeys) {
     let post
-    return Post.create(this._ipfs, postType, data, signKey)
+    return Post.create(this._ipfs, postType, data, signKeys)
       .then((res) => post = res)
       .then(() => feed.add(post.Hash))
       .then(() => post)

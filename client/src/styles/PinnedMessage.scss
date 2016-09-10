@@ -1,0 +1,60 @@
+@import 'Animations';
+@import 'Colors';
+
+.PinnedMessage {
+  display: flex;
+  flex: 1 1 100%;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: baseline;
+
+  padding: 0em 1em;
+  box-sizing: border-box;
+
+  font-weight: 100;
+  overflow: hidden;
+
+  .Picture {
+    height: 2.5em;
+    margin-right: 0.5em;
+  }
+
+  .Body {
+    width: 100%;
+    border: 1px solid rgba(232, 232, 232, 0.8);
+    padding: 0.75em;
+    background-color: rgb(255, 255, 255);
+    overflow: hidden;
+  }
+
+  .Timestamp {
+    display: flex;
+    // color: $timestamp-color;
+    font-weight: 300;
+    font-size: 0.8em;
+  }
+
+  .Content {
+    display: flex;
+    flex: 1;
+    overflow: hidden;
+    font-size: 1.25em;
+    padding: 0.5em 0;
+    padding-top: 0.5em;
+  }
+
+  .Replies {
+    font-size: 0.8em;
+    margin-top: 0.5em;
+    padding: 0;
+    user-select: none;
+
+    .header {
+      color: rgb(96, 96, 96);
+      margin-top: 0em;
+      user-select: none;
+      cursor: pointer;
+    }
+  }
+
+}

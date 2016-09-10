@@ -8,7 +8,7 @@ import NewMessageNotification from 'components/NewMessageNotification'
 import Dropzone from 'react-dropzone'
 import MessageStore from 'stores/MessageStore'
 import ReplyStore from 'stores/ReplyStore'
-
+import PinStore from 'stores/PinStore'
 import LoadingStateStore from 'stores/LoadingStateStore'
 import UIActions from 'actions/UIActions'
 import ChannelActions from 'actions/ChannelActions'
@@ -19,7 +19,6 @@ import 'styles/Channel.scss'
 import Logger from 'logplease'
 const logger = Logger.create('Channel', { color: Logger.Colors.Cyan })
 
-
 class Channel extends React.Component {
   constructor(props) {
     super(props)
@@ -28,7 +27,8 @@ class Channel extends React.Component {
       channelChanged: true,
       channelName: null,
       messages: [],
-      replies: [],
+      // replies: [],
+      // pins: [],
       loading: true,
       loadingText: 'Connecting...',
       reachedChannelStart: false,
@@ -66,7 +66,10 @@ class Channel extends React.Component {
       })
       UIActions.focusOnSendMessage()
       ChannelActions.loadMessages(nextProps.channel)
-      this.setState({ replies: ReplyStore.replies[nextProps.channel] || [] })
+      // this.setState({
+      //   replies: ReplyStore.replies[nextProps.channel] || [],
+      //   pins: PinStore.replies[nextProps.channel] || [],
+      // })
     }
 
     this.setState({
@@ -81,11 +84,15 @@ class Channel extends React.Component {
   componentDidMount() {
     this.unsubscribeFromLoadingState = LoadingStateStore.listen(this._updateLoadingState.bind(this))
     this.unsubscribeFromMessageStore = MessageStore.listen(this.onNewMessages.bind(this))
-    this.unsubscribeFromReplyStore = ReplyStore.listen(this.onNewReplies.bind(this))
+    // this.unsubscribeFromReplyStore = ReplyStore.listen(this.onNewReplies.bind(this))
+    // this.unsubscribeFromPinStore = PinStore.listen(this.onNewPins.bind(this))
     this.unsubscribeFromErrors = UIActions.raiseError.listen(this._onError.bind(this))
     this.stopListeningChannelState = ChannelActions.reachedChannelStart.listen(this._onReachedChannelStart.bind(this))
     this.node = this.refs.MessagesView
-    this.setState({ replies: ReplyStore.replies[this.channelName] || [] })
+    // this.setState({
+    //   replies: ReplyStore.replies[this.channelName] || [],
+    //   pins: PinStore.replies[this.channelName] || [],
+    // })
   }
 
   _updateLoadingState(state) {
@@ -119,19 +126,22 @@ class Channel extends React.Component {
 
   componentWillUnmount() {
     clearTimeout(this.scrollTimer)
-    this.unsubscribeFromReplyStore()
+    // this.unsubscribeFromReplyStore()
+    // this.unsubscribeFromPinStore()
     this.unsubscribeFromMessageStore()
     this.unsubscribeFromErrors()
     this.unsubscribeFromLoadingState()
     this.stopListeningChannelState()
-    this.setState({ messages: [], replies: [] })
+    this.setState({ messages: [] })
   }
 
-  onNewReplies(channel, replies) {
-    // if(channel !== this.state.channelName)
-    //   return
-    this.setState({ replies: replies })
-  }
+  // onNewReplies(channel, replies) {
+  //   this.setState({ replies: replies })
+  // }
+
+  // onNewPins(channel, pins) {
+  //   this.setState({ pins: pins })
+  // }
 
   onNewMessages(channel: string, res) {
     const messages = res
@@ -291,9 +301,9 @@ class Channel extends React.Component {
     }
   }
 
-  onReplyTo(message) {
-    console.log("REPLYTO", message)
-    this.setState({ replyto: message })
+  onReplyTo(replyto) {
+    console.log("REPLYTO", replyto)
+    this.setState({ replyto: replyto })
     UIActions.focusOnSendMessage()
   }
 
@@ -303,9 +313,19 @@ class Channel extends React.Component {
     UIActions.focusOnSendMessage()
   }
 
-  onOpenFeed(user) {
+  _openFeed(user) {
     this.setState({ replyto: null })
     NetworkActions.joinChannel("--planet-express." + user.id)
+  }
+
+  onPin(post) {
+    console.log("-- PIN --", post)
+    ChannelActions.pinMessage(this.state.channelName, post)
+  }
+
+  onUnpin(hash, target, third) {
+    console.log("-- UNPIN --", hash, target, third)
+    ChannelActions.unpinMessage(target ? this.state.channelName : null, hash, target, third)
   }
 
   _removePost(hash) {
@@ -319,12 +339,15 @@ class Channel extends React.Component {
     const elements = messages.map((message) => {
       return <div>
         <Message
+          inChannel={channelName}
           currentUserId={this.state.user.id}
-          replies={this.state.replies[message.payload.value] || []}
           message={message.payload.value}
+          messageHash={message.hash}
           key={message.hash}
           onReplyTo={this.onReplyTo.bind(this)}
-          onShowProfile={this.onOpenFeed.bind(this)}
+          onShowProfile={this._openFeed.bind(this)}
+          onPin={this.onPin.bind(this)}
+          onUnpin={this.onUnpin.bind(this)}
           onDragEnter={this.onDragEnter.bind(this)}
           highlightWords={username}
           colorifyUsername={colorifyUsernames}

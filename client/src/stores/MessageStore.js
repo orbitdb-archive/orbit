@@ -12,6 +12,7 @@ import UserActions from 'actions/UserActions';
 import ChannelStore from 'stores/ChannelStore';
 import UserStore from 'stores/UserStore';
 import ReplyStore from 'stores/ReplyStore'
+import PinStore from 'stores/PinStore'
 import Logger from 'logplease';
 const logger = Logger.create('MessageStore', { color: Logger.Colors.Magenta });
 
@@ -20,7 +21,8 @@ const messagesBatchSize = 4;
 const MessageStore = Reflux.createStore({
   listenables: [AppActions, UIActions, NetworkActions, SocketActions, ChannelActions],
   init: function() {
-    this.unsubscribeFromReplies = ReplyStore.listen((channel) => this.trigger(this.channels[channel].messages))
+    // this.unsubscribeFromReplies = ReplyStore.listen((channel) => this.trigger(this.channels[channel].messages))
+    // this.unsubscribeFromPins = PinStore.listen((channel) => this.trigger(this.channels[channel].messages))
 
     this.currentChannel = null;
     this.channels = {};
@@ -43,6 +45,35 @@ const MessageStore = Reflux.createStore({
   onRemoveMessage: function(channel, hash) {
     console.log("REMOVE", channel, hash)
     this.orbit.channels[channel].feed.remove(hash)
+  },
+  onPinMessage: function(channel, post) {
+    console.log("PIN", channel, post)
+    // POST A REGULAR MESSAGE (TO USER'S OWN FEED)
+    this.orbit.pin("--planet-express." + this.orbit.user.id, post.hash)
+      .then((res) => {
+        logger.debug("Pinned:", res.Post.content)
+
+        const pinsChannel = "--planet-express." + post.hash + ".pins"
+        this.orbit.join(pinsChannel)
+          .then(() => {
+            return this.orbit.send(pinsChannel, res.Hash)
+          })
+          .then((post) => {
+            logger.debug("Sent pin:", res.Hash)
+          })
+          .catch((e) => console.error(e))
+      })
+      .catch((e) => console.error(e))
+  },
+  onUnpinMessage: function(channel, source, target, third) {
+    console.log("UNPIN", channel, source, target)
+    if(channel)
+      this.orbit.channels[channel].feed.remove(source)
+
+    if(target) {
+      const pinsChannel = "--planet-express." + third + ".pins"
+      this.orbit.channels[pinsChannel].feed.remove(target)
+    }
   },
   onSetFeedStreamDatabase: function(db) {
     this.feedStream = db
@@ -67,7 +98,7 @@ const MessageStore = Reflux.createStore({
       const feed = this.orbit.channels[channel].feed;
 
       if(!this.channels[channel])
-        this.channels[channel] = { messages: [], replies: {}, isReady: false, loading: false, canLoadMore: true, new: false, ready: false };
+        this.channels[channel] = { messages: [], isReady: false, loading: false, canLoadMore: true, new: false, ready: false };
 
       feed.events.on('data', (name, messages) => {
         const m = feed.iterator({ limit: 1 }).collect()
@@ -300,22 +331,16 @@ const MessageStore = Reflux.createStore({
     logger.debug("--> Send message: " + text, replyToPost);
     if (replyToPost) {
       // POST A REPLY (TO TARGET USER'S REPLY FEED)
-      const replyChannel = "--planet-express." + replyToPost.user.id + ".replies"
+      // const replyChannel = "--planet-express." + replyToPost.user.id + ".replies"
+      const replyChannel = "--planet-express." + replyToPost.target + ".replies"
       this.orbit.join(replyChannel)
-        .then(() => {
-          return this.orbit.send(replyChannel, text, replyToPost.hash)
-          // return this.orbit.send(replyChannel, {
-          //   post: replyToPost.hash,
-          //   reply: post.Hash,
-          // })
-        })
+        .then(() => this.orbit.send(replyChannel, text, replyToPost.target))
         .then((post) => {
           logger.debug("Sent reply:", post.Hash)
         })
         .catch((e) => console.error(e))
     } else {
       // POST A REGULAR MESSAGE (TO USER'S OWN FEED)
-      // this.orbit.send("--planet-express." + this.orbit.user.id, text, replyToPost ? replyToPost.hash : null)
       this.orbit.send("--planet-express." + this.orbit.user.id, text)
         .then((post) => {
           logger.debug("Sent:", post.content)

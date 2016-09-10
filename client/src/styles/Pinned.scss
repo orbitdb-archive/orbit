@@ -1,0 +1,20 @@
+@import 'Animations';
+@import 'Colors';
+
+.Pinned {
+  font-size: 1em;
+  color: rgba(96, 96, 96, 1);
+  font-style: italic;
+
+  flex-direction: row;
+  display: flex;
+  align-items: baseline;
+  align-self: center;
+  // margin-top: 0.25em;
+  margin-bottom: 0.5em;
+}
+
+.pinnedText {
+  font-size: 1.1em;
+  margin-right: 0.25em;
+}

@@ -19,6 +19,7 @@ $timestamp-color:  lighten($main-text-color, 50%);
   display: flex;
   flex-direction: column;
   align-items: baseline;
+  margin-left: 0.1em;
 }
 
 .row {
@@ -73,10 +74,24 @@ $timestamp-color:  lighten($main-text-color, 50%);
   //   background-position-x: 50%;
   // }
 
+  .PinHeader {
+    color: $second-text-color;
+    padding-bottom: 0.75em;
+    // padding-left: 0.25em;
+    font-size: 0.9em;
+    font-weight: 400;
+    font-style: italic;
+  }
+
   .Picture {
-    height: 2.5em;
+    height: 100%;
+    max-height: 2.5em;
+    width: auto;
+    max-width: 100%;
+
     // margin-left: 0.5em;
     margin-right: 0.5em;
+    background-color: rgba(228, 228, 228, 0.8);
   }
 
   .Body {
@@ -113,6 +128,24 @@ $timestamp-color:  lighten($main-text-color, 50%);
     // margin-top: 0.3em;
   }
 
+  .Statistics {
+    margin-top: 0.5em;
+
+    font-size: 0.8em;
+    user-select: none;
+    padding: 0;
+
+    .header {
+      color: rgb(96, 96, 96);
+      margin-top: 0em;
+      user-select: none;
+      cursor: pointer;
+    }
+  }
+
+  .Buttons {
+  }
+
   .Replies {
     font-size: 0.8em;
     // background-color: rgba(196, 196, 196, 0.2);
@@ -123,14 +156,6 @@ $timestamp-color:  lighten($main-text-color, 50%);
     padding: 0;
     // margin-left: 0.25em;
     user-select: none;
-
-    .header {
-      color: rgb(96, 96, 96);
-      margin-top: 0em;
-      user-select: none;
-      cursor: pointer;
-      // margin-bottom: 0.75em;
-    }
   }
 
   .popout {

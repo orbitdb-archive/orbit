@@ -202,6 +202,9 @@ var App = React.createClass({
       const replyChannel = "--planet-express." + this.state.user.id + ".replies"
       orbit.join(replyChannel)
 
+      const pinChannel = "--planet-express." + this.state.user.id + ".pins"
+      orbit.join(pinChannel)
+
       this.setState({ feedUser: this.state.user })
       AppActions.setFeedStreamDatabase(db)
       NetworkActions.joinChannel("--planet-express." + this.state.user.id)

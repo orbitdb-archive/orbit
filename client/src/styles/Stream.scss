@@ -28,17 +28,18 @@
   }
 }
 
-// .Username {
-//   font-size: 2em;
-//   font-weight: 300;
-//   color: lighten($header-color, 20%)
-// }
-
 .Feed {
   font-weight: 100;
   font-size: 1.25em;
   padding: 0.1em;
   margin-left: 0.5em;
+  color: $link-color;
+  text-decoration: none;
+}
+
+.Feed:hover {
+  color: darken($link-color, 20%);
+  font-weight: 300;
 }
 
 .feedAnimation-enter {
