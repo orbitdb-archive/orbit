@@ -24,8 +24,8 @@ if(!fs.existsSync(appDataPath))
 Logger.setLogfile(path.join(appDataPath, 'debug.log'))
 logger.debug("Run index.js in '" + MODE + "' mode")
 
-const widht = 700
-const height = 900
+const widht = 900
+const height = 1024
 const minWidth = 650
 
 const connectWindowSize = {

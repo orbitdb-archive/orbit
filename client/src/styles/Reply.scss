@@ -11,8 +11,8 @@
   align-items: baseline;
   align-self: center;
 
-  margin-top: 0.75em;
-  margin-left: 0.75em;
+  // margin-top: 0.25em;
+  // margin-left: 0.75em;
 }
 
 .ReplyContent {
@@ -31,7 +31,7 @@
 .replyToIcon {
   display: inline-block;
   transform: rotate3d(0, 0, 1, 180deg) rotate3d(1, 0, 0, 180deg);
-  color: rgba(128, 128, 128, 0.2);
+  color: rgba(128, 128, 128, 0.8);
   padding: 0.3em;
   padding-right: 0;
   font-style: normal;

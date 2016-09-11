@@ -1,15 +1,16 @@
 'use strict'
 
 const OrbitIdentifyProvider = require('./identityprovider-orbit')
+const uPortIdentifyProvider = require('./identityprovider-uport')
 
 const enabledProviders = [
   OrbitIdentifyProvider,
+  uPortIdentifyProvider,
 ]
 
 let identityProviders = {}
 enabledProviders.forEach((p) => {
   identityProviders[p.id] = p
-  // console.log("Added Identity Provider:", p.id)
 })
 
 class IdentityProviders {

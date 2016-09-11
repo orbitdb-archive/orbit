@@ -1,26 +1,27 @@
-'use strict';
+'use strict'
 
-import React from "react";
+import React from "react"
 import moment from 'moment'
-import MentionHighlighter from 'components/plugins/mention-highlighter';
-import User from "components/User";
-import File from "components/File";
-import Reply from "components/Reply";
-import Pinned from "components/Pinned";
-import TextMessage from "components/TextMessage";
-import Directory from "components/Directory";
-import ChannelActions from 'actions/ChannelActions';
-import UserActions from 'actions/UserActions';
-import NotificationActions from 'actions/NotificationActions';
-import TransitionGroup from "react-addons-css-transition-group";
+import MentionHighlighter from 'components/plugins/mention-highlighter'
+import User from "components/User"
+import File from "components/File"
+import Reply from "components/Reply"
+import Pinned from "components/Pinned"
+import TextMessage from "components/TextMessage"
+import Directory from "components/Directory"
+import ChannelActions from 'actions/ChannelActions'
+import UserActions from 'actions/UserActions'
+import NotificationActions from 'actions/NotificationActions'
+import TransitionGroup from "react-addons-css-transition-group"
 import ReplyStore from 'stores/ReplyStore'
 import PinStore from 'stores/PinStore'
-import "styles/Message.scss";
+import ProfilePictures from 'lib/ProfilePictures'
+import "styles/Message.scss"
 
 class Message extends React.Component {
 
   constructor(props) {
-    super(props);
+    super(props)
     this.state = {
       post: null,
       originalPost: null,
@@ -36,7 +37,7 @@ class Message extends React.Component {
       isPin: null,
       replies: [],
       pins: [],
-    };
+    }
   }
 
   componentDidMount() {
@@ -57,13 +58,13 @@ class Message extends React.Component {
                   originalUser: originalUser,
                   isPin: post.pinned,
                   formattedTime: moment(pinnedPost.meta.ts).fromNow(),
-                });
+                })
                 // Load replies for this message
                 ChannelActions.loadReplies(post.pinned)
                 // Load pins for this message
                 ChannelActions.loadPins(post.pinned)
-              });
-            });
+              })
+            })
           })
         } else {
           // load post normally
@@ -74,15 +75,15 @@ class Message extends React.Component {
               user: user,
               originalUser: user,
               formattedTime: moment(post.meta.ts).fromNow(),
-            });
+            })
             // Load replies for this message
             ChannelActions.loadReplies(this.props.message)
             // Load pins for this message
             ChannelActions.loadPins(this.props.message)
-          });
+          })
         }
       }
-    });
+    })
   }
 
   componentWillUnmount() {
@@ -135,15 +136,25 @@ class Message extends React.Component {
   }
 
   onShowReplies() {
-    this.setState({ showReplies: !this.state.showReplies })
+    this.setState({
+      showReplies: !this.state.showReplies,
+      showPins: !this.state.showReplies ? false : this.state.showPins,
+    })
   }
 
   onShowPins() {
-    this.setState({ showPins: !this.state.showPins })
+    this.setState({
+      showReplies: !this.state.showPins ? false : this.state.showReplies,
+      showPins: !this.state.showPins,
+    })
+  }
+
+  _hasPinned() {
+    return this.state.pins.map((e) => e.post.meta.from).includes(this.props.currentUserId)
   }
 
   renderContent(post) {
-    let content = (<div>...</div>);
+    let content = null
     if (post) {
       switch (post.meta.type) {
         case 'text':
@@ -155,26 +166,20 @@ class Message extends React.Component {
               key={post.hash}
               onShowProfile={this.props.onShowProfile}
             />
-          );
-          break;
+          )
+          break
         case 'pin':
           content = <div>{JSON.stringify(post, null, 2)}</div>
-          break;
+          break
         case 'file':
-          content = <File hash={post.hash} name={post.name} size={post.size} meta={post.meta}/>;
-          break;
+          content = <File hash={post.hash} name={post.name} size={post.size} meta={post.meta}/>
+          break
         case 'directory':
-          content = <Directory hash={post.hash} name={post.name} size={post.size} root={true} />;
-          break;
+          content = <Directory hash={post.hash} name={post.name} size={post.size} root={true} />
+          break
       }
     }
-    return <div className="Content">{content}</div>;
-  }
-
-  renderVerification() {
-    return this.state.post && this.state.post.signKey
-      ? <span className="Verified flaticon-linked1"/>
-      : null
+    return <div className="Content">{content}</div>
   }
 
   renderReplies() {
@@ -194,15 +199,11 @@ class Message extends React.Component {
       />
     })
 
-    return replies.length > 0
+    return this.state.showReplies && replies.length > 0
       ? <div className="Replies">
-          {this.state.showReplies ? replies : null }
+          {replies}
         </div>
       : null
-  }
-
-  _hasPinned() {
-    return this.state.pins.map((e) => e.post.meta.from).includes(this.props.currentUserId)
   }
 
   renderPins() {
@@ -217,18 +218,19 @@ class Message extends React.Component {
       />
     })
 
-    return pins.length > 0
+    return this.state.showPins  && pins.length > 0
       ? <div className="Replies">
-          {this.state.showPins && !this.state.showReplies ? pins : null }
+          {pins}
         </div>
-      : null
+       : null
   }
 
   render() {
-    const { currentUserId, colorifyUsername, style, onDragEnter } = this.props;
-    const { user, originalUser, post, isCommand, hasHighlights, formattedTime, isPin } = this.state;
-    const className = hasHighlights ? "Message highlighted" : "Message";
-    const picture = "images/earth.png"
+    const { currentUserId, colorifyUsername, style, onDragEnter } = this.props
+    const { user, originalUser, post, isCommand, hasHighlights, formattedTime, isPin } = this.state
+    const className = hasHighlights ? "Message highlighted" : "Message"
+    // const picture = "images/earth.png"
+    const picture = user ? ProfilePictures.getPicture(user.name) : null
 
     const showRemoveButton = !isPin && originalUser && currentUserId && currentUserId === originalUser.id
     const showPinButton = user && currentUserId && currentUserId !== user.id
@@ -254,7 +256,7 @@ class Message extends React.Component {
             <div style={{
                 display: "flex",
                 marginBottom: "0.25em",
-                alignItems: "center"
+                alignItems: "center",
             }}>
               <img className="Picture" src={picture} />
               <div className="column">
@@ -268,36 +270,46 @@ class Message extends React.Component {
               </div>
             </div>
             {this.renderContent(this.state.post)}
-            <div className="Statistics">
-              {this.state.replies.length > 0 ? <span className="header" onClick={this.onShowReplies.bind(this)}>Replies: {this.state.replies.length}</span> : null}
-              {this.state.replies.length > 0 && this.state.pins.length > 0 ?  <span className="spacer">  |  </span> : null}
-              {this.state.pins.length > 0 ? <span className="header" onClick={this.onShowPins.bind(this)}>Pins: {this.state.pins.length}</span> : null}
-            </div>
             {this.renderReplies()}
             {this.renderPins()}
             <div className="Buttons">
-              <span className="ActionButton" onClick={this.onReplyTo.bind(this)}>Reply</span>
-              {showRemoveButton
-                ? <span>
-                    <span className="spacer">  |  </span>
-                    <span className="ActionButton" onClick={this.props.onRemove.bind(this)}>{"Remove"}</span>
-                  </span>
-                : null
-              }
-              {showPinButton
-                ? <span>
-                    <span className="spacer">  |  </span>
-                    <span className="ActionButton" onClick={this.onPin.bind(this)}>{!this._hasPinned() ? "Pin" : "Unpin"}</span>
-                  </span>
-                : null
-              }
+              <div className="container">
+                <span className="ActionButton" onClick={this.onReplyTo.bind(this)}>
+                  <img className="icon" src="images/forward-arrow.png" />
+                </span>
+                {showPinButton
+                  ? <span className="ActionButton" onClick={this.onPin.bind(this)}>
+                      {!this._hasPinned()
+                        ? <img className="icon" src="images/star.png" />
+                        : <img className="icon" src="images/trash.png" />
+                      }
+                    </span>
+                  : null
+                }
+                {showRemoveButton
+                  ? <span className="ActionButton" onClick={this.props.onRemove.bind(this)}>
+                      <img className="icon" src="images/trash.png" />
+                    </span>
+                  : null
+                }
+              </div>
+              <div className="container">
+                <span className="ActionButton" onClick={this.onShowReplies.bind(this)}>
+                  <span className="label">{this.state.replies.length}</span>
+                  <img className="icon" src="images/comments.png" />
+                </span>
+                <span className="ActionButton" onClick={this.onShowPins.bind(this)}>
+                  <span className="label" onClick={this.onShowPins.bind(this)}>{this.state.pins.length}</span>
+                  <img className="icon" src="images/star-1.png" />
+                </span>
+              </div>
             </div>
           </div>
         </div>
       </div>
-    );
+    )
   }
 
 }
 
-export default Message;
+export default Message

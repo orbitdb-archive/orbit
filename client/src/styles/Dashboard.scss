@@ -31,14 +31,19 @@
     // color: lighten($header-color, 20%)
     color: rgb(96, 96, 96);
     padding: 0.1em;
+    padding-left: 0.25em;
+    padding-right: 0.25em;
     background-color: rgba(255, 255, 255, 0.6);
+        margin-top: 0.25em;
   }
 
   .picture {
     // width: 96px;
     // height: 96px;
-    height: 9vh;
+    height: 8vh;
     align-self: center;
+    margin: 0.5em;
+    -webkit-filter: saturate(0.4) sepia(0.1);
   }
 
   // .loading {

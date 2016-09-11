@@ -38,8 +38,8 @@ $timestamp-color:  lighten($main-text-color, 50%);
 }
 
 .Message {
-  // font-family: "Cousine";
   // font-size: 0.8em;
+  font-family: "Muli";
 	font-weight: 100;
 
   display: flex;
@@ -78,9 +78,13 @@ $timestamp-color:  lighten($main-text-color, 50%);
     color: $second-text-color;
     padding-bottom: 0.75em;
     // padding-left: 0.25em;
-    font-size: 0.9em;
-    font-weight: 400;
+    font-size: 0.8em;
+    font-weight: 300;
     font-style: italic;
+
+    .pinText {
+      font-size: 1.1em;
+    }
   }
 
   .Picture {
@@ -91,7 +95,8 @@ $timestamp-color:  lighten($main-text-color, 50%);
 
     // margin-left: 0.5em;
     margin-right: 0.5em;
-    background-color: rgba(228, 228, 228, 0.8);
+    // background-color: rgba(228, 228, 228, 0.4);
+    -webkit-filter: saturate(0.4) sepia(0.1);
   }
 
   .Body {
@@ -101,9 +106,10 @@ $timestamp-color:  lighten($main-text-color, 50%);
     // border: 1px solid rgb(248, 248, 248);
     // padding: 0.5em;
     border: 1px solid rgba(232, 232, 232, 0.8);
-    padding: 0.75em;
     background-color: rgb(255, 255, 255);
     overflow: hidden;
+    padding: 0.75em;
+    padding-bottom: 0.5em;
   }
 
   .Timestamp {
@@ -119,17 +125,19 @@ $timestamp-color:  lighten($main-text-color, 50%);
   .Content {
     // margin-left: 0.2em;
     // margin-right: 0.5em;
+    font-family: "Lato";
+    font-weight: 100;
     display: flex;
     flex: 1;
     overflow: hidden;
-    font-size: 1.25em;
+    font-size: 1.5em;
+    color: #505050;
     padding: 0.5em 0;
-    padding-top: 0.5em;
-    // margin-top: 0.3em;
   }
 
   .Statistics {
-    margin-top: 0.5em;
+    // margin-top: 0.5em;
+    font-family: "Muli";
 
     font-size: 0.8em;
     user-select: none;
@@ -144,18 +152,36 @@ $timestamp-color:  lighten($main-text-color, 50%);
   }
 
   .Buttons {
+    display: flex;
+    justify-content: space-between;
+
+    font-family: "Muli";
+    font-size: 1.0em;
+
+    .icon {
+      width: 1.0em;
+      height: 1.0em;
+      padding: 0;
+      margin: 0;
+      // padding-left: 0.5em;
+    }
+
+    .container {
+      display: flex;
+    }
   }
 
   .Replies {
     font-size: 0.8em;
-    // background-color: rgba(196, 196, 196, 0.2);
-    // border-left: 1px dashed rgba(196, 196, 196, 1);
-    margin-top: 0.5em;
-    // padding: 0.5em;
-    // padding-top: 0.25em;
     padding: 0;
-    // margin-left: 0.25em;
     user-select: none;
+    opacity: 0.8;
+    /* border-top: 1px dashed rgba(100, 100, 100, 0.2); */
+    border-bottom: 1px dashed rgba(100, 100, 100, 0.2);
+    padding: 0.5em;
+    padding-top: 0;
+    margin-bottom: 0.5em;
+    padding-bottom: 1em;
   }
 
   .popout {

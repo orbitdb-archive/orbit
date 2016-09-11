@@ -4,17 +4,18 @@
 /* Monospace fonts */
 @import url(https://fonts.googleapis.com/css?family=Source+Sans+Pro:400,200,200italic,400italic|Roboto+Mono:400,100,300);
 
+
+/* WIP */
+@import 'https://fonts.googleapis.com/css?family=Arvo|Josefin+Sans:100,300,400|Muli:300,400|PT+Sans|Poppins:300|Questrial|Raleway:100,300,400|Roboto+Condensed|Slabo+27px|Varela';
+
+
 html, body {
-  /*background: #222222;*/
   font-family: "Lato";
-  font-weight: 400;
+  font-weight: 300;
 }
 
 h1 {
-  /*color: rgb(228, 228, 228);*/
   font-weight: 100;
   margin: auto;
   font-size: 2em;
-  /*text-align: center;*/
-  /*padding: 1em;*/
 }

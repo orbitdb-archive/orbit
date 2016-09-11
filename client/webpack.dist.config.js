@@ -55,9 +55,9 @@ module.exports = {
     new webpack.optimize.CommonsChunkPlugin({ name: "emojis", filename: "emojis.js", chunks: ['emojis'] }),
     new webpack.optimize.CommonsChunkPlugin({ name: "vendor", filename: "vendor.js", chunks: ['vendor'] }),
     new webpack.optimize.AggressiveMergingPlugin(),
-    new webpack.optimize.UglifyJsPlugin({
-      exclude: /ipfsdist.js/
-    }),
+    // new webpack.optimize.UglifyJsPlugin({
+    //   exclude: /ipfsdist.js/
+    // }),
     new webpack.NoErrorsPlugin()
   ],
   resolveLoader: {

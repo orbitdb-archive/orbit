@@ -2,6 +2,9 @@
 @import 'Colors';
 
 .Stream {
+  font-family: "Lato";
+  font-weight: 300;
+
   flex: 0 1 25%;
   overflow: auto;
   z-index: 100;
@@ -35,11 +38,13 @@
   margin-left: 0.5em;
   color: $link-color;
   text-decoration: none;
+  font-weight: 300;
 }
 
 .Feed:hover {
   color: darken($link-color, 20%);
-  font-weight: 300;
+  // font-weight: 400;
+  text-decoration: underline;
 }
 
 .feedAnimation-enter {

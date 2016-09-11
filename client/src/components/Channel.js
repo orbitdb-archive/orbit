@@ -184,7 +184,6 @@ class Channel extends React.Component {
   }
 
   loadOlderMessages() {
-    console.log(this.state.loading)
     if(!this.state.loading) {
       ChannelActions.loadMoreMessages(this.state.channelName)
     }
@@ -197,7 +196,6 @@ class Channel extends React.Component {
   }
 
   _shouldLoadMoreMessages() {
-    console.log(this.node.scrollTop + this.node.clientHeight > this.node.scrollHeight - this.topMargin, this.node.scrollTop, this.node.clientHeight, this.node.scrollHeight, this.topMargin)
     return (this.node.scrollTop + this.node.clientHeight) > (this.node.scrollHeight - this.topMargin)
     // return this.node && (this.node.scrollTop - this.topMargin <= 0 || this.node.scrollHeight === this.node.clientHeight)
   }
@@ -302,13 +300,13 @@ class Channel extends React.Component {
   }
 
   onReplyTo(replyto) {
-    console.log("REPLYTO", replyto)
+    // console.log("REPLYTO", replyto)
     this.setState({ replyto: replyto })
     UIActions.focusOnSendMessage()
   }
 
   onClearReplyTo() {
-    console.log("CLEAR REPLYTO")
+    // console.log("CLEAR REPLYTO")
     this.setState({ replyto: null })
     UIActions.focusOnSendMessage()
   }
@@ -319,17 +317,16 @@ class Channel extends React.Component {
   }
 
   onPin(post) {
-    console.log("-- PIN --", post)
+    // console.log("-- PIN --", post)
     ChannelActions.pinMessage(this.state.channelName, post)
   }
 
   onUnpin(hash, target, third) {
-    console.log("-- UNPIN --", hash, target, third)
+    // console.log("-- UNPIN --", hash, target, third)
     ChannelActions.unpinMessage(target ? this.state.channelName : null, hash, target, third)
   }
 
   _removePost(hash) {
-    console.log("!!!", hash)
     ChannelActions.removeMessage(this.state.channelName, hash)
   }
 

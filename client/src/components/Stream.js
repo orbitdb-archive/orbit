@@ -38,7 +38,6 @@ class Stream extends React.Component {
 
     return (
       <div className="Stream">
-        <h1 className="header" onClick={this.props.onGoHome}>Home</h1>
         {feeds.length > 0
             ? <h1 className="header">Stream</h1>
             : <div className="loading">Loading feeds...</div>

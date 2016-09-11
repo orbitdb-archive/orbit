@@ -1,10 +1,11 @@
 - uPort integration
-- aggregate view
-- add "follow" button and data structure
-- re-check fonts
-- fix feed history lengths, ie. how many items to display at a time (need to do on UI side now)
 - add user's location the header
+- re-check fonts
+- generated default pictures (ala github)
 - planet express bot that caches *everything*
+- add "follow" button and data structure
+- aggregate view
+- fix feed history lengths, ie. how many items to display at a time (need to do on UI side now)
 - proper urls to access feeds
 
 - ~~if isPin, send 'remove' to .pins channel"~~

@@ -130,6 +130,14 @@ class LoginView extends React.Component{
         <div className="row">
           {errorMsg}
         </div>
+        <div className="row lastrow">
+          <img
+            onClick={this.onUportLogin.bind(this)}
+            className="logo"
+            src="images/uport.png"
+            height="48"
+          />
+        </div>
 
       </TransitionGroup>
     ) : (<span></span>);
@@ -138,7 +146,7 @@ class LoginView extends React.Component{
       <div className="LoginView">
         <form onSubmit={this.register.bind(this)} style={{ marginTop: (this.state.logoSize / 2 - 83)}}>
           <TransitionGroup className="row" transitionName="loginHeaderAnimation" transitionAppear={true} component="div" transitionAppearTimeout={5000} transitionEnterTimeout={5000} transitionLeaveTimeout={5000}>
-            <h1>Planet Express</h1>
+            <h1>Captain's Log</h1>
           </TransitionGroup>
           {form}
         </form>

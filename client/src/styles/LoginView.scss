@@ -4,7 +4,7 @@
 .LoginView {
   // font-family: "Source Sans Pro";
   font-weight: 100;
-  font-size: 0.9em;
+  font-size: 1.25em;
   padding: 0.1em;
   // color: rgb(128, 128, 128);
   display: flex;
@@ -13,7 +13,7 @@
   width: 100%;
   height: 100%;
   // margin-top: 0.25em;
-  margin-top: 0;
+  margin-top: 2em;
   box-sizing: border-box;
 
   .inputs {
@@ -24,16 +24,16 @@
   h1 {
     // margin-top: 0.6em;
     font-family: $font-header;
-    font-size: 5.0em;
+    font-size: 4.0em;
     font-weight: 100;
-    padding: 1.0em;
+    padding: 0.2em;
     text-transform: uppercase;
     color: $header-color;
     text-align: center;
   }
 
   form {
-    // margin-top: 120px;
+    margin-top: 4em;
     display: flex;
     // flex: 1 1 50%;
     align-self: flex-start;
@@ -63,7 +63,7 @@
     .row {
       display: flex;
       flex-direction: row;
-      margin-bottom: 0.5em;
+      // margin-bottom: 0.5em;
       justify-content: flex-end;
       width: 100%;
     }
@@ -119,24 +119,15 @@
 
     input[type=text], input[type=password] {
       margin-bottom: 0;
-      width: 90%;
+      width: 80%;
     }
 
     input[type=text]:disabled {
       color: rgba(228, 228, 228, 0.25);
       font-style: italic;
       cursor: not-allowed;
-      width: 90%;
+      width: 80%;
     }
-  }
-
-  .satellites {
-    position: absolute;
-    display: flex;
-    // flex-direction: row;
-    margin-top: 0.5em;
-    justify-content: center;
-    width: 100%;
   }
 
 }

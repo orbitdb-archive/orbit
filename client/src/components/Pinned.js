@@ -45,7 +45,7 @@ class Pinned extends React.Component {
                 onShowProfile={this.props.onShowProfile.bind(this, user)}
               />
               <span className="pinnedText"> pinned this post </span>
-              <span className="Timestamp" style={{ fontSize: "1.2em" }}>{formattedTime}</span>
+              <span className="Timestamp" style={{ fontSize: "1.0em" }}>{formattedTime}</span>
             </div>
           </div>
         </div>

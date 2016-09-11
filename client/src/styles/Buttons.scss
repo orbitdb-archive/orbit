@@ -1,19 +1,35 @@
 @import 'Colors';
 
 .ActionButton {
-  display: inline-block;
+  display: flex;
+  align-items: center;
+  // display: inline-block;
   color: $second-text-color;
   font-size: 0.7em;
   cursor: pointer;
   user-select: none;
-  padding: 0em 0em;
+  // padding: 0em 0em;
+  // padding: 0.25em;
   // padding-left: 0.5em;
   // padding-right: 0.5em;
   // margin-top: 0.8em;
+  margin-right: 0.5em;
+
+  padding: 0.5em;
+  border-radius: 16px;
+
+  opacity: 0.5;
+
+  .label {
+    margin-right: 0.5em;
+    font-style: bold;
+    font-weight: 300;
+  }
 }
 
 .ActionButton:hover {
   color: $main-text-color;
-  background-color: $button-higlight-color;
+  opacity: 1;
+  // background-color: $button-higlight-color;
 }
 

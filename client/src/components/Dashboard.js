@@ -4,6 +4,7 @@ import _ from 'lodash'
 import React from 'react'
 import GeoPattern from 'lib/geopattern-1.2.3.min'
 import Please from "pleasejs"
+import ProfilePictures from 'lib/ProfilePictures'
 import 'styles/Dashboard.scss'
 
 class Dashboard extends React.Component {
@@ -39,10 +40,11 @@ class Dashboard extends React.Component {
 
   render() {
     const username = this.state.user ? this.state.user.name : null
+    const picture = ProfilePictures.getPicture(username)
 
     return (
       <div className="Dashboard" style={{ backgroundImage: this.state.pattern.toDataUrl() }}>
-        <img className="picture" src="images/earth.png" />
+        <img className="picture" src={picture} />
         <h1 className="username" onClick={this.onOpenFeed.bind(this, this.state.user)}>{username}</h1>
       </div>
     )

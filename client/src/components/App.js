@@ -358,24 +358,19 @@ var App = React.createClass({
 
     const showControls = AppStateStore.state.currentChannel && AppStateStore.state.currentChannel.split(".")[1] === this.state.user.id
 
-    // const controls = showControls
-    //   ? <ChannelControls
-    //       onSendMessage={this.sendMessage}
-    //       onDrop={this.onDrop}
-    //       appSettings={SettingsStore.settings}
-    //       isLoading={false}
-    //       theme={null}
-    //       replyto={null}
-    //     />
-    //   : null
-
     const stream = this.state.showStream
       ? <Stream
           user={this.state.user}
           onOpenFeed={this.onOpenFeed}
-          onGoHome={this.onGoHome}
         />
       : null
+
+    const home = this.state.showStream
+      ? <div className="Stream">
+          <h1 className="header" onClick={this.onGoHome}>Home</h1>
+        </div>
+      : null
+
 
     return (
       <div className="App view">
@@ -384,26 +379,11 @@ var App = React.createClass({
           <div style={{ display: "flex", flex: "1" }}>
             {stream}
             {this.props.children}
+            {home}
           </div>
         </div>
       </div>
     );
-    // const panel = this.state.panelOpen ? (
-    //   <ChannelsPanel
-    //     onClose={this.closePanel}
-    //     onOpenSwarmView={this.openSwarmView}
-    //     onOpenSettings={this.openSettings}
-    //     onDisconnect={this.disconnect}
-    //     channels={ChannelStore.channels}
-    //     currentChannel={AppStateStore.state.location}
-    //     username={this.state.user ? this.state.user.name : ""}
-    //     requirePassword={this.state.requirePassword}
-    //     theme={this.state.theme}
-    //     left={this.state.leftSidePanel}
-    //     networkName={this.state.networkName}
-    //     joiningToChannel={this.state.joiningToChannel}
-    //   />
-    // ) : "";
   }
 });
 
