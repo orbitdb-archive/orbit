@@ -57,9 +57,9 @@ class Orbit {
 
   /* Public methods */
 
-  connect(host = 'localhost:3333', credentials = {}) {
+  connect(credentials = {}) {
     logger.debug("Load cache from:", this._options.cacheFile)
-    logger.info(`Connecting to network '${host}' as '${JSON.stringify(credentials)}`)
+    logger.info(`Connecting to Orbit as '${JSON.stringify(credentials)}`)
 
     if(typeof credentials === 'string') {
       credentials = { provider: 'orbit', username: credentials }
@@ -67,7 +67,8 @@ class Orbit {
 
     return IdentityProviders.authorizeUser(this._ipfs, credentials)
       .then((user) => this._user = user)
-      .then(() => OrbitDB.connect(host, this.user.identityProvider.id, null, this._ipfs))
+      .then(() => new OrbitDB(this._ipfs, this._user.id))
+      // .then(() => OrbitDB.connect(host, this.user.identityProvider.id, null, this._ipfs))
       .then((orbitdb) => {
         this._orbitdb = orbitdb
         this._orbitdb.events.on('data', this._handleMessage.bind(this)) // Subscribe to updates in the database
@@ -75,7 +76,7 @@ class Orbit {
         return
       })
       .then(() => {
-        logger.info(`Connected to '${this._orbitdb.network.name}' at '${this._orbitdb.network.publishers[0]}' as '${this.user.name}`)
+        logger.info(`Connected to '${this._orbitdb.network.name}' as '${this.user.name}`)
         this.events.emit('connected', this.network, this.user)
         return this
       })
@@ -83,7 +84,7 @@ class Orbit {
 
   disconnect() {
     if(this._orbitdb) {
-      logger.warn(`Disconnected from '${this.network.name}' at '${this.network.publishers[0]}'`)
+      logger.warn(`Disconnected from '${this.network.name}'`)
       this._orbitdb.disconnect()
       this._orbitdb = null
       this._user = null
@@ -199,13 +200,14 @@ class Orbit {
     }
 
     const addToIpfsGo = (ipfs, filename, filePath) => {
-      return ipfs.add(filePath, { recursive: true })
+      return ipfs.util.addFromFs(filePath, { recursive: true })
         .then((result) => {
           // last added hash is the filename --> we added a directory
           // first added hash is the filename --> we added a file
-          const isDirectory = result[result.length - 1].Name === filename
+          const isDirectory = result[0].path.split('/').pop() !== filename
           return {
-            Hash: isDirectory ? result[result.length - 1].Hash : result[0].Hash,
+            Hash: isDirectory ? result[result.length - 1].hash : result[0].hash,
+            // Hash: isDirectory ? result[result.length - 1].Hash : result[0].Hash,
             isDirectory: isDirectory
           }
         })

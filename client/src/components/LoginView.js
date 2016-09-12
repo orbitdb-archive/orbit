@@ -72,13 +72,13 @@ class LoginView extends React.Component{
 
   register(e) {
     if(e) e.preventDefault();
-    var network  = this.refs.network.value.trim();
+    // var network  = this.refs.network.value.trim();
     var username = this.refs.username.value.trim();
     var password = this.refs.password.value.trim();
 
-    if(network !== '' && username !== '') {
+    if(username !== '') {
       this.setState({ error: null, connecting: true, username: username, password: password });
-      NetworkActions.connect(network, username);
+      NetworkActions.connect(null, username);
     }
 
     return;
@@ -90,8 +90,8 @@ class LoginView extends React.Component{
   }
 
   onUportLogin() {
-    const network = this.refs.network.value.trim()
-    NetworkActions.connect(network, { provider: 'uPort' })
+    // const network = this.refs.network.value.trim()
+    NetworkActions.connect(null, { provider: 'uPort' })
   }
 
   render() {
@@ -103,12 +103,13 @@ class LoginView extends React.Component{
     var errorMsg   = this.state.error ? <div className="error">{this.state.error}</div> : "";
     var passwordFieldStyle = this.state.displayPasswordField ? "row" : "hidden";
 
+
     var form = !this.state.connecting ? (
       <TransitionGroup transitionName="loginScreenAnimation" transitionAppear={true} component="div" className="inputs" transitionAppearTimeout={5000} transitionEnterTimeout={5000} transitionLeaveTimeout={5000}>
         <div className="row">
+        <div className="hidden">
           <span className="label">Network</span><input type="text" ref="network" defaultValue={defaultNetworkHost} style={this.state.theme}/>
         </div>
-        <div className="row">
           <span className="label">Nickname</span>
           <input
             type="text"

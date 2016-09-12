@@ -71,6 +71,7 @@ class File extends React.Component {
         const asStream = this.isVideo
         let blob = new Blob([])
 
+    console.log(this.props.hash)
         ChannelActions.loadFile(this.props.hash, asURL, asStream, (err, buffer, url, stream) => {
           if (err) {
             console.error(err)
@@ -161,6 +162,7 @@ class File extends React.Component {
   }
 
   render() {
+    console.log(this.props.hash)
     var openLink = (isElectron ? "http://localhost:8080/ipfs/" : "https://ipfs.io/ipfs/") + this.props.hash;
     const size = getHumanReadableBytes(this.props.size);
     const className = `clipboard-${this.props.hash} download`;

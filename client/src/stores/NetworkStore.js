@@ -29,8 +29,7 @@ var NetworkStore = Reflux.createStore({
   // onConnect: function(host, username, password, signKey, profileData) {
   onConnect: function(host, username) {
     logger.debug("Connect to " + host + " as " + username);
-    // this.orbit.connect(host, username, password, signKey, profileData)
-    this.orbit.connect(host, username)
+    this.orbit.connect(username)
       .catch((e) => logger.error(e))
   },
   onDisconnect: function() {

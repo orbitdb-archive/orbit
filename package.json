@@ -6,13 +6,13 @@
   "dependencies": {
     "bs58": "^3.0.0",
     "du": "^0.1.0",
-    "ipfs-api": "^8.0.3",
+    "ipfs-api": "https://github.com/haadcode/js-ipfs-api.git",
     "ipfs-post": "^0.0.12",
     "ipfsd-ctl": "^0.14.0",
     "lodash": "^4.14.0",
     "logplease": "^1.2.7",
     "orbit-crypto": "0.0.7",
-    "orbit-db": "^0.11.1",
+    "orbit-db": "https://github.com/haadcode/orbit-db.git#feat\/ipfs-pubsub",
     "text-encoding": "^0.6.0"
   },
   "devDependencies": {
@@ -32,7 +32,7 @@
   "scripts": {
     "test": "./node_modules/.bin/mocha",
     "build": "./node_modules/.bin/grunt build",
-    "dev:electron": "ENV=dev API_ORIGIN=* ./node_modules/.bin/electron .",
+    "dev:electron": "ENV=dev API_ORIGIN=* IPFS_EXEC=/$GOPATH/bin/ipfs ./node_modules/.bin/electron .",
     "electron": "./node_modules/.bin/electron .",
     "start": "cd client/dist && ../../node_modules/.bin/http-server -c-1 -p 8081 & open http://localhost:8081/index.html & wait"
   },
