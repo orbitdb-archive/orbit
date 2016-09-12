@@ -1,13 +1,14 @@
-- uPort integration
+- !! uPort integration (BLOCKED)
+
 - add user's location the header
-- re-check fonts
-- generated default pictures (ala github)
 - planet express bot that caches *everything*
 - add "follow" button and data structure
 - aggregate view
 - fix feed history lengths, ie. how many items to display at a time (need to do on UI side now)
 - proper urls to access feeds
 
+- ~~re-check fonts~~
+- ~~better default pictures~~
 - ~~if isPin, send 'remove' to .pins channel"~~
 - ~~"retweet" functionality ("pin")~~
     + ~~needs its own post and react renderer (like Message or Reply)~~
