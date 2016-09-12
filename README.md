@@ -45,7 +45,7 @@ npm run build
 *Run this is in project's root directory, not in `client/`.*
 
 ```
-npm run build
+npm run electron
 ```
 
 The application executable is in `dist/`.
