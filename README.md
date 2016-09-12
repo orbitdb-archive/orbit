@@ -28,8 +28,10 @@ cd orbit/
 npm install
 rm -rf node_modules/ipfs/node_modules/ipfs-api/
 rm -rf node_modules/ipfsd-ctl/node_modules/ipfs-api/
-rm -rf client/node_modules/ipfs-api
-rm -rf client/node_modules/ipfs/node_modules/ipfs-api/
+npm install
+cd client/
+rm -rf node_modules/ipfs-api
+rm -rf node_modules/ipfs/node_modules/ipfs-api/
 ```
 
 ##### Build Client
