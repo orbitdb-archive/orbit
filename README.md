@@ -4,7 +4,7 @@
 
 ## Extra Requirements
 
-You need to have go-ipfs binary at `$GOPATH` built from the IPFS pubsub branch https://github.com/ipfs/go-ipfs/tree/feat/floodsub. You need to have the daemon running before starting Orbit (at port 5001).
+You need to have go-ipfs binary built from the IPFS pubsub branch https://github.com/ipfs/go-ipfs/tree/feat/floodsub. You need to have the daemon running before starting Orbit (at port 5001).
 
 ## Run
 
