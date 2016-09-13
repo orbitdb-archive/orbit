@@ -18,25 +18,24 @@ Currently only the Electron app works.
 - python 2 (for building, some native modules need it, node-fibers perhaps?)
 
 #### Get the source code
-```
+
+```sh
 git clone https://github.com/haadcode/orbit.git
-cd orbit/
+cd orbit
 ```
 
 #### Install dependencies
-```
+
+```sh
 npm install
-rm -rf node_modules/ipfs/node_modules/ipfs-api/
-rm -rf node_modules/ipfsd-ctl/node_modules/ipfs-api/
-cd client/
+cd client
 npm install
-rm -rf node_modules/ipfs-api
-rm -rf node_modules/ipfs/node_modules/ipfs-api/
 ```
 
 ##### Build Client
-```
-cd client/
+
+```sh
+cd client
 npm run build
 ```
 
@@ -44,7 +43,7 @@ npm run build
 
 *Run this is in project's root directory, not in `client/`.*
 
-```
+```sh
 npm run electron
 ```
 
@@ -54,19 +53,21 @@ The application executable is in `dist/`.
 
 #### Run Tests
 
-```
+```sh
 npm test
 ```
 
 #### Electron App Development
 
 First, start the desktop app in developer mode:
-```
+
+```sh
 npm run dev:electron
 ```
 
 Then, start the UI development environment:
-```
+
+```sh
 cd client/
 npm run dev
 ```
