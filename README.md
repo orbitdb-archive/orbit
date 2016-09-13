@@ -47,6 +47,15 @@ npm run build
 npm run electron
 ```
 
+### Build
+
+*Run this is in project's root directory, not in `client/`.*
+
+Follow the instructions in [Run](#run) and then run:
+```sh
+npm run build
+```
+
 The application executable is in `bin/`.
 
 ### Development
