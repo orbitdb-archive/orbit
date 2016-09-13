@@ -30,7 +30,7 @@
     "orbit-server": "^0.2.3"
   },
   "scripts": {
-    "postinstall": "build:goipfs && ./node_modules/.bin/grunt clean:npm",
+    "postinstall": "npm run build:goipfs && ./node_modules/.bin/grunt clean:npm",
     "build:goipfs": "./scripts/build_ipfs_bin.sh",
     "test": "./node_modules/.bin/mocha",
     "build": "./node_modules/.bin/grunt build",
