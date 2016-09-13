@@ -73,6 +73,15 @@ module.exports = function (grunt) {
             dest: moduleCacheDirectory
           }
         ]
+      },
+      ipfsbin: {
+        files: [
+          {
+            expand: true,
+            src: './node_modules/go-ipfs-dep/go-ipfs/ipfs',
+            dest: path.join(moduleCacheDirectory, 'node_modules/go-ipfs-dep/go-ipfs/ipfs')
+          }
+        ]
       }
     },
 
@@ -106,8 +115,10 @@ module.exports = function (grunt) {
     grunt.task.run('clean:bin')
     grunt.task.run('copy_files')
 
-    if(!skipNpmInstall)
+    if(!skipNpmInstall) {
       grunt.task.run('npm_install')
+      grunt.task.run('copy:ipfsbin')
+    }
 
     grunt.task.run('chmod:bins')
     grunt.task.run('electron:osxBuild')
@@ -118,8 +129,10 @@ module.exports = function (grunt) {
     grunt.task.run('clean:bin')
     grunt.task.run('copy_files')
 
-    if(!skipNpmInstall)
+    if(!skipNpmInstall) {
       grunt.task.run('npm_install')
+      grunt.task.run('copy:ipfsbin')
+    }
 
     grunt.task.run('chmod:bins')
     grunt.task.run('electron:linuxBuild')

@@ -58,7 +58,12 @@ module.exports = {
     // new webpack.optimize.UglifyJsPlugin({
     //   exclude: /ipfsdist.js/
     // }),
-    new webpack.NoErrorsPlugin()
+    new webpack.NoErrorsPlugin(),
+    new webpack.DefinePlugin({
+      'process.env': {
+        'NODE_ENV': '"production"'
+      }
+    })
   ],
   resolveLoader: {
     root: path.join(__dirname, 'node_modules')

@@ -84,18 +84,19 @@ app.on('ready', () => {
     global.DEV = MODE === 'dev'
     global.isElectron = true
 
-    // let ipfsDaemon
-    // ipfsd.local((err, node) => {
-    //   if(err) reject(err)
-    //   ipfsDaemon = node
-    //   ipfsDaemon.startDaemon((err, ipfs) => {
-        global.ipfsInstance = IpfsApi()
+    let ipfsDaemon
+    ipfsd.local((err, node) => {
+      if(err) reject(err)
+      ipfsDaemon = node
+      ipfsDaemon.startDaemon((err, ipfs) => {
+        global.ipfsInstance = ipfs
+        // global.ipfsInstance = IpfsApi()
         if(MODE === 'dev')
           mainWindow.loadURL('http://localhost:8000/')
         else
           mainWindow.loadURL('file://' + __dirname + '/client/dist/index.html')
-    //   })
-    // })
+      })
+    })
 
     mainWindow.on('closed', () => {
       mainWindow = null

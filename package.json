@@ -30,12 +30,15 @@
     "orbit-server": "^0.2.3"
   },
   "scripts": {
+    "postinstall": "build:goipfs && ./node_modules/.bin/grunt clean:npm",
+    "build:goipfs": "./scripts/build_ipfs_bin.sh",
     "test": "./node_modules/.bin/mocha",
     "build": "./node_modules/.bin/grunt build",
+    "dist": "./scripts/build_dist_package.sh",
+    "publish": "npm run dist && ipfs add bin/orbit-darwin-x64.tar.gz",
     "dev:electron": "ENV=dev API_ORIGIN=* IPFS_EXEC=/$GOPATH/bin/ipfs ./node_modules/.bin/electron .",
     "electron": "./node_modules/.bin/electron .",
-    "start": "cd client/dist && ../../node_modules/.bin/http-server -c-1 -p 8081 & open http://localhost:8081/index.html & wait",
-    "postinstall": "./node_modules/.bin/grunt clean:npm"
+    "start": "cd client/dist && ../../node_modules/.bin/http-server -c-1 -p 8081 & open http://localhost:8081/index.html & wait"
   },
   "repository": {
     "type": "git",

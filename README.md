@@ -6,6 +6,11 @@
 
 You need to have go-ipfs binary built from the IPFS pubsub branch https://github.com/ipfs/go-ipfs/tree/feat/floodsub. You need to have the daemon running before starting Orbit (at port 5001).
 
+You can build it manually or run the following *after* all `npm install` commands (before starting Orbit):
+```
+npm run build:goipfs
+```
+
 ## Run
 
 Currently only the Electron app works.
@@ -47,7 +52,7 @@ npm run build
 npm run electron
 ```
 
-### Build
+### Build a Stand-Alone App
 
 *Run this is in project's root directory, not in `client/`.*
 
@@ -57,6 +62,19 @@ npm run build
 ```
 
 The application executable is in `bin/`.
+
+### Publish
+
+*Run this is in project's root directory, not in `client/`.*
+
+First, clone the repo then run the following commands. This will build the project from "*scratch*" and add the build to IPFS. Note that you need to have an IPFS daemon running to be able to publish.
+
+```sh
+npm install
+npm run build:goipfs
+npm run build
+npm run publish
+```
 
 ### Development
 
