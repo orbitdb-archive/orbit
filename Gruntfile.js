@@ -22,6 +22,11 @@ module.exports = function (grunt) {
         'node_modules/ipfsd-ctl/node_modules/go-ipfs-dep',
         'node_modules/ipfsd-ctl/node_modules/ipfs-api'
       ],
+      npm_build: [
+        path.join(moduleCacheDirectory, 'node_modules/ipfs/node_modules/ipfs-api@0.4.1'),
+        path.join(moduleCacheDirectory, 'node_modules/ipfsd-ctl/node_modules/go-ipfs-dep'),
+        path.join(moduleCacheDirectory, 'node_modules/ipfsd-ctl/node_modules/ipfs-api')
+      ],
       electron: [
         'Orbit-darwin-x64/',
         'Orbit-linux-x64/'
@@ -75,15 +80,6 @@ module.exports = function (grunt) {
           }
         ]
       },
-      ipfsbin: {
-        files: [
-          {
-            expand: true,
-            src: './node_modules/go-ipfs-dep/go-ipfs/ipfs',
-            dest: path.join(moduleCacheDirectory, 'node_modules/go-ipfs-dep/go-ipfs/ipfs')
-          }
-        ]
-      }
     },
 
     chmod: {
@@ -118,9 +114,9 @@ module.exports = function (grunt) {
 
     if(!skipNpmInstall) {
       grunt.task.run('npm_install')
-      grunt.task.run('copy:ipfsbin')
     }
 
+    grunt.task.run('clean:npm_build')
     grunt.task.run('chmod:bins')
     grunt.task.run('electron:osxBuild')
     grunt.task.run('clean:electron')
@@ -132,9 +128,9 @@ module.exports = function (grunt) {
 
     if(!skipNpmInstall) {
       grunt.task.run('npm_install')
-      grunt.task.run('copy:ipfsbin')
     }
 
+    grunt.task.run('clean:npm_build')
     grunt.task.run('chmod:bins')
     grunt.task.run('electron:linuxBuild')
     grunt.task.run('clean:electron')

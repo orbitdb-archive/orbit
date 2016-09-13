@@ -2,15 +2,6 @@
 
 ***WIP branch for ipfs pubsub version***
 
-## Extra Requirements
-
-You need to have go-ipfs binary built from the IPFS pubsub branch https://github.com/ipfs/go-ipfs/tree/feat/floodsub. You need to have the daemon running before starting Orbit (at port 5001).
-
-You can build it manually or run the following *after* all `npm install` commands (before starting Orbit):
-```
-npm run build:goipfs
-```
-
 ## Run
 
 Currently only the Electron app works.
@@ -20,7 +11,7 @@ Currently only the Electron app works.
 - Node.js v6.x.x
 - npm v3.x.x
 - g++, gcc, make (for building native modules)
-- python 2 (for building, some native modules need it, node-fibers perhaps?)
+- python 2 (for building, some native modules need it)
 
 #### Get the source code
 
@@ -63,6 +54,13 @@ npm run build
 
 The application executable is in `bin/`.
 
+If you end building the app multiple times without changes to the modules, run:
+```
+grunt build --cached-modules
+```
+
+This will skip the `npm install` step in the build process.
+
 ### Publish
 
 *Run this is in project's root directory, not in `client/`.*
@@ -71,6 +69,7 @@ First, clone the repo then run the following commands. This will build the proje
 
 ```sh
 npm install
+npm run build
 npm run publish
 ```
 

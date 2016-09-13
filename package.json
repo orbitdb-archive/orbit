@@ -6,7 +6,7 @@
   "dependencies": {
     "bs58": "^3.0.0",
     "du": "^0.1.0",
-    "go-ipfs-dep": "0.4.2-1",
+    "go-ipfs-dep": "https://github.com/haadcode/go-ipfs-dep.git",
     "ipfs-api": "https://github.com/haadcode/js-ipfs-api.git",
     "ipfs-post": "^0.0.12",
     "ipfsd-ctl": "^0.14.0",
@@ -34,7 +34,7 @@
     "postinstall": "./node_modules/.bin/grunt clean:npm",
     "test": "./node_modules/.bin/mocha",
     "build": "./node_modules/.bin/grunt build",
-    "dist": "npm run build && ./scripts/build_dist_package.sh",
+    "dist": "./scripts/build_dist_package.sh",
     "publish": "npm run dist && ipfs add bin/orbit-darwin-x64.tar.gz",
     "dev:electron": "ENV=dev API_ORIGIN=* IPFS_EXEC=/$GOPATH/bin/ipfs ./node_modules/.bin/electron .",
     "electron": "./node_modules/.bin/electron .",
