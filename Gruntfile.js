@@ -1,5 +1,7 @@
 'use strict'
 
+const path = require('path')
+
 module.exports = function (grunt) {
   const spawn = require('child_process').spawn
   require('load-grunt-tasks')(grunt)
