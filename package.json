@@ -9,7 +9,7 @@
     "go-ipfs-dep": "https://github.com/haadcode/go-ipfs-dep.git",
     "ipfs-api": "https://github.com/haadcode/js-ipfs-api.git",
     "ipfs-post": "^0.0.12",
-    "ipfsd-ctl": "^0.14.0",
+    "ipfsd-ctl": "https://github.com/haadcode/js-ipfsd-ctl.git",
     "lodash": "^4.14.0",
     "logplease": "^1.2.7",
     "orbit-crypto": "0.0.7",
