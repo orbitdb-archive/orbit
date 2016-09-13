@@ -20,7 +20,6 @@ const keystorePath = path.join(process.cwd(), '/test/keys')
 // require('logplease').setLogLevel('ERROR')
 
 // Orbit
-// const network = 'localhost:3333'
 const username = 'testrunner'
 let userId = 'QmXWWRTZzygRCnWP8sBcTuygreYBTaQR73zVpZvyxeuUqA'
 
@@ -64,14 +63,14 @@ const IpfsApis = [
       //   if(err) reject(err)
       //   resolve(ipfs)
       // })
-      // ipfsd.local((err, node) => {
-      //   if(err) reject(err)
-      //   ipfsDaemon = node
-      //   ipfsDaemon.startDaemon((err, ipfs) => {
-      //     if(err) reject(err)
-      //     resolve(ipfs)
-      //   })
-      // })
+      ipfsd.local((err, node) => {
+        if(err) reject(err)
+        ipfsDaemon = node
+        ipfsDaemon.startDaemon((err, ipfs) => {
+          if(err) reject(err)
+          resolve(ipfs)
+        })
+      })
     })
   },
   stop: () => Promise.resolve()
@@ -90,8 +89,13 @@ IpfsApis.forEach(function(ipfsApi) {
     let channel = 'orbit-tests'
 
     before(function (done) {
-      ipfs = IpfsApi()
-      done()
+      // ipfs = IpfsApi()
+      ipfsApi.start()
+        .then((res) => {
+          ipfs = res
+          done()
+        })
+        .catch(done)
     })
 
     beforeEach(function (done) {
@@ -204,7 +208,7 @@ IpfsApis.forEach(function(ipfsApi) {
       })
 
       afterEach(() => {
-        orbit.disconnect()
+        // orbit.disconnect()
       })
 
       it('joins a new channel', () => {
