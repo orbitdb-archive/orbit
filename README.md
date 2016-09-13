@@ -10,8 +10,6 @@ Currently only the Electron app works.
 
 - Node.js v6.x.x
 - npm v3.x.x
-- g++, gcc, make (for building native modules)
-- python 2 (for building, some native modules need it)
 
 #### Get the source code
 
@@ -24,15 +22,6 @@ cd orbit
 
 ```sh
 npm install
-cd client
-npm install
-```
-
-##### Build Client
-
-```sh
-cd client
-npm run build
 ```
 
 ##### Run Electron App
@@ -47,7 +36,7 @@ npm run electron
 
 *Run this is in project's root directory, not in `client/`.*
 
-Follow the instructions in [Run](#run) and then run:
+[Get the source code](#get-the-source-code), [install dependencies](#install-dependencies) and then run:
 ```sh
 npm run build
 ```
@@ -75,6 +64,13 @@ npm run publish
 
 ### Development
 
+#### Requirements
+
+- Node.js v6.x.x
+- npm v3.x.x
+- g++, gcc, make (for building native modules)
+- python 2 (for building, some native modules need it)
+
 #### Run Tests
 
 ```sh
@@ -93,5 +89,11 @@ Then, start the UI development environment:
 
 ```sh
 cd client/
+npm install
 npm run dev
+```
+
+##### Build client distributable
+```sh
+npm run build
 ```
