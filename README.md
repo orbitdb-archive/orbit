@@ -47,7 +47,7 @@ npm run build
 npm run electron
 ```
 
-The application executable is in `dist/`.
+The application executable is in `bin/`.
 
 ### Development
 
