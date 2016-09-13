@@ -120,7 +120,11 @@ module.exports = function (grunt) {
             '<%= pkg.dist %>'
           ]
         }]
-      }
+      },
+      npm: [
+        'node_modules/ipfs-api',
+        'node_modules/ipfs/node_modules/ipfs-api'
+      ]
     }
   });
 
@@ -137,7 +141,7 @@ module.exports = function (grunt) {
 
   grunt.registerTask('test', ['karma']);
 
-  grunt.registerTask('build', ['clean', 'copy', 'webpack']);
+  grunt.registerTask('build', ['clean:dist', 'copy', 'webpack']);
 
   grunt.registerTask('default', []);
 };

@@ -15,7 +15,11 @@ module.exports = function (grunt) {
       cache: [".tmp"],
       dist: ["dist"],
       osx: ["dist/Orbit-darwin-x64"],
-      linux: ["dist/Orbit-linux-x64"]
+      linux: ["dist/Orbit-linux-x64"],
+      npm: [
+        'node_modules/ipfs/node_modules/ipfs-api',
+        'node_modules/ipfsd-ctl/node_modules/ipfs-api'
+      ]
     },
 
     electron: {
