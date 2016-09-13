@@ -18,7 +18,8 @@ module.exports = function (grunt) {
       cache: moduleCacheDirectory,
       bin: binDirectory,
       npm: [
-        'node_modules/ipfs/node_modules/ipfs-api',
+        'node_modules/ipfs/node_modules/ipfs-api@0.4.1',
+        'node_modules/ipfsd-ctl/node_modules/go-ipfs-dep',
         'node_modules/ipfsd-ctl/node_modules/ipfs-api'
       ],
       electron: [

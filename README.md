@@ -71,8 +71,6 @@ First, clone the repo then run the following commands. This will build the proje
 
 ```sh
 npm install
-npm run build:goipfs
-npm run build
 npm run publish
 ```
 
