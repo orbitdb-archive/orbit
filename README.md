@@ -20,23 +20,23 @@ Currently only the Electron app works.
 #### Get the source code
 
 ```sh
-> git clone https://github.com/haadcode/orbit.git
-> cd orbit
+git clone https://github.com/haadcode/orbit.git
+cd orbit
 ```
 
 #### Install dependencies
 
 ```sh
-> npm install
-> cd client
-> npm install
+npm install
+cd client
+npm install
 ```
 
 ##### Build Client
 
 ```sh
-> cd client
-> npm run build
+cd client
+npm run build
 ```
 
 ##### Run Electron App
@@ -44,7 +44,7 @@ Currently only the Electron app works.
 *Run this is in project's root directory, not in `client/`.*
 
 ```sh
-> npm run electron
+npm run electron
 ```
 
 The application executable is in `dist/`.
@@ -54,7 +54,7 @@ The application executable is in `dist/`.
 #### Run Tests
 
 ```sh
-> npm test
+npm test
 ```
 
 #### Electron App Development
@@ -62,12 +62,12 @@ The application executable is in `dist/`.
 First, start the desktop app in developer mode:
 
 ```sh
-> npm run dev:electron
+npm run dev:electron
 ```
 
 Then, start the UI development environment:
 
 ```sh
-> cd client/
-> npm run dev
+cd client/
+npm run dev
 ```
