@@ -28,7 +28,7 @@ class Highlight extends Component {
     const { children, language } = this.props
 
     return (
-      <pre ref="root" onWheel={this.onScroll.bind(this)}>
+      <pre ref="root">
         <code className={language}>
           {children}
         </code>

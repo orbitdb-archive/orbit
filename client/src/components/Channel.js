@@ -239,6 +239,16 @@ class Channel extends React.Component {
     this.node.scrollTop = this.node.scrollHeight + this.node.clientHeight;
   }
 
+  onScrollToPreview(node) {
+    const previewHeight = node.clientHeight
+    const previewRect = node.getBoundingClientRect()
+    const channelRect = this.node.getBoundingClientRect()
+    const amount = previewRect.bottom - channelRect.bottom
+    console.log(amount, previewHeight)
+    // Scroll down so that we see the full preview element
+    if (amount > 0) this.node.scrollTop += amount + 6
+  }
+
   onShowProfile(user, evt) {
     evt.persist()
     evt.stopPropagation()
@@ -290,6 +300,7 @@ class Channel extends React.Component {
         onReplyTo={this.onReplyTo.bind(this)}
         onShowProfile={this.onShowProfile.bind(this)}
         onDragEnter={this.onDragEnter.bind(this)}
+        onScrollToPreview={this.onScrollToPreview.bind(this)}
         highlightWords={username}
         colorifyUsername={colorifyUsernames}
         useEmojis={useEmojis}

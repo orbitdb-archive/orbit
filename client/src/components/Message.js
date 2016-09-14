@@ -59,7 +59,6 @@ class Message extends React.Component {
     const { post, user } = this.state
     const hash = this.props.message.value
     this.setState({ replyto: hash })
-    console.log(post)
     this.props.onReplyTo({
       hash: hash,
       content: post.meta.type === 'text' ? post.content : post.name,
@@ -90,10 +89,10 @@ class Message extends React.Component {
           );
           break;
         case 'file':
-          content = <File hash={post.hash} name={post.name} size={post.size} meta={post.meta}/>;
+          content = <File hash={post.hash} name={post.name} size={post.size} meta={post.meta} onPreviewOpened={this.props.onScrollToPreview}/>;
           break;
         case 'directory':
-          content = <Directory hash={post.hash} name={post.name} size={post.size} root={true} />;
+          content = <Directory hash={post.hash} name={post.name} size={post.size} root={true} onPreviewOpened={this.props.onScrollToPreview}/>;
           break;
       }
     }

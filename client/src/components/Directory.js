@@ -29,7 +29,7 @@ class Directory extends React.Component {
 
   openDirectory(e) {
     e.preventDefault();
-    this.setState({open: !this.state.open});
+    this.setState({open: !this.state.open}, () => this.props.onPreviewOpened(this.refs.directory));
     return;
   }
 
@@ -51,7 +51,7 @@ class Directory extends React.Component {
     if(this.state.children && this.state.open) {
       children = this.state.children.map((e) => {
         return e.type === "file" ?
-          <File hash={e.hash} name={e.name} size={e.size} key={e.hash}/> :
+          <File hash={e.hash} name={e.name} size={e.size} key={e.hash} onPreviewOpened={this.props.onPreviewOpened}/> :
           <Directory hash={e.hash} name={e.name} size={e.size} key={e.hash}/>;
       });
     }
@@ -63,7 +63,7 @@ class Directory extends React.Component {
           {name}
           <span className="size">{size}</span>
         </div>
-        <div className={children.length > 0 ? "children" : ""}>{children}</div>
+        <div className={children.length > 0 ? "children" : ""} ref="directory">{children}</div>
       </div>
     );
   }

@@ -75,7 +75,6 @@ class TextMessage extends React.Component {
     if(this.state.replyto) {
       const emojified = this.state.useEmojis ? this._emojify([`${this.state.replyto}`], '12px') : this.state.replyto
       const element = (<span className="reply" key={Math.random()}>{emojified}</span>)
-      console.log(element)
       finalText.push(" ⇾ ")
       finalText.push(element)
     }
