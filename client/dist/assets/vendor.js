@@ -61,7 +61,7 @@
 /******/ 	__webpack_require__.p = "/assets/";
 
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 1505);
+/******/ 	return __webpack_require__(__webpack_require__.s = 1506);
 /******/ })
 /************************************************************************/
 /******/ ([
@@ -25678,8 +25678,7 @@ module.exports = validateDOMNesting;
 /***/ },
 /* 107 */,
 /* 108 */,
-/* 109 */,
-/* 110 */
+/* 109 */
 /***/ function(module, exports, __webpack_require__) {
 
 var basex = __webpack_require__(408)
@@ -25693,6 +25692,7 @@ module.exports = {
 
 
 /***/ },
+/* 110 */,
 /* 111 */,
 /* 112 */,
 /* 113 */,
@@ -66448,7 +66448,8 @@ module.exports = warning;
 /* 1502 */,
 /* 1503 */,
 /* 1504 */,
-/* 1505 */
+/* 1505 */,
+/* 1506 */
 /***/ function(module, exports, __webpack_require__) {
 
 __webpack_require__(4);
@@ -66460,7 +66461,7 @@ __webpack_require__(57);
 __webpack_require__(66);
 __webpack_require__(18);
 __webpack_require__(18);
-__webpack_require__(110);
+__webpack_require__(109);
 __webpack_require__(348);
 __webpack_require__(389);
 __webpack_require__(346);

@@ -280,10 +280,8 @@ const MessageStore = Reflux.createStore({
         .then((post) => {
           this.posts[hash] = post;
           const replyToHash = post.replyto
-          console.log("1", replyToHash, post)
           if(replyToHash) {
             const cached = this.posts[replyToHash]
-          console.log("2", cached)
             if(cached && cached.content) {
               this.orbit.getUser(cached.meta.from).then((user) => {
                 let content = ''
@@ -292,14 +290,11 @@ const MessageStore = Reflux.createStore({
                 else
                   content = cached.name
 
-                console.log("--2", content)
                 self.posts[hash].replyToContent = "<" + user.name + "> " + content;
                 callback(null, self.posts[hash]);
               })
             } else {
-          console.log("3")
               this.onLoadPost(replyToHash, (err, data) => {
-          console.log("4", data)
                 if(data) {
                   this.orbit.getUser(data.meta.from).then((user) => {
                     let content = ''
@@ -308,7 +303,6 @@ const MessageStore = Reflux.createStore({
                     else
                       content = data.name
 
-                    console.log("--1", content)
                     self.posts[replyToHash] = data;
                     self.posts[hash].replyToContent = "<" + user.name + "> " + content;
                     callback(null, self.posts[hash]);
@@ -350,10 +344,10 @@ const MessageStore = Reflux.createStore({
   onLoadFile: function(hash: string, asURL: boolean, asStream: boolean, callback) {
     const isElectron = !!window.ipfsInstance;
     if(isElectron && asURL) {
-      callback(null, null, `http://localhost:8080/ipfs/${hash}`)
+      callback(null, null, 'http://' + window.gatewayAdddress + hash)
     } else if(isElectron) {
       var xhr = new XMLHttpRequest()
-      xhr.open('GET', `http://localhost:8080/ipfs/${hash}`, true)
+      xhr.open('GET', 'http://' + window.gatewayAdddress + hash, true)
       xhr.responseType = 'blob'
       xhr.onload = function(e) {
         if(this.status == 200) {

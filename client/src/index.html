@@ -61,6 +61,7 @@
       const req = typeof require !== 'undefined' ? require : parent.require;
       const remote = req('electron').remote;
       window.isElectron = remote.getGlobal('isElectron');
+      window.gatewayAdddress = remote.getGlobal('gatewayAdddress');
       window.DEV = remote.getGlobal('DEV');
       window.ipfsInstance = remote.getGlobal('ipfsInstance');
       window.ipcRenderer = req('electron').ipcRenderer;

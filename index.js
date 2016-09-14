@@ -19,23 +19,25 @@ const logger = Logger.create("Orbit.Index-Native")
 
 const MODE = process.env.ENV ? process.env.ENV : 'debug'
 
-const getUserHome = () => {
-  return process.env[(process.platform !== 'win32') ? 'HOME' : 'USERPROFILE']
-}
+const userHomeDir = app.getPath("home")
+const userDownloadDir = app.getPath("downloads")
+const appDataDir = app.getPath("userData")
 
-const getAppDataDirectory = () => {
-  return process.platform !== 'win32'
-    ? 'Library/Application Support/orbit-floodsub-ipfs-repo'
-    : 'AppData\\Roaming\\orbit-floodsub-ipfs-repo'
-}
+const ipfsDataDir = process.env.IPFS_PATH
+  ? path.resolve(process.env.IPFS_PATH)
+  : path.join(appDataDir, '/ipfs')
 
-const dataDirectory = path.join(getUserHome(), getAppDataDirectory())
+const orbitDataDir = (MODE === 'dev')
+  ? path.join(process.cwd() , '/data') // put orbit's data to './data' in dev mode
+  : path.join(appDataDir, '/orbit-data')
 
-const appDataPath = path.resolve(MODE === 'dev' ? process.cwd() : process.resourcesPath + "/app")
-if (!fs.existsSync(appDataPath))
-  fs.mkdirSync(appDataPath)
+// Make sure we have the Orbit data directory
+if (!fs.existsSync(appDataDir))
+  fs.mkdirSync(appDataDir)
+if (!fs.existsSync(orbitDataDir))
+  fs.mkdirSync(orbitDataDir)
 
-Logger.setLogfile(path.join(appDataPath, 'debug.log'))
+Logger.setLogfile(path.join(orbitDataDir, '/debug.log'))
 logger.debug("Run index.js in '" + MODE + "' mode")
 
 const connectWindowSize = { width: 500, height: 430, center: true, minWidth: 500, minHeight: 430, "web-preferences": {
@@ -91,10 +93,10 @@ app.on('ready', () => {
 
     logger.info("Checking for running IPFS daemon...")
     const test = IpfsApi()
-    test.version((err, v) => {
-      if(v && (v.version.split('.')[1] !== '4' || v.version.split('.')[2] !== '4-dev')) {
+    test.version((err, ver) => {
+      if(ver && (ver.version.split('.')[1] !== '4' || ver.version.split('.')[2] !== '4-dev')) {
         let errStr = ''
-        errStr += "Detected a running IPFS daemon version '" + v.version + "'\n"
+        errStr += "Detected a running IPFS daemon version '" + ver.version + "'\n"
         errStr += "Please shut down other IPFS daemons before running Orbit\n"
 
         errStr.split('\n')
@@ -102,12 +104,14 @@ app.on('ready', () => {
 
         mainWindow.loadURL('file://' + __dirname + '/client/dist/error.html?message=' + encodeURIComponent(errStr))
       } else {
+
+        if (ver)
+          logger.info(`Found a compatible running daemon, using it`)
+
         logger.info("Starting the systems")
 
         Menu.setApplicationMenu(menu)
-
-        mainWindow = new BrowserWindow(connectWindowSize)
-        mainWindow.webContents.session.setDownloadPath(path.resolve(getUserHome() + '/Downloads'))
+        mainWindow.webContents.session.setDownloadPath(path.resolve(userDownloadDir))
 
         global.DEV = MODE === 'dev'
         global.isElectron = true
@@ -115,7 +119,7 @@ app.on('ready', () => {
         let opts = {}
         opts['Addresses.API'] = '/ip4/127.0.0.1/tcp/0'
         opts['Addresses.Swarm'] = ['/ip4/0.0.0.0/tcp/0']
-        opts['Addresses.Gateway'] = ''
+        opts['Addresses.Gateway'] = '/ip4/0.0.0.0/tcp/0'
 
         const loadApp = () => {
           if(MODE === 'dev')
@@ -129,14 +133,14 @@ app.on('ready', () => {
           loadApp()
         } else {
           let ipfsDaemon
-          ipfsd.local(dataDirectory, opts, (err, node) => {
+          ipfsd.local(ipfsDataDir, opts, (err, node) => {
             if(err) throw err
             ipfsDaemon = node
 
             logger.info("Initializing IPFS daemon")
             logger.debug(`Using IPFS repo at '${node.path}'`)
 
-            ipfsDaemon.init({ directory: dataDirectory }, (err, node) => {
+            ipfsDaemon.init({ directory: ipfsDataDir }, (err, node) => {
               // Ignore error (usually "repo already exists")
               if (err) {
                 const repoExists = String(err).match('ipfs configuration file already exists')
@@ -144,7 +148,7 @@ app.on('ready', () => {
 
                 if (migrationNeeded) {
                   let errStr = `Error initializing IPFS daemon: '${migrationNeeded[0]}'\n`
-                  errStr += `Tried to init IPFS repo at '${dataDirectory}', but failed.\n`
+                  errStr += `Tried to init IPFS repo at '${ipfsDataDir}', but failed.\n`
                   errStr += `Use $IPFS_PATH to specify another repo path, eg. 'export IPFS_PATH=/tmp/orbit-floodsub'.`
 
                   errStr.split('\n')
@@ -152,7 +156,7 @@ app.on('ready', () => {
 
                   dialog.showMessageBox({
                     type: 'error',
-                    buttons: ['Ok :('],
+                    buttons: ['Ok'],
                     title: 'Error',
                     message: migrationNeeded[0],
                     detail: errStr
@@ -163,7 +167,9 @@ app.on('ready', () => {
                 ipfsDaemon.startDaemon((err, ipfs) => {
                   if (err) throw err
                   logger.info("IPFS daemon started at", ipfs.apiHost, ipfs.apiPort)
+                  logger.info("Gateway (readonly) at", ipfs.gatewayHost, ipfs.gatewayPort)
                   global.ipfsInstance = IpfsApi(ipfs.apiHost, ipfs.apiPort)
+                  global.gatewayAdddress = ipfs.gatewayHost + ':' + ipfs.gatewayPort + '/ipfs/'
                   // global.ipfsInstance = ipfs
                   loadApp()
                 })

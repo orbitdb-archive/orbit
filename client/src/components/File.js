@@ -71,7 +71,6 @@ class File extends React.Component {
         const asStream = this.isVideo
         let blob = new Blob([])
 
-    console.log(this.props.hash)
         ChannelActions.loadFile(this.props.hash, asURL, asStream, (err, buffer, url, stream) => {
           if (err) {
             console.error(err)
@@ -82,10 +81,8 @@ class File extends React.Component {
           if (buffer || url || stream) {
 
             if(buffer && isElectron) {
-              console.log("BLOB!")
               blob = buffer
             } else if (buffer && this.state.meta.mimeType) {
-              console.log("OMG")
               const arrayBufferView = toArrayBuffer(buffer)
               blob = new Blob([arrayBufferView], { type: this.state.meta.mimeType })
             }
@@ -106,12 +103,10 @@ class File extends React.Component {
               previewContent = <img height={200} src={url} />
             } else if (this.isVideo) {
               if (isElectron) {
-              console.log("VIDEO")
                 previewContent = <video height={200} src={url} controls autoPlay={true} />
-                this.setState({ previewContent })
+                this.setState({ previewContent }, () => this.props.onPreviewOpened(this.refs.preview))
                 return
               } else {
-              console.log("VIDEO NOT ELECTRON")
                 const mimeCodec = 'video/mp4; codecs="avc1.42E01E, mp4a.40.2"'
                 const source = new MediaSource()
                 url = window.URL.createObjectURL(source)
@@ -144,30 +139,29 @@ class File extends React.Component {
                 previewContent = <video height={200} src={url} controls autoPlay={false} />
               }
             } else {
-              console.log("FILE")
               var fileReader = new FileReader()
               fileReader.onload = (event) => {
-                console.log("TEXT", event.target.result)
                 previewContent = this.isHighlightable ? <Highlight>{event.target.result}</Highlight> : <pre>{event.target.result}</pre>
-                this.setState({ previewContent })
+                this.setState({ previewContent }, () => this.props.onPreviewOpened(this.refs.preview))
               }
               fileReader.readAsText(blob, 'utf-8')
               return
             }
           }
-          this.setState({ previewContent })
+          this.setState({ previewContent }, () => this.props.onPreviewOpened(this.refs.preview))
         })
       }
     })
   }
 
   render() {
-    console.log(this.props.hash)
-    var openLink = (isElectron ? "http://localhost:8080/ipfs/" : "https://ipfs.io/ipfs/") + this.props.hash;
+    // console.log(this.props.hash)
+    const gateway = isElectron ? window.gatewayAdddress : 'https://ipfs.io./ipfs/'
+    const openLink = gateway + this.props.hash;
     const size = getHumanReadableBytes(this.props.size);
     const className = `clipboard-${this.props.hash} download`;
     const preview = (
-      <div className="preview smallText">
+      <div className="preview smallText" ref="preview">
         {this.state.previewContent}
       </div>
     );
