@@ -56,6 +56,7 @@ const mainWindowSize = {
   center: true,
   minWidth: 256,
   minHeight: 256,
+  resizable: true,
   "web-preferences": {
     "web-security": false
   }
@@ -184,7 +185,11 @@ app.on('ready', () => {
                   logger.info("IPFS daemon started at", ipfs.apiHost, ipfs.apiPort)
                   logger.info("Gateway (readonly) at", ipfs.gatewayHost, ipfs.gatewayPort)
                   global.ipfsInstance = IpfsApi(ipfs.apiHost, ipfs.apiPort)
-                  global.gatewayAdddress = ipfs.gatewayHost + ':' + ipfs.gatewayPort + '/ipfs/'
+
+                  if(!ipfs.gatewayHost)
+                    global.gatewayAddress = 'http://localhost:8080/ipfs/'
+                  else
+                    global.gatewayAddress = ipfs.gatewayHost + ':' + ipfs.gatewayPort + '/ipfs/'
                   // global.ipfsInstance = ipfs
                   loadApp()
                 })
