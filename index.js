@@ -134,14 +134,15 @@ app.on('ready', () => {
             ipfsDaemon = node
 
             logger.info("Initializing IPFS daemon")
-            ipfsDaemon.init((err, node) => {
+            logger.debug(`Using IPFS repo at '${node.path}'`)
+
+            ipfsDaemon.init({ directory: dataDirectory }, (err, node) => {
               // Ignore error (usually "repo already exists")
               if (err) {
-                console.log(err)
                 const repoExists = String(err).match('ipfs configuration file already exists')
                 const migrationNeeded = String(err).match('ipfs repo needs migration')
 
-                if(migrationNeeded) {
+                if (migrationNeeded) {
                   let errStr = `Error initializing IPFS daemon: '${migrationNeeded[0]}'\n`
                   errStr += `Tried to init IPFS repo at '${dataDirectory}', but failed.\n`
                   errStr += `Use $IPFS_PATH to specify another repo path, eg. 'export IPFS_PATH=/tmp/orbit-floodsub'.`
