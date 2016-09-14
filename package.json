@@ -33,9 +33,11 @@
   "scripts": {
     "postinstall": "./node_modules/.bin/grunt clean:npm",
     "test": "./node_modules/.bin/mocha",
-    "build": "./node_modules/.bin/grunt build",
+    "build": "npm run build:osx",
+    "build:osx": "./node_modules/.bin/grunt build_osx",
+    "build:linux": "./node_modules/.bin/grunt build_linux",
     "dist": "./scripts/build_dist_package.sh",
-    "publish": "npm run dist && ipfs add bin/orbit-darwin-x64.tar.gz",
+    "publish": "npm run dist && ipfs add bin/orbit-darwin-x64.tar.gz && ipfs add bin/orbit-linux-x64.tar.gz",
     "dev:electron": "ENV=dev API_ORIGIN=* ./node_modules/.bin/electron .",
     "electron": "./node_modules/.bin/electron .",
     "start": "cd client/dist && ../../node_modules/.bin/http-server -c-1 -p 8081 & open http://localhost:8081/index.html & wait"

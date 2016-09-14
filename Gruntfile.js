@@ -9,7 +9,7 @@ module.exports = function (grunt) {
   grunt.loadNpmTasks('grunt-contrib-copy')
   grunt.loadNpmTasks('grunt-chmod')
 
-  const skipNpmInstall = process.argv[3] === '--cached-modules'
+  const skipNpmInstall = process.argv.includes('--cached-modules')
   const binDirectory = 'bin/'
   const moduleCacheDirectory = '.tmp/'
 
@@ -17,6 +17,8 @@ module.exports = function (grunt) {
     clean: {
       cache: moduleCacheDirectory,
       bin: binDirectory,
+      osx: path.join(binDirectory, '/Orbit-darwin-x64'),
+      linux: path.join(binDirectory, '/Orbit-linux-x64'),
       npm: [
         'node_modules/ipfs/node_modules/ipfs-api@0.4.1',
         'node_modules/ipfsd-ctl/node_modules/go-ipfs-dep',
@@ -106,11 +108,14 @@ module.exports = function (grunt) {
   })
 
   grunt.registerTask('default', ["build"])
-  grunt.registerTask('build', ["build_osx"])
+  grunt.registerTask('build', ["build_osx", "build_linux"])
 
   grunt.registerTask('build_osx', function() {
-    grunt.task.run('clean:bin')
-    grunt.task.run('copy_files')
+    if(!skipNpmInstall)
+      grunt.task.run('clean:cache')
+
+    grunt.task.run('clean:osx')
+    grunt.task.run('copy:main')
 
     if(!skipNpmInstall) {
       grunt.task.run('npm_install')
@@ -123,8 +128,11 @@ module.exports = function (grunt) {
   })
 
   grunt.registerTask('build_linux', function() {
-    grunt.task.run('clean:bin')
-    grunt.task.run('copy_files')
+    if(!skipNpmInstall)
+      grunt.task.run('clean:cache')
+
+    grunt.task.run('clean:linux')
+    grunt.task.run('copy:main')
 
     if(!skipNpmInstall) {
       grunt.task.run('npm_install')
@@ -136,10 +144,4 @@ module.exports = function (grunt) {
     grunt.task.run('clean:electron')
   })
 
-  grunt.registerTask('copy_files', function() {
-    if(!skipNpmInstall)
-      grunt.task.run('clean:cache')
-
-    grunt.task.run('copy:main')
-  })
 }

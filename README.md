@@ -38,14 +38,14 @@ npm run electron
 
 [Get the source code](#get-the-source-code), [install dependencies](#install-dependencies) and then run:
 ```sh
-npm run build
+npm run build:osx|build:linux
 ```
 
 The application executable is in `bin/`.
 
 If you end building the app multiple times without changes to the modules, run:
 ```
-grunt build --cached-modules
+npm run build:osx --cached-modules
 ```
 
 This will skip the `npm install` step in the build process.
@@ -58,7 +58,8 @@ First, clone the repo then run the following commands. This will build the proje
 
 ```sh
 npm install
-npm run build
+npm run build:osx
+npm run build:linux
 npm run publish
 ```
 
