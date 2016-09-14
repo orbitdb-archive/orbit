@@ -155,8 +155,7 @@ class File extends React.Component {
   }
 
   render() {
-    // console.log(this.props.hash)
-    const gateway = isElectron ? window.gatewayAdddress : 'https://ipfs.io./ipfs/'
+    const gateway = isElectron ? 'http://' + window.gatewayAdddress : 'https://ipfs.io./ipfs/'
     const openLink = gateway + this.props.hash;
     const size = getHumanReadableBytes(this.props.size);
     const className = `clipboard-${this.props.hash} download`;

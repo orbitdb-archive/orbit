@@ -246,7 +246,7 @@ class Channel extends React.Component {
     const amount = previewRect.bottom - channelRect.bottom
     console.log(amount, previewHeight)
     // Scroll down so that we see the full preview element
-    if (amount > 0) this.node.scrollTop += amount + 6
+    if (amount > 0) this.node.scrollTop += amount + 5
   }
 
   onShowProfile(user, evt) {
