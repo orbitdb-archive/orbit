@@ -7,7 +7,7 @@
     "bs58": "^3.0.0",
     "du": "^0.1.0",
     "go-ipfs-dep": "https://github.com/haadcode/go-ipfs-dep.git",
-    "ipfs-api": "https://github.com/VictorBjelkholm/js-ipfs-api.git#feat-pubsub",
+    "ipfs-api": "https://github.com/haadcode/js-ipfs-api.git",
     "ipfs-post": "^0.0.12",
     "ipfsd-ctl": "https://github.com/haadcode/js-ipfsd-ctl.git",
     "lodash": "^4.14.0",
