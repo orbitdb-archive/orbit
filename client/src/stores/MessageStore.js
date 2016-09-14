@@ -344,10 +344,10 @@ const MessageStore = Reflux.createStore({
   onLoadFile: function(hash: string, asURL: boolean, asStream: boolean, callback) {
     const isElectron = !!window.ipfsInstance;
     if(isElectron && asURL) {
-      callback(null, null, 'http://' + window.gatewayAdddress + hash)
+      callback(null, null, 'http://' + window.gatewayAddress + hash)
     } else if(isElectron) {
       var xhr = new XMLHttpRequest()
-      xhr.open('GET', 'http://' + window.gatewayAdddress + hash, true)
+      xhr.open('GET', 'http://' + window.gatewayAddress + hash, true)
       xhr.responseType = 'blob'
       xhr.onload = function(e) {
         if(this.status == 200) {

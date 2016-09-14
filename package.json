@@ -37,10 +37,10 @@
     "build:osx": "./node_modules/.bin/grunt build_osx",
     "build:linux": "./node_modules/.bin/grunt build_linux",
     "dist": "./scripts/build_dist_package.sh",
-    "publish": "npm run dist && ipfs add bin/orbit-darwin-x64.tar.gz && ipfs add bin/orbit-linux-x64.tar.gz",
+    "publish": "npm run dist && cd bin/ && ipfs add -w bin/orbit-*.gz && cd ..",
     "dev:electron": "ENV=dev API_ORIGIN=* ./node_modules/.bin/electron .",
     "electron": "./node_modules/.bin/electron .",
-    "start": "cd client/dist && ../../node_modules/.bin/http-server -c-1 -p 8081 & open http://localhost:8081/index.html & wait"
+    "start": "npm run electron"
   },
   "repository": {
     "type": "git",
