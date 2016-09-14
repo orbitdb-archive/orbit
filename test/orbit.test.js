@@ -59,18 +59,18 @@ const IpfsApis = [
   name: 'js-ipfs-api',
   start: () => {
     return new Promise((resolve, reject) => {
-      // ipfsd.disposableApi((err, ipfs) => {
-      //   if(err) reject(err)
-      //   resolve(ipfs)
-      // })
-      ipfsd.local((err, node) => {
+      ipfsd.disposableApi((err, ipfs) => {
         if(err) reject(err)
-        ipfsDaemon = node
-        ipfsDaemon.startDaemon((err, ipfs) => {
-          if(err) reject(err)
-          resolve(ipfs)
-        })
+        resolve(ipfs)
       })
+      // ipfsd.local((err, node) => {
+      //   if(err) reject(err)
+      //   ipfsDaemon = node
+      //   ipfsDaemon.startDaemon((err, ipfs) => {
+      //     if(err) reject(err)
+      //     resolve(ipfs)
+      //   })
+      // })
     })
   },
   stop: () => Promise.resolve()
@@ -207,9 +207,9 @@ IpfsApis.forEach(function(ipfsApi) {
           .catch(done)
       })
 
-      afterEach(() => {
-        // orbit.disconnect()
-      })
+      // afterEach(() => {
+      //   orbit.disconnect()
+      // })
 
       it('joins a new channel', () => {
         return orbit.join(channel).then((result) => {
