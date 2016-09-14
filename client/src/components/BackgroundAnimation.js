@@ -64,7 +64,7 @@ class BackgroundAnimation extends React.Component {
 
     let styleSheet = document.styleSheets[0]
     var dots = rings.map((i) => {
-      const c = Math.max(196 - (i * 24), 0)
+      const c = Math.max(255 - (i * 24), 0)
       const color = `rgba(${c}, ${c}, ${c}, ${0.5 - ((i + 1) * 0.025)})`
       const mul   = (Math.random() < 0.5 ? -1 : 1) // randomize between negative and positive pos
       const pos   = (minSize + (i * inc)) * mul // starting position for the dot
@@ -97,9 +97,9 @@ class BackgroundAnimation extends React.Component {
       <div className="BackgroundAnimation" ref="container" style={this.props.style}>
         <svg width={this.state.width} height={this.state.width} key="circles" style={this.state.theme} className="transparent">
           {circles}
-        </svg>
-        <svg width={this.state.width} height={this.state.width} key="dots" style={this.state.theme} className="opaque">
-          {dots}
+          <svg width={this.state.width} height={this.state.width} key="dots" style={this.state.theme} className="opaque">
+            {dots}
+          </svg>
         </svg>
       </div>
     )

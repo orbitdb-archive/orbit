@@ -40,12 +40,27 @@ if (!fs.existsSync(orbitDataDir))
 Logger.setLogfile(path.join(orbitDataDir, '/debug.log'))
 logger.debug("Run index.js in '" + MODE + "' mode")
 
-const connectWindowSize = { width: 500, height: 430, center: true, minWidth: 500, minHeight: 430, "web-preferences": {
-      "web-security": false
-    } }
-const mainWindowSize    = { width: 1200, height: 800, center: true, minWidth: 256, minHeight: 256, "web-preferences": {
-      "web-security": false
-    } }
+const connectWindowSize = {
+  width: 500,
+  height: 400,
+  center: true,
+  resizable: false,
+  "web-preferences": {
+    "web-security": false
+  }
+}
+
+const mainWindowSize = {
+  width: 1200,
+  height: 800,
+  center: true,
+  minWidth: 256,
+  minHeight: 256,
+  "web-preferences": {
+    "web-security": false
+  }
+}
+
 let mainWindow = null
 
 const template = require('./menu-native')(app)

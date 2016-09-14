@@ -5,6 +5,9 @@
   // top: 0;
   // left: 0;
   width: 100%;
+  // height: 100%;
+  margin: auto;
+
   display: flex;
   justify-content: center;
   z-index: -1;
@@ -16,12 +19,12 @@
 
   .transparent {
     opacity: 0.3;
-    position: absolute;
+    // position: absolute;
   }
 
   .opaque {
     opacity: 1.0;
-    position: absolute;
+    // position: absolute;
   }
 
   circle {

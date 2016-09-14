@@ -7,31 +7,33 @@ $text-color: rgba(228, 228, 228, 0.9);
   padding: 0.1em;
   color: rgb(128, 128, 128);
   display: flex;
-  // flex: 1 1 50%;
   justify-content: center;
+  align-items: center;
   width: 100%;
   height: 100%;
-  // margin-top: 0.25em;
   margin-top: 0;
   border-top: 1px solid rgba(30, 30, 30, 1);
   box-sizing: border-box;
 
   .inputs {
-    margin: 1.5em;
+    margin: 2em 4em;
     margin-top: 0;
   }
 
   h1 {
-    margin-top: 0.6em;
     font-family: "Lato";
-    font-size: 2.5em;
+    font-size: 3.5em;
     font-weight: 100;
     padding: 1.0em;
     text-transform: uppercase;
     color: rgba(240, 240, 240, 0.7);
+    margin-top: 1.8em;
+    padding-bottom: 0.5em;
   }
 
   form {
+    margin: 0;
+
     // margin-top: 120px;
     display: flex;
     // flex: 1 1 50%;
@@ -41,8 +43,8 @@ $text-color: rgba(228, 228, 228, 0.9);
     justify-content: center;
 
     // margin-top: 2em;
-    margin-left: 0.5em;
-    margin-right: 0.5em;
+    // margin-left: 0.5em;
+    // margin-right: 0.5em;
 
     max-width: 32.5em;
 
@@ -62,7 +64,8 @@ $text-color: rgba(228, 228, 228, 0.9);
     .row {
       display: flex;
       flex-direction: row;
-      margin-bottom: 0.5em;
+      // margin-bottom: 0.5em;
+      margin-top: 1em;
       justify-content: flex-end;
       width: 100%;
     }

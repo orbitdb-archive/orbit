@@ -138,13 +138,13 @@ class LoginView extends React.Component{
 
     return (
       <div className="LoginView">
-        <form onSubmit={this.register.bind(this)} style={{ marginTop: (this.state.logoSize / 2 - 83)}}>
+        <form onSubmit={this.register.bind(this)}>
           <TransitionGroup className="row" transitionName="loginHeaderAnimation" transitionAppear={true} component="div" transitionAppearTimeout={5000} transitionEnterTimeout={5000} transitionLeaveTimeout={5000}>
             <h1>Orbit</h1>
           </TransitionGroup>
           {form}
         </form>
-        <BackgroundAnimation style={{ top: "0", left: "0" }} size={this.state.logoSize} theme={this.state.theme}/>
+        <BackgroundAnimation size={this.state.logoSize} theme={this.state.theme}/>
       </div>
     );
   }
