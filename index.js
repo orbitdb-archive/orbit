@@ -44,7 +44,6 @@ const connectWindowSize = {
   width: 500,
   height: 400,
   center: true,
-  resizable: false,
   "web-preferences": {
     "web-security": false
   }
@@ -56,7 +55,6 @@ const mainWindowSize = {
   center: true,
   minWidth: 256,
   minHeight: 256,
-  resizable: true,
   "web-preferences": {
     "web-security": false
   }
@@ -104,7 +102,6 @@ process.on('uncaughtException', (error) => {
 
 app.on('ready', () => {
   try {
-
     mainWindow = new BrowserWindow(connectWindowSize)
 
     logger.info("Checking for running IPFS daemon...")
