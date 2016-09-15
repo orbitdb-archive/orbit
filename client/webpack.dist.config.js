@@ -40,7 +40,7 @@ module.exports = {
   devtool: false,
   node: {
     console: false,
-    process: 'mock',
+    // process: 'mock',
     Buffer: 'buffer'
   },
   stats: {
@@ -94,7 +94,7 @@ module.exports = {
       query: babel
     }, {
       test: /\.js$/,
-      include: /node_modules\/(hoek|qs|wreck|boom|logplease|ipfs-.+|orbit.*|crdts)/,
+      include: /node_modules\/(qs|wreck|boom|logplease|ipfs-.+|orbit.*|crdts)/,
       loader: 'babel',
       query: babel
     }, {
@@ -120,6 +120,7 @@ module.exports = {
     tls: '{}',
     console: '{}',
     'require-dir': '{}',
-    mkdirp: '{}'
+    mkdirp: '{}',
+    process :'{ version: "your mom" }'
   }
 };
