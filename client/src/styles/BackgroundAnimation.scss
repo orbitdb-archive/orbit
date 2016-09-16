@@ -15,10 +15,9 @@
  -webkit-transform-style: preserve-3d;
   transform-style: preserve-3d;
   -webkit-backface-visibility: hidden;
-  backface-visibility: hidden;
 
   .transparent {
-    opacity: 0.3;
+    opacity: 0.5;
     // position: absolute;
   }
 
@@ -27,13 +26,12 @@
     // position: absolute;
   }
 
-  circle {
+  .circle {
     -webkit-transform-style: preserve-3d;
     transform-style: preserve-3d;
     -webkit-transform: translate3D(0, 0, 0);
     transform: translate3D(0, 0, 0);
     -webkit-backface-visibility: hidden;
-    backface-visibility: hidden;
 
     $duration: .2s;
     $animation-name: fadeIn;
