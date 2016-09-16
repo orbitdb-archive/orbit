@@ -23,7 +23,7 @@ class Channel extends React.Component {
       channelChanged: true,
       channelName: null,
       messages: [],
-      loading: true,
+      loading: false,
       loadingText: 'Connecting...',
       reachedChannelStart: false,
       channelMode: "Public",
@@ -218,7 +218,7 @@ class Channel extends React.Component {
 
     // After scroll has finished, check if we should load more messages
     // Using timeout here because of OS-applied scroll inertia
-    this.setState({ loadingText: 'Loading more messages...' })
+    // this.setState({ loadingText: 'Loading more messages...' })
     this.scrollTimer = setTimeout(() => {
       if(this._shouldLoadMoreMessages())
         this.loadOlderMessages();
@@ -314,7 +314,7 @@ class Channel extends React.Component {
     ));
     elements.unshift(
       <div className="firstMessage" key="firstMessage" onClick={this.loadOlderMessages.bind(this)}>
-        {reachedChannelStart && !loading ? `Beginning of #${channelName}` : loadingText }
+        {reachedChannelStart && !loading ? `Joined #${channelName}` : loadingText }
       </div>
     );
     return elements;

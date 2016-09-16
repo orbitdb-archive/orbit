@@ -93,10 +93,10 @@ const MessageStore = Reflux.createStore({
         // console.log("-------------------------------- LOAD", name, hash)
         UIActions.startLoading(name, "loadHistory", "Loading history...");
         if(this.connectTimeout[name]) clearTimeout(this.connectTimeout[name]);
-        this.connectTimeout[name] = setTimeout(() => {
-          const text = `Loading history for #${name} is taking a long time. This usually means connection problems with the network.`
-          UIActions.startLoading(name, "loadHistory", text);
-        }, 10000);
+        // this.connectTimeout[name] = setTimeout(() => {
+        //   const text = `Loading history for #${name} is taking a long time. This usually means connection problems with the network.`
+        //   UIActions.startLoading(name, "loadHistory", text);
+        // }, 10000);
       });
 
       feed.events.on('ready', (name) => {
