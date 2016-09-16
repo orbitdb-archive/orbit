@@ -37,7 +37,7 @@
     "build:osx": "./node_modules/.bin/grunt build_osx",
     "build:linux": "./node_modules/.bin/grunt build_linux",
     "dist": "./scripts/build_dist_package.sh",
-    "publish": "npm run dist && cd bin/ && ipfs add -w bin/orbit-*.gz && cd ..",
+    "publish": "npm run dist && cd bin/ && ipfs add -r dist/ && cd ..",
     "dev:electron": "ENV=dev API_ORIGIN=* ./node_modules/.bin/electron .",
     "electron": "./node_modules/.bin/electron .",
     "start": "npm run electron"
