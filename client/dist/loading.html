@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
-  <title>Orbit - Error</title>
+  <title>Orbit</title>
   <meta name="description" content="">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 
@@ -42,12 +42,15 @@
     }
 
     .error {
-      color: rgba(208, 100, 100, 1);
+      color: rgba(196, 196, 196, 1);
       font-family: 'Lato';
-      font-size: 1.2em;
+      font-size: 1.5em;
+      height: auto;
       display: flex;
       justify-content: center;
+      align-items: center;
       text-align: center;
+      margin-top: 6.5em;
     }
 
   </style>
@@ -57,22 +60,9 @@
 </head>
 <body>
   <div id="error" class="error">
+    Launching...
   </div>
   <script type="text/javascript">
-    // Check if we're running in Electron (parent.require is for webpack devserver iframe check)
-    const isElectron = !(typeof require === 'undefined' && typeof parent.require === 'undefined');
-    console.log("isElectron:", isElectron);
-    if(isElectron) {
-      // We're running in Electron
-      const req = typeof require !== 'undefined' ? require : parent.require;
-      const remote = req('electron').remote;
-      ipcRenderer = req('electron').ipcRenderer;
-      const s = decodeURIComponent(location.search)
-      let errorMsg = s.substr(1, s.length - 1).split('=').pop()
-      document.getElementById('error').innerHTML = '<br><br><br><br><br><br>' + errorMsg.split('\n').join('<br><br>')
-    } else {
-      // We're running purely in the browser
-    }
   </script>
 </body>
 </html>
