@@ -337,7 +337,7 @@ class Orbit {
           resolve(res)
         })
       })
-      .then((peers) => peers.Strings)
+      .then((peers) => peers.map((e) => e.toString()))
     }
   }
 
