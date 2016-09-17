@@ -31,7 +31,7 @@ class BackgroundAnimation extends React.Component {
   render() {
     //TODO: pre-calc all this
     var maxSize   = (this.state.width || window.innerWidth) / 2
-    var minSize   = 32
+    var minSize   = 32 * (this.state.width / 256)
     var amount    = 7
     var opacity   = 1
     var colors    = [
@@ -67,10 +67,10 @@ class BackgroundAnimation extends React.Component {
       const speed  = 0.5
       const velocity = (i + 1) * 9.80665 / speed
       const c = Math.max(196 - (i * 24), 0)
-      const color = `rgba(${c}, ${c}, ${c}, ${0.5 - ((i + 1) * 0.025)})`
+      const color = `rgba(${c}, ${c}, ${c}, ${0.5 - ((i + 1) * 0.010)})` // 0.025
       const mul   = (Math.random() < 0.5 ? -1 : 1) // randomize between negative and positive pos
       const pos   = (minSize + (i * inc)) * mul // starting position for the dot
-      const size  = (Math.random() * 2) + 1
+      const size  = (this.props.circleSize || 1) * (Math.random() * 2) + 1
       const startRadians = Math.floor(Math.random() * 360)
       let keyframes = `@keyframes rot${i} {
         0%   { transform: rotate(${startRadians}deg) translate(${pos}px) rotate(-${startRadians}deg) }

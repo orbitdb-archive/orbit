@@ -9,9 +9,7 @@ import Themes from 'app/Themes';
 import 'styles/LoginView.scss';
 
 var maxNicknameLength = 32;
-var maxLogoSize = 320;
-
-const defaultNetworkHost = window.DEV ? 'localhost:3333' : '178.62.241.75:3333'; // localhost or dev network
+var maxLogoSize = 480;
 
 class LoginView extends React.Component{
   constructor(props) {
@@ -27,7 +25,7 @@ class LoginView extends React.Component{
       username: null,
       password: null,
       displayPasswordField: false,
-      currentLength: null,
+      currentLength: 0,
       theme: Themes.Default,
       logoSize: Math.min(window.innerWidth, maxLogoSize)
     };
@@ -72,12 +70,11 @@ class LoginView extends React.Component{
 
   register(e) {
     if(e) e.preventDefault();
-    // var network  = this.refs.network.value.trim();
+
     var username = this.refs.username.value.trim();
-    var password = this.refs.password.value.trim();
 
     if(username !== '') {
-      this.setState({ error: null, connecting: true, username: username, password: password });
+      this.setState({ error: null, connecting: true, username: username });
       NetworkActions.connect(null, username);
     }
 
@@ -85,12 +82,10 @@ class LoginView extends React.Component{
   }
 
   calculateNicknameLength() {
-    var remainingCharacters = maxNicknameLength - this.refs.username.value.length;
-    this.setState({ currentLength: remainingCharacters < maxNicknameLength ? maxNicknameLength - this.refs.username.value.length : null });
+    this.setState({ currentLength: this.refs.username.value ? this.refs.username.value.length : 0});
   }
 
   onUportLogin() {
-    // const network = this.refs.network.value.trim()
     NetworkActions.connect(null, { provider: 'uPort' })
   }
 
@@ -103,53 +98,45 @@ class LoginView extends React.Component{
     var errorMsg   = this.state.error ? <div className="error">{this.state.error}</div> : "";
     var passwordFieldStyle = this.state.displayPasswordField ? "row" : "hidden";
 
-
-    var form = !this.state.connecting ? (
+    var form = 
       <TransitionGroup transitionName="loginScreenAnimation" transitionAppear={true} component="div" className="inputs" transitionAppearTimeout={5000} transitionEnterTimeout={5000} transitionLeaveTimeout={5000}>
-        <div className="row">
-        <div className="hidden">
-          <span className="label">Network</span><input type="text" ref="network" defaultValue={defaultNetworkHost} style={this.state.theme}/>
-        </div>
-          <span className="label">Nickname</span>
+        <div className="usernameRow">
           <input
             type="text"
             ref="username"
-            placeholder={this.state.username ? "" : "..."}
+            placeholder="Nickname"
             defaultValue={this.state.username ? this.state.username : ""}
             maxLength="32"
             autoFocus
             style={this.state.theme}
             onChange={this.calculateNicknameLength.bind(this)}/>
-          {this.state.currentLength != null ? <span className="nicknameLength">{this.state.currentLength}</span> : ""}
         </div>
-        <div className={passwordFieldStyle}>
-          <span className="label">Password</span>
-          <input type="password" ref="password" placeholder={this.state.password ? "" : "..."} defaultValue={this.state.password ? this.state.password : ""}/>
+        <div className="connectButtonRow">
+          <span className="hint">{this.state.currentLength > 0 ? 'Press ENTER to login' : 'Or login with'}</span>
+          <input type="submit" value="Connect" style={{ display: "none" }}/>
         </div>
-        <div className="row">
-          <input type="submit" value="Connect" style={this.state.theme}/>
+        <div className="lastRow">
+          {this.state.currentLength === 0
+            ? <img
+                onClick={this.onUportLogin.bind(this)}
+                className="logo"
+                src="images/uport.png"
+                height="64"
+              />
+            : null
+          }
         </div>
-        <div className="row lastrow">
-          <img
-            onClick={this.onUportLogin.bind(this)}
-            className="logo"
-            src="images/uport.png"
-            height="48"
-          />
-        </div>
-
       </TransitionGroup>
-    ) : (<span></span>);
 
     return (
       <div className="LoginView">
         <form onSubmit={this.register.bind(this)}>
-          <TransitionGroup className="row" transitionName="loginHeaderAnimation" transitionAppear={true} component="div" transitionAppearTimeout={5000} transitionEnterTimeout={5000} transitionLeaveTimeout={5000}>
+          <TransitionGroup className="header" transitionName="loginHeaderAnimation" transitionAppear={true} component="div" transitionAppearTimeout={5000} transitionEnterTimeout={5000} transitionLeaveTimeout={5000}>
             <h1>Orbit</h1>
           </TransitionGroup>
           {form}
         </form>
-        <BackgroundAnimation size={this.state.logoSize} theme={this.state.theme}/>
+        <BackgroundAnimation size={this.state.logoSize} circleSize={2} theme={this.state.theme}/>
       </div>
     );
   }

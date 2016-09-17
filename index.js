@@ -41,10 +41,10 @@ if (!fs.existsSync(orbitDataDir))
 Logger.setLogfile(path.join(orbitDataDir, '/debug.log'))
 
 const connectWindowSize = {
-  width: 500,
-  height: 440,
+  width: 512,
+  height: 512,
   center: true,
-  resize: true,
+  resize: false,
   "web-preferences": {
     "web-security": false
   }
@@ -93,7 +93,7 @@ const setWindowToNormal = () => {
 
 const setWindowToLogin = () => {
   mainWindow.setSize(connectWindowSize.width, connectWindowSize.height)
-  // mainWindow.setResizable(false)
+  mainWindow.setResizable(false)
   mainWindow.center()
 }
 
