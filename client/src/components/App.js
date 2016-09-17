@@ -39,7 +39,8 @@ import 'normalize.css';
 import '../styles/main.css';
 import 'styles/App.scss';
 import 'styles/Scrollbars.scss';
-import 'highlight.js/styles/hybrid.css';
+import 'highlight.js/styles/atom-one-dark.css';
+// Agate, Atom One Dark, Github, Monokai, Monokai Sublime, Vs, Xcode
 
 import Main from '../main'
 
