@@ -20,7 +20,7 @@ module.exports = function (grunt) {
       osx: path.join(binDirectory, '/Orbit-darwin-x64'),
       linux: path.join(binDirectory, '/Orbit-linux-x64'),
       npm: [
-        'node_modules/ipfs/node_modules/ipfs-api@0.4.1',
+        'node_modules/ipfs/node_modules/ipfs-api',
         'node_modules/ipfsd-ctl/node_modules/go-ipfs-dep',
         'node_modules/ipfsd-ctl/node_modules/ipfs-api'
       ],
