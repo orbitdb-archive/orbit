@@ -6,20 +6,19 @@
   "dependencies": {
     "bs58": "^3.0.0",
     "du": "^0.1.0",
-    "ipfs-post": "^0.0.11",
-    "ipfsd-ctl": "^0.14.0",
+    "ipfs-post": "0.0.13",
+    "ipfsd-ctl": "0.14.0",
     "lodash": "^4.14.0",
     "logplease": "^1.2.7",
     "orbit-crypto": "0.0.7",
     "orbit-db": "^0.11.1",
-    "text-encoding": "^0.6.0",
-    "uport-lib": "git+https://github.com/haadcode/uport-lib.git",
-    "uport-persona": "git+https://github.com/haadcode/uport-persona.git",
-    "web3": "^0.17.0-alpha"
+    "uport-lib": "^1.3.0",
+    "uport-persona": "https://github.com/haadcode/uport-persona-1.git",
+    "web3": "0.17.0-beta"
   },
   "devDependencies": {
     "bluebird": "^3.4.1",
-    "electron-prebuilt": "1.3.1",
+    "electron-prebuilt": "1.3.5",
     "grunt": "^1.0.1",
     "grunt-chmod": "^1.1.1",
     "grunt-contrib-clean": "^1.0.0",
@@ -27,7 +26,7 @@
     "grunt-electron": "^2.0.1",
     "http-server": "^0.9.0",
     "ipfs": "^0.14.3",
-    "ipfs-api": "^6.0.3",
+    "ipfs-api": "^8.0.3",
     "load-grunt-tasks": "^3.5.0",
     "mocha": "^2.5.3",
     "orbit-server": "^0.2.3"

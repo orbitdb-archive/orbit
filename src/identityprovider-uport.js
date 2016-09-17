@@ -1,10 +1,21 @@
 'use strict'
 
 const Web3 = require('web3')
-const Uport = require('uport-lib')
-const Persona = require('uport-persona')
+const Uport = require('uport-lib').Uport
+const Persona = require('uport-persona').default
+const MutablePersona = require('uport-persona').MutablePersona
 const Crypto = require('orbit-crypto')
 const OrbitUser = require('./orbit-user')
+
+const web3 = new Web3()
+const web3Prov = new web3.providers.HttpProvider('https://consensysnet.infura.io:8545')
+
+const ipfsProvider = {
+  host: 'ipfs.infura.io',
+  port: '5001',
+  protocol: 'https',
+  root: ''
+}
 
 class uPortIdentityProvider {
   static get id() {
@@ -16,8 +27,7 @@ class uPortIdentityProvider {
       throw new Error(`uPortIdentityProvider can't handle provider type '${credentials.provider}'`)
 
     // console.log("Waiting for uPort authorization...")
-    const web3 = new Web3()
-    const uport = new Uport("Orbit")
+    const uport = new Uport("Orbit", { ipfsProvider: ipfsProvider })
     const uportProvider = uport.getUportProvider()
     web3.setProvider(uportProvider)
 
@@ -34,10 +44,9 @@ class uPortIdentityProvider {
             if (profile.orbitKey && pubKeyHash === profile.orbitKey)
               return Promise.resolve(profile.orbitKey)
 
-            return persona.addAttribute({ orbitKey: pubKeyHash }, privKey)
-              .then(() => {
-                return pubKeyHash
-              })
+            persona.setPublicSigningKey(privKey)
+            persona.addAttribute({ orbitKey: pubKeyHash }, privKey)
+            return pubKeyHash
           })
         })
     }
@@ -46,11 +55,13 @@ class uPortIdentityProvider {
       web3.eth.getCoinbase((err, res) => {
         if (err) reject(err)
 
-        persona = new Persona(res)
-        persona.setProviders(null, uportProvider)
-
-        return persona.load()
-          .then((res) => uportProfile = persona.getProfile())
+        let persona
+        return uport.getUserPersona()
+          .then((res) =>{
+            persona = res
+            uportProfile = persona.getProfile()
+            return
+          })
           .then(() => getOrbitSignKey(persona, uportProfile))
           .then((pubKeyHash) => {
             profileData = {
@@ -80,8 +91,11 @@ class uPortIdentityProvider {
     if (profile.identityProvider.provider !== uPortIdentityProvider.id)
       throw new Error(`uPortIdentityProvider can't handle provider type '${profile.identityProvider.provider}'`)
 
-    const web3 = new Web3()
-    const uport = new Uport("Orbit")
+    // const web3 = new Web3()
+    // const uport = new Uport("Orbit")
+    // const uportProvider = uport.getUportProvider()
+    // web3.setProvider(uportProvider)
+    const uport = new Uport("Orbit", { ipfsProvider: ipfsProvider })
     const uportProvider = uport.getUportProvider()
     web3.setProvider(uportProvider)
 
@@ -89,7 +103,9 @@ class uPortIdentityProvider {
     return new Promise((resolve, reject) => {
       persona = new Persona(profile.identityProvider.id)
       persona.setProviders(null, uportProvider)
-      return persona.load()
+      // return persona.load()
+      return uport.getUserPersona()
+        // .then((res) => persona.getProfile())
         .then((res) => persona.getProfile())
         .then((uportProfile) => {
           const profileData = {
