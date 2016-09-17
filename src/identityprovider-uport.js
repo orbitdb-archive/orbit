@@ -45,7 +45,7 @@ class uPortIdentityProvider {
               return Promise.resolve(profile.orbitKey)
 
             persona.setPublicSigningKey(privKey)
-            persona.addAttribute({ orbitKey: pubKeyHash }, privKey)
+            persona.signAttribute({ orbitKey: pubKeyHash }, privKey, persona.address)
             return pubKeyHash
           })
         })
