@@ -41,13 +41,17 @@ class uPortIdentityProvider {
         })
         .then((pubKeyHash) => {
           return Crypto.exportPrivateKey(keys.privateKey).then((privKey) => {
+            console.log("PROFILE", profile)
+            
             if (profile.orbitKey && pubKeyHash === profile.orbitKey)
               return Promise.resolve(profile.orbitKey)
 
-            // persona.setPublicSigningKey(privKey)
-            const claim = persona.signAttribute({ orbitKey: pubKeyHash }, privKey, persona.address)
-            persona.addClaim(claim)
-            return pubKeyHash
+            persona.signAttribute({ orbitKey: pubKeyHash }, privKey, persona.address)
+            return persona.writeToRegistry()
+              .then((tx) => {
+                console.log("Got tx hash:", tx)
+                return pubKeyHash
+              })
           })
         })
     }
@@ -92,20 +96,11 @@ class uPortIdentityProvider {
     if (profile.identityProvider.provider !== uPortIdentityProvider.id)
       throw new Error(`uPortIdentityProvider can't handle provider type '${profile.identityProvider.provider}'`)
 
-    // const web3 = new Web3()
-    // const uport = new Uport("Orbit")
-    // const uportProvider = uport.getUportProvider()
-    // web3.setProvider(uportProvider)
     const uport = new Uport("Orbit", { ipfsProvider: ipfsProvider })
-    // const uportProvider = uport.getUportProvider()
-    // web3.setProvider(uportProvider)
-
     let persona = new Persona(profile.identityProvider.id, ipfsProvider, web3.currentProvider)
-    // persona.setProviders(null, uportProvider)
 
     return new Promise((resolve, reject) => {
       return persona.load()
-      // return uport.getUserPersona()
         .then((res) => persona.getProfile())
         .then((uportProfile) => {
           console.log("uPort Profile Data", uportProfile)
@@ -113,7 +108,7 @@ class uPortIdentityProvider {
             name: uportProfile.name,
             location: uportProfile.location,
             image: uportProfile.image && uportProfile.image.length > 0 ? uportProfile.image[0].contentUrl.replace('/ipfs/', '') : null,
-            signKey: uportProfile.orbitKey,
+            signKey: uportProfile.orbitKey || profile.signKey,
             updated: profile.updated,
             identityProvider: {
               provider: uPortIdentityProvider.id,
