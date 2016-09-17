@@ -10,7 +10,7 @@
     "ipfsd-ctl": "^0.14.0",
     "lodash": "^4.14.0",
     "logplease": "^1.2.7",
-    "orbit-crypto": "0.0.6",
+    "orbit-crypto": "0.0.7",
     "orbit-db": "^0.11.1",
     "text-encoding": "^0.6.0",
     "uport-lib": "git+https://github.com/haadcode/uport-lib.git",
