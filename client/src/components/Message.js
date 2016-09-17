@@ -75,7 +75,7 @@ class Message extends React.Component {
     const { highlightWords, useEmojis } = this.props;
     const { isCommand, post } = this.state;
     const contentClass = isCommand ? "Content command" : "Content";
-    let content = (<div>...</div>);
+    let content = (<div></div>);
     if (post) {
       switch (post.meta.type) {
         case 'text':
@@ -121,7 +121,6 @@ class Message extends React.Component {
           onShowProfile={this.props.onShowProfile.bind(this, user)}
           />
         {this.renderContent()}
-        {this.renderVerification()}
       </div>
     );
   }
