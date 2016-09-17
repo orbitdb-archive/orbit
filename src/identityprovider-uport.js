@@ -2,7 +2,7 @@
 
 const Web3 = require('web3')
 const Uport = require('uport-lib').Uport
-const Persona = require('uport-persona').default
+const Persona = require('uport-persona').Persona
 const MutablePersona = require('uport-persona').MutablePersona
 const Crypto = require('orbit-crypto')
 const OrbitUser = require('./orbit-user')
@@ -44,7 +44,7 @@ class uPortIdentityProvider {
             if (profile.orbitKey && pubKeyHash === profile.orbitKey)
               return Promise.resolve(profile.orbitKey)
 
-            persona.setPublicSigningKey(privKey)
+            // persona.setPublicSigningKey(privKey)
             persona.signAttribute({ orbitKey: pubKeyHash }, privKey, persona.address)
             return pubKeyHash
           })
@@ -66,7 +66,7 @@ class uPortIdentityProvider {
           .then((pubKeyHash) => {
             profileData = {
               name: uportProfile.name,
-              location: uportProfile.residenceCountry,
+              location: uportProfile.location,
               image: uportProfile.image && uportProfile.image.length > 0 ? uportProfile.image[0].contentUrl.replace('/ipfs/', '') : null,
               signKey: pubKeyHash,
               updated: new Date().getTime(),
@@ -96,21 +96,21 @@ class uPortIdentityProvider {
     // const uportProvider = uport.getUportProvider()
     // web3.setProvider(uportProvider)
     const uport = new Uport("Orbit", { ipfsProvider: ipfsProvider })
-    const uportProvider = uport.getUportProvider()
-    web3.setProvider(uportProvider)
+    // const uportProvider = uport.getUportProvider()
+    // web3.setProvider(uportProvider)
 
-    let persona
+    let persona = new Persona(profile.identityProvider.id, ipfsProvider, web3.currentProvider)
+    // persona.setProviders(null, uportProvider)
+
     return new Promise((resolve, reject) => {
-      persona = new Persona(profile.identityProvider.id)
-      persona.setProviders(null, uportProvider)
-      // return persona.load()
-      return uport.getUserPersona()
-        // .then((res) => persona.getProfile())
+      return persona.load()
+      // return uport.getUserPersona()
         .then((res) => persona.getProfile())
         .then((uportProfile) => {
+          console.log("uPort Profile Data", uportProfile)
           const profileData = {
             name: uportProfile.name,
-            location: uportProfile.residenceCountry,
+            location: uportProfile.location,
             image: uportProfile.image && uportProfile.image.length > 0 ? uportProfile.image[0].contentUrl.replace('/ipfs/', '') : null,
             signKey: uportProfile.orbitKey,
             updated: profile.updated,

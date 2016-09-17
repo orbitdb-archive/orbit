@@ -16,7 +16,7 @@ $text-color: rgba(228, 228, 228, 0.9);
   box-sizing: border-box;
 
   .inputs {
-    margin: 2em 4em;
+    margin: 0em 4em;
     // margin-top: 2em;
   }
 
@@ -27,7 +27,7 @@ $text-color: rgba(228, 228, 228, 0.9);
     padding: 1.0em;
     text-transform: uppercase;
     color: rgba(240, 240, 240, 0.7);
-    margin-top: 1.8em;
+    margin-top: 2.2em;
     padding-bottom: 0.5em;
   }
 
@@ -76,7 +76,7 @@ $text-color: rgba(228, 228, 228, 0.9);
     }
 
     .lastrow {
-      // margin-top: 0.5em;
+      margin-top: 0em;
       justify-content: center;
       align-items: center;
       flex-direction: column;

@@ -129,8 +129,13 @@ class LoginView extends React.Component{
         <div className="row">
           <input type="submit" value="Connect" style={this.state.theme}/>
         </div>
-        <div className="row">
-          {errorMsg}
+        <div className="row lastrow">
+          <img
+            onClick={this.onUportLogin.bind(this)}
+            className="logo"
+            src="images/uport.png"
+            height="48"
+          />
         </div>
 
       </TransitionGroup>
