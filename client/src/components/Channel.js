@@ -49,8 +49,7 @@ class Channel extends React.Component {
       this.setState({
         channelChanged: true,
         unreadMessages: 0,
-        loading: true,
-        loadingText: 'Loading...',
+        loading: false,
         reachedChannelStart: false,
         messages: []
       });
