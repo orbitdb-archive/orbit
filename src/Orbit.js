@@ -80,6 +80,7 @@ class Orbit {
         this.events.emit('connected', this.network, this.user)
         return this
       })
+      .catch((e) => console.error(e))
   }
 
   disconnect() {
