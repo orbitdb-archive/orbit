@@ -61,7 +61,7 @@
 /******/ 	__webpack_require__.p = "/assets/";
 
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 2006);
+/******/ 	return __webpack_require__(__webpack_require__.s = 2007);
 /******/ })
 /************************************************************************/
 /******/ ([
@@ -67095,7 +67095,8 @@ module.exports = warning;
 /* 2003 */,
 /* 2004 */,
 /* 2005 */,
-/* 2006 */
+/* 2006 */,
+/* 2007 */
 /***/ function(module, exports, __webpack_require__) {
 
 __webpack_require__(5);
