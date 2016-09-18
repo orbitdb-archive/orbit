@@ -12,6 +12,7 @@ import UserActions from 'actions/UserActions';
 import ChannelStore from 'stores/ChannelStore';
 import UserStore from 'stores/UserStore';
 import Logger from 'logplease';
+
 const logger = Logger.create('MessageStore', { color: Logger.Colors.Magenta });
 
 const messagesBatchSize = 8;
@@ -217,7 +218,7 @@ const MessageStore = Reflux.createStore({
   },
   _addMessages: function(channel: string, newMessages: Array, older: boolean) {
     logger.debug("<-- Add " + newMessages.length + " messages to #" + channel);
-    console.log(newMessages);
+    // console.log(newMessages);
     var unique = _.differenceWith(newMessages, this.channels[channel].messages, _.isEqual);
     logger.debug("Unique new messages: " + unique.length);
 

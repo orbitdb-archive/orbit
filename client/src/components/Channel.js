@@ -105,9 +105,6 @@ class Channel extends React.Component {
   }
 
   onNewMessages(channel: string, messages) {
-    console.log("MESSAGES", channel, messages)
-    console.log(this.state.channelName)
-
     if(channel !== this.state.channelName)
       return;
 
