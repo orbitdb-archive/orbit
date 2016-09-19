@@ -46,7 +46,8 @@ const connectWindowSize = {
   center: true,
   resize: false,
   "web-preferences": {
-    "web-security": false
+    "web-security": false,
+    zoomFactor: 3.0
   }
 }
 
