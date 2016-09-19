@@ -66,24 +66,24 @@ class Channel extends React.Component {
   }
 
   componentDidMount() {
-    this.unsubscribeFromLoadingState = LoadingStateStore.listen(this._updateLoadingState.bind(this))
+    // this.unsubscribeFromLoadingState = LoadingStateStore.listen(this._updateLoadingState.bind(this))
     this.unsubscribeFromMessageStore = MessageStore.listen(this.onNewMessages.bind(this))
     this.unsubscribeFromErrors = UIActions.raiseError.listen(this._onError.bind(this))
     this.stopListeningChannelState = ChannelActions.reachedChannelStart.listen(this._onReachedChannelStart.bind(this))
     this.node = this.refs.MessagesView
   }
 
-  _updateLoadingState(state) {
-    // logger.debug("CHANNEL STATE CHANGED", state, this.state.channelName);
-    const channel = state[this.state.channelName]
-    if(channel && channel.loadHistory) {
-      this.setState({ loading: true, loadingText: channel.loadHistory.message })
-    } else if(channel && channel.loadMessages) {
-      this.setState({ loading: true, loadingText: channel.loadMessages.message })
-    } else {
-      this.setState({ loading: false, loadingText: 'Load more messages...' })
-    }
-  }
+  // _updateLoadingState(state) {
+  //   // logger.debug("CHANNEL STATE CHANGED", state, this.state.channelName);
+  //   const channel = state[this.state.channelName]
+  //   if(channel && channel.loadHistory) {
+  //     this.setState({ loading: true, loadingText: channel.loadHistory.message })
+  //   } else if(channel && channel.loadMessages) {
+  //     this.setState({ loading: true, loadingText: channel.loadMessages.message })
+  //   } else {
+  //     this.setState({ loading: false, loadingText: 'Load more messages...' })
+  //   }
+  // }
 
   _onError(errorMessage) {
     console.error("Channel:", errorMessage)
@@ -92,7 +92,7 @@ class Channel extends React.Component {
 
   _onReachedChannelStart() {
     // logger.warn("REACHED CHANNEL START")
-    this.setState({ reachedChannelStart: true })
+    // this.setState({ reachedChannelStart: true })
   }
 
   componentWillUnmount() {
@@ -102,6 +102,13 @@ class Channel extends React.Component {
     this.unsubscribeFromLoadingState()
     this.stopListeningChannelState()
     this.setState({ messages: [] })
+  }
+
+  shouldComponentUpdate(nextProps, nextState) {
+    console.log(nextProps, this.props)
+    return this.state.messages.length !== nextState.messages.length
+      || this.state.unreadMessages != nextState.unreadMessages
+      || this.state.channelName != nextState.channelName
   }
 
   onNewMessages(channel: string, messages) {
@@ -308,9 +315,10 @@ class Channel extends React.Component {
         }}
       />
     ));
+        // {reachedChannelStart && !loading ? `Joined #${channelName}` : loadingText }
     elements.unshift(
       <div className="firstMessage" key="firstMessage" onClick={this.loadOlderMessages.bind(this)}>
-        {reachedChannelStart && !loading ? `Joined #${channelName}` : loadingText }
+        {`Joined #${channelName}`}
       </div>
     );
     return elements;

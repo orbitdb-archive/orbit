@@ -28,6 +28,13 @@ class Message extends React.Component {
     };
   }
 
+  shouldComponentUpdate(nextProps, nextState) {
+    console.log(nextProps, this.props)
+    console.log(nextState, this.state)
+    return this.state.post !== nextState.post
+      || this.state.user !== nextState.user
+  }
+
   componentDidMount() {
     ChannelActions.loadPost(this.props.message.value, (err, post) => {
       // const state = {
@@ -98,13 +105,6 @@ class Message extends React.Component {
     }
     return <div className={contentClass} onClick={this.onReplyTo.bind(this)}>{content}</div>;
   }
-
-  renderVerification() {
-    return this.state.post && this.state.post.signKey
-      ? <span className="Verified flaticon-linked1"/>
-      : null
-  }
-
 
   render() {
     const { message, colorifyUsername, style, onDragEnter } = this.props;

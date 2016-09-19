@@ -39,7 +39,6 @@ class ChannelView extends React.Component {
   }
 
   onShowProfile(user, evt) {
-    console.log("PROFILE", user, evt)
     if(!this.state.showProfile || (this.state.showProfile && user.id !== this.state.showProfile.id))
       this.setState({ showProfile: user })
     else
@@ -59,7 +58,6 @@ class ChannelView extends React.Component {
         <Channel
           className="Channel"
           channel={this.props.params.channel}
-          channelInfo={this.state.channel}
           appSettings={this.state.appSettings}
           theme={theme}
           user={this.state.user}
