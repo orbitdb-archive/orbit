@@ -32,6 +32,12 @@ npm install
 npm run electron
 ```
 
+###### Notes
+
+- Orbit currently always starts its own IPFS daemon at random ports. You can find the ports in the log messages.
+- The IPFS daemon Orbit starts uses its own data directory. On OSX it's located in `~/Library/Application Support/orbit/ipfs`, on Linux it's located in `~/.config`
+- All other data Orbit stores is stored in `~/Library/Application Support/orbit` and `~/.config` (OSX, Linux respectively)
+
 ### Build a Stand-Alone App
 
 *Run this is in project's root directory, not in `client/`.*
