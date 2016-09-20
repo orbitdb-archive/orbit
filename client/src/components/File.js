@@ -49,6 +49,9 @@ class File extends React.Component {
   }
 
   handleClick(evt) {
+    if (!this.isImage && !this.isHighlightable && !this.isAudio && !this.isVideo)
+      return
+
     evt.stopPropagation()
 
     function toArrayBuffer(buffer) {
