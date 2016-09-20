@@ -41,7 +41,7 @@
       background: rgba(24, 24, 24, 1);
     }
 
-    .error {
+    .loading {
       color: rgba(196, 196, 196, 1);
       font-family: 'Lato';
       font-size: 3em;
@@ -53,14 +53,26 @@
       margin-top: 4.25em;
     }
 
+    .version {
+      position: absolute;
+      font-size: 0.8em;
+      color: rgba(196, 196, 196, 0.3);
+      font-family: 'Lato';
+      bottom: 4px;
+      right: 4px;
+    }
+
   </style>
 
   <link href="https://fonts.googleapis.com/css?family=Lato:100" rel="stylesheet">
 
 </head>
 <body>
-  <div id="error" class="error">
+  <div id="loading" class="loading">
     Launching...
+  </div>
+  <div id="version" class="version">
+    Version: devcon2-0, IPFS version: floodsub-2
   </div>
   <script type="text/javascript">
   </script>
