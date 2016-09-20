@@ -29,8 +29,6 @@ class Message extends React.Component {
   }
 
   shouldComponentUpdate(nextProps, nextState) {
-    console.log(nextProps, this.props)
-    console.log(nextState, this.state)
     return this.state.post !== nextState.post
       || this.state.user !== nextState.user
   }
@@ -46,12 +44,12 @@ class Message extends React.Component {
 
           if (post.content) {
             if (post.content.startsWith('/me')) {
-              state.isCommand = true;
+              this.state.isCommand = true;
             }
             post.content.split(' ').forEach((word) => {
               const highlight = MentionHighlighter.highlight(word, this.props.highlightWords);
               if(typeof highlight[0] !== 'string' && this.props.highlightWords !== post.meta.from) {
-                state.hasHighlights = true;
+                this.state.hasHighlights = true;
                 NotificationActions.mention(this.state.channelName, post.content); // TODO: where does channelName come from?
               }
             });
