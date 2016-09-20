@@ -99,16 +99,16 @@ class Channel extends React.Component {
     clearTimeout(this.scrollTimer)
     this.unsubscribeFromMessageStore()
     this.unsubscribeFromErrors()
-    this.unsubscribeFromLoadingState()
+    // this.unsubscribeFromLoadingState()
     this.stopListeningChannelState()
     this.setState({ messages: [] })
   }
 
   shouldComponentUpdate(nextProps, nextState) {
-    console.log(nextProps, this.props)
     return this.state.messages.length !== nextState.messages.length
       || this.state.unreadMessages != nextState.unreadMessages
       || this.state.channelName != nextState.channelName
+      || this.state.dragEnter != nextState.dragEnter
   }
 
   onNewMessages(channel: string, messages) {
