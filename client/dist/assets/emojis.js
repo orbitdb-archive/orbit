@@ -61,7 +61,7 @@
 /******/ 	__webpack_require__.p = "/assets/";
 
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 2006);
+/******/ 	return __webpack_require__(__webpack_require__.s = 2005);
 /******/ })
 /************************************************************************/
 /******/ ({
@@ -184,7 +184,7 @@ module.exports = CallbackQueue;
 
 'use strict';
 
-var DOMProperty = __webpack_require__(55);
+var DOMProperty = __webpack_require__(54);
 var ReactPerf = __webpack_require__(21);
 
 var quoteAttributeValueForBrowser = __webpack_require__(384);
@@ -1696,7 +1696,7 @@ module.exports = g;
 
 var ReactCurrentOwner = __webpack_require__(34);
 var ReactElement = __webpack_require__(17);
-var ReactInstanceHandles = __webpack_require__(56);
+var ReactInstanceHandles = __webpack_require__(55);
 
 var getIteratorFn = __webpack_require__(125);
 var invariant = __webpack_require__(3);
@@ -2260,13 +2260,13 @@ module.exports = validateDOMNesting;
 
 'use strict';
 
-var DOMProperty = __webpack_require__(55);
+var DOMProperty = __webpack_require__(54);
 var ReactBrowserEventEmitter = __webpack_require__(84);
 var ReactCurrentOwner = __webpack_require__(34);
 var ReactDOMFeatureFlags = __webpack_require__(180);
 var ReactElement = __webpack_require__(17);
 var ReactEmptyComponentRegistry = __webpack_require__(187);
-var ReactInstanceHandles = __webpack_require__(56);
+var ReactInstanceHandles = __webpack_require__(55);
 var ReactInstanceMap = __webpack_require__(64);
 var ReactMarkupChecksum = __webpack_require__(190);
 var ReactPerf = __webpack_require__(21);
@@ -3122,7 +3122,7 @@ module.exports = ReactMount;
 var ReactCurrentOwner = __webpack_require__(34);
 var ReactDOMTextComponent = __webpack_require__(182);
 var ReactDefaultInjection = __webpack_require__(184);
-var ReactInstanceHandles = __webpack_require__(56);
+var ReactInstanceHandles = __webpack_require__(55);
 var ReactMount = __webpack_require__(15);
 var ReactPerf = __webpack_require__(21);
 var ReactReconciler = __webpack_require__(46);
@@ -5904,7 +5904,7 @@ var ReactDOMComponent = __webpack_require__(349);
 var ReactDOMTextComponent = __webpack_require__(182);
 var ReactEventListener = __webpack_require__(357);
 var ReactInjection = __webpack_require__(358);
-var ReactInstanceHandles = __webpack_require__(56);
+var ReactInstanceHandles = __webpack_require__(55);
 var ReactMount = __webpack_require__(15);
 var ReactReconcileTransaction = __webpack_require__(362);
 var SelectEventPlugin = __webpack_require__(368);
@@ -7536,12 +7536,12 @@ module.exports = isTextInputElement;
 
 /***/ },
 
-/***/ 2006:
+/***/ 2005:
 /***/ function(module, exports, __webpack_require__) {
 
 __webpack_require__(275);
-__webpack_require__(425);
-module.exports = __webpack_require__(497);
+__webpack_require__(424);
+module.exports = __webpack_require__(496);
 
 
 /***/ },
@@ -7879,7 +7879,7 @@ module.exports = ReactUpdates;
 
 /***/ },
 
-/***/ 230:
+/***/ 229:
 /***/ function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -7934,7 +7934,7 @@ module.exports = flattenChildren;
 
 /***/ },
 
-/***/ 231:
+/***/ 230:
 /***/ function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -10481,7 +10481,7 @@ module.exports = FallbackCompositionState;
 
 'use strict';
 
-var DOMProperty = __webpack_require__(55);
+var DOMProperty = __webpack_require__(54);
 var ExecutionEnvironment = __webpack_require__(12);
 
 var MUST_USE_ATTRIBUTE = DOMProperty.injection.MUST_USE_ATTRIBUTE;
@@ -11653,7 +11653,7 @@ module.exports = ReactDOMButton;
 
 var AutoFocusUtils = __webpack_require__(334);
 var CSSPropertyOperations = __webpack_require__(336);
-var DOMProperty = __webpack_require__(55);
+var DOMProperty = __webpack_require__(54);
 var DOMPropertyOperations = __webpack_require__(113);
 var EventConstants = __webpack_require__(33);
 var ReactBrowserEventEmitter = __webpack_require__(84);
@@ -13478,7 +13478,7 @@ module.exports = ReactEventEmitterMixin;
 var EventListener = __webpack_require__(166);
 var ExecutionEnvironment = __webpack_require__(12);
 var PooledClass = __webpack_require__(38);
-var ReactInstanceHandles = __webpack_require__(56);
+var ReactInstanceHandles = __webpack_require__(55);
 var ReactMount = __webpack_require__(15);
 var ReactUpdates = __webpack_require__(22);
 
@@ -13692,7 +13692,7 @@ module.exports = ReactEventListener;
 
 'use strict';
 
-var DOMProperty = __webpack_require__(55);
+var DOMProperty = __webpack_require__(54);
 var EventPluginHub = __webpack_require__(62);
 var ReactComponentEnvironment = __webpack_require__(117);
 var ReactClass = __webpack_require__(178);
@@ -13747,7 +13747,7 @@ var ReactPropTypes = __webpack_require__(194);
 var ReactVersion = __webpack_require__(120);
 
 var assign = __webpack_require__(7);
-var onlyChild = __webpack_require__(231);
+var onlyChild = __webpack_require__(230);
 
 var createElement = ReactElement.createElement;
 var createFactory = ReactElement.createFactory;
@@ -13826,7 +13826,7 @@ var ReactCurrentOwner = __webpack_require__(34);
 var ReactReconciler = __webpack_require__(46);
 var ReactChildReconciler = __webpack_require__(346);
 
-var flattenChildren = __webpack_require__(230);
+var flattenChildren = __webpack_require__(229);
 
 /**
  * Updating children of a component may trigger recursive updates. The depth is
@@ -14694,7 +14694,7 @@ module.exports = ReactServerBatchingStrategy;
 
 var ReactDefaultBatchingStrategy = __webpack_require__(183);
 var ReactElement = __webpack_require__(17);
-var ReactInstanceHandles = __webpack_require__(56);
+var ReactInstanceHandles = __webpack_require__(55);
 var ReactMarkupChecksum = __webpack_require__(190);
 var ReactServerBatchingStrategy = __webpack_require__(364);
 var ReactServerRenderingTransaction = __webpack_require__(366);
@@ -14876,7 +14876,7 @@ module.exports = ReactServerRenderingTransaction;
 
 'use strict';
 
-var DOMProperty = __webpack_require__(55);
+var DOMProperty = __webpack_require__(54);
 
 var MUST_USE_ATTRIBUTE = DOMProperty.injection.MUST_USE_ATTRIBUTE;
 
@@ -16898,7 +16898,7 @@ module.exports = function() {
 
 /***/ },
 
-/***/ 425:
+/***/ 424:
 /***/ function(module, exports) {
 
 module.exports = {
@@ -18349,7 +18349,7 @@ module.exports = SyntheticEvent;
 
 /***/ },
 
-/***/ 497:
+/***/ 496:
 /***/ function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -18361,7 +18361,7 @@ Object.defineProperty(exports, "__esModule", {
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-var _lodash = __webpack_require__(72);
+var _lodash = __webpack_require__(81);
 
 var _lodash2 = _interopRequireDefault(_lodash);
 
@@ -18373,13 +18373,13 @@ var _reactEmoji = __webpack_require__(275);
 
 var _reactEmoji2 = _interopRequireDefault(_reactEmoji);
 
-var _emojilist = __webpack_require__(514);
+var _emojilist = __webpack_require__(513);
 
-var _emojiAnnotationToUnicode = __webpack_require__(425);
+var _emojiAnnotationToUnicode = __webpack_require__(424);
 
 var _emojiAnnotationToUnicode2 = _interopRequireDefault(_emojiAnnotationToUnicode);
 
-__webpack_require__(858);
+__webpack_require__(857);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -18617,7 +18617,7 @@ module.exports = function(module) {
 
 /***/ },
 
-/***/ 514:
+/***/ 513:
 /***/ function(module, exports) {
 
 "use strict";
@@ -18626,22 +18626,7 @@ module.exports.emojiData={"100":{"unicode":"1f4af","shortname":":100:","aliases"
 
 /***/ },
 
-/***/ 542:
-/***/ function(module, exports, __webpack_require__) {
-
-exports = module.exports = __webpack_require__(42)();
-// imports
-
-
-// module
-exports.push([module.i, ".emoji-picker {\n  background: #fff;\n  box-sizing: border-box;\n  overflow: auto;\n  z-index: 2;\n  position: absolute;\n  bottom: 44px;\n  background-color: #404040;\n  border: 1px solid #1c1c1c;\n}\n\n.emoji-picker ul {\n  list-style-type: none;\n  margin: 0 auto;\n  padding: 5px;\n  display: flex;\n  flex-direction: row;\n  flex-wrap: wrap;\n}\n\n.emoji-picker ul li {\n  padding: 4px;\n  margin: 0;\n  text-align: center;\n  display: flex;\n}\n\n.emoji-picker ul li img {\n  margin: 0 auto;\n}\n\n.emoji-picker .selected {\n  background-color: #5c5c5c;\n  border: 1px solid #363636;\n  padding: 3px;\n}\n", ""]);
-
-// exports
-
-
-/***/ },
-
-/***/ 55:
+/***/ 54:
 /***/ function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -18882,7 +18867,22 @@ module.exports = DOMProperty;
 
 /***/ },
 
-/***/ 56:
+/***/ 541:
+/***/ function(module, exports, __webpack_require__) {
+
+exports = module.exports = __webpack_require__(42)();
+// imports
+
+
+// module
+exports.push([module.i, ".emoji-picker {\n  background: #fff;\n  box-sizing: border-box;\n  overflow: auto;\n  z-index: 2;\n  position: absolute;\n  bottom: 44px;\n  background-color: #404040;\n  border: 1px solid #1c1c1c;\n}\n\n.emoji-picker ul {\n  list-style-type: none;\n  margin: 0 auto;\n  padding: 5px;\n  display: flex;\n  flex-direction: row;\n  flex-wrap: wrap;\n}\n\n.emoji-picker ul li {\n  padding: 4px;\n  margin: 0;\n  text-align: center;\n  display: flex;\n}\n\n.emoji-picker ul li img {\n  margin: 0 auto;\n}\n\n.emoji-picker .selected {\n  background-color: #5c5c5c;\n  border: 1px solid #363636;\n  padding: 3px;\n}\n", ""]);
+
+// exports
+
+
+/***/ },
+
+/***/ 55:
 /***/ function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -19821,7 +19821,71 @@ module.exports = assign;
 
 /***/ },
 
-/***/ 72:
+/***/ 8:
+/***/ function(module, exports, __webpack_require__) {
+
+"use strict";
+/**
+ * Copyright 2014-2015, Facebook, Inc.
+ * All rights reserved.
+ *
+ * This source code is licensed under the BSD-style license found in the
+ * LICENSE file in the root directory of this source tree. An additional grant
+ * of patent rights can be found in the PATENTS file in the same directory.
+ *
+ * @providesModule warning
+ */
+
+'use strict';
+
+var emptyFunction = __webpack_require__(24);
+
+/**
+ * Similar to invariant but only logs a warning if the condition is not met.
+ * This can be used to log issues in development environments in critical
+ * paths. Removing the logging code for production environments will keep the
+ * same logic and follow the same code paths.
+ */
+
+var warning = emptyFunction;
+
+if (false) {
+  warning = function (condition, format) {
+    for (var _len = arguments.length, args = Array(_len > 2 ? _len - 2 : 0), _key = 2; _key < _len; _key++) {
+      args[_key - 2] = arguments[_key];
+    }
+
+    if (format === undefined) {
+      throw new Error('`warning(condition, format, ...args)` requires a warning ' + 'message argument');
+    }
+
+    if (format.indexOf('Failed Composite propType: ') === 0) {
+      return; // Ignore CompositeComponent proptype check.
+    }
+
+    if (!condition) {
+      var argIndex = 0;
+      var message = 'Warning: ' + format.replace(/%s/g, function () {
+        return args[argIndex++];
+      });
+      if (typeof console !== 'undefined') {
+        console.error(message);
+      }
+      try {
+        // --- Welcome to debugging React ---
+        // This error was thrown as a convenience so that you can use this stack
+        // to find the callsite that caused this warning to fire.
+        throw new Error(message);
+      } catch (x) {}
+    }
+  };
+}
+
+module.exports = warning;
+
+/***/ },
+
+/***/ 81:
 /***/ function(module, exports, __webpack_require__) {
 
 /* WEBPACK VAR INJECTION */(function(global, module) {var __WEBPACK_AMD_DEFINE_RESULT__;/**
@@ -36562,70 +36626,6 @@ module.exports = assign;
 
 /***/ },
 
-/***/ 8:
-/***/ function(module, exports, __webpack_require__) {
-
-"use strict";
-/**
- * Copyright 2014-2015, Facebook, Inc.
- * All rights reserved.
- *
- * This source code is licensed under the BSD-style license found in the
- * LICENSE file in the root directory of this source tree. An additional grant
- * of patent rights can be found in the PATENTS file in the same directory.
- *
- * @providesModule warning
- */
-
-'use strict';
-
-var emptyFunction = __webpack_require__(24);
-
-/**
- * Similar to invariant but only logs a warning if the condition is not met.
- * This can be used to log issues in development environments in critical
- * paths. Removing the logging code for production environments will keep the
- * same logic and follow the same code paths.
- */
-
-var warning = emptyFunction;
-
-if (false) {
-  warning = function (condition, format) {
-    for (var _len = arguments.length, args = Array(_len > 2 ? _len - 2 : 0), _key = 2; _key < _len; _key++) {
-      args[_key - 2] = arguments[_key];
-    }
-
-    if (format === undefined) {
-      throw new Error('`warning(condition, format, ...args)` requires a warning ' + 'message argument');
-    }
-
-    if (format.indexOf('Failed Composite propType: ') === 0) {
-      return; // Ignore CompositeComponent proptype check.
-    }
-
-    if (!condition) {
-      var argIndex = 0;
-      var message = 'Warning: ' + format.replace(/%s/g, function () {
-        return args[argIndex++];
-      });
-      if (typeof console !== 'undefined') {
-        console.error(message);
-      }
-      try {
-        // --- Welcome to debugging React ---
-        // This error was thrown as a convenience so that you can use this stack
-        // to find the callsite that caused this warning to fire.
-        throw new Error(message);
-      } catch (x) {}
-    }
-  };
-}
-
-module.exports = warning;
-
-/***/ },
-
 /***/ 82:
 /***/ function(module, exports, __webpack_require__) {
 
@@ -37043,13 +37043,13 @@ module.exports = ReactPropTypeLocationNames;
 
 /***/ },
 
-/***/ 858:
+/***/ 857:
 /***/ function(module, exports, __webpack_require__) {
 
 // style-loader: Adds some css to the DOM by adding a <style> tag
 
 // load the styles
-var content = __webpack_require__(542);
+var content = __webpack_require__(541);
 if(typeof content === 'string') content = [[module.i, content, '']];
 // add the styles to the DOM
 var update = __webpack_require__(43)(content, {});
