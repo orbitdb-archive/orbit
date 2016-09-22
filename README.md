@@ -2,6 +2,8 @@
 
 > A distributed, peer-to-peer chat application built on [IPFS](http://ipfs.io)
 
+*Looking for the Devcon2 demo? Head over here: https://github.com/haadcode/orbit/tree/devcon2*
+
 <img src="https://raw.githubusercontent.com/haadcode/orbit/master/screenshots/screenshot4%202016-04-16.png" width="80%">
 <img src="https://raw.githubusercontent.com/haadcode/orbit/master/screenshots/screenshot7%202016-09-02.png" width="50%">
 <img src="https://raw.githubusercontent.com/haadcode/orbit/master/screenshots/screenshot6%202016-04-17.png" width="50%">
