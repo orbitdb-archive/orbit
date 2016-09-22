@@ -1,22 +1,21 @@
-'use strict';
+'use strict'
 
-import React from "react";
-import MentionHighlighter from 'components/plugins/mention-highlighter';
-import User from "components/User";
-import File from "components/File";
-import TextMessage from "components/TextMessage";
-import Directory from "components/Directory";
-import ChannelActions from 'actions/ChannelActions';
-import UserActions from 'actions/UserActions';
-import NotificationActions from 'actions/NotificationActions';
-import TransitionGroup from "react-addons-css-transition-group"; //eslint-disable-line
-import { getFormattedTime } from '../utils/utils.js';
-import "styles/Message.scss";
+import React from "react"
+import MentionHighlighter from 'components/plugins/mention-highlighter'
+import User from "components/User"
+import File from "components/File"
+import TextMessage from "components/TextMessage"
+import Directory from "components/Directory"
+import ChannelActions from 'actions/ChannelActions'
+import UserActions from 'actions/UserActions'
+import NotificationActions from 'actions/NotificationActions'
+import TransitionGroup from "react-addons-css-transition-group"
+import { getFormattedTime } from '../utils/utils.js'
+import "styles/Message.scss"
 
 class Message extends React.Component {
-
   constructor(props) {
-    super(props);
+    super(props)
     this.state = {
       post: null,
       user: null,
@@ -25,7 +24,7 @@ class Message extends React.Component {
       formattedTime: getFormattedTime(props.message.meta.ts),
       showSignature: false,
       showProfile: null
-    };
+    }
   }
 
   shouldComponentUpdate(nextProps, nextState) {
@@ -35,29 +34,25 @@ class Message extends React.Component {
 
   componentDidMount() {
     ChannelActions.loadPost(this.props.message.value, (err, post) => {
-      // const state = {
-      //   post: post
-      // };
       if (post) {
         UserActions.getUser(post.meta.from, (err, user) => {
-          this.setState({ post: post, user: user });
+          this.setState({ post: post, user: user })
 
           if (post.content) {
             if (post.content.startsWith('/me')) {
-              this.state.isCommand = true;
+              this.state.isCommand = true
             }
             post.content.split(' ').forEach((word) => {
-              const highlight = MentionHighlighter.highlight(word, this.props.highlightWords);
+              const highlight = MentionHighlighter.highlight(word, this.props.highlightWords)
               if(typeof highlight[0] !== 'string' && this.props.highlightWords !== post.meta.from) {
-                this.state.hasHighlights = true;
-                NotificationActions.mention(this.state.channelName, post.content); // TODO: where does channelName come from?
+                this.state.hasHighlights = true
+                NotificationActions.mention(this.state.channelName, post.content) // TODO: where does channelName come from?
               }
-            });
+            })
           }
-        });
+        })
       }
-      // this.setState(state);
-    });
+    })
   }
 
   onReplyTo(event) {
@@ -71,16 +66,11 @@ class Message extends React.Component {
     })
   }
 
-  onShowVerification(show, evt) {
-    this.setState({ showSignature: true })
-    this.setState({ showSignature: show })
-  }
-
   renderContent() {
-    const { highlightWords, useEmojis } = this.props;
-    const { isCommand, post } = this.state;
-    const contentClass = isCommand ? "Content command" : "Content";
-    let content = (<div></div>);
+    const { highlightWords, useEmojis } = this.props
+    const { isCommand, post } = this.state
+    const contentClass = isCommand ? "Content command" : "Content"
+    let content = (<div></div>)
     if (post) {
       switch (post.meta.type) {
         case 'text':
@@ -91,23 +81,23 @@ class Message extends React.Component {
               useEmojis={useEmojis}
               highlightWords={post.meta.from !== highlightWords ? highlightWords : ''}
               key={post.hash} />
-          );
-          break;
+          )
+          break
         case 'file':
-          content = <File hash={post.hash} name={post.name} size={post.size} meta={post.meta} onPreviewOpened={this.props.onScrollToPreview}/>;
-          break;
+          content = <File hash={post.hash} name={post.name} size={post.size} meta={post.meta} onPreviewOpened={this.props.onScrollToPreview}/>
+          break
         case 'directory':
-          content = <Directory hash={post.hash} name={post.name} size={post.size} root={true} onPreviewOpened={this.props.onScrollToPreview}/>;
-          break;
+          content = <Directory hash={post.hash} name={post.name} size={post.size} root={true} onPreviewOpened={this.props.onScrollToPreview}/>
+          break
       }
     }
-    return <div className={contentClass} onClick={this.onReplyTo.bind(this)}>{content}</div>;
+    return <div className={contentClass} onClick={this.onReplyTo.bind(this)}>{content}</div>
   }
 
   render() {
-    const { message, colorifyUsername, style, onDragEnter } = this.props;
-    const { user, post, isCommand, hasHighlights, formattedTime } = this.state;
-    const className = hasHighlights ? "Message highlighted" : "Message";
+    const { message, colorifyUsername, style, onDragEnter } = this.props
+    const { user, post, isCommand, hasHighlights, formattedTime } = this.state
+    const className = hasHighlights ? "Message highlighted" : "Message"
 
     return (
       <div className={className} style={style} onDragEnter={onDragEnter}>
@@ -120,9 +110,9 @@ class Message extends React.Component {
           />
         {this.renderContent()}
       </div>
-    );
+    )
   }
 
 }
 
-export default Message;
+export default Message
