@@ -52,7 +52,7 @@ const SettingsStore = Reflux.createStore({
     this.trigger(this.settings, settingsDescriptions)
   },
   _getSettingsKey: function() {
-    return `${appName}.${this.username}.${settings}`
+    return `${appName}.${this.username}.settings`
   },
   _save: function() {
     localStorage.setItem(this._getSettingsKey(), JSON.stringify(this.settings))
