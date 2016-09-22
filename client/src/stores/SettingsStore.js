@@ -1,15 +1,13 @@
-'use strict';
+'use strict'
 
-import Reflux          from 'reflux';
-import UserStore       from 'stores/UserStore';
-import SettingsActions from 'actions/SettingsActions';
-import Themes          from 'app/Themes';
+import Reflux from 'reflux'
+import UserStore from 'stores/UserStore'
+import SettingsActions from 'actions/SettingsActions'
+import Themes from 'app/Themes'
 
-var settingsDescriptions = {
-  theme: Object.keys(Themes).join(", ")
-};
+const appName = 'anonet.app'
 
-var defaultSettings = {
+const defaultSettings = {
   theme: Themes.Default,
   useEmojis: true,
   colorifyUsernames: true,
@@ -18,47 +16,47 @@ var defaultSettings = {
   monospaceFont: 'Roboto Mono',
   useMonospaceFont: false,
   leftSidePanel: false
-};
+}
 
-var SettingsStore = Reflux.createStore({
-    listenables: [SettingsActions],
-    init: function() {
-      this.settings = {};
-      this.username = "";
-      UserStore.listen((user) => {
-        if(user) {
-          this.username = user.name;
-          this.initSettings();
-        }
-      });
-    },
-    initSettings: function() {
-      // Load from local storage
-      this.settings = JSON.parse(localStorage.getItem("anonet.app." + this.username + ".settings")) || {};
+const settingsDescriptions = {
+  theme: Object.keys(Themes).join(', ')
+}
 
-      // Default settings
-      this.settings.useEmojis = (this.settings.useEmojis !== undefined) ? this.settings.useEmojis : defaultSettings.useEmojis;
-      this.settings.colorifyUsernames = (this.settings.colorifyUsernames !== undefined) ? this.settings.colorifyUsernames : defaultSettings.colorifyUsernames;
-      this.settings.theme = this.settings.theme || defaultSettings.theme;
-      this.settings.spacing = this.settings.spacing || defaultSettings.spacing;
-      this.settings.font = this.settings.font || defaultSettings.font;
-      this.settings.monospaceFont = this.settings.monospaceFont || defaultSettings.monospaceFont;
-      this.settings.useMonospaceFont = this.settings.useMonospaceFont || defaultSettings.useMonospaceFont;
-      this.settings.leftSidePanel = this.settings.leftSidePanel || defaultSettings.leftSidePanel;
+const SettingsStore = Reflux.createStore({
+  listenables: [SettingsActions],
+  init: function() {
+    this.settings = {}
+    this.username = 'default'
+    UserStore.listen((user) => {
+      if(user) {
+        this.username = user.name
+        this.loadSettings()
+      }
+    })
+  },
+  loadSettings: function() {
+    // Load from local storage
+    this.settings = Object.assign({}, defaultSettings)
+    const settings = JSON.parse(localStorage.getItem(this._getSettingsKey())) || {}
+    Object.assign(this.settings, settings)
+    this._save() // Save the defaults for a new user
 
-      // Save the defaults for this user
-      localStorage.setItem("anonet.app." + this.username + ".settings", JSON.stringify(this.settings));
+    this.trigger(this.settings, settingsDescriptions)
+  },
+  onGet: function(callback) {
+    callback(this.settings, settingsDescriptions)
+  },
+  onSet: function(key, value) {
+    this.settings[key] = value
+    this._save()
+    this.trigger(this.settings, settingsDescriptions)
+  },
+  _getSettingsKey: function() {
+    return `${appName}.${this.username}.${settings}`
+  },
+  _save: function() {
+    localStorage.setItem(this._getSettingsKey(), JSON.stringify(this.settings))
+  }
+})
 
-      this.trigger(this.settings, settingsDescriptions);
-    },
-    onGet: function(callback) {
-      callback(this.settings, settingsDescriptions);
-    },
-    onSet: function(key, value) {
-      this.settings[key] = value;
-      localStorage.setItem("anonet.app." + this.username + ".settings", JSON.stringify(this.settings));
-      this.trigger(this.settings, settingsDescriptions);
-    }
-});
-
-export default SettingsStore;
+export default SettingsStore

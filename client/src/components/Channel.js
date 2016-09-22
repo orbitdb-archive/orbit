@@ -7,7 +7,6 @@ import ChannelControls from 'components/ChannelControls'
 import NewMessageNotification from 'components/NewMessageNotification'
 import Dropzone from 'react-dropzone'
 import MessageStore from 'stores/MessageStore'
-import LoadingStateStore from 'stores/LoadingStateStore'
 import UIActions from 'actions/UIActions'
 import ChannelActions from 'actions/ChannelActions'
 import Profile from "components/Profile"
