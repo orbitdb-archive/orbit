@@ -120,7 +120,7 @@ module.exports = function (grunt) {
     grunt.task.run('copy:main')
 
     if(!skipNpmInstall) {
-      grunt.task.run('npm_install', 'darwin')
+      grunt.task.run('npm_install')
     }
 
     grunt.task.run('clean:npm_build')
@@ -137,7 +137,7 @@ module.exports = function (grunt) {
     grunt.task.run('copy:main')
 
     if(!skipNpmInstall) {
-      grunt.task.run('npm_install', 'linux')
+      grunt.task.run('npm_install')
     }
 
     grunt.task.run('clean:npm_build')
