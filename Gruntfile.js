@@ -25,7 +25,7 @@ module.exports = function (grunt) {
         'node_modules/ipfsd-ctl/node_modules/ipfs-api'
       ],
       npm_build: [
-        path.join(moduleCacheDirectory, 'node_modules/ipfs/node_modules/ipfs-api@0.4.1'),
+        path.join(moduleCacheDirectory, 'node_modules/ipfs/node_modules/ipfs-api'),
         path.join(moduleCacheDirectory, 'node_modules/ipfsd-ctl/node_modules/go-ipfs-dep'),
         path.join(moduleCacheDirectory, 'node_modules/ipfsd-ctl/node_modules/ipfs-api')
       ],
@@ -97,10 +97,12 @@ module.exports = function (grunt) {
     },
   })
 
-  grunt.registerTask('npm_install', '', function () {
+  grunt.registerTask('npm_install', '', function (os) {
       var done = this.async()
       var params = ['install', '--production', '--cache-min 9999999']
-      var npm = spawn('npm', params, { cwd: moduleCacheDirectory })
+      let env = Object.assign({}, process.env)
+      env.TARGET_OS = grunt.options('TARGET_OS')
+      var npm = spawn('npm', params, { cwd: moduleCacheDirectory, env: env })
       npm.stdout.pipe(process.stdout)
       npm.stderr.pipe(process.stderr)
       npm.on('error', (err) => done(false))
@@ -118,7 +120,7 @@ module.exports = function (grunt) {
     grunt.task.run('copy:main')
 
     if(!skipNpmInstall) {
-      grunt.task.run('npm_install')
+      grunt.task.run('npm_install', 'darwin')
     }
 
     grunt.task.run('clean:npm_build')
@@ -135,7 +137,7 @@ module.exports = function (grunt) {
     grunt.task.run('copy:main')
 
     if(!skipNpmInstall) {
-      grunt.task.run('npm_install')
+      grunt.task.run('npm_install', 'linux')
     }
 
     grunt.task.run('clean:npm_build')
