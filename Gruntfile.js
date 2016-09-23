@@ -101,7 +101,7 @@ module.exports = function (grunt) {
       var done = this.async()
       var params = ['install', '--production', '--cache-min 9999999']
       let env = Object.assign({}, process.env)
-      env.TARGET_OS = grunt.options('TARGET_OS')
+      env.TARGET_OS = grunt.option('TARGET_OS')
       var npm = spawn('npm', params, { cwd: moduleCacheDirectory, env: env })
       npm.stdout.pipe(process.stdout)
       npm.stderr.pipe(process.stderr)
