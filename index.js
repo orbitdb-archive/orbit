@@ -2,110 +2,186 @@
 
 if(process.env.ENV === 'dev') delete process.versions['electron']
 
-const fs            = require('fs')
-const path          = require('path')
 const electron      = require('electron')
 const app           = electron.app
 const BrowserWindow = electron.BrowserWindow
 const Menu          = electron.Menu
 const ipcMain       = electron.ipcMain
+const dialog        = electron.dialog
+const fs            = require('fs')
+const path          = require('path')
 const ipfsd         = require('ipfsd-ctl')
+const IpfsApi       = require('ipfs-api')
 const Logger        = require('logplease')
-const utils         = require('./src/utils')
+// const Orbit         = require('./src/Orbit')
 
-const logger = Logger.create("Orbit.Index-Native")
-// require('crash-reporter').start()
+ // dev|debug
 const MODE = process.env.ENV ? process.env.ENV : 'debug'
 
-const appDataPath = path.resolve(MODE === 'dev' ? process.cwd() : process.resourcesPath + "/app")
-if(!fs.existsSync(appDataPath))
-  fs.mkdirSync(appDataPath)
+const logger = Logger.create("Orbit.Index-Native")
 
-Logger.setLogfile(path.join(appDataPath, 'debug.log'))
-logger.debug("Run index.js in '" + MODE + "' mode")
+// Get data directories
+const userHomeDir = app.getPath("home")
+const userDownloadDir = app.getPath("downloads")
+const appDataDir = app.getPath("userData")
 
-const connectWindowSize = { width: 500, height: 430, center: true, minWidth: 500, minHeight: 430, "web-preferences": {
-      "web-security": false
-    } }
-const mainWindowSize    = { width: 1200, height: 800, center: true, minWidth: 256, minHeight: 256, "web-preferences": {
-      "web-security": false
-    } }
-let mainWindow = null
+const ipfsDataDir = process.env.IPFS_PATH
+  ? path.resolve(process.env.IPFS_PATH)
+  : path.join(appDataDir, '/ipfs')
 
+const orbitDataDir = (MODE === 'dev')
+  ? path.join(process.cwd() , '/data') // put orbit's data to './data' in dev mode
+  : path.join(appDataDir, '/orbit-data')
+
+// Make sure we have the Orbit data directory
+if (!fs.existsSync(appDataDir))
+  fs.mkdirSync(appDataDir)
+if (!fs.existsSync(orbitDataDir))
+  fs.mkdirSync(orbitDataDir)
+
+Logger.setLogfile(path.join(orbitDataDir, '/debug.log'))
+Logger.setLogLevel('DEBUG')
+
+const connectWindowSize = {
+  width: 512,
+  height: 512,
+  center: true,
+  resize: false,
+  "web-preferences": {
+    "web-security": false,
+    zoomFactor: 3.0
+  }
+}
+
+const mainWindowSize = {
+  width: 1200,
+  height: 800,
+}
+
+// Menu bar
 const template = require('./menu-native')(app)
 const menu = Menu.buildFromTemplate(template)
-let events
 
-const setWindowToNormal = () => {
-  const pos  = mainWindow.getPosition() || [0, 0]
-  const size = mainWindow.getSize() || [connectWindowSize.width, connectWindowSize.height]
-  const x    = (pos[0] + size[0]/2) - mainWindowSize.width/2
-  const y    = (pos[1] + size[1]/2) - mainWindowSize.height/2
-  mainWindow.setSize(mainWindowSize.width, mainWindowSize.height)
-  mainWindow.setPosition(x, y)
-}
-
-const setWindowToLogin = () => {
-  const pos  = mainWindow.getPosition() || [0, 0]
-  const size = mainWindow.getSize() || [mainWindowSize.width, mainWindowSize.height]
-  const x    = (pos[0] + size[0]/2) - connectWindowSize.width/2
-  const y    = (pos[1] + size[1]/2) - connectWindowSize.height/2
-  mainWindow.setSize(connectWindowSize.width, connectWindowSize.height)
-  mainWindow.setPosition(x, y)
-}
-
+// Handle shutdown gracefully
 const shutdown = () => {
   logger.info("Shutting down...")
-  // events.emit('shutdown')
   setTimeout(() => {
     logger.info("All done!")
     app.quit()
+    process.exit(0)
   }, 1000)
-}
-
-const getUserHome = () => {
-  return process.env[(process.platform == 'win32') ? 'USERPROFILE' : 'HOME']
 }
 
 app.on('window-all-closed', shutdown)
 process.on('SIGINT', () => shutdown)
 process.on('SIGTERM', () => shutdown)
 
+// Log errors
+process.on('uncaughtException', (error) => {
+  // Skip 'ctrl-c' error and shutdown gracefully
+  const match = String(error).match(/non-zero exit code 255/)
+  if(match)
+    shutdown()
+  else
+    logger.error(error)
+})
+
+// Window handling
+let mainWindow
+const setWindowToNormal = () => {
+  mainWindow.setSize(mainWindowSize.width, mainWindowSize.height)
+  mainWindow.setResizable(true)
+  mainWindow.center()
+}
+
+const setWindowToLogin = () => {
+  mainWindow.setSize(connectWindowSize.width, connectWindowSize.height)
+  mainWindow.setResizable(false)
+  mainWindow.center()
+}
+
+logger.debug("Run index.js in '" + MODE + "' mode")
+
+// Start
 app.on('ready', () => {
   try {
-    logger.info("Starting the systems")
-
-    Menu.setApplicationMenu(menu)
-
     mainWindow = new BrowserWindow(connectWindowSize)
-    mainWindow.webContents.session.setDownloadPath(path.resolve(getUserHome() + '/Downloads'))
+    mainWindow.webContents.session.setDownloadPath(path.resolve(userDownloadDir))
+    Menu.setApplicationMenu(menu)
 
     global.DEV = MODE === 'dev'
     global.isElectron = true
 
+    // Display a loading screen while we boot up
+    mainWindow.loadURL('file://' + __dirname + '/client/dist/loading.html')
+
+    // Bind the Orbit IPFS daemon to a random port
+    let opts = {}
+    opts['Addresses.API'] = '/ip4/127.0.0.1/tcp/0'
+    opts['Addresses.Swarm'] = ['/ip4/0.0.0.0/tcp/0']
+    opts['Addresses.Gateway'] = '/ip4/0.0.0.0/tcp/0'
+
     let ipfsDaemon
-    ipfsd.local((err, node) => {
-      if(err) reject(err)
+    ipfsd.local(ipfsDataDir, opts, (err, node) => {
+      if(err) throw err
       ipfsDaemon = node
-      ipfsDaemon.startDaemon((err, ipfs) => {
-        global.ipfsInstance = ipfs
-        if(MODE === 'dev')
-          mainWindow.loadURL('http://localhost:8000/')
-        else
-          mainWindow.loadURL('file://' + __dirname + '/client/dist/index.html')
+
+      logger.info("Initializing IPFS daemon")
+      logger.debug(`Using IPFS repo at '${node.path}'`)
+
+      ipfsDaemon.init({ directory: ipfsDataDir }, (err, node) => {
+        // Ignore error (usually "repo already exists")
+        if (!err) {
+          logger.info("Starting IPFS daemon")
+          ipfsDaemon.startDaemon(['--enable-pubsub-experiment'], (err, ipfs) => {
+            if (err) throw err
+
+            global.ipfsInstance = IpfsApi(ipfs.apiHost, ipfs.apiPort)
+            global.gatewayAddress = node.gatewayAddr ? node.gatewayAddr + '/ipfs/' : 'localhost:8080/ipfs/'
+            // global.orbit = new Orbit(ipfsInstance, { dataPath: orbitDataDir })
+
+            logger.info("IPFS daemon started at", ipfs.apiHost, ipfs.apiPort)
+            logger.info("Gateway at", global.gatewayAddress)
+
+            // Load the dist build or connect to webpack-dev-server
+            const indexUrl = MODE === 'dev'
+              ? 'http://localhost:8000/'
+              : 'file://' + __dirname + '/client/dist/index.html'
+
+            mainWindow.loadURL(indexUrl)
+          })
+        } else {
+          // Check if the Orbit IPFS repo is an incompatible one
+          const migrationNeeded = String(err).match('ipfs repo needs migration')
+
+          if (migrationNeeded) {
+            let errStr = `Error initializing IPFS daemon: '${migrationNeeded[0]}'\n`
+            errStr += `Tried to init IPFS repo at '${ipfsDataDir}', but failed.\n`
+            errStr += `Use $IPFS_PATH to specify another repo path, eg. 'export IPFS_PATH=/tmp/orbit-floodsub'.`
+
+            errStr.split('\n')
+              .forEach((e) => logger.error(e))
+
+            dialog.showMessageBox({
+              type: 'error',
+              buttons: ['Ok'],
+              title: 'Error',
+              message: migrationNeeded[0],
+              detail: errStr
+            }, () => process.exit(1))
+          }
+        }
       })
     })
 
+    // Resize the window as per app state
+    ipcMain.on('connected', (event) => setWindowToNormal())
+    ipcMain.on('disconnected', (event) => setWindowToLogin())
+
+    // If the window is closed, assume we quit
     mainWindow.on('closed', () => {
       mainWindow = null
-    })
-
-    ipcMain.on('connected', (event) => {
-      setWindowToNormal()
-    })
-
-    ipcMain.on('disconnected', (event) => {
-      setWindowToLogin()
+      ipfsDaemon.stopDaemon()
     })
 
   } catch(e) {

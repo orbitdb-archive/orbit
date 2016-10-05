@@ -1,40 +1,43 @@
 {
   "name": "orbit",
-  "version": "3.1.0",
+  "version": "3.2.0",
   "description": "Distributed peer-to-peer chat built on IPFS",
   "main": "index.js",
   "dependencies": {
-    "bs58": "^3.0.0",
-    "du": "^0.1.0",
-    "ipfs-api": "^8.0.3",
-    "ipfs-post": "^0.0.12",
-    "ipfsd-ctl": "^0.14.0",
-    "lodash": "^4.14.0",
+    "ipfs-daemon": "0.0.3",
+    "ipfs-post": "^0.0.15",
     "logplease": "^1.2.7",
-    "orbit-crypto": "0.0.7",
-    "orbit-db": "^0.11.1",
-    "text-encoding": "^0.6.0"
+    "lru": "^3.1.0",
+    "orbit-crypto": "0.0.9",
+    "orbit-db": "^0.12.2",
+    "uport-lib": "^1.3.0",
+    "uport-persona": "https://github.com/haadcode/uport-persona-1.git",
+    "web3": "0.17.0-beta"
   },
   "devDependencies": {
     "bluebird": "^3.4.6",
-    "electron-prebuilt": "1.3.1",
+    "electron-prebuilt": "1.3.5",
+    "fs-pull-blob-store": "^0.3.0",
     "grunt": "^1.0.1",
     "grunt-chmod": "^1.1.1",
     "grunt-contrib-clean": "^1.0.0",
     "grunt-contrib-copy": "^1.0.0",
-    "grunt-electron": "^2.0.1",
-    "http-server": "^0.9.0",
-    "ipfs": "^0.14.3",
+    "grunt-electron": "^5.0.0",
+    "ipfs-test-apis": "0.0.1",
     "load-grunt-tasks": "^3.5.0",
-    "mocha": "^2.5.3",
-    "orbit-server": "^0.2.3"
+    "mocha": "^2.5.3"
   },
   "scripts": {
+    "postinstall": "./node_modules/.bin/grunt clean:npm",
     "test": "./node_modules/.bin/mocha",
-    "build": "./node_modules/.bin/grunt build",
+    "build": "npm run build:osx && npm run build:linux",
+    "build:osx": "./node_modules/.bin/grunt build_osx --TARGET_OS=darwin",
+    "build:linux": "./node_modules/.bin/grunt build_linux --TARGET_OS=linux",
+    "dist": "./scripts/build_dist_package.sh",
+    "publish": "npm run dist && cd bin/ && ipfs add -r dist/ && cd ..",
     "dev:electron": "ENV=dev API_ORIGIN=* ./node_modules/.bin/electron .",
     "electron": "./node_modules/.bin/electron .",
-    "start": "cd client/dist && ../../node_modules/.bin/http-server -c-1 -p 8081 & open http://localhost:8081/index.html & wait"
+    "start": "npm run electron"
   },
   "repository": {
     "type": "git",

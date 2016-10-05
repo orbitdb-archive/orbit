@@ -1,5 +1,11 @@
 # Changelog for Orbit
 
+**3.2.0** *(2016-10-05)*
+
+- IPFS Pubsub - No More Servers!
+- uPort Integration
+- Several performance fixes
+
 **3.1.0** *(2016-09-02)*
 
 - Signed messages

@@ -2,10 +2,11 @@
 
 > A distributed, peer-to-peer chat application built on [IPFS](http://ipfs.io)
 
+**NOTE!** *Currently only the Electron (Desktop) version works. We're working to fix the Browser version (js-ipfs)*
+
 <img src="https://raw.githubusercontent.com/haadcode/orbit/master/screenshots/screenshot4%202016-04-16.png" width="80%">
 <img src="https://raw.githubusercontent.com/haadcode/orbit/master/screenshots/screenshot7%202016-09-02.png" width="50%">
 <img src="https://raw.githubusercontent.com/haadcode/orbit/master/screenshots/screenshot6%202016-04-17.png" width="50%">
-
 
 ## Project Status
 
@@ -30,6 +31,14 @@ Orbit can be run either in a browser or as a native desktop application. The bro
 
 *The live demo is an old version of Orbit. It is recommended to follow the instructions below to run the latest version.*
 
+#### Desktop
+```
+git clone https://github.com/haadcode/orbit.git
+cd orbit
+npm install
+npm start
+```
+
 #### Browser
 
 *Chrome is recommended to run Orbit in the browser.*
@@ -40,15 +49,6 @@ cd orbit
 npm install
 npm start
 ```
-
-#### Desktop
-```
-git clone https://github.com/haadcode/orbit.git
-cd orbit
-npm install
-npm run electron
-```
-
 
 ## Development
 
@@ -121,13 +121,9 @@ npm run build
 The builds are in `dist/`.
 
 
-## Run your own network
-
-Get https://github.com/haadcode/orbit-server and start the server. In Orbit's login window, point to the host where your orbit-server is running, default: `localhost:3333`.
-
-
 ## Contributing
 
 Would be happy to accept PRs! If you want to work on something, it'd be good to talk beforehand to make sure nobody else is working on it. You can reach me on Twitter [@haadcode](https://twitter.com/haadcode) or on IRC #ipfs on Freenode, or in the comments of the [issues section](https://github.com/haadcode/orbit/issues).
 
 Good place to start is to take a look at the ["help wanted"](https://github.com/haadcode/orbit/issues?q=is%3Aopen+is%3Aissue+label%3A%22help+wanted%22+sort%3Areactions-%2B1-desc) issues or the project's [status board](https://waffle.io/haadcode/orbit).
+0

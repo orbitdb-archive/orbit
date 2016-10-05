@@ -21,3 +21,4 @@ orbit-db-cache.json
 Vagrantfile
 
 data/
+bin/

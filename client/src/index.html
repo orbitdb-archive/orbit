@@ -61,8 +61,10 @@
       const req = typeof require !== 'undefined' ? require : parent.require;
       const remote = req('electron').remote;
       window.isElectron = remote.getGlobal('isElectron');
+      window.gatewayAddress = remote.getGlobal('gatewayAddress');
       window.DEV = remote.getGlobal('DEV');
       window.ipfsInstance = remote.getGlobal('ipfsInstance');
+      window.orbit = remote.getGlobal('orbit');
       window.ipcRenderer = req('electron').ipcRenderer;
     } else {
       // We're running purely in the browser
@@ -71,8 +73,6 @@
   <script>
     __REACT_DEVTOOLS_GLOBAL_HOOK__ = parent.__REACT_DEVTOOLS_GLOBAL_HOOK__
   </script>
-  <script type="text/javascript" src="assets/ipfs.js"></script>
-  <script type="text/javascript" src="assets/vendor.js"></script>
   <script type="text/javascript" src="assets/app.js"></script>
 </body>
 </html>

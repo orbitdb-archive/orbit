@@ -5,6 +5,9 @@
   // top: 0;
   // left: 0;
   width: 100%;
+  // height: 100%;
+  margin: auto;
+
   display: flex;
   justify-content: center;
   z-index: -1;
@@ -12,25 +15,26 @@
  -webkit-transform-style: preserve-3d;
   transform-style: preserve-3d;
   -webkit-backface-visibility: hidden;
-  backface-visibility: hidden;
+
+
+  opacity: 0.75;
 
   .transparent {
-    opacity: 0.3;
-    position: absolute;
+    opacity: 0.5;
+    // position: absolute;
   }
 
   .opaque {
     opacity: 1.0;
-    position: absolute;
+    // position: absolute;
   }
 
-  circle {
+  .circle {
     -webkit-transform-style: preserve-3d;
     transform-style: preserve-3d;
     -webkit-transform: translate3D(0, 0, 0);
     transform: translate3D(0, 0, 0);
     -webkit-backface-visibility: hidden;
-    backface-visibility: hidden;
 
     $duration: .2s;
     $animation-name: fadeIn;

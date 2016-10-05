@@ -1,16 +1,15 @@
 'use strict'
 
 const OrbitIdentifyProvider = require('./identityprovider-orbit')
+// const UportIdentifyProvider = require('./identityprovider-uport')
 
 const enabledProviders = [
   OrbitIdentifyProvider,
+  // UportIdentifyProvider
 ]
 
 let identityProviders = {}
-enabledProviders.forEach((p) => {
-  identityProviders[p.id] = p
-  // console.log("Added Identity Provider:", p.id)
-})
+enabledProviders.forEach((p) => identityProviders[p.id] = p)
 
 class IdentityProviders {
   static authorizeUser(ipfs, credentials = {}) {

@@ -50,6 +50,16 @@ var getMenu = function(app) {
           }
         },
         {
+          label: 'Zoom In',
+          accelerator: 'CmdOrCtrl+Plus',
+          role: 'zoomin'
+        },
+        {
+          label: 'Zoom Out',
+          accelerator: 'CmdOrCtrl+-',
+          role: 'zoomout'
+        },
+        {
           label: 'Toggle Full Screen',
           accelerator: (function() {
             if (process.platform == 'darwin')

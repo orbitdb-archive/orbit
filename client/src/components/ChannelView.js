@@ -3,7 +3,6 @@
 import _ from 'lodash'
 import React from 'react'
 import Channel from 'components/Channel'
-import ChannelStore from 'stores/ChannelStore'
 import UserStore from 'stores/UserStore'
 import SettingsStore from "stores/SettingsStore"
 import Profile from "components/Profile"
@@ -15,7 +14,6 @@ class ChannelView extends React.Component {
     super(props)
     this.state = {
       channelName: decodeURIComponent(props.params.channel),
-      channel: {},
       appSettings: {},
       user: null,
       showProfile: null
@@ -25,7 +23,6 @@ class ChannelView extends React.Component {
   componentDidMount() {
     this.setState({
       user: UserStore.user,
-      channel: ChannelStore.get(this.state.channelName),
       appSettings: SettingsStore.settings
     })
   }
@@ -33,36 +30,37 @@ class ChannelView extends React.Component {
   componentWillReceiveProps(nextProps) {
     this.setState({
       channelName: decodeURIComponent(nextProps.params.channel),
-      channel: ChannelStore.get(nextProps.params.channel),
       appSettings: SettingsStore.settings
     })
   }
 
   onShowProfile(user, evt) {
-    console.log("PROFILE", user, evt)
-    if(!this.state.showProfile || (this.state.showProfile && user.id !== this.state.showProfile.id))
+    const { showProfile } = this.state
+    if(!showProfile || (showProfile && user.id !== showProfile.id))
       this.setState({ showProfile: user })
     else
       this.setState({ showProfile: null })
   }
 
   renderProfile() {
-    return this.state.showProfile ? <Profile user={this.state.showProfile} /> : null
+    return this.state.showProfile 
+      ? <Profile user={this.state.showProfile} /> 
+      : null
   }
 
   render() {
-    const { showProfile } = this.state
-    var theme = this.state.appSettings ? Themes[this.state.appSettings.theme] : null
+    const { user, showProfile, appSettings } = this.state
+    const theme = appSettings ? Themes[appSettings.theme] : null
+
     return (
       <div className="ChannelView">
         {this.renderProfile()}
         <Channel
           className="Channel"
           channel={this.props.params.channel}
-          channelInfo={this.state.channel}
-          appSettings={this.state.appSettings}
+          appSettings={appSettings}
           theme={theme}
-          user={this.state.user}
+          user={user}
           onShowProfile={this.onShowProfile.bind(this)}
         />
       </div>

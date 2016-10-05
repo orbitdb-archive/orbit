@@ -1,3 +1,14 @@
 machine:
   node:
     version: 6.1.0
+deployment:
+  release:
+    branch: dev
+    owner: haadcode
+    commands:
+      - npm run build
+      - npm run dist
+      - ls $CIRCLE_ARTIFACTS
+general:
+  artifacts:
+    - "bin/dist"

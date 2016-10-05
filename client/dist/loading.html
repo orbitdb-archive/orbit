@@ -1,0 +1,80 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+  <title>Orbit</title>
+  <meta name="description" content="">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+
+  <style>
+    html, body{
+      background: #000000;
+      background: #222222;
+    }
+
+    ::-webkit-scrollbar {
+        width: 6px;
+    }
+
+    /* Track */
+    ::-webkit-scrollbar-track {
+        -webkit-box-shadow: none;//inset 0 0 6px rgba(0, 0, 0, 0.5);
+        -webkit-border-radius: 0;
+        border-radius: 0;
+        background: rgba(24, 24, 24, 1);
+    }
+
+    /* Handle */
+    ::-webkit-scrollbar-thumb {
+        -webkit-border-radius: 0px;
+        border-radius: 0px;
+        background: rgba(64, 64, 64, 0.8);
+        -webkit-box-shadow: none;
+    }
+
+    ::-webkit-scrollbar-thumb:window-inactive {
+      background: rgba(128, 128, 128, 0.4);
+    }
+
+    ::-webkit-scrollbar-corner {
+      background: rgba(24, 24, 24, 1);
+    }
+
+    .loading {
+      color: rgba(196, 196, 196, 1);
+      font-family: 'Lato';
+      font-size: 3em;
+      height: auto;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      text-align: center;
+      margin-top: 4.25em;
+    }
+
+    .version {
+      position: absolute;
+      font-size: 0.8em;
+      color: rgba(196, 196, 196, 0.3);
+      font-family: 'Lato';
+      bottom: 4px;
+      right: 4px;
+    }
+
+  </style>
+
+  <link href="https://fonts.googleapis.com/css?family=Lato:100" rel="stylesheet">
+
+</head>
+<body>
+  <div id="loading" class="loading">
+    Launching...
+  </div>
+  <div id="version" class="version">
+    Version: dev, IPFS version: floodsub-2
+  </div>
+  <script type="text/javascript">
+  </script>
+</body>
+</html>

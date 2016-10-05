@@ -1,29 +1,29 @@
-'use strict';
+'use strict'
 
-import _ from 'lodash';
-import React from 'react';
-import Message from 'components/Message';
-import ChannelControls from 'components/ChannelControls';
-import NewMessageNotification from 'components/NewMessageNotification';
-import Dropzone from 'react-dropzone';
-import MessageStore from 'stores/MessageStore';
-import LoadingStateStore from 'stores/LoadingStateStore';
-import UIActions from 'actions/UIActions';
-import ChannelActions from 'actions/ChannelActions';
+import _ from 'lodash'
+import React from 'react'
+import Message from 'components/Message'
+import Message2 from 'components/Message2'
+import ChannelControls from 'components/ChannelControls'
+import NewMessageNotification from 'components/NewMessageNotification'
+import Dropzone from 'react-dropzone'
+import MessageStore from 'stores/MessageStore'
+import UIActions from 'actions/UIActions'
+import ChannelActions from 'actions/ChannelActions'
 import Profile from "components/Profile"
-import 'styles/Channel.scss';
-import Logger from 'logplease';
-const logger = Logger.create('Channel', { color: Logger.Colors.Cyan });
+import 'styles/Channel.scss'
+import Logger from 'logplease'
+const logger = Logger.create('Channel', { color: Logger.Colors.Cyan })
 
 class Channel extends React.Component {
   constructor(props) {
-    super(props);
+    super(props)
 
     this.state = {
       channelChanged: true,
       channelName: null,
       messages: [],
-      loading: true,
+      loading: false,
       loadingText: 'Connecting...',
       reachedChannelStart: false,
       channelMode: "Public",
@@ -36,26 +36,32 @@ class Channel extends React.Component {
       theme: props.theme,
       showUserProfile: null,
       userProfilePosition: null
-    };
+    }
 
-    this.scrollTimer = null;
-    this.topMargin = 120;
-    this.bottomMargin = 20;
+    this.scrollTimer = null
+    this.topMargin = 120
+    this.bottomMargin = 20
+  }
+
+  shouldComponentUpdate(nextProps, nextState) {
+    return this.state.messages.length !== nextState.messages.length
+      || this.state.unreadMessages != nextState.unreadMessages
+      || this.state.channelName != nextState.channelName
+      || this.state.dragEnter != nextState.dragEnter
   }
 
   componentWillReceiveProps(nextProps) {
-    // logger.debug("PROPS CHANGED", nextProps, this.state.channelName);
+    // logger.debug("PROPS CHANGED", nextProps, this.state.channelName)
     if(nextProps.channel !== this.state.channelName) {
       this.setState({
         channelChanged: true,
         unreadMessages: 0,
-        loading: true,
-        loadingText: 'Loading...',
+        loading: false,
         reachedChannelStart: false,
         messages: []
-      });
-      UIActions.focusOnSendMessage();
-      ChannelActions.loadMessages(nextProps.channel);
+      })
+      UIActions.focusOnSendMessage()
+      ChannelActions.loadMessages(nextProps.channel)
     }
 
     this.setState({
@@ -63,27 +69,14 @@ class Channel extends React.Component {
       username: nextProps.user ? nextProps.user.username : '',
       appSettings: nextProps.appSettings,
       theme: nextProps.theme
-    });
+    })
   }
 
   componentDidMount() {
-    this.unsubscribeFromLoadingState = LoadingStateStore.listen(this._updateLoadingState.bind(this))
     this.unsubscribeFromMessageStore = MessageStore.listen(this.onNewMessages.bind(this))
     this.unsubscribeFromErrors = UIActions.raiseError.listen(this._onError.bind(this))
     this.stopListeningChannelState = ChannelActions.reachedChannelStart.listen(this._onReachedChannelStart.bind(this))
     this.node = this.refs.MessagesView
-  }
-
-  _updateLoadingState(state) {
-    // logger.debug("CHANNEL STATE CHANGED", state, this.state.channelName);
-    const channel = state[this.state.channelName]
-    if(channel && channel.loadHistory) {
-      this.setState({ loading: true, loadingText: channel.loadHistory.message })
-    } else if(channel && channel.loadMessages) {
-      this.setState({ loading: true, loadingText: channel.loadMessages.message })
-    } else {
-      this.setState({ loading: false, loadingText: 'Load more messages...' })
-    }
   }
 
   _onError(errorMessage) {
@@ -92,151 +85,155 @@ class Channel extends React.Component {
   }
 
   _onReachedChannelStart() {
-    // logger.warn("REACHED CHANNEL START")
-    this.setState({ reachedChannelStart: true })
   }
 
   componentWillUnmount() {
     clearTimeout(this.scrollTimer)
     this.unsubscribeFromMessageStore()
     this.unsubscribeFromErrors()
-    this.unsubscribeFromLoadingState()
     this.stopListeningChannelState()
     this.setState({ messages: [] })
   }
 
   onNewMessages(channel: string, messages) {
-    console.log("MESSAGES", channel, messages)
-    console.log(this.state.channelName)
-
     if(channel !== this.state.channelName)
-      return;
+      return
 
-    this.node = this.refs.MessagesView;
+    this.node = this.refs.MessagesView
     if(this.node.scrollHeight - this.node.scrollTop + this.bottomMargin > this.node.clientHeight
       && this.node.scrollHeight > this.node.clientHeight + 1
       && this.state.messages.length > 0 && _.last(messages).payload.meta.ts > _.last(this.state.messages).payload.meta.ts
       && this.node.scrollHeight > 0) {
       this.setState({
         unreadMessages: this.state.unreadMessages + 1
-      });
+      })
     }
 
-    this.setState({ messages: messages });
+    this.setState({ messages: messages })
   }
 
   sendMessage(text: string, replyto: string) {
     if(text !== '') {
-      ChannelActions.sendMessage(this.state.channelName, text, replyto);
+      ChannelActions.sendMessage(this.state.channelName, text, replyto)
       this.setState({ replyto: null })
     }
   }
 
   sendFile(source) {
     if(source.directory || (source.filename !== '' && source.buffer !== null))
-      ChannelActions.addFile(this.state.channelName, source);
+      ChannelActions.addFile(this.state.channelName, source)
   }
 
   loadOlderMessages() {
     if(!this.state.loading) {
-      ChannelActions.loadMoreMessages(this.state.channelName);
+      ChannelActions.loadMoreMessages(this.state.channelName)
     }
   }
 
   componentWillUpdate() {
-    this.node = this.refs.MessagesView;
-    this.scrollTop = this.node.scrollTop;
-    this.scrollHeight = this.node.scrollHeight;
+    this.node = this.refs.MessagesView
+    this.scrollTop = this.node.scrollTop
+    this.scrollHeight = this.node.scrollHeight
   }
 
   componentDidUpdate() {
-    this.node = this.refs.MessagesView;
-    this.scrollAmount = this.node.scrollHeight - this.scrollHeight;
-    this.keepScrollPosition = (this.scrollAmount > 0 && this.scrollTop > (0 + this.topMargin)) || this.state.reachedChannelStart;
-    this.shouldScrollToBottom = (this.node.scrollTop + this.node.clientHeight + this.bottomMargin) >= this.scrollHeight;
+    this.node = this.refs.MessagesView
+    this.scrollAmount = this.node.scrollHeight - this.scrollHeight
+    this.keepScrollPosition = (this.scrollAmount > 0 && this.scrollTop > (0 + this.topMargin)) || this.state.reachedChannelStart
+    this.shouldScrollToBottom = (this.node.scrollTop + this.node.clientHeight + this.bottomMargin) >= this.scrollHeight
 
     if(!this.keepScrollPosition)
-      this.node.scrollTop += this.scrollAmount;
+      this.node.scrollTop += this.scrollAmount
 
     if(this.shouldScrollToBottom)
-      this.node.scrollTop = this.node.scrollHeight + this.node.clientHeight;
+      this.node.scrollTop = this.node.scrollHeight + this.node.clientHeight
 
     // If the channel was changed, scroll to bottom to avoid weird positioning
     // TODO: replace with remembering each channel's scroll position on channel change
     if(this.state.channelChanged) {
-      this.onScrollToBottom();
-      this.setState({ channelChanged: false });
+      this.onScrollToBottom()
+      this.setState({ channelChanged: false })
     }
 
     // Wait for the render (paint) cycle to finish before checking.
     // The DOM element sizes (ie. scrollHeight and clientHeight) are not updated until the paint cycle finishes.
-    if(this.loadMoreTimeout) clearTimeout(this.loadMoreTimeout);
+    if(this.loadMoreTimeout) clearTimeout(this.loadMoreTimeout)
     this.loadMoreTimeout = setTimeout(() => {
       if(this._shouldLoadMoreMessages())
-        this.loadOlderMessages();
-    }, 20);
+        this.loadOlderMessages()
+    }, 20)
   }
 
   _shouldLoadMoreMessages() {
-    return this.node && (this.node.scrollTop - this.topMargin <= 0 || this.node.scrollHeight === this.node.clientHeight);
+    return this.node && (this.node.scrollTop - this.topMargin <= 0 || this.node.scrollHeight === this.node.clientHeight)
   }
 
   onDrop(files) {
-    this.setState({ dragEnter: false });
+    this.setState({ dragEnter: false })
     files.forEach((file) => {
       const meta = { mimeType: file.type, size: file.size }
       // Electron can return a path of a directory
       if(file.path) {
         console.log("FILE", file)
-        this.sendFile({ filename: file.path, directory: file.path, meta: meta });
+        this.sendFile({ filename: file.path, directory: file.path, meta: meta })
       } else {
         // In browsers, read the files returned by the event
         // TODO: add buffering support
-        const reader = new FileReader();
+        const reader = new FileReader()
         reader.onload = (event) => {
           console.log("FILE", file)
-          this.sendFile({ filename: file.name, buffer: event.target.result, meta: meta });
-        };
-        reader.readAsArrayBuffer(file);
-        // console.error("File upload not yet implemented in browser. Try the electron app.");
+          this.sendFile({ filename: file.name, buffer: event.target.result, meta: meta })
+        }
+        reader.readAsArrayBuffer(file)
+        // console.error("File upload not yet implemented in browser. Try the electron app.")
       }
-    });
-    UIActions.focusOnSendMessage();
+    })
+    UIActions.focusOnSendMessage()
   }
 
   onDragEnter() {
-    this.setState({ dragEnter: true });
+    this.setState({ dragEnter: true })
   }
 
   onDragLeave() {
-    this.setState({ dragEnter: false });
+    this.setState({ dragEnter: false })
   }
 
   onScroll() {
     if(this.scrollTimer)
-      clearTimeout(this.scrollTimer);
+      clearTimeout(this.scrollTimer)
 
     // After scroll has finished, check if we should load more messages
     // Using timeout here because of OS-applied scroll inertia
-    this.setState({ loadingText: 'Loading more messages...' })
+    // this.setState({ loadingText: 'Loading more messages...' })
     this.scrollTimer = setTimeout(() => {
       if(this._shouldLoadMoreMessages())
-        this.loadOlderMessages();
-    }, 800);
+        this.loadOlderMessages()
+    }, 800)
 
 
     // If we scrolled to the bottom, hide the "new messages" label
-    this.node = this.refs.MessagesView;
+    this.node = this.refs.MessagesView
     if(this.node.scrollHeight - this.node.scrollTop - 10 <= this.node.clientHeight) {
       this.setState({
         unreadMessages: 0
-      });
+      })
     }
   }
 
   onScrollToBottom() {
-    UIActions.focusOnSendMessage();
-    this.node.scrollTop = this.node.scrollHeight + this.node.clientHeight;
+    UIActions.focusOnSendMessage()
+    this.node.scrollTop = this.node.scrollHeight + this.node.clientHeight
+  }
+
+  onScrollToPreview(node) {
+    const previewHeight = node.clientHeight
+    const previewRect = node.getBoundingClientRect()
+    const channelRect = this.node.getBoundingClientRect()
+    const amount = previewRect.bottom - channelRect.bottom
+    console.log(amount, previewHeight)
+    // Scroll down so that we see the full preview element
+    if (amount > 0) this.node.scrollTop += amount + 5
   }
 
   onShowProfile(user, evt) {
@@ -245,8 +242,8 @@ class Channel extends React.Component {
     // console.log("PROFILE", user, evt)
     if(!this.state.showUserProfile || (this.state.showUserProfile && user.id !== this.state.showUserProfile.id)) {
 
-      var body = document.body, html = document.documentElement;
-      var height = Math.max(body.scrollHeight, body.offsetHeight, html.clientHeight, html.scrollHeight, html.offsetHeight);
+      var body = document.body, html = document.documentElement
+      var height = Math.max(body.scrollHeight, body.offsetHeight, html.clientHeight, html.scrollHeight, html.offsetHeight)
 
       // if(evt.pageY > height / 2)
       //   console.log("clicked on the bottom half")
@@ -260,8 +257,8 @@ class Channel extends React.Component {
         padBottom = true
       }
 
-      const x = 0;
-      const y = 0;
+      const x = 0
+      const y = 0
 
       this.setState({
         showUserProfile: user,
@@ -277,40 +274,62 @@ class Channel extends React.Component {
 
  onReplyTo(message) {
     this.setState({ replyto: message })
-    UIActions.focusOnSendMessage();
+    UIActions.focusOnSendMessage()
   }
 
   renderMessages() {
-    const { messages, username, channelName, loading, loadingText, reachedChannelStart, appSettings } = this.state;
-    const { colorifyUsernames, useEmojis, useMonospaceFont, font, monospaceFont, spacing } = appSettings;
-    const elements = messages.map((message) => (
-      <Message
-        message={message.payload}
-        key={message.hash}
-        onReplyTo={this.onReplyTo.bind(this)}
-        onShowProfile={this.onShowProfile.bind(this)}
-        onDragEnter={this.onDragEnter.bind(this)}
-        highlightWords={username}
-        colorifyUsername={colorifyUsernames}
-        useEmojis={useEmojis}
-        style={{
-          fontFamily: useMonospaceFont ? monospaceFont : font,
-          fontSize: useMonospaceFont ? '0.9em' : '1.0em',
-          fontWeight: useMonospaceFont ? '100' : '300',
-          padding: spacing,
-        }}
-      />
-    ));
+    const { messages, username, channelName, loading, loadingText, reachedChannelStart, appSettings } = this.state
+    const { colorifyUsernames, useEmojis, useMonospaceFont, font, monospaceFont, spacing } = appSettings
+    const elements = messages.map((message) => {
+      if (appSettings.useLargeMessage) {
+        return <Message2
+          message={message.payload}
+          key={message.hash}
+          onReplyTo={this.onReplyTo.bind(this)}
+          onShowProfile={this.onShowProfile.bind(this)}
+          onDragEnter={this.onDragEnter.bind(this)}
+          onScrollToPreview={this.onScrollToPreview.bind(this)}
+          highlightWords={username}
+          colorifyUsername={colorifyUsernames}
+          useEmojis={useEmojis}
+          style={{
+            fontFamily: useMonospaceFont ? monospaceFont : font,
+            fontSize: useMonospaceFont ? '0.9em' : '1.0em',
+            fontWeight: useMonospaceFont ? '100' : '300',
+            padding: spacing,
+          }}
+        />   
+      } else {
+        return <Message
+          message={message.payload}
+          key={message.hash}
+          onReplyTo={this.onReplyTo.bind(this)}
+          onShowProfile={this.onShowProfile.bind(this)}
+          onDragEnter={this.onDragEnter.bind(this)}
+          onScrollToPreview={this.onScrollToPreview.bind(this)}
+          highlightWords={username}
+          colorifyUsername={colorifyUsernames}
+          useEmojis={useEmojis}
+          style={{
+            fontFamily: useMonospaceFont ? monospaceFont : font,
+            fontSize: useMonospaceFont ? '0.9em' : '1.0em',
+            fontWeight: useMonospaceFont ? '100' : '300',
+            padding: spacing,
+          }}
+        />           
+      }
+    })
+        // {reachedChannelStart && !loading ? `Joined #${channelName}` : loadingText }
     elements.unshift(
       <div className="firstMessage" key="firstMessage" onClick={this.loadOlderMessages.bind(this)}>
-        {reachedChannelStart && !loading ? `Beginning of #${channelName}` : loadingText }
+        {`Joined #${channelName}`}
       </div>
-    );
-    return elements;
+    )
+    return elements
   }
 
   renderFileDrop() {
-    const { theme, dragEnter, channelName } = this.state;
+    const { theme, dragEnter, channelName } = this.state
     if (dragEnter) {
       return (
         <Dropzone
@@ -323,13 +342,13 @@ class Channel extends React.Component {
           style={theme} >
             <div ref="dropLabel" style={theme}>Add files to #{channelName}</div>
         </Dropzone>
-      );
+      )
     }
-    return null;
+    return null
   }
 
   render() {
-    const { showUserProfile, userProfilePosition, unreadMessages, loading, channelMode, appSettings, replyto, theme } = this.state;
+    const { showUserProfile, userProfilePosition, unreadMessages, loading, channelMode, appSettings, replyto, theme } = this.state
 
     const profile = showUserProfile ?
       <Profile
@@ -360,9 +379,9 @@ class Channel extends React.Component {
         />
         {this.renderFileDrop()}
       </div>
-    );
+    )
   }
 
 }
 
-export default Channel;
+export default Channel

@@ -1,4 +1,4 @@
-'use strict';
+'use strict'
 
 import _ from 'lodash'
 import React from 'react'
@@ -6,42 +6,44 @@ import { render } from 'react-dom'
 import { Router, Route, hashHistory } from 'react-router'
 import Logger from 'logplease'
 
+import Orbit from '../../../src/Orbit'
+
 import fs from 'fs'
 
-import AppActions from 'actions/AppActions';
-import UIActions from "actions/UIActions";
-import SocketActions from 'actions/SocketActions';
-import NetworkActions from 'actions/NetworkActions';
-import NotificationActions from 'actions/NotificationActions';
-import ChannelActions from 'actions/ChannelActions';
-import SkynetActions from 'actions/SkynetActions';
+import AppActions from 'actions/AppActions'
+import UIActions from "actions/UIActions"
+import SocketActions from 'actions/SocketActions'
+import NetworkActions from 'actions/NetworkActions'
+import NotificationActions from 'actions/NotificationActions'
+import ChannelActions from 'actions/ChannelActions'
+import SkynetActions from 'actions/SkynetActions'
 
-import AppStateStore from 'stores/AppStateStore';
-import UserStore from 'stores/UserStore';
-import UserActions from 'actions/UserActions';
-import NetworkStore from 'stores/NetworkStore';
-import ChannelStore from 'stores/ChannelStore';
-import MessageStore from 'stores/MessageStore';
-import UsersStore from 'stores/UsersStore';
-import SettingsStore from 'stores/SettingsStore';
-import LoadingStateStore from 'stores/LoadingStateStore';
-import SwarmStore from 'stores/SwarmStore';
+import AppStateStore from 'stores/AppStateStore'
+import UserStore from 'stores/UserStore'
+import UserActions from 'actions/UserActions'
+import NetworkStore from 'stores/NetworkStore'
+import ChannelStore from 'stores/ChannelStore'
+import MessageStore from 'stores/MessageStore'
+import UsersStore from 'stores/UsersStore'
+import SettingsStore from 'stores/SettingsStore'
+import SwarmStore from 'stores/SwarmStore'
 
-import ChannelsPanel from 'components/ChannelsPanel';
-import ChannelView from 'components/ChannelView';
-import SettingsView from 'components/SettingsView';
-import SwarmView from 'components/SwarmView';
-import LoginView from 'components/LoginView';
-import Header from 'components/Header';
-import Themes from 'app/Themes';
+import ChannelsPanel from 'components/ChannelsPanel'
+import ChannelView from 'components/ChannelView'
+import SettingsView from 'components/SettingsView'
+import SwarmView from 'components/SwarmView'
+import LoginView from 'components/LoginView'
+import Header from 'components/Header'
+import Themes from 'app/Themes'
 
-import 'normalize.css';
-import '../styles/main.css';
-import 'styles/App.scss';
-import 'styles/Scrollbars.scss';
-import 'highlight.js/styles/hybrid.css';
+import 'normalize.css'
+import '../styles/main.css'
+import 'styles/App.scss'
+import 'styles/Scrollbars.scss'
+import 'highlight.js/styles/atom-one-dark.css'
+// Agate, Atom One Dark, Github, Monokai, Monokai Sublime, Vs, Xcode
 
-import Main from '../main'
+Logger.setLogLevel(window.DEV ? 'DEBUG' : 'NONE')
 
 const logger = Logger.create('App', { color: Logger.Colors.Red })
 
@@ -51,11 +53,11 @@ const views = {
   "Swarm": "/swarm",
   "Connect": "/connect",
   "Channel": "/channel/"
-};
+}
 
-const hasIPFS = !!window.ipfsInstance;
+const hasIPFS = !!window.ipfsInstance
 console.log("hasIPFS:", hasIPFS)
-let orbit// = hasIPFS ? window.orbit : null;
+let orbit// = hasIPFS ? window.orbit : null
 
 fs.init(1 * 1024 * 1024, (err) => {
   if(err) {
@@ -76,97 +78,104 @@ var App = React.createClass({
       requirePassword: false,
       theme: null,
       networkName: "Unknown Network"
-    };
+    }
   },
   componentDidMount: function() {
-    const signalServerAddress = this.props.location.query.local ? '0.0.0.0' : '178.62.241.75';
-    const ipfsApi = hasIPFS ? window.ipfsInstance : null; // Main.start creates js-ipfs instance if needed
-    const ipcRenderer = hasIPFS ? window.ipcRenderer : null;
-    const dataPath = '/tmp/orbit-demo-2-';
+    const signalServerAddress = this.props.location.query.local ? '0.0.0.0' : '178.62.241.75'
+    const ipfsApi = hasIPFS ? window.ipfsInstance : null // spawn js-ipfs here if needed
+    const ipcRenderer = hasIPFS ? window.ipcRenderer : null
+    const dataPath = '/tmp/orbit-demo-2-'
+    // const orbit = window.orbit
 
-    Main.start(ipfsApi, dataPath, signalServerAddress).then((res) => {
-      logger.info("Orbit started");
-      logger.debug("PeerId:", res.peerId.ID);
+    orbit = new Orbit(ipfsApi, { dataPath: dataPath });
+    // return ipfsApiInstance.id()
+    //   .then((id) => {
+    //     logger.log(id);
+    //     return { orbit: orbit, peerId: id };
+    //   });
 
-      orbit = res.orbit;
+    // Main.start(ipfsApi, dataPath, signalServerAddress).then((res) => {
+      logger.info("Orbit acquired")
+      // logger.debug("PeerId:", res.peerId.ID)
+
+      // orbit = res.orbit
 
       if(hasIPFS && ipcRenderer) {
-        orbit.events.on('connected', (network, user) => ipcRenderer.send('connected', network, user));
-        orbit.events.on('disconnected', () => ipcRenderer.send('disconnected'));
+        orbit.events.on('connected', (network, user) => ipcRenderer.send('connected', network, user))
+        orbit.events.on('disconnected', () => ipcRenderer.send('disconnected'))
       }
 
-      AppActions.initialize(orbit);
+      AppActions.initialize(orbit)
       NetworkActions.updateNetwork(null) // start the App
-    })
-    .catch((e) => {
-      logger.error(e.message);
-      logger.error("Stack trace:\n", e.stack);
-    });
+    // })
+    // .catch((e) => {
+    //   logger.error(e.message)
+    //   logger.error("Stack trace:\n", e.stack)
+    // })
 
-    document.title = 'Orbit';
+    document.title = 'Orbit'
 
-    // SkynetActions.start.listen((username) => orbit.connect(null, username, ''));
-    UIActions.joinChannel.listen(this.joinChannel);
-    NetworkActions.joinedChannel.listen(this.onJoinedChannel);
-    NetworkActions.joinChannelError.listen(this.onJoinChannelError);
-    NetworkActions.leaveChannel.listen(this.onLeaveChannel);
-    SocketActions.socketDisconnected.listen(this.onDaemonDisconnected);
+    UIActions.joinChannel.listen(this.joinChannel)
+    NetworkActions.joinedChannel.listen(this.onJoinedChannel)
+    NetworkActions.joinChannelError.listen(this.onJoinChannelError)
+    NetworkActions.leaveChannel.listen(this.onLeaveChannel)
+    SocketActions.socketDisconnected.listen(this.onDaemonDisconnected)
 
-    this.unsubscribeFromNetworkStore = NetworkStore.listen(this.onNetworkUpdated);
-    this.unsubscribeFromUserStore = UserStore.listen(this.onUserUpdated);
-    this.stopListeningAppState = AppStateStore.listen(this._handleAppStateChange);
+    this.unsubscribeFromNetworkStore = NetworkStore.listen(this.onNetworkUpdated)
+    this.unsubscribeFromUserStore = UserStore.listen(this.onUserUpdated)
+    this.stopListeningAppState = AppStateStore.listen(this._handleAppStateChange)
     this.unsubscribeFromSettingsStore = SettingsStore.listen((settings) => {
-      this.setState({ theme: Themes[settings.theme] || null, leftSidePanel: settings.leftSidePanel });
-    });
+      this.setState({ theme: Themes[settings.theme] || null, leftSidePanel: settings.leftSidePanel })
+    })
 
     window.onblur = () => {
-      // AppActions.windowLostFocus();
-      // logger.debug("Lost focus!");
-    };
+      // AppActions.windowLostFocus()
+      // logger.debug("Lost focus!")
+    }
 
     window.onfocus = () => {
-      // AppActions.windowOnFocus();
-      // logger.debug("Got focus!");
-    };
+      // AppActions.windowOnFocus()
+      // logger.debug("Got focus!")
+    }
   },
   _handleAppStateChange: function(state) {
-    let prefix = '', suffix = '';
+    let prefix = '', suffix = ''
 
     if(!AppStateStore.state.hasFocus && AppStateStore.state.unreadMessages[AppStateStore.state.currentChannel] > 0)
-      suffix = `(${AppStateStore.state.unreadMessages[AppStateStore.state.currentChannel]})`;
+      suffix = `(${AppStateStore.state.unreadMessages[AppStateStore.state.currentChannel]})`
 
     if(Object.keys(state.unreadMessages).length > 1 || (Object.keys(state.unreadMessages).length === 1 && !Object.keys(state.unreadMessages).includes(AppStateStore.state.currentChannel)))
-      prefix = '*';
+      prefix = '*'
 
     if(Object.keys(state.mentions).length > 0)
-      prefix = '!';
+      prefix = '!'
 
     if(state.currentChannel) {
-      document.title = prefix + ' ' + AppStateStore.state.location + ' ' + suffix;
-      this.goToLocation(state.currentChannel, views.Channel + encodeURIComponent(state.currentChannel));
+      document.title = prefix + ' ' + AppStateStore.state.location + ' ' + suffix
+      this.goToLocation(state.currentChannel, views.Channel + encodeURIComponent(state.currentChannel))
     } else {
-      document.title = prefix + ' Orbit';
-      this.goToLocation(state.location, views[state.location]);
+      document.title = prefix + ' Orbit'
+      this.goToLocation(state.location, views[state.location])
     }
   },
   _reset: function() {
     if(hasIPFS) ipcRenderer.send('disconnected')
-    this.setState(this.getInitialState());
+    this.setState(this.getInitialState())
   },
   onNetworkUpdated: function(network) {
-    logger.debug("Network updated");
-    console.log(network);
+    logger.debug("Network updated")
+    console.log(network)
     if (!network) {
-      this._reset();
-      AppActions.setLocation("Connect");
+      this._reset()
+      AppActions.setLocation("Connect")
     } else {
-      this.setState({ networkName: network.name });
+      this.setState({ networkName: network.name })
       const channels = this._getSavedChannels(this.state.networkName, this.state.user.name)
-      channels.forEach((channel) => NetworkActions.joinChannel(channel.name, ''));
+      channels.forEach((channel) => NetworkActions.joinChannel(channel.name, ''))
     }
   },
   _makeChannelsKey: function(username, networkName) {
-    return "orbit.app." + username + "." + networkName + ".channels";
+    return "orbit.app." + username + "." + networkName + ".channels"
   },
   _getSavedChannels: function(networkName, username) {
     const channelsKey = this._makeChannelsKey(username, networkName)
@@ -177,48 +186,48 @@ var App = React.createClass({
     localStorage.setItem(channelsKey, JSON.stringify(channels))
   },
   _showConnectView: function() {
-    this.setState({ user: null });
-    AppActions.setLocation("Connect");
+    this.setState({ user: null })
+    AppActions.setLocation("Connect")
   },
   onUserUpdated: function(user) {
-    logger.debug("User updated");
-    console.log(user);
+    logger.debug("User updated")
+    console.log(user)
 
     if (!user) {
-      AppActions.setLocation("Connect");
-      return;
+      AppActions.setLocation("Connect")
+      return
     }
 
     if (user === this.state.user)
-      return;
+      return
 
-    this.setState({ user: user });
+    this.setState({ user: user })
 
-    if (!this.state.panelOpen) this.openPanel();
-    AppActions.setLocation(null);
+    if (!this.state.panelOpen) this.openPanel()
+    AppActions.setLocation(null)
   },
   joinChannel: function(channelName, password) {
     if (channelName === AppStateStore.state.currentChannel) {
-      this.closePanel();
-      return;
+      this.closePanel()
+      return
     }
-    logger.debug("Join channel #" + channelName);
-    NetworkActions.joinChannel(channelName, password);
+    logger.debug("Join channel #" + channelName)
+    NetworkActions.joinChannel(channelName, password)
   },
   onJoinChannelError: function(channel, err) {
-    if(!this.state.panelOpen) this.setState({ panelOpen: true });
-    this.setState({ joiningToChannel: channel, requirePassword: true} );
+    if(!this.state.panelOpen) this.setState({ panelOpen: true })
+    this.setState({ joiningToChannel: channel, requirePassword: true} )
   },
   onJoinedChannel: function(channel) {
-    logger.debug("Joined channel #" + channel);
-    // this.showChannel(channel);
-    this.closePanel();
-    document.title = `#${channel}`;
-    logger.debug("Set title: " + document.title);
-    AppActions.setCurrentChannel(channel);
+    logger.debug("Joined channel #" + channel)
+    // this.showChannel(channel)
+    this.closePanel()
+    document.title = `#${channel}`
+    logger.debug("Set title: " + document.title)
+    AppActions.setCurrentChannel(channel)
     let channels = this._getSavedChannels(this.state.networkName, this.state.user.name)
     if (!_.some(channels, { name: channel })) {
-      channels.push({ name: channel });
+      channels.push({ name: channel })
       this._saveChannels(this.state.networkName, this.state.user.name, channels)
     }
   },
@@ -227,37 +236,37 @@ var App = React.createClass({
     const channelsKey = this._makeChannelsKey(user.name, networkName)
     const channels = this._getSavedChannels(networkName, user.name).filter((c) => c.name !== channel)
     if (channels.length === 0)
-      localStorage.removeItem(channelsKey);
+      localStorage.removeItem(channelsKey)
     else
       this._saveChannels(this.state.networkName, this.state.user.name, channels)
   },
   openSettings: function() {
-    this.closePanel();
-    AppActions.setLocation("Settings");
+    this.closePanel()
+    AppActions.setLocation("Settings")
   },
   openSwarmView: function() {
-    this.closePanel();
-    AppActions.setLocation("Swarm");
+    this.closePanel()
+    AppActions.setLocation("Swarm")
   },
   closePanel: function() {
-    this.setState({ panelOpen: false });
-    UIActions.onPanelClosed();
+    this.setState({ panelOpen: false })
+    UIActions.onPanelClosed()
   },
   openPanel: function() {
-    this.setState({ panelOpen: true });
+    this.setState({ panelOpen: true })
   },
   disconnect: function() {
-    orbit.disconnect();
-    this.closePanel();
-    NetworkActions.disconnect();
-    this.setState({ user: null });
-    AppActions.setLocation("Connect");
+    orbit.disconnect()
+    this.closePanel()
+    NetworkActions.disconnect()
+    this.setState({ user: null })
+    AppActions.setLocation("Connect")
   },
   onDaemonDisconnected: function() {
-    AppActions.setLocation("Connect");
+    AppActions.setLocation("Connect")
   },
   goToLocation: function(name, url) {
-    hashHistory.push(url ? url : '/');
+    hashHistory.push(url ? url : '/')
   },
   render: function() {
     const header = AppStateStore.state.location && AppStateStore.state.location !== "Connect" ? (
@@ -267,7 +276,7 @@ var App = React.createClass({
         channels={ChannelStore.channels}
         theme={this.state.theme}>
       </Header>
-    ) : null;
+    ) : null
 
     const panel = this.state.panelOpen ? (
       <ChannelsPanel
@@ -284,7 +293,7 @@ var App = React.createClass({
         networkName={this.state.networkName}
         joiningToChannel={this.state.joiningToChannel}
       />
-    ) : "";
+    ) : ""
 
     return (
       <div className="App view">
@@ -292,9 +301,9 @@ var App = React.createClass({
         {header}
         {this.props.children}
       </div>
-    );
+    )
   }
-});
+})
 
 /* MAIN */
 render(
@@ -307,6 +316,6 @@ render(
     </Route>
   </Router>
   , document.getElementById('content')
-);
+)
 
-export default ChannelView;
+export default ChannelView
