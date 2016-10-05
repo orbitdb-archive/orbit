@@ -6,7 +6,6 @@ const OrbitDB      = require('orbit-db')
 const Crypto       = require('orbit-crypto')
 const Post         = require('ipfs-post')
 const Logger       = require('logplease')
-const bs58         = require('bs58')
 const LRU          = require('lru')
 const OrbitUser    = require('./orbit-user')
 const IdentityProviders = require('./identity-providers')
@@ -106,6 +105,7 @@ class Orbit {
     if(this._channels[channel])
       return Promise.resolve(false)
 
+    // console.log(this._user)
     const dbOptions = {
       cacheFile: '/' + this.user.id + this._options.cacheFile,
       maxHistory: this._options.maxHistory
@@ -159,7 +159,7 @@ class Orbit {
       .then((feed) => feed.iterator(options).collect())
   }
 
-  getPost(hash) {
+  getPost(hash, withUserProfile) {
     const post = this._cache.get(hash)
 
     if (post) {
@@ -180,6 +180,14 @@ class Orbit {
          )
         .then(() => {
           this._cache.set(hash, post)
+
+          if (withUserProfile)
+            return this.getUser(post.meta.from)
+              .then((user) => {
+                post.meta.from = user
+                return post
+              })
+
           return post
         })
     }
@@ -205,7 +213,7 @@ class Orbit {
       return ipfs.files.add(new Buffer(data))
         .then((result) => {
           return {
-            Hash: bs58.encode(result[0].node.multihash()).toString(),
+            Hash: result[0].toJSON().Hash,
             isDirectory: false
           }
         })
@@ -310,13 +318,6 @@ class Orbit {
   }
 
   // TODO: tests for everything below
-  _handleError(e) {
-    logger.error(e)
-    logger.error("Stack trace:\n", e.stack)
-    this.events.emit('error', e.message)
-    throw e
-  }
-
   _handleMessage(channel, message) {
     logger.debug("New message in #", channel, "\n" + JSON.stringify(message, null, 2))
     if(this._channels[channel])
@@ -326,13 +327,11 @@ class Orbit {
   _startPollingForPeers() {
     if(!this._pollPeersTimer) {
       this._pollPeersTimer = setInterval(() => {
-        if (this._user) {
-          this._updateSwarmPeers().then((peers) => {
-            this._peers = peers || []
-            // TODO: get unique (new) peers and emit 'peer' for each instead of all at once
-            this.events.emit('peers', this._peers)
-          })
-        }
+        this._updateSwarmPeers().then((peers) => {
+          this._peers = peers || []
+          // TODO: get unique (new) peers and emit 'peer' for each instead of all at once
+          this.events.emit('peers', this._peers)
+        })
       }, 3000)
     }
   }
