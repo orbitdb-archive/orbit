@@ -1,6 +1,6 @@
 'use strict'
 
-import _ from 'lodash'
+import differenceWith from 'lodash.differencewith'
 import Reflux from 'reflux'
 import AppActions from 'actions/AppActions'
 import UIActions from 'actions/UIActions'
@@ -126,7 +126,9 @@ const MessageStore = Reflux.createStore({
   },
   _addMessages: function(channel: string, newMessages: Array, older: boolean) {
     logger.debug("<-- Add " + newMessages.length + " messages to #" + channel)
-    var unique = _.differenceWith(newMessages, this.channels[channel].messages, _.isEqual)
+    console.log(newMessages)
+    console.log(this.channels[channel].messages)
+    var unique = differenceWith(newMessages, this.channels[channel].messages, (a, b) => a.hash === b.hash)
     logger.debug("Unique new messages: " + unique.length)
 
     if(unique.length > 0) {

@@ -6,7 +6,7 @@ import { render } from 'react-dom'
 import { Router, Route, hashHistory } from 'react-router'
 import Logger from 'logplease'
 
-import Orbit from '../../../src/Orbit'
+import Orbit from 'orbit_'
 
 import fs from 'fs'
 
@@ -84,10 +84,10 @@ var App = React.createClass({
     const signalServerAddress = this.props.location.query.local ? '0.0.0.0' : '178.62.241.75'
     const ipfsApi = hasIPFS ? window.ipfsInstance : null // spawn js-ipfs here if needed
     const ipcRenderer = hasIPFS ? window.ipcRenderer : null
-    const dataPath = '/tmp/orbit-demo-2-'
+    // const dataPath = '/tmp/orbit-demo-2-'
     // const orbit = window.orbit
 
-    orbit = new Orbit(ipfsApi, { dataPath: dataPath });
+    orbit = new Orbit(ipfsApi)
     // return ipfsApiInstance.id()
     //   .then((id) => {
     //     logger.log(id);

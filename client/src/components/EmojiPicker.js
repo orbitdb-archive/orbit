@@ -22,7 +22,8 @@ const emojiList = _.map(supportedEmojis, (e) => {
 });
 
 const filterEmojis = function(emojiList, word, amount) {
-  return Object.values(emojiList)
+  return Object.keys(emojiList)
+  .map((e) => emojiList[e])
   .filter((e) => e.shortname.indexOf(word) > -1 || e.aliases.indexOf(word) > -1 || word === '')
   .slice(0, amount);
 };

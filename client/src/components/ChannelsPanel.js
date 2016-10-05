@@ -98,7 +98,9 @@ class ChannelsPanel extends React.Component {
     const channelsHeaderClass = Object.keys(this.state.openChannels).length > 0 ? "panelHeader" : "hidden";
     const channelJoinInputClass = !this.state.loading ? "joinChannelInput" : "joinChannelInput invisible";
 
-    const openChannels = Object.values(this.state.openChannels).map((channel) => this._renderChannel(channel));
+    const openChannels = Object.keys(this.state.openChannels)
+      .map((e) => this.state.openChannels[e])
+      .map((channel) => this._renderChannel(channel));
 
     const transitionProps = {
       component: 'div',

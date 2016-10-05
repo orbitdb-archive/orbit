@@ -15,23 +15,6 @@ module.exports = {
       'webpack/hot/only-dev-server',
       './src/components/App.js'
     ],
-    vendor: [
-      // 'ipfs',
-      'react', 'react-dom', 'react-router', 'react-addons-css-transition-group',
-      'reflux',
-      'lodash', 'logplease', 'fs', 'html5-fs',
-      'react-dropzone', 'react-autolink',
-      'highlight.js', 'clipboard', 'pleasejs', 'halogen',
-      // 'web3', 'uport-lib', 'uport-persona', 'uport-registry'
-    ],
-    emojis: [
-      'react-emoji', 'emoji-annotation-to-unicode', './src/components/EmojiPicker.js'
-    ]
-    // ipfs: [
-    //   // './src/main.js'
-    //   // // 'ipfs'
-    //   path.join(__dirname + '/node_modules', 'ipfs/dist/index.js')
-    // ]
   },
   plugins: [
     new CopyWebpackPlugin([
@@ -41,14 +24,10 @@ module.exports = {
       filename: "manifest.json",
       manifestVariable: "webpackManifest"
     }),
-    // new webpack.optimize.CommonsChunkPlugin({ name: "ipfs", filename: "ipfs.js", chunks: ['ipfs'] }),
-    new webpack.optimize.CommonsChunkPlugin({ name: "emojis", filename: "emojis.js", chunks: ['emojis'] }),
-    new webpack.optimize.CommonsChunkPlugin({ name: "vendor", filename: "vendor.js", chunks: ['vendor'] }),
     new webpack.optimize.AggressiveMergingPlugin(),
     new webpack.HotModuleReplacementPlugin()
   ],
   cache: false,
-  debug: true,
   devtool: 'sourcemap',
   devServer: {
     headers: { "Access-Control-Allow-Origin": "*" }
@@ -56,26 +35,18 @@ module.exports = {
   node: {
     console: false,
     process: 'mock',
-    Buffer: 'buffer'
+    Buffer: true
   },
   stats: {
     colors: true,
     reasons: true
   },
-  resolveLoader: {
-    root: path.join(__dirname, 'node_modules')
-  },
   resolve: {
     // extensions: ['', '.js', '.jsx'],
-    modulesDirectories: [
-      'node_modules',
-      path.join(__dirname, 'node_modules')
-    ],
     alias: {
       'node_modules': path.join(__dirname + '/node_modules'),
       'libp2p-ipfs': 'libp2p-ipfs-browser',
       'fs': path.join(__dirname + '/node_modules', 'html5-fs'),
-      'node-webcrypto-ossl': path.join(__dirname + '/node_modules', 'webcrypto'),
       'app': __dirname + '/src/app/',
       'styles': __dirname + '/src/styles',
       'mixins': __dirname + '/src/mixins',

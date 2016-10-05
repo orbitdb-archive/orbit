@@ -1,8 +1,7 @@
-'use strict';
+'use strict'
 
-const webpack = require('webpack');
-const path = require('path');
-const CopyWebpackPlugin = require('copy-webpack-plugin');
+const webpack = require('webpack')
+const path = require('path')
 
 const babel = {
   "plugins": [
@@ -18,43 +17,20 @@ module.exports = {
   output: {
     publicPath: '/assets/',
     path: 'dist/assets/',
-    filename: '[name].js'
+    filename: 'app.js'
   },
-  entry: {
-    app: './src/components/App.js',
-    // vendor: [
-    //   'react', 'react-dom', 'react-router', 'react-addons-css-transition-group',
-    //   'reflux',
-    //   'lodash', 'logplease', 'fs', 'html5-fs', 'bs58',
-    //   'react-dropzone', 'react-autolink',
-    //   'highlight.js', 'clipboard', 'pleasejs', 'halogen',
-    // ],
-    // emojis: [
-    //   'react-emoji', 'emoji-annotation-to-unicode', './src/components/EmojiPicker.js'
-    // ],
-    // ipfsdist: [
-    //   'ipfs'
-    // ]
-  },
-  debug: false,
+  entry: './src/components/App.js',
   devtool: 'sourcemap',
-  // devtool: false,
   node: {
     console: false,
-    // process: 'mock',
-    Buffer: 'buffer'
+    process: 'mock',
+    Buffer: true
   },
   stats: {
     colors: true,
     reasons: false
   },
   plugins: [
-    // new CopyWebpackPlugin([
-    //   { from: path.join(__dirname + '/node_modules', 'ipfs/dist/index.min.js'), to: 'ipfs.js' }
-    // ]),
-    // new webpack.optimize.CommonsChunkPlugin({ name: "ipfsdist", filename: "_remove.js", chunks: ['ipfsdist'] }),
-    // new webpack.optimize.CommonsChunkPlugin({ name: "emojis", filename: "emojis.js", chunks: ['emojis'] }),
-    // new webpack.optimize.CommonsChunkPlugin({ name: "vendor", filename: "vendor.js", chunks: ['vendor'] }),
     new webpack.optimize.AggressiveMergingPlugin(),
     new webpack.optimize.UglifyJsPlugin({
       mangle: false,
@@ -66,17 +42,13 @@ module.exports = {
       }
     })
   ],
-  resolveLoader: {
-    root: path.join(__dirname, 'node_modules')
-  },
   resolve: {
-    modulesDirectories: [
-      path.join(__dirname, 'node_modules')
-    ],
+    // modules: [
+    //   path.join(__dirname, '../node_modules')
+    // ],
     alias: {
       'node_modules': path.join(__dirname + '/node_modules'),
       'fs': path.join(__dirname + '/node_modules', 'html5-fs'),
-      // 'node-webcrypto-ossl': path.join(__dirname + '/node_modules', 'webcrypto'),
       'app': __dirname + '/src/app/',
       'styles': __dirname + '/src/styles',
       'mixins': __dirname + '/src/mixins',
@@ -121,7 +93,7 @@ module.exports = {
     tls: '{}',
     console: '{}',
     'require-dir': '{}',
-    mkdirp: '{}',
-    process :'{ version: "your mom" }'
+    mkdirp: '{}'
+    // process :'{ version: "your mom" }'
   }
-};
+}
