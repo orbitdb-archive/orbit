@@ -25,7 +25,7 @@
     "grunt-electron": "^5.0.0",
     "ipfs-test-apis": "0.0.1",
     "load-grunt-tasks": "^3.5.0",
-    "mocha": "^2.5.3"
+    "mocha": "^3.1.0"
   },
   "scripts": {
     "postinstall": "./node_modules/.bin/grunt clean:npm",
