@@ -32,6 +32,13 @@ Orbit can be run either in a browser or as a native desktop application. The bro
 *The live demo is an old version of Orbit. It is recommended to follow the instructions below to run the latest version.*
 
 #### Desktop
+
+##### Requirements
+
+- Node.js v6.x.x
+- npm v3.x.x
+
+##### Install and Run
 ```
 git clone https://github.com/haadcode/orbit.git
 cd orbit
