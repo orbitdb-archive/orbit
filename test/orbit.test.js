@@ -5,9 +5,7 @@ const fs           = require('fs')
 const path         = require('path')
 const assert       = require('assert')
 const Promise      = require('bluebird')
-const ipfsd        = require('ipfsd-ctl')
-const IPFS         = require('ipfs')
-const IpfsApi      = require('ipfs-api')
+const IpfsApis     = require('ipfs-test-apis')
 const OrbitServer  = require('orbit-server/src/server')
 const EventStore   = require('orbit-db-eventstore')
 const Post         = require('ipfs-post')
@@ -17,70 +15,14 @@ const Orbit        = require('../src/Orbit')
 const keystorePath = path.join(process.cwd(), '/test/keys')
 
 // Mute logging
-// require('logplease').setLogLevel('ERROR')
+require('logplease').setLogLevel('NONE')
 
 // Orbit
 const username = 'testrunner'
 let userId = 'QmXWWRTZzygRCnWP8sBcTuygreYBTaQR73zVpZvyxeuUqA'
 
 let ipfs, ipfsDaemon
-const IpfsApis = [
-// {
-//   // js-ipfs
-//   name: 'js-ipfs',
-//   start: () => {
-//     return new Promise((resolve, reject) => {
-//       const ipfs = new IPFS('/tmp/orbit-tests')
-//       ipfs.init({}, (err) => {
-//         if(err) {
-//           if(err.message === 'repo already exists')
-//             return resolve(ipfs)
-//           return reject(err)
-//         }
-//         ipfs.goOnline((err) => {
-//           if(err) reject(err)
-//           resolve(ipfs)
-//         })
-//       })
-//     })
-//   },
-//   // stop: () => Promise.resolve()
-//   stop: () => new Promise((resolve, reject) => {
-//     if(!ipfs._bitswap && !ipfs._libp2pNode)
-//       resolve()
-//     ipfs.goOffline((err) => {
-//       if(err) console.log("Error", err)
-//       resolve()
-//     })
-//   })
-// },
-{
-  // js-ipfs-api via local daemon
-  name: 'js-ipfs-api',
-  start: () => {
-    return new Promise((resolve, reject) => {
-      ipfsd.disposableApi((err, ipfs) => {
-        if(err) reject(err)
-        resolve(ipfs)
-      })
-      // ipfsd.local((err, node) => {
-      //   if(err) reject(err)
-      //   ipfsDaemon = node
-      //   ipfsDaemon.startDaemon((err, ipfs) => {
-      //     if(err) reject(err)
-      //     resolve(ipfs)
-      //   })
-      // })
-    })
-  },
-  stop: () => Promise.resolve()
-  // stop: () => new Promise((resolve, reject) => ipfsDaemon.stopDaemon(resolve)) // for use with local daemon
-}
-]
-
-// OrbitServer.start()
-
-IpfsApis.forEach(function(ipfsApi) {
+IpfsApis.filter((e) => e.name === 'js-ipfs-api').forEach(function(ipfsApi) {
 
   describe('Orbit with ' + ipfsApi.name, function() {
     this.timeout(20000)
@@ -89,7 +31,6 @@ IpfsApis.forEach(function(ipfsApi) {
     let channel = 'orbit-tests'
 
     before(function (done) {
-      // ipfs = IpfsApi()
       ipfsApi.start()
         .then((res) => {
           ipfs = res
@@ -151,7 +92,7 @@ IpfsApis.forEach(function(ipfsApi) {
         orbit.events.on('connected', (networkInfo, user) => {
           assert.notEqual(networkInfo, null)
           assert.notEqual(user, null)
-          assert.equal(networkInfo.name, 'Orbit PUBSUB Network')
+          assert.equal(networkInfo.name, 'Orbit DEV Network')
           assert.equal(user.name, username)
           assert.equal(user.id, userId)
           done()
@@ -180,7 +121,7 @@ IpfsApis.forEach(function(ipfsApi) {
             orbit.disconnect()
             assert.equal(orbit.orbitdb, null)
             assert.equal(orbit.user, null)
-            assert.equal(_.isEqual(orbit._channels, {}), true)
+            assert.equal(Object.keys(orbit._channels).length, 0)
             done()
           })
           .catch(done)
@@ -375,7 +316,7 @@ IpfsApis.forEach(function(ipfsApi) {
 
         it('network', () => {
           assert.notEqual(orbit.network, null)
-          assert.equal(orbit.network.name, 'Orbit PUBSUB Network')
+          assert.equal(orbit.network.name, 'Orbit DEV Network')
         })
 
         it.skip('peers', () => {
