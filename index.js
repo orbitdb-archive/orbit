@@ -14,6 +14,20 @@ const ipfsd         = require('ipfsd-ctl')
 const IpfsApi       = require('ipfs-api')
 const Logger        = require('logplease')
 // const Orbit         = require('./src/Orbit')
+const IpfsDaemon = require('ipfs-daemon')
+
+// module.exports = IpfsDaemon({
+//   IpfsDataDir: '/tmp/orbit-db-examples',
+//   API: {
+//     HTTPHeaders: {
+//       "Access-Control-Allow-Origin": ['*'],
+//       "Access-Control-Allow-Methods": ["PUT", "GET", "POST"],
+//       "Access-Control-Allow-Credentials": ["true"]
+//     } 
+//   }
+// })
+// .then((res) => console.log("Started IPFS daemon"))
+// .catch((err) => console.error(err))
 
  // dev|debug
 const MODE = process.env.ENV ? process.env.ENV : 'debug'
@@ -115,74 +129,58 @@ app.on('ready', () => {
     // Display a loading screen while we boot up
     mainWindow.loadURL('file://' + __dirname + '/client/dist/loading.html')
 
-    // Bind the Orbit IPFS daemon to a random port
-    let opts = {}
-    opts['Addresses.API'] = '/ip4/127.0.0.1/tcp/0'
-    opts['Addresses.Swarm'] = ['/ip4/0.0.0.0/tcp/0']
-    opts['Addresses.Gateway'] = '/ip4/0.0.0.0/tcp/0'
+    // Bind the Orbit IPFS daemon to a random port, set CORS
+    IpfsDaemon({
+      AppDataDir: orbitDataDir,
+      IpfsDataDir: ipfsDataDir,
+      Addresses: {
+        API: '/ip4/127.0.0.1/tcp/0',
+        Swarm: ['/ip4/0.0.0.0/tcp/0'],
+        Gateway: '/ip4/0.0.0.0/tcp/0'
+      },
+      API: {
+        HTTPHeaders: {
+          "Access-Control-Allow-Origin": ['*'],
+          "Access-Control-Allow-Methods": ["PUT", "GET", "POST"],
+          "Access-Control-Allow-Credentials": ["true"]
+        } 
+      }
+    })
+    .then((res) => {
+      const ipfsDaemon = res.daemon
+      const ipfs = res.ipfs
+      const gatewayAddr = res.Addresses.Gateway
 
-    let ipfsDaemon
-    ipfsd.local(ipfsDataDir, opts, (err, node) => {
-      if(err) throw err
-      ipfsDaemon = node
+      global.ipfsInstance = res.ipfs //IpfsApi(ipfs.apiHost, ipfs.apiPort)
+      global.gatewayAddress = gatewayAddr ? gatewayAddr + '/ipfs/' : 'localhost:8080/ipfs/'
 
-      logger.info("Initializing IPFS daemon")
-      logger.debug(`Using IPFS repo at '${node.path}'`)
+      // Load the dist build or connect to webpack-dev-server
+      const indexUrl = MODE === 'dev'
+        ? 'http://localhost:8000/'
+        : 'file://' + __dirname + '/client/dist/index.html'
 
-      ipfsDaemon.init({ directory: ipfsDataDir }, (err, node) => {
-        // Ignore error (usually "repo already exists")
-        if (!err) {
-          logger.info("Starting IPFS daemon")
-          ipfsDaemon.startDaemon(['--enable-pubsub-experiment'], (err, ipfs) => {
-            if (err) throw err
-
-            global.ipfsInstance = IpfsApi(ipfs.apiHost, ipfs.apiPort)
-            global.gatewayAddress = node.gatewayAddr ? node.gatewayAddr + '/ipfs/' : 'localhost:8080/ipfs/'
-            // global.orbit = new Orbit(ipfsInstance, { dataPath: orbitDataDir })
-
-            logger.info("IPFS daemon started at", ipfs.apiHost, ipfs.apiPort)
-            logger.info("Gateway at", global.gatewayAddress)
-
-            // Load the dist build or connect to webpack-dev-server
-            const indexUrl = MODE === 'dev'
-              ? 'http://localhost:8000/'
-              : 'file://' + __dirname + '/client/dist/index.html'
-
-            mainWindow.loadURL(indexUrl)
-          })
-        } else {
-          // Check if the Orbit IPFS repo is an incompatible one
-          const migrationNeeded = String(err).match('ipfs repo needs migration')
-
-          if (migrationNeeded) {
-            let errStr = `Error initializing IPFS daemon: '${migrationNeeded[0]}'\n`
-            errStr += `Tried to init IPFS repo at '${ipfsDataDir}', but failed.\n`
-            errStr += `Use $IPFS_PATH to specify another repo path, eg. 'export IPFS_PATH=/tmp/orbit-floodsub'.`
-
-            errStr.split('\n')
-              .forEach((e) => logger.error(e))
-
-            dialog.showMessageBox({
-              type: 'error',
-              buttons: ['Ok'],
-              title: 'Error',
-              message: migrationNeeded[0],
-              detail: errStr
-            }, () => process.exit(1))
-          }
-        }
+      // If the window is closed, assume we quit
+      mainWindow.on('closed', () => {
+        mainWindow = null
+        ipfsDaemon.stopDaemon()
       })
+
+      mainWindow.loadURL(indexUrl)
+    })
+    .catch((err) => {
+      logger.error(err)
+      dialog.showMessageBox({
+        type: 'error',
+        buttons: ['Ok'],
+        title: 'Error',
+        message: err.message,
+        detail: err.stack
+      }, () => process.exit(1))
     })
 
     // Resize the window as per app state
     ipcMain.on('connected', (event) => setWindowToNormal())
     ipcMain.on('disconnected', (event) => setWindowToLogin())
-
-    // If the window is closed, assume we quit
-    mainWindow.on('closed', () => {
-      mainWindow = null
-      ipfsDaemon.stopDaemon()
-    })
 
   } catch(e) {
     logger.error("Error in index-native:", e)

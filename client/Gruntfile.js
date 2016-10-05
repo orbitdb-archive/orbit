@@ -19,8 +19,7 @@ module.exports = function (grunt) {
 
     webpack: {
       options: webpackDistConfig,
-      dist: {
-      }
+      dist: {}
     },
 
     'webpack-dev-server': {
