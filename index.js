@@ -13,6 +13,7 @@ const path          = require('path')
 const ipfsd         = require('ipfsd-ctl')
 const IpfsApi       = require('ipfs-api')
 const Logger        = require('logplease')
+// const Orbit         = require('./src/Orbit')
 
  // dev|debug
 const MODE = process.env.ENV ? process.env.ENV : 'debug'
@@ -39,6 +40,7 @@ if (!fs.existsSync(orbitDataDir))
   fs.mkdirSync(orbitDataDir)
 
 Logger.setLogfile(path.join(orbitDataDir, '/debug.log'))
+Logger.setLogLevel('DEBUG')
 
 const connectWindowSize = {
   width: 512,
@@ -136,6 +138,7 @@ app.on('ready', () => {
 
             global.ipfsInstance = IpfsApi(ipfs.apiHost, ipfs.apiPort)
             global.gatewayAddress = node.gatewayAddr ? node.gatewayAddr + '/ipfs/' : 'localhost:8080/ipfs/'
+            // global.orbit = new Orbit(ipfsInstance, { dataPath: orbitDataDir })
 
             logger.info("IPFS daemon started at", ipfs.apiHost, ipfs.apiPort)
             logger.info("Gateway at", global.gatewayAddress)

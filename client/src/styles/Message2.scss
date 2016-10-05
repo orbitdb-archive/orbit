@@ -48,8 +48,11 @@ $timestamp-color:  rgba(240, 240, 240, 0.6);
   .Avatar {
     width: 2em;
     height: 2em;
-    margin: 0em 0.5em;
-    background-color: rgba(255, 255, 255, 0.5);
+    margin: 0em 0.25em 0em 0.65em;
+    background-color: rgba(255, 255, 255, 0.1);
+    // background-image: url('../images/earth.png') cover;
+    // background-size: cover;
+    // background-repeat: no-repeat;
   }
 
   .Timestamp2 {
@@ -64,7 +67,7 @@ $timestamp-color:  rgba(240, 240, 240, 0.6);
   }
 
   .Content2 {
-    padding: 0.5em 0em;
+    padding: 0.1em 0em 0.75em 0em;
     margin-left: 0.2em;
     margin-right: 0.5em;
     display: flex;

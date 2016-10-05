@@ -1,11 +1,11 @@
 'use strict'
 
 const OrbitIdentifyProvider = require('./identityprovider-orbit')
-const UportIdentifyProvider = require('./identityprovider-uport')
+// const UportIdentifyProvider = require('./identityprovider-uport')
 
 const enabledProviders = [
   OrbitIdentifyProvider,
-  UportIdentifyProvider
+  // UportIdentifyProvider
 ]
 
 let identityProviders = {}

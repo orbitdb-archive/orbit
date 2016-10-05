@@ -6,6 +6,8 @@ import { render } from 'react-dom'
 import { Router, Route, hashHistory } from 'react-router'
 import Logger from 'logplease'
 
+import Orbit from '../../../src/Orbit'
+
 import fs from 'fs'
 
 import AppActions from 'actions/AppActions'
@@ -41,7 +43,7 @@ import 'styles/Scrollbars.scss'
 import 'highlight.js/styles/atom-one-dark.css'
 // Agate, Atom One Dark, Github, Monokai, Monokai Sublime, Vs, Xcode
 
-import Main from '../main'
+Logger.setLogLevel(window.DEV ? 'DEBUG' : 'NONE')
 
 const logger = Logger.create('App', { color: Logger.Colors.Red })
 
@@ -80,15 +82,23 @@ var App = React.createClass({
   },
   componentDidMount: function() {
     const signalServerAddress = this.props.location.query.local ? '0.0.0.0' : '178.62.241.75'
-    const ipfsApi = hasIPFS ? window.ipfsInstance : null // Main.start creates js-ipfs instance if needed
+    const ipfsApi = hasIPFS ? window.ipfsInstance : null // spawn js-ipfs here if needed
     const ipcRenderer = hasIPFS ? window.ipcRenderer : null
     const dataPath = '/tmp/orbit-demo-2-'
+    // const orbit = window.orbit
 
-    Main.start(ipfsApi, dataPath, signalServerAddress).then((res) => {
-      logger.info("Orbit started")
-      logger.debug("PeerId:", res.peerId.ID)
+    orbit = new Orbit(ipfsApi, { dataPath: dataPath });
+    // return ipfsApiInstance.id()
+    //   .then((id) => {
+    //     logger.log(id);
+    //     return { orbit: orbit, peerId: id };
+    //   });
 
-      orbit = res.orbit
+    // Main.start(ipfsApi, dataPath, signalServerAddress).then((res) => {
+      logger.info("Orbit acquired")
+      // logger.debug("PeerId:", res.peerId.ID)
+
+      // orbit = res.orbit
 
       if(hasIPFS && ipcRenderer) {
         orbit.events.on('connected', (network, user) => ipcRenderer.send('connected', network, user))
@@ -97,11 +107,11 @@ var App = React.createClass({
 
       AppActions.initialize(orbit)
       NetworkActions.updateNetwork(null) // start the App
-    })
-    .catch((e) => {
-      logger.error(e.message)
-      logger.error("Stack trace:\n", e.stack)
-    })
+    // })
+    // .catch((e) => {
+    //   logger.error(e.message)
+    //   logger.error("Stack trace:\n", e.stack)
+    // })
 
     document.title = 'Orbit'
 

@@ -22,22 +22,23 @@ module.exports = {
   },
   entry: {
     app: './src/components/App.js',
-    vendor: [
-      'react', 'react-dom', 'react-router', 'react-addons-css-transition-group',
-      'reflux',
-      'lodash', 'logplease', 'fs', 'html5-fs', 'bs58',
-      'react-dropzone', 'react-autolink',
-      'highlight.js', 'clipboard', 'pleasejs', 'halogen',
-    ],
-    emojis: [
-      'react-emoji', 'emoji-annotation-to-unicode', './src/components/EmojiPicker.js'
-    ],
-    ipfsdist: [
-      'ipfs'
-    ]
+    // vendor: [
+    //   'react', 'react-dom', 'react-router', 'react-addons-css-transition-group',
+    //   'reflux',
+    //   'lodash', 'logplease', 'fs', 'html5-fs', 'bs58',
+    //   'react-dropzone', 'react-autolink',
+    //   'highlight.js', 'clipboard', 'pleasejs', 'halogen',
+    // ],
+    // emojis: [
+    //   'react-emoji', 'emoji-annotation-to-unicode', './src/components/EmojiPicker.js'
+    // ],
+    // ipfsdist: [
+    //   'ipfs'
+    // ]
   },
   debug: false,
-  devtool: false,
+  devtool: 'sourcemap',
+  // devtool: false,
   node: {
     console: false,
     // process: 'mock',
@@ -48,16 +49,16 @@ module.exports = {
     reasons: false
   },
   plugins: [
-    new CopyWebpackPlugin([
-      { from: path.join(__dirname + '/node_modules', 'ipfs/dist/index.min.js'), to: 'ipfs.js' }
-    ]),
+    // new CopyWebpackPlugin([
+    //   { from: path.join(__dirname + '/node_modules', 'ipfs/dist/index.min.js'), to: 'ipfs.js' }
+    // ]),
     // new webpack.optimize.CommonsChunkPlugin({ name: "ipfsdist", filename: "_remove.js", chunks: ['ipfsdist'] }),
-    new webpack.optimize.CommonsChunkPlugin({ name: "emojis", filename: "emojis.js", chunks: ['emojis'] }),
-    new webpack.optimize.CommonsChunkPlugin({ name: "vendor", filename: "vendor.js", chunks: ['vendor'] }),
+    // new webpack.optimize.CommonsChunkPlugin({ name: "emojis", filename: "emojis.js", chunks: ['emojis'] }),
+    // new webpack.optimize.CommonsChunkPlugin({ name: "vendor", filename: "vendor.js", chunks: ['vendor'] }),
     new webpack.optimize.AggressiveMergingPlugin(),
-    // new webpack.optimize.UglifyJsPlugin({
-    //   exclude: /ipfsdist.js/
-    // }),
+    new webpack.optimize.UglifyJsPlugin({
+      mangle: false,
+    }),
     new webpack.NoErrorsPlugin(),
     new webpack.DefinePlugin({
       'process.env': {
@@ -75,7 +76,7 @@ module.exports = {
     alias: {
       'node_modules': path.join(__dirname + '/node_modules'),
       'fs': path.join(__dirname + '/node_modules', 'html5-fs'),
-      'node-webcrypto-ossl': path.join(__dirname + '/node_modules', 'webcrypto'),
+      // 'node-webcrypto-ossl': path.join(__dirname + '/node_modules', 'webcrypto'),
       'app': __dirname + '/src/app/',
       'styles': __dirname + '/src/styles',
       'mixins': __dirname + '/src/mixins',
@@ -94,7 +95,7 @@ module.exports = {
       query: babel
     }, {
       test: /\.js$/,
-      include: /node_modules\/(qs|wreck|boom|logplease|ipfs-.+|orbit.*|crdts)/,
+      include: /node_modules\/(hoek|qs|wreck|boom|ipfs.+|orbit.+|logplease|crdts|promisify-es|whatwg-fetch|node-fetch|isomorphic-fetch|db\.js)/,
       loader: 'babel',
       query: babel
     }, {
