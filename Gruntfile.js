@@ -27,6 +27,8 @@ module.exports = function (grunt) {
       npm_build: [
         path.join(moduleCacheDirectory, 'node_modules/ipfs/node_modules/ipfs-api'),
         path.join(moduleCacheDirectory, 'node_modules/ipfsd-ctl/node_modules/go-ipfs-dep'),
+        path.join(moduleCacheDirectory, 'node_modules/uport-registry/node_modules/ipfs-api'),
+        path.join(moduleCacheDirectory, 'node_modules/ipfs-js/node_modules/ipfs-api'),
         path.join(moduleCacheDirectory, 'node_modules/ipfsd-ctl/node_modules/ipfs-api')
       ],
       electron: [

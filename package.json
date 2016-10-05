@@ -28,7 +28,7 @@
     "mocha": "^2.5.3"
   },
   "scripts": {
-    "postinstall": "./node_modules/.bin/grunt clean:npm && ./scripts/post_install.sh",
+    "postinstall": "./node_modules/.bin/grunt clean:npm",
     "test": "./node_modules/.bin/mocha",
     "build": "npm run build:osx && npm run build:linux",
     "build:osx": "./node_modules/.bin/grunt build_osx --TARGET_OS=darwin",
