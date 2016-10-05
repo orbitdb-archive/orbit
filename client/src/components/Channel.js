@@ -3,6 +3,7 @@
 import _ from 'lodash'
 import React from 'react'
 import Message from 'components/Message'
+import Message2 from 'components/Message2'
 import ChannelControls from 'components/ChannelControls'
 import NewMessageNotification from 'components/NewMessageNotification'
 import Dropzone from 'react-dropzone'
@@ -279,25 +280,45 @@ class Channel extends React.Component {
   renderMessages() {
     const { messages, username, channelName, loading, loadingText, reachedChannelStart, appSettings } = this.state
     const { colorifyUsernames, useEmojis, useMonospaceFont, font, monospaceFont, spacing } = appSettings
-    const elements = messages.map((message) => (
-      <Message
-        message={message.payload}
-        key={message.hash}
-        onReplyTo={this.onReplyTo.bind(this)}
-        onShowProfile={this.onShowProfile.bind(this)}
-        onDragEnter={this.onDragEnter.bind(this)}
-        onScrollToPreview={this.onScrollToPreview.bind(this)}
-        highlightWords={username}
-        colorifyUsername={colorifyUsernames}
-        useEmojis={useEmojis}
-        style={{
-          fontFamily: useMonospaceFont ? monospaceFont : font,
-          fontSize: useMonospaceFont ? '0.9em' : '1.0em',
-          fontWeight: useMonospaceFont ? '100' : '300',
-          padding: spacing,
-        }}
-      />
-    ))
+    const elements = messages.map((message) => {
+      if (appSettings.useLargeMessage) {
+        return <Message2
+          message={message.payload}
+          key={message.hash}
+          onReplyTo={this.onReplyTo.bind(this)}
+          onShowProfile={this.onShowProfile.bind(this)}
+          onDragEnter={this.onDragEnter.bind(this)}
+          onScrollToPreview={this.onScrollToPreview.bind(this)}
+          highlightWords={username}
+          colorifyUsername={colorifyUsernames}
+          useEmojis={useEmojis}
+          style={{
+            fontFamily: useMonospaceFont ? monospaceFont : font,
+            fontSize: useMonospaceFont ? '0.9em' : '1.0em',
+            fontWeight: useMonospaceFont ? '100' : '300',
+            padding: spacing,
+          }}
+        />   
+      } else {
+        return <Message
+          message={message.payload}
+          key={message.hash}
+          onReplyTo={this.onReplyTo.bind(this)}
+          onShowProfile={this.onShowProfile.bind(this)}
+          onDragEnter={this.onDragEnter.bind(this)}
+          onScrollToPreview={this.onScrollToPreview.bind(this)}
+          highlightWords={username}
+          colorifyUsername={colorifyUsernames}
+          useEmojis={useEmojis}
+          style={{
+            fontFamily: useMonospaceFont ? monospaceFont : font,
+            fontSize: useMonospaceFont ? '0.9em' : '1.0em',
+            fontWeight: useMonospaceFont ? '100' : '300',
+            padding: spacing,
+          }}
+        />           
+      }
+    })
         // {reachedChannelStart && !loading ? `Joined #${channelName}` : loadingText }
     elements.unshift(
       <div className="firstMessage" key="firstMessage" onClick={this.loadOlderMessages.bind(this)}>

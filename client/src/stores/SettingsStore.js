@@ -15,7 +15,8 @@ const defaultSettings = {
   font: 'Lato',
   monospaceFont: 'Roboto Mono',
   useMonospaceFont: false,
-  leftSidePanel: false
+  leftSidePanel: false,
+  useLargeMessage: false,
 }
 
 const settingsDescriptions = {

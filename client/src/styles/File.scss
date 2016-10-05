@@ -19,10 +19,11 @@ $directory-link-hover-color2: rgba(240, 240, 240, 0.9);
   .content {
     // width: 100%;
     // margin-bottom: 0.2em;
- box-sizing: content-box;
+    box-sizing: content-box;
   }
 
   .preview {
+    max-width: 90vw;
     margin-top: 0.5em;
     // margin-bottom: 0.25em;
     margin-left: 0.25em;
