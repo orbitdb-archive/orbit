@@ -176,4 +176,4 @@ A good place to start are the issues labelled ["help wanted"](https://github.com
 
 ## License
 
-[MIT](LICENSE) © haadcode
+[MIT](LICENSE) © 2016 haadcode
