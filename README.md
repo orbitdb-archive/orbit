@@ -60,8 +60,8 @@ npm start
 ## Development
 
 ### Requirements
-- [Node.js v4.x.x](http://nodejs.org/)
-- [npm](https://npmjs.com)
+- [Node.js v6.x.x](http://nodejs.org/)
+- [npm v3.x.x](https://npmjs.com)
 - g++, gcc, make (for building native modules)
 - python 2 (for building, some native modules need it, node-fibers perhaps?)
 
