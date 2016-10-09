@@ -10,25 +10,6 @@
 <img src="https://raw.githubusercontent.com/haadcode/orbit/master/screenshots/screenshot7%202016-09-02.png" width="50%">
 <img src="https://raw.githubusercontent.com/haadcode/orbit/master/screenshots/screenshot6%202016-04-17.png" width="50%">
 
-## Table of Contents
-
-- [Project Status](#project-status)
-- [Run](#run)
-  - [Live Demo](#live-demo)
-  - [Desktop](#desktop)
-  - [Browser](#browser)
-- [Development](#development)
-  - [Requirements](#requirements)
-  - [Get the source code](#get-the-source-code)
-  - [Install dependencies](#install-dependencies)
-  - [Run Tests](#run-tests)
-  - [Browser app development](#browser-app-development)
-    - [Build](#build)
-  - [Desktop app development](#desktop-app-development)
-    - [Build](#build-1)
-- [Contributing](#contributing)
-- [License](#license)
-
 ## Project Status
 
 **Status:** *In active development*
