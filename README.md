@@ -39,7 +39,7 @@ Orbit can be run either in a browser or as a native desktop application. The bro
 
 ### Desktop
 
-```sh
+```
 git clone https://github.com/haadcode/orbit.git
 cd orbit
 npm install
@@ -50,7 +50,7 @@ npm start
 
 *Chrome is recommended to run Orbit in the browser.*
 
-```sh
+```
 git clone https://github.com/haadcode/orbit.git
 cd orbit
 npm install
@@ -67,20 +67,20 @@ npm start
 
 The following npm modules must be installed globally: [grunt-cli](https://www.npmjs.com/package/grunt-cli), [mocha](https://www.npmjs.com/package/mocha), [electron-prebuilt](https://www.npmjs.com/package/electron-prebuilt). These can be installed by running:
 
-```sh
+```
 npm i -g grunt-cli mocha electron-prebuilt
 ```
 
 ### Get the source code
 
-```sh
+```
 git clone https://github.com/haadcode/orbit.git
 cd orbit/
 ```
 
 ### Install dependencies
 
-```sh
+```
 npm install
 ```
 
@@ -88,7 +88,7 @@ npm install
 
 *Note! Running the tests requires a running `redis-server`. If you don't have it installed, see installation instructions for [OSX](http://jasdeep.ca/2012/05/installing-redis-on-mac-os-x/) or [Linux](http://redis.io/topics/quickstart)*
 
-```sh
+```
 npm test
 ```
 
@@ -96,7 +96,7 @@ npm test
 
 **NOTE!** *This is currently not working as described. We're working to fix it.*
 
-```sh
+```
 cd client/
 npm install
 npm run dev
@@ -106,7 +106,7 @@ This will open webpack dev-server at [http://localhost:8000/webpack-dev-server](
 
 #### Build
 
-```sh
+```
 cd client/
 npm install
 npm run build
@@ -118,13 +118,13 @@ This will create `client/dist` directory which contains all the files needed to 
 
 First, start the desktop app in developer mode:
 
-```sh
+```
 npm run dev:electron
 ```
 
 Then, start the UI development environment:
 
-```sh
+```
 cd client/
 npm install
 npm run dev
@@ -134,7 +134,7 @@ npm run dev
 
 *Run this is in project's root directory, not in `client/`.*
 
-```sh
+```
 npm run build
 ```
 
