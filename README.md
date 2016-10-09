@@ -1,7 +1,6 @@
 # Orbit
 
 [![](https://img.shields.io/badge/made%20by-Protocol%20Labs-blue.svg?style=flat-square)](http://ipn.io)
-[![](https://img.shields.io/badge/freenode-%23ipfs-blue.svg?style=flat-square)](http://webchat.freenode.net/?channels=%23ipfs)
 
 > A distributed, peer-to-peer chat application built on [IPFS](http://ipfs.io)
 
@@ -187,6 +186,8 @@ See [API documentation](https://github.com/haadcode/orbit/blob/master/API.md) fo
   - [getDirectory(hash)](#getdirectoryhash)
 
 ## Contributing
+
+[![](https://img.shields.io/badge/freenode-%23ipfs-blue.svg?style=flat-square)](http://webchat.freenode.net/?channels=%23ipfs)
 
 I would be happy to accept PRs! If you want to work on something, it'd be good to talk beforehand to make sure nobody else is working on it. You can reach me on Twitter [@haadcode](https://twitter.com/haadcode) or on IRC #ipfs on Freenode, or in the comments of the [issues section](https://github.com/haadcode/orbit/issues).
 
