@@ -12,6 +12,8 @@
 
 **Status:** *In active development*
 
+**NOTE!** *Orbit is still more or less experimental. Things will change and break over the coming months, but we're pushing towards to stabilize the code base. If you come across problems, it would help greatly to open issues so that we can fix them as quickly as possible.*
+
 Check the project's [roadmap](https://github.com/haadcode/orbit/blob/master/ROADMAP.md) to see what's happening at the moment and what's planned next.
 
 [![Project Status](https://badge.waffle.io/haadcode/orbit.svg?label=In%20Progress&title=In%20Progress)](http://waffle.io/haadcode/orbit)
@@ -128,6 +130,8 @@ npm run build
 The builds are in `dist/`.
 
 ## API
+
+*We're in the process of separating the core orbit code into its own module and it'll make it possible to use the Orbit API to develop other clients and program using orbit.*
 
 See [API documentation](https://github.com/haadcode/orbit/blob/master/API.md) for full details.
 
