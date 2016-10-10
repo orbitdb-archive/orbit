@@ -21,6 +21,8 @@ Check the project's [roadmap](https://github.com/haadcode/orbit/blob/master/ROAD
 
 See also [CHANGELOG](https://github.com/haadcode/orbit/blob/master/CHANGELOG.md) for what's new!
 
+If you would like to participate in designing what Orbit is as a product, please join us in [Product Design for Orbit](https://github.com/haadcode/orbit/issues/149) issue.
+
 ## Run
 
 Orbit can be run either in a browser or as a native desktop application. The browser application uses [js-ipfs](http://github.com/ipfs/js-ipfs) implementation of [IPFS](http://ipfs.io). The desktop version uses the [go-ipfs](https://github.com/ipfs/go-ipfs) implementation of [IPFS](http://ipfs.io) together with [Electron](http://electron.atom.io/).
