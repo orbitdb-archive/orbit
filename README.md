@@ -127,10 +127,33 @@ npm run build
 
 The builds are in `dist/`.
 
+## API
+
+See [API documentation](https://github.com/haadcode/orbit/blob/master/API.md) for full details.
+
+- [Getting Started](#getting-started)
+- [Constructor](#constructor)
+- [Properties](#properties)
+  - [user](#user)
+  - [network](#network)
+  - [channels](#channels)
+  - [peers](#peers)
+- [Methods](#methods)
+  - [connect(username)](#connectusername)
+  - [disconnect()](#disconnect)
+  - [join(channel)](#joinchannel)
+  - [leave(channel)](#leavechannel)
+  - [send(channel, message)](#sendchannel-message)
+  - [get(channel, [lessThanHash], [greaterThanHash], [amount])](#getchannel-lessthanhash-greaterthanhash-amount)
+  - [getPost(hash, [withUserProfile = true])](#getposthash-withuserprofile--true)
+  - [getUser(hash)](#getuserhash)
+  - [addFile(channel, source)](#addfilechannel-source)
+  - [getFile(hash)](#getfilehash)
+  - [getDirectory(hash)](#getdirectoryhash)
+
 
 ## Contributing
 
 Would be happy to accept PRs! If you want to work on something, it'd be good to talk beforehand to make sure nobody else is working on it. You can reach me on Twitter [@haadcode](https://twitter.com/haadcode) or on IRC #ipfs on Freenode, or in the comments of the [issues section](https://github.com/haadcode/orbit/issues).
 
 Good place to start is to take a look at the ["help wanted"](https://github.com/haadcode/orbit/issues?q=is%3Aopen+is%3Aissue+label%3A%22help+wanted%22+sort%3Areactions-%2B1-desc) issues or the project's [status board](https://waffle.io/haadcode/orbit).
-0
