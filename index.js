@@ -10,29 +10,13 @@ const ipcMain       = electron.ipcMain
 const dialog        = electron.dialog
 const fs            = require('fs')
 const path          = require('path')
-const ipfsd         = require('ipfsd-ctl')
-const IpfsApi       = require('ipfs-api')
 const Logger        = require('logplease')
-// const Orbit         = require('./src/Orbit')
-const IpfsDaemon = require('ipfs-daemon')
-
-// module.exports = IpfsDaemon({
-//   IpfsDataDir: '/tmp/orbit-db-examples',
-//   API: {
-//     HTTPHeaders: {
-//       "Access-Control-Allow-Origin": ['*'],
-//       "Access-Control-Allow-Methods": ["PUT", "GET", "POST"],
-//       "Access-Control-Allow-Credentials": ["true"]
-//     } 
-//   }
-// })
-// .then((res) => console.log("Started IPFS daemon"))
-// .catch((err) => console.error(err))
+const IpfsDaemon    = require('ipfs-daemon')
 
  // dev|debug
 const MODE = process.env.ENV ? process.env.ENV : 'debug'
 
-const logger = Logger.create("Orbit.Index-Native")
+// TODO: move directory setup to its own file
 
 // Get data directories
 const userHomeDir = app.getPath("home")
@@ -53,9 +37,30 @@ if (!fs.existsSync(appDataDir))
 if (!fs.existsSync(orbitDataDir))
   fs.mkdirSync(orbitDataDir)
 
+// Set IPFS daemon's paths and addresses, and CORS
+const daemonSettings = {
+  AppDataDir: orbitDataDir,
+  IpfsDataDir: ipfsDataDir,
+  Addresses: {
+    API: '/ip4/127.0.0.1/tcp/0',
+    Swarm: ['/ip4/0.0.0.0/tcp/0'],
+    Gateway: '/ip4/0.0.0.0/tcp/0'
+  },
+  API: {
+    HTTPHeaders: {
+      "Access-Control-Allow-Origin": ['*'],
+      "Access-Control-Allow-Methods": ["PUT", "GET", "POST"],
+      "Access-Control-Allow-Credentials": ["true"]
+    } 
+  }
+}
+
+// Setup logging
+const logger = Logger.create("Orbit.Index-Native")
 Logger.setLogfile(path.join(orbitDataDir, '/debug.log'))
 Logger.setLogLevel('DEBUG')
 
+// Default window settings
 const connectWindowSize = {
   width: 512,
   height: 512,
@@ -114,74 +119,61 @@ const setWindowToLogin = () => {
   mainWindow.center()
 }
 
-logger.debug("Run index.js in '" + MODE + "' mode")
 
 // Start
+logger.debug("Run index.js in '" + MODE + "' mode")
+
 app.on('ready', () => {
   try {
     mainWindow = new BrowserWindow(connectWindowSize)
     mainWindow.webContents.session.setDownloadPath(path.resolve(userDownloadDir))
     Menu.setApplicationMenu(menu)
 
+    // Pass the mode and electron flag to the html (renderer process)
     global.DEV = MODE === 'dev'
     global.isElectron = true
-
-    // Display a loading screen while we boot up
-    mainWindow.loadURL('file://' + __dirname + '/client/dist/loading.html')
-
-    // Bind the Orbit IPFS daemon to a random port, set CORS
-    IpfsDaemon({
-      AppDataDir: orbitDataDir,
-      IpfsDataDir: ipfsDataDir,
-      Addresses: {
-        API: '/ip4/127.0.0.1/tcp/0',
-        Swarm: ['/ip4/0.0.0.0/tcp/0'],
-        Gateway: '/ip4/0.0.0.0/tcp/0'
-      },
-      API: {
-        HTTPHeaders: {
-          "Access-Control-Allow-Origin": ['*'],
-          "Access-Control-Allow-Methods": ["PUT", "GET", "POST"],
-          "Access-Control-Allow-Credentials": ["true"]
-        } 
-      }
-    })
-    .then((res) => {
-      const ipfsDaemon = res.daemon
-      const ipfs = res.ipfs
-      const gatewayAddr = res.Addresses.Gateway
-
-      global.ipfsInstance = res.ipfs //IpfsApi(ipfs.apiHost, ipfs.apiPort)
-      global.gatewayAddress = gatewayAddr ? gatewayAddr + '/ipfs/' : 'localhost:8080/ipfs/'
-
-      // Load the dist build or connect to webpack-dev-server
-      const indexUrl = MODE === 'dev'
-        ? 'http://localhost:8000/'
-        : 'file://' + __dirname + '/client/dist/index.html'
-
-      // If the window is closed, assume we quit
-      mainWindow.on('closed', () => {
-        mainWindow = null
-        ipfsDaemon.stopDaemon()
-      })
-
-      mainWindow.loadURL(indexUrl)
-    })
-    .catch((err) => {
-      logger.error(err)
-      dialog.showMessageBox({
-        type: 'error',
-        buttons: ['Ok'],
-        title: 'Error',
-        message: err.message,
-        detail: err.stack
-      }, () => process.exit(1))
-    })
 
     // Resize the window as per app state
     ipcMain.on('connected', (event) => setWindowToNormal())
     ipcMain.on('disconnected', (event) => setWindowToLogin())
 
+    // Load and display a loading screen while we boot up
+    mainWindow.loadURL('file://' + __dirname + '/client/dist/loading.html')
+
+    // Bind the Orbit IPFS daemon to a random port, set CORS
+    IpfsDaemon(daemonSettings)
+      .then((res) => {
+        // We have a running IPFS daemon
+        const ipfsDaemon = res.daemon
+        const gatewayAddr = res.Addresses.Gateway
+
+        // Pass the ipfs (api) instance and gateway address to the renderer process
+        global.ipfsInstance = res.ipfs
+        global.gatewayAddress = gatewayAddr ? gatewayAddr + '/ipfs/' : 'localhost:8080/ipfs/'
+
+        // If the window is closed, assume we quit
+        mainWindow.on('closed', () => {
+          mainWindow = null
+          ipfsDaemon.stopDaemon()
+        })
+
+        // Load the dist build or connect to webpack-dev-server
+        const indexUrl = MODE === 'dev'
+          ? 'http://localhost:8000/'
+          : 'file://' + __dirname + '/client/dist/index.html'
+
+        mainWindow.loadURL(indexUrl)
+      })
+      .catch((err) => {
+        logger.error(err)
+        dialog.showMessageBox({
+          type: 'error',
+          buttons: ['Ok'],
+          title: 'Error',
+          message: err.message,
+          detail: err.stack
+        }, () => process.exit(1))
+      })
   } catch(e) {
     logger.error("Error in index-native:", e)
   }
