@@ -3,7 +3,7 @@ machine:
     version: 6.1.0
 deployment:
   release:
-    branch: dev
+    branch: master
     owner: haadcode
     commands:
       - npm run build
