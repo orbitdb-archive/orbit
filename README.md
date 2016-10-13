@@ -65,12 +65,6 @@ npm start
 - g++, gcc, make (for building native modules)
 - python 2 (for building, some native modules need it, node-fibers perhaps?)
 
-The following npm modules must be installed globally: [grunt-cli](https://www.npmjs.com/package/grunt-cli), [mocha](https://www.npmjs.com/package/mocha), [electron-prebuilt](https://www.npmjs.com/package/electron-prebuilt). These can be installed by running:
-
-```
-npm i -g grunt-cli mocha electron-prebuilt
-```
-
 ### Get the source code
 
 ```
