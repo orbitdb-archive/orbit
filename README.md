@@ -94,6 +94,7 @@ npm test
 cd client/
 npm install
 npm run dev
+# This won't work. See bug here: __TODO__
 ```
 
 This will open webpack dev-server at [http://localhost:8000/webpack-dev-server](http://localhost:8000/webpack-dev-server).
