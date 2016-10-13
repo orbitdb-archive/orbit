@@ -90,6 +90,9 @@ npm test
 ```
 
 #### Browser app development
+
+**NOTE!** *This is currently not working as described. We're working to fix it.*
+
 ```
 cd client/
 npm install
