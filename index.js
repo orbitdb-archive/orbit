@@ -149,7 +149,7 @@ app.on('ready', () => {
 
         // Pass the ipfs (api) instance and gateway address to the renderer process
         global.ipfsInstance = res.ipfs
-        global.gatewayAddress = gatewayAddr ? gatewayAddr + '/ipfs/' : 'localhost:8080/ipfs/'
+        global.gatewayAddress = gatewayAddr ? gatewayAddr : 'localhost:8080/ipfs/'
 
         // If the window is closed, assume we quit
         mainWindow.on('closed', () => {
