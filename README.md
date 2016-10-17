@@ -80,8 +80,6 @@ npm install
 
 ### Run Tests
 
-*Note! Running the tests requires a running `redis-server`. If you don't have it installed, see installation instructions for [OSX](http://jasdeep.ca/2012/05/installing-redis-on-mac-os-x/) or [Linux](http://redis.io/topics/quickstart)*
-
 ```
 npm test
 ```
