@@ -27,7 +27,7 @@ If you would like to participate in designing what Orbit is as a product, please
 
 ## Run
 
-Orbit can be run either in a browser or as a native desktop application. The browser application uses [js-ipfs](http://github.com/ipfs/js-ipfs) implementation of [IPFS](http://ipfs.io). The desktop version uses the [go-ipfs](https://github.com/ipfs/go-ipfs) implementation of [IPFS](http://ipfs.io) [Electron](http://electron.atom.io/). Orbit uses [orbit-db]([orbit-db](https://github.com/haadcode/orbit-db) as its underlaying distributed database.
+Orbit can be run either in a browser or as a native desktop application. The browser application uses [js-ipfs](http://github.com/ipfs/js-ipfs) implementation of [IPFS](http://ipfs.io). The desktop version uses the [go-ipfs](https://github.com/ipfs/go-ipfs) implementation of [IPFS](http://ipfs.io) [Electron](http://electron.atom.io/). Orbit uses [orbit-db](https://github.com/haadcode/orbit-db) as its underlaying distributed database.
 
 ***Please note that Orbit is not secure at the moment!***
 
