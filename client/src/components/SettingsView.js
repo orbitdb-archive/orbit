@@ -53,6 +53,7 @@ class SettingsView extends React.Component {
     var list = Object.keys(this.state.settings).map(key => {
       var value = this.state.settings[key];
       var description = this.state.descriptions[key] || "";
+      const themeValue = typeof value === 'object' ? 'Default' : value;
 
       var field = typeof value === 'boolean' ? (
         <div style={this.state.theme}>
@@ -64,7 +65,7 @@ class SettingsView extends React.Component {
       ) : (
         <input style={this.state.theme}
                type="text"
-               defaultValue={value}
+               defaultValue={themeValue}
                onChange={this.changeStringSetting.bind(this, key)}
         />
       );
