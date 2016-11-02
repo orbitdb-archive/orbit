@@ -85,12 +85,12 @@ module.exports = {
     }]
   },
   externals: {
+    fs: 'fs',
     du: '{}',
     net: '{}',
     tls: '{}',
     console: '{}',
     'require-dir': '{}',
     mkdirp: '{}'
-    // process :'{ version: "your mom" }'
   }
 }

@@ -1,6 +1,5 @@
 'use strict'
 
-import _ from 'lodash'
 import React from 'react'
 import Channel from 'components/Channel'
 import UserStore from 'stores/UserStore'
