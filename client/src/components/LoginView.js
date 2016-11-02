@@ -3,7 +3,9 @@
 import React from 'react';
 import TransitionGroup from "react-addons-css-transition-group";
 import NetworkStore from 'stores/NetworkStore';
-import NetworkActions from "actions/NetworkActions";
+import NetworkActions from 'actions/NetworkActions';
+import UserActions from 'actions/UserActions';
+import AppActions from 'actions/AppActions';
 import BackgroundAnimation from 'components/BackgroundAnimation';
 import Themes from 'app/Themes';
 import 'styles/LoginView.scss';
@@ -23,7 +25,6 @@ class LoginView extends React.Component{
       connecting: false,
       connected: false,
       username: null,
-      password: null,
       displayPasswordField: false,
       currentLength: 0,
       theme: Themes.Default,
@@ -32,6 +33,8 @@ class LoginView extends React.Component{
   }
 
   componentDidMount() {
+    AppActions.setLocation('Connect')
+
     // window.addEventListener('resize', this.onResize.bind(this));
 
     if(this.refs.username) this.refs.username.focus();
@@ -59,14 +62,18 @@ class LoginView extends React.Component{
     this.unsubscribeFromNetworkStore();
   }
 
-  componentDidUpdate() {
-    if(this.refs.password) this.refs.password.focus();
-  }
-
   // onResize() {
   //   var size = Math.min(window.innerWidth, maxLogoSize);
   //   this.setState({ logoSize: size });
   // }
+
+  focusUsername(e) {
+    this.refs.username.focus()
+  }
+
+  configureIpfs(e) {
+    AppActions.setLocation('IpfsSettings')
+  }
 
   register(e) {
     if(e) e.preventDefault();
@@ -75,7 +82,8 @@ class LoginView extends React.Component{
 
     if(username !== '') {
       this.setState({ error: null, connecting: true, username: username });
-      NetworkActions.connect(null, username);
+      AppActions.setLocation('Loading')
+      AppActions.login(username);
     }
 
     return;
@@ -98,9 +106,9 @@ class LoginView extends React.Component{
     var errorMsg   = this.state.error ? <div className="error">{this.state.error}</div> : "";
     var passwordFieldStyle = this.state.displayPasswordField ? "row" : "hidden";
 
-    var form = 
+    var form =
       <TransitionGroup transitionName="loginScreenAnimation" transitionAppear={true} component="div" className="inputs" transitionAppearTimeout={5000} transitionEnterTimeout={5000} transitionLeaveTimeout={5000}>
-        <div className="usernameRow">
+        <div className="usernameRow" onClick={this.focusUsername.bind(this)}>
           <input
             type="text"
             ref="username"
@@ -125,6 +133,11 @@ class LoginView extends React.Component{
               />
             : null
           }
+        </div>
+        <div className="lastRow">
+          <button type='button' className='submitButton' onClick={this.configureIpfs.bind(this)}>
+            Configuration
+          </button>
         </div>
       </TransitionGroup>
 

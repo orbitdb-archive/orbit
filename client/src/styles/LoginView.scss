@@ -64,7 +64,7 @@ $text-color: rgba(228, 228, 228, 0.9);
 
   form {
     margin: 0;
-
+    z-index: 1; // for electron
     // margin-top: 120px;
     display: flex;
     // flex: 1 1 50%;

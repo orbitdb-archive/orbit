@@ -15,9 +15,11 @@ import UIActions from "actions/UIActions"
 import SocketActions from 'actions/SocketActions'
 import NetworkActions from 'actions/NetworkActions'
 import NotificationActions from 'actions/NotificationActions'
+import IpfsDaemonActions from 'actions/IpfsDaemonActions'
 import ChannelActions from 'actions/ChannelActions'
 import SkynetActions from 'actions/SkynetActions'
 
+import IpfsDaemonStore from 'stores/IpfsDaemonStore'
 import AppStateStore from 'stores/AppStateStore'
 import UserStore from 'stores/UserStore'
 import UserActions from 'actions/UserActions'
@@ -31,6 +33,7 @@ import SwarmStore from 'stores/SwarmStore'
 import ChannelsPanel from 'components/ChannelsPanel'
 import ChannelView from 'components/ChannelView'
 import SettingsView from 'components/SettingsView'
+import IpfsSettingsView from 'components/IpfsSettingsView'
 import SwarmView from 'components/SwarmView'
 import LoginView from 'components/LoginView'
 import Header from 'components/Header'
@@ -50,6 +53,7 @@ const logger = Logger.create('App', { color: Logger.Colors.Red })
 const views = {
   "Index": "/",
   "Settings": "/settings",
+  "IpfsSettings": "/ipfs-settings",
   "Swarm": "/swarm",
   "Connect": "/connect",
   "Channel": "/channel/"
@@ -57,15 +61,14 @@ const views = {
 
 const hasIPFS = !!window.ipfsInstance
 console.log("hasIPFS:", hasIPFS)
-let orbit// = hasIPFS ? window.orbit : null
 
-fs.init(1 * 1024 * 1024, (err) => {
-  if(err) {
-    logger.error("Couldn't initialize file system:", err)
-  } else {
-    logger.debug("FileSystem initialized")
-  }
-})
+// fs.init(1 * 1024 * 1024, (err) => {
+//   if(err) {
+//     logger.error("Couldn't initialize file system:", err)
+//   } else {
+//     logger.debug("FileSystem initialized")
+//   }
+// })
 
 var App = React.createClass({
   getInitialState: function() {
@@ -82,12 +85,10 @@ var App = React.createClass({
   },
   componentDidMount: function() {
     const signalServerAddress = this.props.location.query.local ? '0.0.0.0' : '178.62.241.75'
-    const ipfsApi = hasIPFS ? window.ipfsInstance : null // spawn js-ipfs here if needed
     const ipcRenderer = hasIPFS ? window.ipcRenderer : null
     // const dataPath = '/tmp/orbit-demo-2-'
     // const orbit = window.orbit
 
-    orbit = new Orbit(ipfsApi)
     // return ipfsApiInstance.id()
     //   .then((id) => {
     //     logger.log(id);
@@ -95,20 +96,17 @@ var App = React.createClass({
     //   });
 
     // Main.start(ipfsApi, dataPath, signalServerAddress).then((res) => {
-      logger.info("Orbit acquired")
       // logger.debug("PeerId:", res.peerId.ID)
 
       // orbit = res.orbit
 
-      if(hasIPFS && ipcRenderer) {
-        orbit.events.on('connected', (network, user) => ipcRenderer.send('connected', network, user))
-        orbit.events.on('disconnected', () => ipcRenderer.send('disconnected'))
+      if (!this.state.user) {
+        AppActions.setLocation('Connect')
       }
-
-      AppActions.initialize(orbit)
-      NetworkActions.updateNetwork(null) // start the App
+      // AppActions.setLocation('connect') // start the App
     // })
-    // .catch((e) => {
+    // .catch((e) => {  onSetCurrentChannel: function(channel) {
+
     //   logger.error(e.message)
     //   logger.error("Stack trace:\n", e.stack)
     // })
@@ -119,6 +117,7 @@ var App = React.createClass({
     NetworkActions.joinedChannel.listen(this.onJoinedChannel)
     NetworkActions.joinChannelError.listen(this.onJoinChannelError)
     NetworkActions.leaveChannel.listen(this.onLeaveChannel)
+    AppActions.login.listen(this.onLogin)
     SocketActions.socketDisconnected.listen(this.onDaemonDisconnected)
 
     this.unsubscribeFromNetworkStore = NetworkStore.listen(this.onNetworkUpdated)
@@ -162,9 +161,28 @@ var App = React.createClass({
     if(hasIPFS) ipcRenderer.send('disconnected')
     this.setState(this.getInitialState())
   },
+  onLogin: function(username) {
+    IpfsDaemonActions.start();
+    const stop = AppActions.hasInitialized.listen(() => {
+      stop()
+      NetworkActions.connect(null, username)
+    })
+    const stopListening = IpfsDaemonActions.daemonStarted.listen((ipfs) => {
+      stopListening()
+      const orbit = new Orbit(ipfs)
+      if(ipcRenderer) {
+        orbit.events.on('connected', (network, user) => {
+          ipcRenderer.send('connected', network, user)
+        });
+        orbit.events.on('disconnected', () => {
+          ipcRenderer.send('disconnected')
+        })
+      }
+      AppActions.initialize(orbit);
+    })
+  },
   onNetworkUpdated: function(network) {
     logger.debug("Network updated")
-    console.log(network)
     if (!network) {
       this._reset()
       AppActions.setLocation("Connect")
@@ -256,7 +274,7 @@ var App = React.createClass({
     this.setState({ panelOpen: true })
   },
   disconnect: function() {
-    orbit.disconnect()
+    logger.debug('app disconnect')
     this.closePanel()
     NetworkActions.disconnect()
     this.setState({ user: null })
@@ -269,10 +287,11 @@ var App = React.createClass({
     hashHistory.push(url ? url : '/')
   },
   render: function() {
-    const header = AppStateStore.state.location && AppStateStore.state.location !== "Connect" ? (
+    const location = AppStateStore.state.location
+    const header = location && ["Connect", "IpfsSettings"].indexOf(location) < 0 ? (
       <Header
         onClick={this.openPanel}
-        title={AppStateStore.state.location}
+        title={location}
         channels={ChannelStore.channels}
         theme={this.state.theme}>
       </Header>
@@ -285,7 +304,7 @@ var App = React.createClass({
         onOpenSettings={this.openSettings}
         onDisconnect={this.disconnect}
         channels={ChannelStore.channels}
-        currentChannel={AppStateStore.state.location}
+        currentChannel={location}
         username={this.state.user ? this.state.user.name : ""}
         requirePassword={this.state.requirePassword}
         theme={this.state.theme}
@@ -311,6 +330,7 @@ render(
     <Route path="/" component={App}>
       <Route path="channel/:channel" component={ChannelView}/>
       <Route path="settings" component={SettingsView}/>
+      <Route path="ipfs-settings" component={IpfsSettingsView}/>
       <Route path="swarm" component={SwarmView}/>
       <Route path="connect" component={LoginView}/>
     </Route>

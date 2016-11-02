@@ -60,10 +60,12 @@
       // We're running in Electron
       const req = typeof require !== 'undefined' ? require : parent.require;
       const remote = req('electron').remote;
+      window.remote = remote;
       window.isElectron = remote.getGlobal('isElectron');
       window.gatewayAddress = remote.getGlobal('gatewayAddress');
       window.DEV = remote.getGlobal('DEV');
       window.ipfsInstance = remote.getGlobal('ipfsInstance');
+      window.ipfsDataDir = remote.getGlobal('ipfsDataDir');
       window.orbit = remote.getGlobal('orbit');
       window.ipcRenderer = req('electron').ipcRenderer;
     } else {

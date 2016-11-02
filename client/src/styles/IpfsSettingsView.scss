@@ -1,0 +1,107 @@
+$primary-font: "Lato";
+$primary-color: #222222;
+
+.IpfsSettingsView {
+  font-family: $primary-font;
+  font-weight: 200;
+  position:absolute;
+  width:100%;
+  height: 100%;
+  overflow: scroll;  //Change this to scroll or auto
+  title {
+    display: flex;
+    color: white;
+    margin-left: auto;
+    margin-right: auto;
+    margin-top: 2em;
+    margin-bottom: 2em;
+    width: 10em;
+    font-size: larger;
+  }
+  input {
+    width: 60%;
+    margin-left: 2%;
+    :placeholder {
+      width: 100%;
+    }
+  }
+  h1.title {
+    font-size: 2em;
+    height: 10%
+  }
+  label {
+    color: white;
+    width: 34%;
+    font-size: 1em;
+    float: left;
+  }
+}
+
+.textInput {
+  display: flex;
+  flex-direction: row;
+  align-items: flex-end;
+}
+
+.listForm {
+  position: relative;
+  width: 100%;
+  height: 6em;
+  margin-top: 1em;
+  min-height: 6em;
+
+  h1 {
+    width: auto;
+    font-size: 1em;
+    float: left;
+    width: 40%;
+  }
+
+  .list {
+    float: left;
+    width: auto;
+    margin-top: 0;
+    margin-bottom: 0;
+    padding: 0;
+    margin-left: 2%;
+  }
+
+  .row {
+    float: left;
+    width: 100%;
+    min-height: 1em;
+    margin-top:0.5em;
+  }
+
+  input {
+    width: 50%;
+    float: left;
+    margin-left: 36%;
+    :placeholder {
+      width: 100%;
+    }
+  }
+
+  li {
+    list-style-type: none;
+    cursor: no-drop;
+    color: white;
+    background-color: #231A25;
+    padding: 0;
+    margin: 0;
+    border-collapse: collapse;
+    width: 100%;
+  }
+
+  li:hover {
+    background-color: #311E35;
+  }
+
+}
+
+.save button {
+  font-size: 1.2em;
+  width: 100%;
+  margin-top: 60px;
+  color: #A09A9A;
+}

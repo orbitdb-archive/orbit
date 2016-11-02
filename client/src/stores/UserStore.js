@@ -4,6 +4,7 @@ import Reflux from 'reflux'
 import AppActions from 'actions/AppActions'
 import UserActions from 'actions/UserActions'
 import NetworkActions from 'actions/NetworkActions'
+import IpfsDaemonActions from 'actions/IpfsDaemonActions'
 import Logger from 'logplease'
 
 const logger = Logger.create('UserStore', { color: Logger.Colors.Green })
