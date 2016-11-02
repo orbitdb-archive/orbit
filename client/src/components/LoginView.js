@@ -59,10 +59,6 @@ class LoginView extends React.Component{
     this.unsubscribeFromNetworkStore();
   }
 
-  componentDidUpdate() {
-    if(this.refs.password) this.refs.password.focus();
-  }
-
   // onResize() {
   //   var size = Math.min(window.innerWidth, maxLogoSize);
   //   this.setState({ logoSize: size });
@@ -98,7 +94,7 @@ class LoginView extends React.Component{
     var errorMsg   = this.state.error ? <div className="error">{this.state.error}</div> : "";
     var passwordFieldStyle = this.state.displayPasswordField ? "row" : "hidden";
 
-    var form = 
+    var form =
       <TransitionGroup transitionName="loginScreenAnimation" transitionAppear={true} component="div" className="inputs" transitionAppearTimeout={5000} transitionEnterTimeout={5000} transitionLeaveTimeout={5000}>
         <div className="usernameRow">
           <input
