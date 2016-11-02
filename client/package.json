@@ -16,9 +16,9 @@
     "html5-fs": "https://github.com/haadcode/html5-fs.git",
     "lodash": "^4.14.0",
     "lodash.differencewith": "^4.5.0",
-    "logplease": "^1.2.7",
+    "logplease": "^1.2.9",
     "object-assign": "^4.1.0",
-    "orbit_": "0.0.4",
+    "orbit_": "^0.0.11",
     "pleasejs": "^0.4.2",
     "react": "^0.14.8",
     "react-addons-css-transition-group": "^0.14.1",
@@ -74,7 +74,7 @@
     "style-loader": "~0.13.1",
     "transform-loader": "^0.2.3",
     "url-loader": "~0.5.7",
-    "webpack": "^2.1.0-beta.21",
+    "webpack": "2.1.0-beta.21",
     "webpack-dev-server": "^2.1.0-beta.0"
   },
   "scripts": {
