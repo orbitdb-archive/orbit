@@ -1,9 +1,9 @@
-'use strict';
+'use strict'
 
-const webpack = require('webpack');
-const path = require('path');
-const ChunkManifestPlugin = require('chunk-manifest-webpack-plugin');
-const CopyWebpackPlugin = require('copy-webpack-plugin');
+const webpack = require('webpack')
+const path = require('path')
+const ChunkManifestPlugin = require('chunk-manifest-webpack-plugin')
+const CopyWebpackPlugin = require('copy-webpack-plugin')
 
 module.exports = {
   output: {
@@ -17,14 +17,10 @@ module.exports = {
     ],
   },
   plugins: [
-    new CopyWebpackPlugin([
-      { from: path.join(__dirname + '/node_modules', 'ipfs/dist/index.js'), to: 'ipfs.js' }
-    ]),
     new ChunkManifestPlugin({
       filename: "manifest.json",
       manifestVariable: "webpackManifest"
     }),
-    new webpack.optimize.AggressiveMergingPlugin(),
     new webpack.HotModuleReplacementPlugin()
   ],
   cache: false,
@@ -42,7 +38,6 @@ module.exports = {
     reasons: true
   },
   resolve: {
-    // extensions: ['', '.js', '.jsx'],
     alias: {
       'node_modules': path.join(__dirname + '/node_modules'),
       'libp2p-ipfs': 'libp2p-ipfs-browser',
@@ -84,10 +79,11 @@ module.exports = {
     }]
   },
   externals: {
+    fs: '{}',
     du: '{}',
     net: '{}',
     tls: '{}',
     'require-dir': '{}',
     mkdirp: '{}'
   }
-};
+}

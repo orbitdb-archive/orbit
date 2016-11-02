@@ -38,3 +38,5 @@ stats.json
 
 # temp file
 ipfsdist.js
+
+dist/**/*.map

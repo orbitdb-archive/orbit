@@ -9,16 +9,21 @@
   "mainInput": "App",
   "mainOutput": "main",
   "dependencies": {
+    "@haad/ipfs-api": "^13.0.0-beta.7",
     "clipboard": "^1.5.12",
     "emoji-annotation-to-unicode": "^0.2.4",
     "halogen": "^0.2.0",
     "highlight.js": "^9.5.0",
-    "html5-fs": "https://github.com/haadcode/html5-fs.git",
-    "lodash": "^4.14.0",
     "lodash.differencewith": "^4.5.0",
-    "logplease": "^1.2.7",
+    "lodash.flatten": "^4.4.0",
+    "lodash.last": "^3.0.0",
+    "lodash.pickby": "^4.6.0",
+    "lodash.some": "^4.6.0",
+    "lodash.sortby": "^4.7.0",
+    "lodash.take": "^4.1.1",
+    "logplease": "^1.2.9",
     "object-assign": "^4.1.0",
-    "orbit_": "0.0.4",
+    "orbit_": "^0.1.0-beta.4",
     "pleasejs": "^0.4.2",
     "react": "^0.14.8",
     "react-addons-css-transition-group": "^0.14.1",
@@ -27,7 +32,8 @@
     "react-dropzone": "^3.4.0",
     "react-emoji": "^0.4.4",
     "react-router": "^2.4.0",
-    "reflux": "^0.4.1"
+    "reflux": "^0.4.1",
+    "stream-http": "^2.5.0"
   },
   "devDependencies": {
     "babel-cli": "^6.5.2",
@@ -74,17 +80,16 @@
     "style-loader": "~0.13.1",
     "transform-loader": "^0.2.3",
     "url-loader": "~0.5.7",
-    "webpack": "^2.1.0-beta.21",
+    "webpack": "2.1.0-beta.21",
     "webpack-dev-server": "^2.1.0-beta.0"
   },
   "scripts": {
-    "test": "./node_modules/.bin/karma start --single-run=true",
-    "test:dev": "./node_modules/.bin/karma start",
-    "dev": "./node_modules/.bin/grunt serve",
-    "build": "./node_modules/.bin/webpack --config webpack.dist.config.js",
+    "test": "$(npm bin)/karma start --single-run=true",
+    "test:dev": "$(npm bin)/karma start",
+    "dev": "$(npm bin)/grunt serve",
+    "build": "$(npm bin)/webpack --config webpack.dist.config.js",
     "publish": "ipfs add -r dist/",
-    "stats": "./node_modules/.bin/webpack --json > stats.json",
-    "start": "cd dist && ../node_modules/.bin/http-server -c-1 -p 8081 & open http://localhost:8081/index.html & wait",
-    "postinstall": "./node_modules/.bin/grunt clean:npm"
+    "stats": "$(npm bin)/webpack --json > stats.json",
+    "start": "cd dist && ../node_modules/.bin/http-server -c-1 -p 8081 & open http://localhost:8081/index.html & wait"
   }
 }

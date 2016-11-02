@@ -39,6 +39,8 @@ And require it in your program:
 const Orbit = require('orbit_')
 ```
 
+*Please note that Orbit requires you to pass an instance of IPFS to its constructor. You can create and IPFS instance with [js-ipfs](https://github.com/ipfs/js-ipfs) or [js-ipfs-api](https://github.com/ipfs/js-ipfs-api) or you can use a higher-level wrapper that does everything automatically for you, like [ipfs-daemon](https://github.com/haadcode/ipfs-daemon).*
+
 ### Constructor
 
 #### new Orbit(ipfs, options = {})
@@ -210,9 +212,11 @@ orbit.getUser(post.meta.from)
 ```
 
 #### addFile(channel, source)
-Add a file to a `channel`. 
+Add a file to a `channel`. Source is an object that defines how to add the file.
 
-TODO: params, return value, thrown errors, example
+Returns a *FilePost* object.
+
+Source object:
 
 ```javascript
 addFile(channel, source) where source is:
@@ -227,6 +231,18 @@ addFile(channel, source) where source is:
 }
 ```
 
+FilePost:
+
+```javascript
+{
+  name: 'File1',
+  hash: 'Qm...File1',
+  size: 123,
+  from: 'Qm...Userid',
+  meta: { ... }
+}
+```
+
 Usage:
 
 ```javascript
@@ -236,11 +252,36 @@ orbit.addFile(channel, { filename: "file1.txt", buffer: new Buffer(<file1.txt as
 ```
 
 #### getFile(hash)
-Returns contents of a file from IPFS.
+Get contents of a file from Orbit. Returns a *stream*. Takes a *hash* of the file as an argument.
 
-TODO: params, return value, thrown errors, example
+```javascript
+orbit.getFile('Qm...File1')
+  .then((stream) => {
+    let buf = new Uint8Array(0)
+    stream.on('data', (chunk) => {
+      const appendBuffer = new Uint8Array(buf.length + chunk.length)
+      appendBuffer.set(buf)
+      appendBuffer.set(chunk, buf.length)
+      buf = appendBuffer
+    })
+    stream.on('error', () => /* handle error */)
+    stream.on('end', () => /* the Stream has finished, no more data */)
+  })
+  .catch((e) => console.error(e))
+```
 
 #### getDirectory(hash)
 Returns a directory listing as an `Array`
 
-TODO: params, return value, thrown errors, example
+```javascript
+orbit.getDirectory('Qm...Dir1')
+  .then((result) => {
+    // result is:
+    // {
+    //   Hash: 'Qm...Dir1,
+    //   Size: 18,
+    //   Type: ..., // Type === 1 ? "this is a directory" : "this is a file"
+    //   Name: 'Dir1'
+    // }
+  })
+```

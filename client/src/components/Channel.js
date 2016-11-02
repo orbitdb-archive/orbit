@@ -1,7 +1,7 @@
 'use strict'
 
-import _ from 'lodash'
 import React from 'react'
+import last from 'lodash.last'
 import Message from 'components/Message'
 import Message2 from 'components/Message2'
 import ChannelControls from 'components/ChannelControls'
@@ -102,7 +102,7 @@ class Channel extends React.Component {
     this.node = this.refs.MessagesView
     if(this.node.scrollHeight - this.node.scrollTop + this.bottomMargin > this.node.clientHeight
       && this.node.scrollHeight > this.node.clientHeight + 1
-      && this.state.messages.length > 0 && _.last(messages).payload.meta.ts > _.last(this.state.messages).payload.meta.ts
+      && this.state.messages.length > 0 && last(messages).payload.meta.ts > last(this.state.messages).payload.meta.ts
       && this.node.scrollHeight > 0) {
       this.setState({
         unreadMessages: this.state.unreadMessages + 1
