@@ -2,6 +2,11 @@
 
 if(process.env.ENV === 'dev') delete process.versions['electron']
 
+// distry fix for "too many files open" in go-ipfs
+// const http = require('http')
+// http.globalAgent.keepAlive = true
+// http.globalAgent.maxSockets = 5
+
 const electron      = require('electron')
 const app           = electron.app
 const BrowserWindow = electron.BrowserWindow
@@ -41,10 +46,11 @@ if (!fs.existsSync(orbitDataDir))
 const daemonSettings = {
   AppDataDir: orbitDataDir,
   IpfsDataDir: ipfsDataDir,
+  // Flags: [],
   Addresses: {
-    API: '/ip4/127.0.0.1/tcp/0',
-    Swarm: ['/ip4/0.0.0.0/tcp/0'],
-    Gateway: '/ip4/0.0.0.0/tcp/0'
+    API: '/ip4/127.0.0.1/tcp/5001',
+    Swarm: ['/ip4/0.0.0.0/tcp/4001'],
+    Gateway: '/ip4/0.0.0.0/tcp/8080'
   },
   API: {
     HTTPHeaders: {
@@ -119,7 +125,6 @@ const setWindowToLogin = () => {
   mainWindow.center()
 }
 
-
 // Start
 logger.debug("Run index.js in '" + MODE + "' mode")
 
@@ -141,20 +146,19 @@ app.on('ready', () => {
     mainWindow.loadURL('file://' + __dirname + '/client/dist/loading.html')
 
     // Bind the Orbit IPFS daemon to a random port, set CORS
-    IpfsDaemon(daemonSettings)
-      .then((res) => {
+    const ipfs = new IpfsDaemon(daemonSettings)
+      ipfs.on('ready', (res) => {
         // We have a running IPFS daemon
-        const ipfsDaemon = res.daemon
-        const gatewayAddr = res.Addresses.Gateway
 
         // Pass the ipfs (api) instance and gateway address to the renderer process
-        global.ipfsInstance = res.ipfs
+        const gatewayAddr = ipfs.GatewayAddress
+        global.ipfsInstance = ipfs
         global.gatewayAddress = gatewayAddr ? gatewayAddr : 'localhost:8080/ipfs/'
 
         // If the window is closed, assume we quit
         mainWindow.on('closed', () => {
           mainWindow = null
-          ipfsDaemon.stopDaemon()
+          ipfs.stop()
         })
 
         // Load the dist build or connect to webpack-dev-server
@@ -164,7 +168,8 @@ app.on('ready', () => {
 
         mainWindow.loadURL(indexUrl)
       })
-      .catch((err) => {
+
+      ipfs.on('error', (err) => {
         logger.error(err)
         dialog.showMessageBox({
           type: 'error',

@@ -1,6 +1,5 @@
 'use strict';
 
-import _ from 'lodash';
 import React from 'react';
 import TransitionGroup from "react-addons-css-transition-group";
 import AppStateStore from 'stores/AppStateStore';
@@ -37,9 +36,12 @@ class Header extends React.Component {
   }
 
   render() {
-    const channelNames = _.filter(this.props.channels, (e) => {
-      return '#' + e.name !== this.props.title && this.props.title;
-    });
+    const channelNames = Object.keys(this.props.channels)
+      .map((e) => this.props.channels[e])
+      .filter((e) => {
+        return '#' + e.name !== this.props.title && this.props.title;
+      });
+      
     const channels = channelNames.map((e) => {
       const unreadMessagesCount = this.state.appState.unreadMessages[e.name] ? this.state.appState.unreadMessages[e.name] : 0;
       const mentionsCount = this.state.appState.mentions[e.name] ? this.state.appState.mentions[e.name] : 0;

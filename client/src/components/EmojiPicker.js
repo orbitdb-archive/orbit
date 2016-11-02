@@ -1,6 +1,6 @@
 'use strict';
 
-import _ from 'lodash';
+import pickBy from 'lodash.pickby';
 import React from 'react';
 import ReactEmoji from "react-emoji";
 import { emojiData } from "../utils/emojilist";
@@ -8,10 +8,16 @@ import emojisAnnotations from 'emoji-annotation-to-unicode';
 import 'styles/EmojiPicker.scss';
 
 const modulo = (op1, op2) => (((op1 % op2) + op2) % op2);
-const supportedEmojiUnicodes = Object.keys(emojisAnnotations).map((e) => emojisAnnotations[e]).filter((e) => e !== '1f306');
-const supportedEmojis = _.pickBy(emojiData, (e) => supportedEmojiUnicodes.indexOf(e.unicode) > -1);
 
-const emojiList = _.map(supportedEmojis, (e) => {
+const supportedEmojiUnicodes = Object.keys(emojisAnnotations)
+  .map((e) => emojisAnnotations[e])
+  .filter((e) => e !== '1f306');
+
+const supportedEmojis = Object.keys(emojiData)
+  .map((e) => emojiData[e])
+  .filter((e) => supportedEmojiUnicodes.indexOf(e.unicode) > -1);
+
+const emojiList = supportedEmojis.map((e) => {
   if (e.shortname.startsWith(':flag_'))
     e.shortname = e.shortname.replace('flag_', '');
   else if (e.shortname === ':ten:')
