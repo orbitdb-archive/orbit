@@ -13,7 +13,7 @@
   },
   "devDependencies": {
     "bluebird": "^3.4.6",
-    "electron": "1.4.3",
+    "electron": "1.4.5",
     "fs-pull-blob-store": "^0.4.1",
     "grunt": "^1.0.1",
     "grunt-chmod": "^1.1.1",
