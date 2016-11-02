@@ -1,12 +1,14 @@
 'use strict'
 
-import Orbit from 'orbit_'
-
+import _ from 'lodash'
 import React from 'react'
 import { render } from 'react-dom'
 import { Router, Route, hashHistory } from 'react-router'
-import some from 'lodash.some'
 import Logger from 'logplease'
+
+import Orbit from 'orbit_'
+
+import fs from 'fs'
 
 import AppActions from 'actions/AppActions'
 import UIActions from "actions/UIActions"
@@ -56,6 +58,14 @@ const views = {
 const hasIPFS = !!window.ipfsInstance
 console.log("hasIPFS:", hasIPFS)
 let orbit// = hasIPFS ? window.orbit : null
+
+// fs.init(1 * 1024 * 1024, (err) => {
+//   if(err) {
+//     logger.error("Couldn't initialize file system:", err)
+//   } else {
+//     logger.debug("FileSystem initialized")
+//   }
+// })
 
 var App = React.createClass({
   getInitialState: function() {
@@ -216,7 +226,7 @@ var App = React.createClass({
     logger.debug("Set title: " + document.title)
     AppActions.setCurrentChannel(channel)
     let channels = this._getSavedChannels(this.state.networkName, this.state.user.name)
-    if (!some(channels, { name: channel })) {
+    if (!_.some(channels, { name: channel })) {
       channels.push({ name: channel })
       this._saveChannels(this.state.networkName, this.state.user.name, channels)
     }
