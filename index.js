@@ -51,7 +51,7 @@ const daemonSettings = {
       "Access-Control-Allow-Origin": ['*'],
       "Access-Control-Allow-Methods": ["PUT", "GET", "POST"],
       "Access-Control-Allow-Credentials": ["true"]
-    } 
+    }
   }
 }
 
@@ -132,48 +132,46 @@ app.on('ready', () => {
     // Pass the mode and electron flag to the html (renderer process)
     global.DEV = MODE === 'dev'
     global.isElectron = true
-
+    global.ipfsDaemonSettings = daemonSettings
     // Resize the window as per app state
     ipcMain.on('connected', (event) => setWindowToNormal())
     ipcMain.on('disconnected', (event) => setWindowToLogin())
 
-    // Load and display a loading screen while we boot up
-    mainWindow.loadURL('file://' + __dirname + '/client/dist/loading.html')
+    // Load the dist build or connect to webpack-dev-server
+    const indexUrl = MODE === 'dev'
+      ? 'http://localhost:8000/'
+      : 'file://' + __dirname + '/client/dist/index.html'
+
+    mainWindow.loadURL(indexUrl)
 
     // Bind the Orbit IPFS daemon to a random port, set CORS
-    IpfsDaemon(daemonSettings)
-      .then((res) => {
-        // We have a running IPFS daemon
-        const ipfsDaemon = res.daemon
-        const gatewayAddr = res.Addresses.Gateway
-
-        // Pass the ipfs (api) instance and gateway address to the renderer process
-        global.ipfsInstance = res.ipfs
-        global.gatewayAddress = gatewayAddr ? gatewayAddr : 'localhost:8080/ipfs/'
-
-        // If the window is closed, assume we quit
-        mainWindow.on('closed', () => {
-          mainWindow = null
-          ipfsDaemon.stopDaemon()
-        })
-
-        // Load the dist build or connect to webpack-dev-server
-        const indexUrl = MODE === 'dev'
-          ? 'http://localhost:8000/'
-          : 'file://' + __dirname + '/client/dist/index.html'
-
-        mainWindow.loadURL(indexUrl)
-      })
-      .catch((err) => {
-        logger.error(err)
-        dialog.showMessageBox({
-          type: 'error',
-          buttons: ['Ok'],
-          title: 'Error',
-          message: err.message,
-          detail: err.stack
-        }, () => process.exit(1))
-      })
+    // IpfsDaemon(daemonSettings)
+    //   .then((res) => {
+    //     // We have a running IPFS daemon
+    //     const ipfsDaemon = res.daemon
+    //     const gatewayAddr = res.Addresses.Gateway
+    //
+    //     // Pass the ipfs (api) instance and gateway address to the renderer process
+    //     global.ipfsInstance = res.ipfs
+    //     global.gatewayAddress = gatewayAddr ? gatewayAddr : 'localhost:8080/ipfs/'
+    //
+    //     // If the window is closed, assume we quit
+    //     mainWindow.on('closed', () => {
+    //       mainWindow = null
+    //       ipfsDaemon.stopDaemon()
+    //     })
+    //
+    //   })
+    //   .catch((err) => {
+    //     logger.error(err)
+    //     dialog.showMessageBox({
+    //       type: 'error',
+    //       buttons: ['Ok'],
+    //       title: 'Error',
+    //       message: err.message,
+    //       detail: err.stack
+    //     }, () => process.exit(1))
+    //   })
   } catch(e) {
     logger.error("Error in index-native:", e)
   }
