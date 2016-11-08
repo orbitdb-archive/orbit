@@ -31,6 +31,7 @@ import SwarmStore from 'stores/SwarmStore'
 import ChannelsPanel from 'components/ChannelsPanel'
 import ChannelView from 'components/ChannelView'
 import SettingsView from 'components/SettingsView'
+import IpfsSettingsView from 'components/IpfsSettingsView'
 import SwarmView from 'components/SwarmView'
 import LoginView from 'components/LoginView'
 import Header from 'components/Header'
@@ -50,6 +51,7 @@ const logger = Logger.create('App', { color: Logger.Colors.Red })
 const views = {
   "Index": "/",
   "Settings": "/settings",
+  "IpfsSettings": "/ipfs-settings",
   "Swarm": "/swarm",
   "Connect": "/connect",
   "Channel": "/channel/"
@@ -108,7 +110,8 @@ var App = React.createClass({
       AppActions.initialize(orbit)
       NetworkActions.updateNetwork(null) // start the App
     // })
-    // .catch((e) => {
+    // .catch((e) => {  onSetCurrentChannel: function(channel) {
+
     //   logger.error(e.message)
     //   logger.error("Stack trace:\n", e.stack)
     // })
@@ -269,10 +272,11 @@ var App = React.createClass({
     hashHistory.push(url ? url : '/')
   },
   render: function() {
-    const header = AppStateStore.state.location && AppStateStore.state.location !== "Connect" ? (
+    const location = AppStateStore.state.location
+    const header = location && ["Connect", "IpfsSettings"].indexOf(location) < 0 ? (
       <Header
         onClick={this.openPanel}
-        title={AppStateStore.state.location}
+        title={location}
         channels={ChannelStore.channels}
         theme={this.state.theme}>
       </Header>
@@ -285,7 +289,7 @@ var App = React.createClass({
         onOpenSettings={this.openSettings}
         onDisconnect={this.disconnect}
         channels={ChannelStore.channels}
-        currentChannel={AppStateStore.state.location}
+        currentChannel={location}
         username={this.state.user ? this.state.user.name : ""}
         requirePassword={this.state.requirePassword}
         theme={this.state.theme}
@@ -311,6 +315,7 @@ render(
     <Route path="/" component={App}>
       <Route path="channel/:channel" component={ChannelView}/>
       <Route path="settings" component={SettingsView}/>
+      <Route path="ipfs-settings" component={IpfsSettingsView}/>
       <Route path="swarm" component={SwarmView}/>
       <Route path="connect" component={LoginView}/>
     </Route>
