@@ -27,7 +27,8 @@ var NetworkStore = Reflux.createStore({
     this.trigger(this.network);
   },
   // onConnect: function(host, username, password, signKey, profileData) {
-  onConnect: function(host, username) {
+  onConnect: function(host, username, ipfsInstance) {
+    this.orbit._ipfs = ipfsInstance;
     logger.debug("Connect to " + host + " as " + username);
     this.orbit.connect(username)
       .catch((e) => logger.error(e))

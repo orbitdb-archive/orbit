@@ -4,6 +4,8 @@ import React from 'react';
 import TransitionGroup from "react-addons-css-transition-group";
 import NetworkStore from 'stores/NetworkStore';
 import NetworkActions from "actions/NetworkActions";
+import IpfsDaemonActions from 'actions/IpfsDaemonActions';
+import AppActions from "actions/AppActions";
 import BackgroundAnimation from 'components/BackgroundAnimation';
 import Themes from 'app/Themes';
 import 'styles/LoginView.scss';
@@ -18,12 +20,13 @@ class LoginView extends React.Component{
   }
 
   _getInitialState(props) {
+    console.log(window.ipfsDaemonSettings)
     return {
       error: props ? props.meta : null,
       connecting: false,
       connected: false,
       username: null,
-      password: null,
+      ipfsSettings: window.ipfsDaemonSettings ? window.ipfsDaemonSettings : {},
       displayPasswordField: false,
       currentLength: 0,
       theme: Themes.Default,
@@ -32,6 +35,8 @@ class LoginView extends React.Component{
   }
 
   componentDidMount() {
+    AppActions.setLocation('Connect')
+
     // window.addEventListener('resize', this.onResize.bind(this));
 
     if(this.refs.username) this.refs.username.focus();
@@ -64,6 +69,15 @@ class LoginView extends React.Component{
   //   this.setState({ logoSize: size });
   // }
 
+  focusUsername(e) {
+    this.refs.username.focus()
+  }
+
+  configureIpfs(e) {
+    console.log('configureIpfsClicked')
+    AppActions.setLocation('IpfsSettings')
+  }
+
   register(e) {
     if(e) e.preventDefault();
 
@@ -71,7 +85,10 @@ class LoginView extends React.Component{
 
     if(username !== '') {
       this.setState({ error: null, connecting: true, username: username });
-      NetworkActions.connect(null, username);
+      IpfsDaemonActions.start( (ipfsInstance) => {
+        console.log('Network action connection')
+        NetworkActions.connect(null, username, ipfsInstance);
+      });
     }
 
     return;
@@ -96,7 +113,7 @@ class LoginView extends React.Component{
 
     var form =
       <TransitionGroup transitionName="loginScreenAnimation" transitionAppear={true} component="div" className="inputs" transitionAppearTimeout={5000} transitionEnterTimeout={5000} transitionLeaveTimeout={5000}>
-        <div className="usernameRow">
+        <div className="usernameRow" onClick={this.focusUsername.bind(this)}>
           <input
             type="text"
             ref="username"
@@ -132,7 +149,10 @@ class LoginView extends React.Component{
           </TransitionGroup>
           {form}
         </form>
-        <BackgroundAnimation size={this.state.logoSize} circleSize={2} theme={this.state.theme}/>
+        <div>
+          <button type='button' onClick={this.configureIpfs.bind(this)}>Configuration</button>
+        </div>
+        {/* <BackgroundAnimation size={this.state.logoSize} circleSize={2} theme={this.state.theme}/> */}
       </div>
     );
   }

@@ -18,6 +18,7 @@ const AppStateStore = Reflux.createStore({
     }
   },
   onSetLocation: function(location) {
+    console.log(this.state.location)
     if(location === this.state.location)
       return
 
