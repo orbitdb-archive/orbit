@@ -20,6 +20,10 @@ var NetworkStore = Reflux.createStore({
     });
     this._updateNetwork(null);
   },
+  onSetIpfs: function(ipfsInstance, callback) {
+    this.orbit._ipfs = ipfsInstance;
+    callback();
+  },
   _updateNetwork: function(network, user) {
     logger.debug("Received network state");
     if(!network) logger.debug("Not connected to a network");
@@ -28,7 +32,6 @@ var NetworkStore = Reflux.createStore({
   },
   // onConnect: function(host, username, password, signKey, profileData) {
   onConnect: function(host, username, ipfsInstance) {
-    this.orbit._ipfs = ipfsInstance;
     logger.debug("Connect to " + host + " as " + username);
     this.orbit.connect(username)
       .catch((e) => logger.error(e))

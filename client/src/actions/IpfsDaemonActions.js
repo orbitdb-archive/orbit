@@ -6,6 +6,7 @@ var IpfsDaemonActions = Reflux.createActions([
   "setConfig",
   "getConfig",
   "start",
+  "ipfsToOrbit",
   "restart",
   "stop"
 ]);

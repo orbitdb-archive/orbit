@@ -2,6 +2,7 @@
 
 import Reflux from 'reflux';
 import AppActions from 'actions/AppActions';
+import NetworkActions from 'actions/NetworkActions';
 import IpfsDaemonActions from 'actions/IpfsDaemonActions';
 import Logger from 'logplease';
 
@@ -18,11 +19,15 @@ var IpfsDaemonStore = Reflux.createStore({
     if (window.isElectron) {
       logger.debug("start electron ipfs-daemon signal")
       ipcRenderer.send('ipfs-daemon-start', this.ipfsDaemonSettings)
+      ipcRenderer.once('ipfs-daemon-instance', () => {
+        logger.info('daemon callback')
+        const ipfs = remote.getGlobal('ipfsInstance')
+        NetworkActions.setIpfs(ipfs, callback)
+      })
     } else {
       logger.debug("start js-ipfs")
       throw "should start js-ipfs. not implemented yet"
     }
-    ipcRenderer.once('ipfs-daemon-instance', (event, data) => {callback(data)})
   },
   onSetConfig: function(ipfsDaemonSettings) {
     this.ipfsDaemonSettings = ipfsDaemonSettings

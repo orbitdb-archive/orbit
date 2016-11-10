@@ -16,7 +16,7 @@ var NetworkActions = Reflux.createActions([
   "getUserInfo",
   "getOpenChannels",
   "getChannels",
-
+  "setIpfs",
   "updateNetwork",
   "updateUser",
   "getPeers"

@@ -106,10 +106,10 @@ app.on('ready', () => {
           const gatewayAddr = res.Addresses.Gateway
           logger.info("IPFS instance runnin")
           // // Pass the ipfs (api) instance and gateway address to the renderer process
-          // global.ipfsInstance = res.ipfs
+          global.ipfsInstance = res.ipfs
           // global.gatewayAddress = gatewayAddr ? gatewayAddr : 'localhost:8080/ipfs/'
 
-          mainWindow.webContents.send('ipfs-daemon-instance', res.ipfs)
+          mainWindow.webContents.send('ipfs-daemon-instance')
           // If the window is closed, assume we quit
           mainWindow.on('closed', () => {
             mainWindow = null

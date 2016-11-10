@@ -85,9 +85,9 @@ class LoginView extends React.Component{
 
     if(username !== '') {
       this.setState({ error: null, connecting: true, username: username });
-      IpfsDaemonActions.start( (ipfsInstance) => {
-        console.log('Network action connection')
-        NetworkActions.connect(null, username, ipfsInstance);
+      AppActions.setLocation('Loading')
+      IpfsDaemonActions.start( () => {
+        NetworkActions.connect(null, username);
       });
     }
 
