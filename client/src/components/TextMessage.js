@@ -1,6 +1,6 @@
 'use strict';
 
-import _ from 'lodash';
+import flatten from 'lodash.flatten';
 import React from "react";
 import TransitionGroup from "react-addons-css-transition-group";
 import ReactEmoji from "react-emoji";
@@ -38,7 +38,7 @@ class TextMessage extends React.Component {
 
   // Higlight specified words (ie. username)
   _highlight(items) {
-    return _.flatten(items.map((item) => {
+    return flatten(items.map((item) => {
       return MentionHighlighter.highlight(item, this.state.highlightWords, { highlightClassName: 'highlight', key: Math.random() });
     }));
   }
@@ -50,7 +50,7 @@ class TextMessage extends React.Component {
       attributes: { width: size || '16px', height: size || '16px' }
     };
 
-    return _.flatten(items.map((item) => {
+    return flatten(items.map((item) => {
       if(typeof item !== 'string') return item;
       if(item[0] !== ':' && item.indexOf('d:') > 0) return item; // Handle 'd:' specially
       emojiOpts.attributes.alt = item.trim();
@@ -60,7 +60,7 @@ class TextMessage extends React.Component {
 
   // Create linkss from IPFS hashes
   _ipfsfy(items) {
-    return _.flatten(items.map((item) => {
+    return flatten(items.map((item) => {
       return (typeof item === 'string') ? ReactIpfsLink.linkify(item, { target: "_blank", rel: "nofollow", key: Math.random() }) : item;
     }));
   }

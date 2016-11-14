@@ -62,13 +62,13 @@ const hasIPFS = !!window.ipfsInstance
 console.log("hasIPFS:", hasIPFS)
 let orbit// = hasIPFS ? window.orbit : null
 
-fs.init(1 * 1024 * 1024, (err) => {
-  if(err) {
-    logger.error("Couldn't initialize file system:", err)
-  } else {
-    logger.debug("FileSystem initialized")
-  }
-})
+// fs.init(1 * 1024 * 1024, (err) => {
+//   if(err) {
+//     logger.error("Couldn't initialize file system:", err)
+//   } else {
+//     logger.debug("FileSystem initialized")
+//   }
+// })
 
 var App = React.createClass({
   getInitialState: function() {

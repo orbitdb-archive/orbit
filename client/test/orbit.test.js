@@ -1,6 +1,5 @@
 'use strict';
 
-const _          = require('lodash');
 const path       = require('path');
 const assert     = require('assert');
 const IPFS       = require('exports?Ipfs!ipfs/dist/index.js');
