@@ -20,13 +20,11 @@ class LoginView extends React.Component{
   }
 
   _getInitialState(props) {
-    console.log(window.ipfsDaemonSettings)
     return {
       error: props ? props.meta : null,
       connecting: false,
       connected: false,
       username: null,
-      ipfsSettings: window.ipfsDaemonSettings ? window.ipfsDaemonSettings : {},
       displayPasswordField: false,
       currentLength: 0,
       theme: Themes.Default,
@@ -74,7 +72,6 @@ class LoginView extends React.Component{
   }
 
   configureIpfs(e) {
-    console.log('configureIpfsClicked')
     AppActions.setLocation('IpfsSettings')
   }
 

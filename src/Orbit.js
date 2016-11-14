@@ -11,7 +11,7 @@ const OrbitUser    = require('./orbit-user')
 const IdentityProviders = require('./identity-providers')
 
 const logger = Logger.create("Orbit", { color: Logger.Colors.Green })
-require('logplease').setLogLevel('ERROR')
+require('logplease').setLogLevel('DEBUG')
 
 const getAppPath = () => process.type && process.env.ENV !== "dev" ? process.resourcesPath + "/app/" : process.cwd()
 
