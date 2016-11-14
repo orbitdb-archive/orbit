@@ -4,23 +4,23 @@
   "description": "Distributed peer-to-peer chat built on IPFS",
   "main": "index.js",
   "dependencies": {
-    "ipfs-daemon": "0.0.3",
+    "ipfs-daemon": "^0.1.1",
     "ipfs-post": "^0.0.15",
-    "logplease": "^1.2.7",
+    "logplease": "^1.2.9",
     "lru": "^3.1.0",
-    "orbit-crypto": "0.0.9",
-    "orbit-db": "^0.13.2"
+    "orbit-crypto": "^0.0.9",
+    "orbit-db": "^0.13.7"
   },
   "devDependencies": {
     "bluebird": "^3.4.6",
-    "electron": "1.4.3",
-    "fs-pull-blob-store": "^0.3.0",
+    "electron": "^1.4.5",
+    "fs-pull-blob-store": "^0.4.1",
     "grunt": "^1.0.1",
     "grunt-chmod": "^1.1.1",
     "grunt-contrib-clean": "^1.0.0",
     "grunt-contrib-copy": "^1.0.0",
     "grunt-electron": "^5.0.0",
-    "ipfs-test-apis": "0.0.1",
+    "ipfs-test-apis": "^0.0.6",
     "load-grunt-tasks": "^3.5.0",
     "mocha": "^3.1.0"
   },
