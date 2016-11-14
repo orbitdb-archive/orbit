@@ -48,8 +48,8 @@ class ListForm extends React.Component {
     const list = this.props.list.map((element) => {
       return (
         <li>
-          <span>{element}</span>
-          <span onClick={() => {this.remove(element)} }>X</span>
+        <span>{element}</span>
+        <span onClick={() => {this.remove(element)} }>X</span>
         </li>
       )
     })

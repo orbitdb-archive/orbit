@@ -11,6 +11,7 @@ class IpfsAddressSettings extends React.Component {
   constructor(props) {
     super(props);
     this.onAddressChange = this.onAddressChange.bind(this);
+    this.onInputChange = this.onInputChange.bind(this);
   }
 
   onAddressChange(value, name) {
@@ -20,16 +21,38 @@ class IpfsAddressSettings extends React.Component {
     this.props.onChange(newAddress, 'Addresses')
   }
 
+  onInputChange(e) {
+    this.onAddressChange(e.target.value, e.target.name);
+  }
+
   render() {
     const Addresses = this.props.Addresses
     const swarm = Addresses.Swarm ? Addresses.Swarm : []
     return (
       <div>
-        <ListForm name="Swarm"
-                  label="Swarm Addresses"
-                  list={swarm}
-                  onListChange={this.onAddressChange}
-        />
+        <div>
+          <label htmlFor="API"> Ipfs API address </label>
+          <input name="API"
+                 type="text"
+                 value={Addresses.API}
+                 onChange={this.onInputChange}
+          />
+        </div>
+        <div>
+          <label htmlFor="Gateway"> Ipfs Gateway address </label>
+          <input name="Gateway"
+                 type="text"
+                 value={Addresses.Gateway}
+                 onChange={this.onInputChange}
+          />
+        </div>
+        <div>
+          <ListForm name="Swarm"
+                    label="Swarm Addresses"
+                    list={swarm}
+                    onListChange={this.onAddressChange}
+          />
+        </div>
       </div>
     )
   }

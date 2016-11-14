@@ -5,6 +5,8 @@ import IpfsDaemonStore from 'stores/IpfsDaemonStore';
 import IpfsDaemonActions from 'actions/IpfsDaemonActions';
 import AppActions from 'actions/AppActions';
 import IpfsAddressSettings from 'components/IpfsAddressSettings';
+import IpfsApiSettings from 'components/IpfsApiSettings';
+
 import Logger from 'logplease'
 
 const logger = Logger.create('IpfsSettingsView', { color: Logger.Colors.Purple });
@@ -61,6 +63,8 @@ class IpfsSettingsView extends React.Component {
   render() {
     const settings = this.state.ipfsDaemonSettings;
     const Addresses = settings.Addresses ? settings.Addresses : {};
+    const API = settings.API ? settings.API : {};
+
     return (
       <div className="IpfsSettingsView">
       <h3>IPFS daemon configurations</h3>
@@ -75,6 +79,11 @@ class IpfsSettingsView extends React.Component {
         <div>
           <IpfsAddressSettings Addresses={Addresses}
                                onChange={this.onCompoundChange}
+          />
+        </div>
+        <div>
+          <IpfsApiSettings API={API}
+                           onChange={this.onCompoundChange}
           />
         </div>
         <div>
