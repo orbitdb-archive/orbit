@@ -10,9 +10,7 @@ class ListForm extends React.Component {
     this.state = this.initialState();
     this.add = this.add.bind(this);
     this.remove = this.remove.bind(this);
-    // this.renderList = this.renderList.bind(this);
     this.onValueChange = this.onValueChange.bind(this);
-    console.log(this.props.list)
   }
 
   initialState() {
@@ -22,7 +20,6 @@ class ListForm extends React.Component {
   }
 
   onValueChange(e) {
-    console.log('on value change')
     const value = e.target.value
     this.setState({
       inputValue: value
@@ -30,7 +27,6 @@ class ListForm extends React.Component {
   }
 
   add() {
-    console.log('add list call')
     let list = [].concat(this.props.list);
     list.push(this.state.inputValue);
     this.setState(this.initialState());
@@ -38,22 +34,22 @@ class ListForm extends React.Component {
   }
 
   remove(value) {
-    console.log('remove list call')
     let list = [].concat(this.props.list);
     list = _.without(list, value);
     this.props.onListChange(list, this.props.name);
   }
 
   render() {
-    const list = this.props.list.map((element) => {
+    const list = this.props.list.map((element, i) => {
       return (
-        <li>
-        <span>{element}</span>
-        <span onClick={() => {this.remove(element)} }>X</span>
+        <li key={element+i}>
+          <span>{element}</span>
+          <span onClick={() => {this.remove(element)} }>
+            <button type="button">X</button>
+          </span>
         </li>
       )
     })
-    console.log(list)
     const name = this.props.name;
     const label = this.props.label;
     return (

@@ -11,21 +11,23 @@ class IpfsApiSettings extends React.Component {
     }
 
     onElementChange(value, name) {
-      logger.info('change', name, value)
-      let httpHeaders = Object.assign({}, this.props.API)
-      httpHeaders[name] = value
-      const newApi = {HTTPHeaders: httpHeaders}
+      const legacyHeaders = this.props.API ? this.props.API.HTTPHeaders : {}
+      let HTTPHeaders = Object.assign({}, legacyHeaders)
+      HTTPHeaders[name] = value
+      console.log(name, value)
+      const newApi = {HTTPHeaders: HTTPHeaders}
       this.props.onChange(newApi, 'API')
     }
 
     render() {
       const API = this.props.API
-      let httpHeaders = API.httpHeaders ? API.httpHeaders : {}
-      let origin = httpHeaders['Access-Control-Allow-Origin']
+      console.log(API)
+      let HTTPHeaders = API && API.HTTPHeaders ? API.HTTPHeaders : {}
+      let origin = HTTPHeaders['Access-Control-Allow-Origin']
       origin = origin ? origin : []
-      let methods = httpHeaders['Access-Control-Allow-Methods']
+      let methods = HTTPHeaders['Access-Control-Allow-Methods']
       methods = methods ? methods : []
-      let credentials = httpHeaders['Access-Control-Allow-Creadentials']
+      let credentials = HTTPHeaders['Access-Control-Allow-Credentials']
       credentials = credentials ? credentials : []
       return (
         <div>

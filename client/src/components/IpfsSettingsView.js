@@ -9,14 +9,17 @@ import IpfsApiSettings from 'components/IpfsApiSettings';
 
 import Logger from 'logplease'
 
-const logger = Logger.create('IpfsSettingsView', { color: Logger.Colors.Purple });
+const logger = Logger.create('IpfsSettingsView', { color: Logger.Colors.Black });
 
 class IpfsSettingsView extends React.Component {
 
   constructor(props) {
     super(props);
     this.state = {
-      ipfsDaemonSettings: {}
+      ipfsDaemonSettings: {
+        API: {},
+        Addresses: {}
+      }
     };
     this.onSettingsUpdated = this.onSettingsUpdated.bind(this);
     this.settingChange = this.settingChange.bind(this);
@@ -44,7 +47,8 @@ class IpfsSettingsView extends React.Component {
   }
 
   newSettings(ipfsDaemonSettings) {
-    logger.info('newSettings', ipfsDaemonSettings)
+    logger.debug('newSettings', ipfsDaemonSettings);
+    logger.debug('newHTTP', ipfsDaemonSettings.API.HTTPHeaders)
     IpfsDaemonActions.setConfig(ipfsDaemonSettings);
   }
 
@@ -62,8 +66,6 @@ class IpfsSettingsView extends React.Component {
 
   render() {
     const settings = this.state.ipfsDaemonSettings;
-    const Addresses = settings.Addresses ? settings.Addresses : {};
-    const API = settings.API ? settings.API : {};
 
     return (
       <div className="IpfsSettingsView">
@@ -77,12 +79,12 @@ class IpfsSettingsView extends React.Component {
           />
         </div>
         <div>
-          <IpfsAddressSettings Addresses={Addresses}
+          <IpfsAddressSettings Addresses={settings.Addresses}
                                onChange={this.onCompoundChange}
           />
         </div>
         <div>
-          <IpfsApiSettings API={API}
+          <IpfsApiSettings API={settings.API}
                            onChange={this.onCompoundChange}
           />
         </div>
