@@ -4,7 +4,7 @@
   "description": "Distributed peer-to-peer chat built on IPFS",
   "main": "index.js",
   "dependencies": {
-    "ipfs-daemon": "^0.1.1",
+    "ipfs-daemon": "^0.2.0",
     "ipfs-post": "^0.0.15",
     "logplease": "^1.2.9",
     "lru": "^3.1.0",
