@@ -90,7 +90,7 @@ class IpfsSettingsView extends React.Component {
         </div>
         <div>
           <button type="button" onClick={this.save.bind(this)}>
-            retour
+            save
           </button>
         </div>
       </div>

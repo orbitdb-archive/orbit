@@ -136,6 +136,11 @@ class LoginView extends React.Component{
             : null
           }
         </div>
+        <div className="lastRow">
+          <button type='button' className='submitButton' onClick={this.configureIpfs.bind(this)}>
+            Configuration
+          </button>
+        </div>
       </TransitionGroup>
 
     return (
@@ -146,11 +151,6 @@ class LoginView extends React.Component{
           </TransitionGroup>
           {form}
         </form>
-        <div>
-          <button type='button' className='submitButton' onClick={this.configureIpfs.bind(this)}>
-            Configuration
-          </button>
-        </div>
         {/* <BackgroundAnimation size={this.state.logoSize} circleSize={2} theme={this.state.theme}/> */}
       </div>
     );
