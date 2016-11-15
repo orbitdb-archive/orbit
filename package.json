@@ -9,7 +9,7 @@
     "logplease": "^1.2.9",
     "lru": "^3.1.0",
     "orbit-crypto": "^0.0.9",
-    "orbit-db": "^0.13.7"
+    "orbit-db": "^0.15.1"
   },
   "devDependencies": {
     "bluebird": "^3.4.6",
