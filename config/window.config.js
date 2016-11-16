@@ -1,3 +1,5 @@
+'use strict';
+
 // Default window settings or electron startup
 module.exports = {
   connectWindowSize: {
