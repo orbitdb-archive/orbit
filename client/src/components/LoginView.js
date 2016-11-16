@@ -151,7 +151,7 @@ class LoginView extends React.Component{
           </TransitionGroup>
           {form}
         </form>
-        {/* <BackgroundAnimation size={this.state.logoSize} circleSize={2} theme={this.state.theme}/> */}
+        <BackgroundAnimation size={this.state.logoSize} circleSize={2} theme={this.state.theme}/>
       </div>
     );
   }

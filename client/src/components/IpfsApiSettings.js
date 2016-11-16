@@ -14,7 +14,6 @@ class IpfsApiSettings extends React.Component {
       const legacyHeaders = this.props.API ? this.props.API.HTTPHeaders : {}
       let HTTPHeaders = Object.assign({}, legacyHeaders)
       HTTPHeaders[name] = value
-      console.log(name, value)
       const newApi = {HTTPHeaders: HTTPHeaders}
       this.props.onChange(newApi, 'API')
     }
@@ -34,6 +33,7 @@ class IpfsApiSettings extends React.Component {
           <div>
             <ListForm name="Access-Control-Allow-Origin"
                       label="Access-Control-Allow-Origin"
+                      placeholder="e.g. *"
                       list={origin}
                       onListChange={this.onElementChange}
             />
@@ -41,6 +41,7 @@ class IpfsApiSettings extends React.Component {
           <div>
             <ListForm name="Access-Control-Allow-Credentials"
                       label="Access-Control-Allow-Credentials"
+                      placeholder="true or false"
                       list={credentials}
                       onListChange={this.onElementChange}
             />
@@ -48,6 +49,7 @@ class IpfsApiSettings extends React.Component {
           <div>
             <ListForm name="Access-Control-Allow-Methods"
                       label="Access-Control-Allow-Methods"
+                      placeholder="e.g. POST, GET ..."
                       list={methods}
                       onListChange={this.onElementChange}
             />
