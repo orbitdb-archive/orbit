@@ -6,6 +6,7 @@ import IpfsDaemonActions from 'actions/IpfsDaemonActions';
 import AppActions from 'actions/AppActions';
 import IpfsAddressSettings from 'components/IpfsAddressSettings';
 import IpfsApiSettings from 'components/IpfsApiSettings';
+import 'styles/IpfsSettingsView.scss';
 
 import Logger from 'logplease'
 
@@ -69,8 +70,8 @@ class IpfsSettingsView extends React.Component {
 
     return (
       <div className="IpfsSettingsView">
-      <h3>IPFS daemon configurations</h3>
-        <div>
+      <h1 className="title">IPFS daemon configurations</h1>
+        <div className="textInput pure">
           <label htmlFor="IpfsDataDir"> Ipfs data path </label>
           <input name="IpfsDataDir"
                  type="text"
@@ -88,7 +89,7 @@ class IpfsSettingsView extends React.Component {
                            onChange={this.onCompoundChange}
           />
         </div>
-        <div>
+        <div className="save">
           <button type="button" onClick={this.save.bind(this)}>
             save
           </button>

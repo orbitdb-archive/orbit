@@ -26,7 +26,8 @@ class ListForm extends React.Component {
     });
   }
 
-  add() {
+  add(e) {
+    if (e.key !== 'Enter') return;
     let list = [].concat(this.props.list);
     list.push(this.state.inputValue);
     this.setState(this.initialState());
@@ -42,7 +43,7 @@ class ListForm extends React.Component {
   render() {
     const list = this.props.list.map((element, i) => {
       return (
-        <li key={element+i}>
+        <li key={element+i} className="element">
           <span>{element}</span>
           <span onClick={() => {this.remove(element)} }>
             <button type="button">X</button>
@@ -53,17 +54,21 @@ class ListForm extends React.Component {
     const name = this.props.name;
     const label = this.props.label;
     return (
-      <div className="IpfsSettingsView">
-        <label htmlFor={name}>{label}</label>
-        <ul>
+      <div className="listForm">
+        <h1>{label}</h1>
+        <ul className="list">
           {list}
         </ul>
-        <input name={name}
-               type="text"
-               value={this.state.inputValue}
-               onChange={this.onValueChange}
-        />
-        <button type="button" onClick={this.add} className="btn">Add</button>
+        <div>
+          {/* <label htmlFor={name}>{label}</label> */}
+          <input name={name}
+                 type="text"
+                 placeholder={this.props.placeholder}
+                 value={this.state.inputValue}
+                 onChange={this.onValueChange}
+                 onKeyPress={this.add}
+          />
+        </div>
       </div>
     );
   }
@@ -73,6 +78,7 @@ ListForm.propTypes = {
   name: PropTypes.string.isRequired,
   label: PropTypes.string,
   list: PropTypes.array.isRequired,
+  placeholder: PropTypes.string,
   onListChange: PropTypes.func.isRequired
 };
 

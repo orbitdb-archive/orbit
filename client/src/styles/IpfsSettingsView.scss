@@ -1,0 +1,50 @@
+h1.title {
+  font-size: 2em;
+}
+
+.textInput {
+  display: flex;
+  flex-direction: row;
+  align-items: flex-end;
+}
+
+.listForm {
+  opacity: 0.7;
+  position: relative;
+  top: 15px;
+  left: 20px;
+  margin: 0px 50px 0px 50px;
+}
+
+.listForm h1 {
+  width: 100%;
+  font-size: 1.5em;
+  float: left;
+}
+
+.listForm .list {
+  display: inline-flex;
+  float: left;
+}
+
+.listForm .element {
+  list-style-type: none;
+}
+
+
+.listForm label {
+  display: inline-block;
+  width: 100px;
+  margin-right: 20px;
+  vertical-align: top;
+  text-align: right;
+}
+
+.listForm input {
+}
+
+.save button {
+  display: inline-flex;
+  float: none;
+  margin-top: 60px;
+}
