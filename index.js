@@ -15,7 +15,6 @@ const IpfsDaemon        = require('ipfs-daemon');
 
 const WindowConfig      = require('./config/window.config')
 const OrbitConfig       = require('./config/orbit.config')(app)
-const IpfsDaemonConfig  = require('./config/ipfs-daemon.config')(OrbitConfig)
 
 
  // dev|debug
@@ -82,7 +81,7 @@ app.on('ready', () => {
     // Pass the mode and electron flag to the html (renderer process)
     global.DEV = MODE === 'dev'
     global.isElectron = true
-    global.ipfsDaemonSettings = IpfsDaemonConfig
+    global.ipfsDataDir = OrbitConfig.ipfsDataDir
 
     // Load the dist build or connect to webpack-dev-server
     const indexUrl = MODE === 'dev'

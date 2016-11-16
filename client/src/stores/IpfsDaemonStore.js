@@ -1,10 +1,13 @@
 'use strict';
 
 import Reflux from 'reflux';
+import _ from 'lodash';
+import Logger from 'logplease';
+
 import AppActions from 'actions/AppActions';
 import NetworkActions from 'actions/NetworkActions';
 import IpfsDaemonActions from 'actions/IpfsDaemonActions';
-import Logger from 'logplease';
+import {defaultIpfsDaemonSettings} from '../config/ipfs-daemon.config';
 
 const logger = Logger.create('IpfsDaemonStore', { color: Logger.Colors.Green });
 const LOCAL_STORAGE_KEY = 'ipfs-daemon-settings';
@@ -12,16 +15,21 @@ const LOCAL_STORAGE_KEY = 'ipfs-daemon-settings';
 var IpfsDaemonStore = Reflux.createStore({
   listenables: [AppActions, IpfsDaemonActions],
   init: function() {
-    logger.info('IpfsDaemon Init sequence',window.ipfsDaemonSettings)
-    if (localStorage.getItem(LOCAL_STORAGE_KEY) !== null) {
-      this.ipfsDaemonSettings = this.onRetrieve()
-    } else if (window.ipfsDaemonSettings) {
-      this.ipfsDaemonSettings = window.ipfsDaemonSettings
-    } else {
-      this.ipfsDaemonSettings = {};
+    logger.info('IpfsDaemonStore Init sequence')
+    let ipfsDataDir = window.ipfsDataDir;
+    this.isElectron = window.isElectron;
+    this.ipfsDaemonSettings = {};
+    const settings = [defaultIpfsDaemonSettings(ipfsDataDir)];
+    if (localStorage.getItem(LOCAL_STORAGE_KEY)) {
+      settings.push(localStorage.getItem(LOCAL_STORAGE_KEY));
     }
-    this.onPersist()
-    this.trigger(this.ipfsDaemonSettings)
+    settings.forEach(item => {
+      _.mergeWith(this.ipfsDaemonSettings, item, (objectValue, sourceValue) => {
+        return _.isArray(sourceValue) ? sourceValue : undefined;
+      });
+    });
+    this.onPersist();
+    this.trigger(this.ipfsDaemonSettings);
   },
   onStart: function(callback) {
     if (window.isElectron) {
