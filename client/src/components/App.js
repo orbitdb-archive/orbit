@@ -45,7 +45,6 @@ import 'highlight.js/styles/atom-one-dark.css'
 // Agate, Atom One Dark, Github, Monokai, Monokai Sublime, Vs, Xcode
 
 Logger.setLogLevel(window.DEV ? 'DEBUG' : 'NONE')
-Logger.setLogLevel('DEBUG')
 
 const logger = Logger.create('App', { color: Logger.Colors.Red })
 
