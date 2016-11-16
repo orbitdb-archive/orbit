@@ -9,6 +9,12 @@ function getLogFilePath(orbitDataDir) {
   return path.join(orbitDataDir, '/debug.log')
 }
 
+function getIpfsDefaultPath(appDataDir) {
+  return process.env.IPFS_PATH
+    ? path.resolve(process.env.IPFS_PATH)
+    : path.join(appDataDir, '/ipfs')
+}
+
 module.exports = function(app) {
   const appDataDir = app.getPath('userData')
   const MODE = process.env.ENV ? process.env.ENV : 'debug'
@@ -27,6 +33,7 @@ module.exports = function(app) {
     appDataDir: appDataDir,
     orbitDataDir: orbitDataDir,
     logFilePath: getLogFilePath(orbitDataDir),
+    ipfsDataDir: getIpfsDefaultPath(appDataDir),
     MODE: MODE
   }
 }

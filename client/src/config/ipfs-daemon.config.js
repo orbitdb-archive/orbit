@@ -1,12 +1,5 @@
-const path = require('path')
-
-// Set IPFS daemon's paths and addresses, and CORS
-module.exports = function defaultSettings(OrbitConfig) {
-
-  const ipfsDataDir = process.env.IPFS_PATH
-    ? path.resolve(process.env.IPFS_PATH)
-    : path.join(OrbitConfig.appDataDir, '/ipfs')
-
+// Ipfs daemon's default settings
+export function defaultIpfsDaemonSettings(ipfsDataDir) {
   return {
     IpfsDataDir: ipfsDataDir,
     Addresses: {
