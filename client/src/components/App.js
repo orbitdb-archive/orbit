@@ -185,7 +185,6 @@ var App = React.createClass({
   },
   onNetworkUpdated: function(network) {
     logger.debug("Network updated")
-    console.log(network)
     if (!network) {
       this._reset()
       AppActions.setLocation("Connect")
