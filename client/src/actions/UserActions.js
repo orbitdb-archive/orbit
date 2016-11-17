@@ -4,7 +4,8 @@ import Reflux from 'reflux';
 
 var UserActions = Reflux.createActions([
   "getUser",
-  "addUser"
+  "addUser",
+  "usernameSelected"
 ]);
 
 export default UserActions;

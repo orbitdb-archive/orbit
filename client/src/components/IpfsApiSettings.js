@@ -20,7 +20,6 @@ class IpfsApiSettings extends React.Component {
 
     render() {
       const API = this.props.API
-      console.log(API)
       let HTTPHeaders = API && API.HTTPHeaders ? API.HTTPHeaders : {}
       let origin = HTTPHeaders['Access-Control-Allow-Origin']
       origin = origin ? origin : []

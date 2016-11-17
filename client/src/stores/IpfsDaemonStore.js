@@ -16,35 +16,49 @@ var IpfsDaemonStore = Reflux.createStore({
   listenables: [AppActions, IpfsDaemonActions],
   init: function() {
     logger.info('IpfsDaemonStore Init sequence')
-    let ipfsDataDir = window.ipfsDataDir;
+
     this.isElectron = window.isElectron;
+    this.ipfs = null;
     this.ipfsDaemonSettings = {};
+    this.username = null;
+
+    let ipfsDataDir = window.ipfsDataDir;
     const settings = [defaultIpfsDaemonSettings(ipfsDataDir)];
-    if (localStorage.getItem(LOCAL_STORAGE_KEY)) {
+    const hasIpfsSettings = this.hasIpfsSettings()
+    if (hasIpfsSettings) {
       settings.push(localStorage.getItem(LOCAL_STORAGE_KEY));
     }
+    // merging all settings (like defaultsDeep without merging arrays)
     settings.forEach(item => {
       _.mergeWith(this.ipfsDaemonSettings, item, (objectValue, sourceValue) => {
         return _.isArray(sourceValue) ? sourceValue : undefined;
       });
     });
-    this.onPersist();
+    if (!hasIpfsSettings){
+      this.onPersist()
+    }
+    if (this.isElectron) {
+      ipcRenderer.once('ipfs-daemon-instance', (() => {
+        logger.info('daemon callback')
+        this.ipfs = window.remote.getGlobal('ipfsInstance')
+        IpfsDaemonActions.daemonStarted(this.ipfs)
+      }).bind(this))
+    }
     this.trigger(this.ipfsDaemonSettings);
   },
-  onStart: function(callback) {
-    if (window.isElectron) {
+  onStart: function() {
+    if (this.isElectron) {
       logger.debug("start electron ipfs-daemon signal")
       ipcRenderer.send('ipfs-daemon-start', this.ipfsDaemonSettings)
-      ipcRenderer.once('ipfs-daemon-instance', () => {
-        logger.info('daemon callback')
-        const ipfs = remote.getGlobal('ipfsInstance')
-        NetworkActions.setIpfs(ipfs, callback)
-      })
     } else {
       logger.debug("start js-ipfs")
       throw "should start js-ipfs. not implemented yet"
     }
   },
+  // onDaemonStarted: function() {
+  //   logger.debug("ipfs daemon started")
+  //   this.trigger(this.ipfs)
+  // },
   onPersist: function() {
     const stringified = JSON.stringify(this.ipfsDaemonSettings)
     localStorage.setItem(LOCAL_STORAGE_KEY, stringified)
@@ -53,7 +67,7 @@ var IpfsDaemonStore = Reflux.createStore({
   onRetrieve: function() {
     logger.debug("retrieved config")
     const rawJson = localStorage.getItem(LOCAL_STORAGE_KEY)
-    return JSON.parse(rawJson)
+    return (rawJson) ? JSON.parse(rawJson) : undefined
   },
   onSetConfig: function(ipfsDaemonSettings) {
     this.ipfsDaemonSettings = ipfsDaemonSettings
@@ -63,6 +77,10 @@ var IpfsDaemonStore = Reflux.createStore({
   onInitConfig: function(callback) {
     logger.debug("get config")
     this.trigger(this.ipfsDaemonSettings)
+  },
+  hasIpfsSettings: function() {
+    const settings = localStorage.getItem(LOCAL_STORAGE_KEY)
+    return settings && typeof settings === 'object'
   }
 })
 

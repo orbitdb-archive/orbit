@@ -13,16 +13,14 @@ var NetworkStore = Reflux.createStore({
     this.network = null;
   },
   onInitialize: function(orbit) {
+
     this.orbit = orbit;
     this.orbit.events.on('connected', (network, user) => {
       logger.info("orbit.event: network", network, user)
       this._updateNetwork(network)
     });
     this._updateNetwork(null);
-  },
-  onSetIpfs: function(ipfsInstance, callback) {
-    this.orbit._ipfs = ipfsInstance;
-    callback();
+    AppActions.hasInitialized();
   },
   _updateNetwork: function(network, user) {
     logger.debug("Received network state");
