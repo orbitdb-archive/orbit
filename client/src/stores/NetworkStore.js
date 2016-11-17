@@ -3,6 +3,7 @@
 import Reflux from 'reflux';
 import AppActions from 'actions/AppActions';
 import NetworkActions from 'actions/NetworkActions';
+import IpfsDaemonActions from 'actions/IpfsDaemonActions';
 import Logger from 'logplease';
 
 const logger = Logger.create('NetworkStore', { color: Logger.Colors.Yellow });
@@ -38,8 +39,10 @@ var NetworkStore = Reflux.createStore({
       })
   },
   onDisconnect: function() {
-    logger.debug("Disconnect");
+    logger.debug("Disconnect from network");
+    this.orbit.disconnect();
     this._updateNetwork(null);
+    IpfsDaemonActions.stop();
   }
 });
 
