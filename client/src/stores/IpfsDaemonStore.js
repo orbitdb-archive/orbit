@@ -13,7 +13,7 @@ const logger = Logger.create('IpfsDaemonStore', { color: Logger.Colors.Green });
 const LOCAL_STORAGE_KEY = 'ipfs-daemon-settings';
 
 var IpfsDaemonStore = Reflux.createStore({
-  listenables: [AppActions, IpfsDaemonActions],
+  listenables: [AppActions, IpfsDaemonActions, NetworkActions],
   init: function() {
     logger.info('IpfsDaemonStore Init sequence')
 
@@ -55,10 +55,16 @@ var IpfsDaemonStore = Reflux.createStore({
       throw "should start js-ipfs. not implemented yet"
     }
   },
-  // onDaemonStarted: function() {
-  //   logger.debug("ipfs daemon started")
-  //   this.trigger(this.ipfs)
-  // },
+  onDisconnect: function() {
+    logger.debug("disconnect ipfs daemon")
+    if (this.isElectron) {
+      logger.debug("start electron ipfs-daemon signal")
+      ipcRenderer.send('ipfs-daemon-stop')
+    } else {
+      logger.debug("stop js-ipfs daemon")
+      throw "should stop js-ipfs daemon. not implemented yet"
+    }
+  },
   onPersist: function() {
     const stringified = JSON.stringify(this.ipfsDaemonSettings)
     localStorage.setItem(LOCAL_STORAGE_KEY, stringified)

@@ -112,8 +112,12 @@ app.on('ready', () => {
           // If the window is closed, assume we quit
           mainWindow.on('closed', () => {
             mainWindow = null
-            ipfsDaemon.stopDaemon()
+            stopIpfsDaemon(ipfsDaemon)
           })
+          ipcMain.on('ipfs-daemon-stop', () => {
+            stopIpfsDaemon(ipfsDaemon)
+          })
+
 
         })
         .catch((err) => {
@@ -132,3 +136,8 @@ app.on('ready', () => {
     logger.error("Error in index-native:", e)
   }
 })
+
+function stopIpfsDaemon(ipfsDaemon) {
+  ipfsDaemon.stopDaemon()
+  logger.info("IPFS instance stopped")
+}
