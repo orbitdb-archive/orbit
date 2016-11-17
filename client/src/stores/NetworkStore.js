@@ -13,7 +13,6 @@ var NetworkStore = Reflux.createStore({
     this.network = null;
   },
   onInitialize: function(orbit) {
-
     this.orbit = orbit;
     this.orbit.events.on('connected', (network, user) => {
       logger.info("orbit.event: network", network, user)
@@ -32,7 +31,11 @@ var NetworkStore = Reflux.createStore({
   onConnect: function(host, username) {
     logger.debug("Connect to " + host + " as " + username);
     this.orbit.connect(username)
-      .catch((e) => logger.error(e))
+      .catch((e) => {
+        logger.error(e)
+        // to properly stop partially executed stuff :
+        NetworkActions.disconnect();
+      })
   },
   onDisconnect: function() {
     logger.debug("Disconnect");

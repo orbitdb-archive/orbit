@@ -9,7 +9,6 @@ var IpfsDaemonActions = Reflux.createActions([
   "retrieve",
   "start",
   "daemonStarted",
-  "stop"
 ]);
 
 export default IpfsDaemonActions;

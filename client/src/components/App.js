@@ -99,8 +99,9 @@ var App = React.createClass({
       // logger.debug("PeerId:", res.peerId.ID)
 
       // orbit = res.orbit
-      logger.debug('network actions call update null')
+
       if (!IpfsDaemonStore.ipfs) {
+        logger.debug('no ipfs instance runnin on client')
         this._showConnectView()
       }
       // AppActions.setLocation('connect') // start the App
@@ -276,7 +277,7 @@ var App = React.createClass({
     this.setState({ panelOpen: true })
   },
   disconnect: function() {
-    orbit.disconnect()
+    logger.debug('app disconnect')
     this.closePanel()
     NetworkActions.disconnect()
     this.setState({ user: null })
