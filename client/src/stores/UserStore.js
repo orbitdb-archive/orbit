@@ -4,6 +4,7 @@ import Reflux from 'reflux'
 import AppActions from 'actions/AppActions'
 import UserActions from 'actions/UserActions'
 import NetworkActions from 'actions/NetworkActions'
+import IpfsDaemonActions from 'actions/IpfsDaemonActions'
 import Logger from 'logplease'
 
 const logger = Logger.create('UserStore', { color: Logger.Colors.Green })
@@ -12,6 +13,12 @@ var UserStore = Reflux.createStore({
   listenables: [AppActions, UserActions, NetworkActions],
   init: function() {
     this.user = null
+  },
+  onUsernameSelected: function(username) {
+    logger.debug('username selected')
+    this.user = {
+      name: username
+    }
   },
   onInitialize: function(orbit) {
     this.orbit = orbit

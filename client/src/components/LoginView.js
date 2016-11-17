@@ -3,9 +3,9 @@
 import React from 'react';
 import TransitionGroup from "react-addons-css-transition-group";
 import NetworkStore from 'stores/NetworkStore';
-import NetworkActions from "actions/NetworkActions";
-import IpfsDaemonActions from 'actions/IpfsDaemonActions';
-import AppActions from "actions/AppActions";
+import NetworkActions from 'actions/NetworkActions';
+import UserActions from 'actions/UserActions';
+import AppActions from 'actions/AppActions';
 import BackgroundAnimation from 'components/BackgroundAnimation';
 import Themes from 'app/Themes';
 import 'styles/LoginView.scss';
@@ -83,9 +83,7 @@ class LoginView extends React.Component{
     if(username !== '') {
       this.setState({ error: null, connecting: true, username: username });
       AppActions.setLocation('Loading')
-      IpfsDaemonActions.start( () => {
-        NetworkActions.connect(null, username);
-      });
+      UserActions.usernameSelected(username);
     }
 
     return;
