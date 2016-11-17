@@ -55,7 +55,7 @@ var IpfsDaemonStore = Reflux.createStore({
       throw "should start js-ipfs. not implemented yet"
     }
   },
-  onDisconnect: function() {
+  onStop: function() {
     logger.debug("disconnect ipfs daemon")
     if (this.isElectron) {
       logger.debug("start electron ipfs-daemon signal")
