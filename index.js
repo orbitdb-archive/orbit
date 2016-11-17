@@ -98,7 +98,7 @@ app.on('ready', () => {
     ipcMain.on('ipfs-daemon-start', (event, ipfsDaemonSettings) => {
       logger.info(ipfsDaemonSettings)
       // Bind the Orbit IPFS daemon to a random port, set CORS
-      IpfsDaemon(IpfsDaemonConfig)
+      IpfsDaemon(ipfsDaemonSettings)
         .then((res) => {
           // We have a running IPFS daemon
           const ipfsDaemon = res.daemon
