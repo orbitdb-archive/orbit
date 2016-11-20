@@ -20,13 +20,12 @@ var IpfsDaemonStore = Reflux.createStore({
     this.isElectron = window.isElectron;
     this.ipfs = null;
     this.ipfsDaemonSettings = {};
-    this.username = null;
 
     let ipfsDataDir = window.ipfsDataDir;
     const settings = [defaultIpfsDaemonSettings(ipfsDataDir)];
     const hasIpfsSettings = this.hasIpfsSettings()
     if (hasIpfsSettings) {
-      settings.push(localStorage.getItem(LOCAL_STORAGE_KEY));
+      settings.unshift(localStorage.getItem(LOCAL_STORAGE_KEY));
     }
     // merging all settings (like defaultsDeep without merging arrays)
     settings.forEach(item => {
