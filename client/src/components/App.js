@@ -100,7 +100,7 @@ var App = React.createClass({
 
       // orbit = res.orbit
 
-      if (!IpfsDaemonStore.ipfs) {
+      if (!this.state.user) {
         logger.debug('no ipfs instance runnin on client')
         this._showConnectView()
       }
