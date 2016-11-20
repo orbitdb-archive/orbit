@@ -61,6 +61,7 @@ class IpfsSettingsView extends React.Component {
   }
 
   save(e) {
+    e ? e.preventDefault() : e;
     IpfsDaemonActions.persist();
     AppActions.setLocation('Connect');
   }
@@ -69,9 +70,9 @@ class IpfsSettingsView extends React.Component {
     const settings = this.state.ipfsDaemonSettings;
 
     return (
-      <div className="IpfsSettingsView">
-      <h1 className="title">IPFS daemon configurations</h1>
-        <div className="textInput pure">
+      <form className="IpfsSettingsView" onSubmit={this.save.bind(this)}>
+        <h1 className="title">IPFS daemon configurations</h1>
+        <div className="textInput">
           <label htmlFor="IpfsDataDir"> Ipfs data path </label>
           <input name="IpfsDataDir"
                  type="text"
@@ -90,11 +91,11 @@ class IpfsSettingsView extends React.Component {
           />
         </div>
         <div className="save">
-          <button type="button" onClick={this.save.bind(this)}>
+          <button className="btn">
             save
           </button>
         </div>
-      </div>
+      </form>
     );
   }
 }
