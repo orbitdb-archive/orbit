@@ -118,10 +118,8 @@ var App = React.createClass({
     NetworkActions.joinedChannel.listen(this.onJoinedChannel)
     NetworkActions.joinChannelError.listen(this.onJoinChannelError)
     NetworkActions.leaveChannel.listen(this.onLeaveChannel)
-    IpfsDaemonActions.daemonStarted.listen(this.onIpfsDaemonStarted)
-    UserActions.usernameSelected.listen(this.onUsernameSelected)
+    AppActions.login.listen(this.onLogin)
     SocketActions.socketDisconnected.listen(this.onDaemonDisconnected)
-    AppActions.hasInitialized.listen(this.onAppInitialized)
 
     this.unsubscribeFromNetworkStore = NetworkStore.listen(this.onNetworkUpdated)
     this.unsubscribeFromUserStore = UserStore.listen(this.onUserUpdated)
@@ -164,20 +162,25 @@ var App = React.createClass({
     if(hasIPFS) ipcRenderer.send('disconnected')
     this.setState(this.getInitialState())
   },
-  onUsernameSelected: function() {
+  onLogin: function(username) {
     IpfsDaemonActions.start();
-  },
-  onIpfsDaemonStarted(ipfs) {
-    let orbit = new Orbit(ipfs)
-    if(ipcRenderer) {
-      orbit.events.on('connected', (network, user) => {
-        ipcRenderer.send('connected', network, user)
-      });
-      orbit.events.on('disconnected', () => {
-        ipcRenderer.send('disconnected')
-      })
-    }
-    AppActions.initialize(orbit);
+    const stop = AppActions.hasInitialized.listen(() => {
+      stop()
+      NetworkActions.connect(null, username)
+    })
+    const stopListening = IpfsDaemonActions.daemonStarted.listen((ipfs) => {
+      stopListening()
+      const orbit = new Orbit(ipfs)
+      if(ipcRenderer) {
+        orbit.events.on('connected', (network, user) => {
+          ipcRenderer.send('connected', network, user)
+        });
+        orbit.events.on('disconnected', () => {
+          ipcRenderer.send('disconnected')
+        })
+      }
+      AppActions.initialize(orbit);
+    })
   },
   onAppInitialized: function() {
     logger.info("App has init, Orbit acquired")

@@ -83,7 +83,7 @@ class LoginView extends React.Component{
     if(username !== '') {
       this.setState({ error: null, connecting: true, username: username });
       AppActions.setLocation('Loading')
-      UserActions.usernameSelected(username);
+      AppActions.login(username);
     }
 
     return;
