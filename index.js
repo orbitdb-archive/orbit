@@ -96,7 +96,8 @@ app.on('ready', () => {
     ipcMain.on('disconnected', (event) => setWindowToLogin())
 
     ipcMain.on('ipfs-daemon-start', (event, ipfsDaemonSettings) => {
-      logger.info(ipfsDaemonSettings)
+      logger.debug("using config", ipfsDaemonSettings)
+      createIfAbsent(ipfsDaemonSettings.IpfsDataDir)
       // Bind the Orbit IPFS daemon to a random port, set CORS
       IpfsDaemon(ipfsDaemonSettings)
         .then((res) => {
@@ -107,15 +108,15 @@ app.on('ready', () => {
           // // Pass the ipfs (api) instance and gateway address to the renderer process
           global.ipfsInstance = res.ipfs
           // global.gatewayAddress = gatewayAddr ? gatewayAddr : 'localhost:8080/ipfs/'
-
+          logger.debug("Send 'ipfs-daemon-instance' signal ")
           mainWindow.webContents.send('ipfs-daemon-instance')
           // If the window is closed, assume we quit
           mainWindow.on('closed', () => {
             mainWindow = null
-            stopIpfsDaemon(ipfsDaemon)
+            stopIpfs(ipfsDaemon)
           })
-          ipcMain.on('ipfs-daemon-stop', () => {
-            stopIpfsDaemon(ipfsDaemon)
+          ipcMain.once('ipfs-daemon-stop', () => {
+            stopIpfs(ipfsDaemon)
           })
 
 
@@ -137,7 +138,15 @@ app.on('ready', () => {
   }
 })
 
-function stopIpfsDaemon(ipfsDaemon) {
+function stopIpfs(ipfsDaemon) {
   ipfsDaemon.stopDaemon()
   logger.info("IPFS instance stopped")
+}
+
+function createIfAbsent(path) {
+  logger.debug("Check [" + path + "] exists")
+  if (!fs.existsSync(path)) {
+    fs.mkdirSync(path)
+    logger.debug("Create [" + path + "]")
+  }
 }
