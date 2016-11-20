@@ -91,7 +91,7 @@ class IpfsSettingsView extends React.Component {
           />
         </div>
         <div className="save">
-          <button className="btn">
+          <button className="submitButton">
             save
           </button>
         </div>
