@@ -38,7 +38,7 @@ var IpfsDaemonStore = Reflux.createStore({
       this.onPersist()
     }
     if (this.isElectron) {
-      ipcRenderer.once('ipfs-daemon-instance', (() => {
+      ipcRenderer.on('ipfs-daemon-instance', (() => {
         logger.info('daemon callback')
         this.ipfs = window.remote.getGlobal('ipfsInstance')
         IpfsDaemonActions.daemonStarted(this.ipfs)

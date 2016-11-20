@@ -95,6 +95,14 @@ app.on('ready', () => {
     ipcMain.on('connected', (event) => setWindowToNormal())
     ipcMain.on('disconnected', (event) => setWindowToLogin())
 
+    let ipfsDaemon = null
+    mainWindow.once('closed', () => {
+      ipfsDaemon = stopIpfs(ipfsDaemon)
+      mainWindow = null
+    })
+    ipcMain.on('ipfs-daemon-stop', () => {
+      ipfsDaemon = stopIpfs(ipfsDaemon)
+    })
     ipcMain.on('ipfs-daemon-start', (event, ipfsDaemonSettings) => {
       logger.debug("using config", ipfsDaemonSettings)
       createIfAbsent(ipfsDaemonSettings.IpfsDataDir)
@@ -102,7 +110,7 @@ app.on('ready', () => {
       IpfsDaemon(ipfsDaemonSettings)
         .then((res) => {
           // We have a running IPFS daemon
-          const ipfsDaemon = res.daemon
+          ipfsDaemon = res.daemon
           const gatewayAddr = res.Addresses.Gateway
           logger.info("IPFS instance runnin")
           // // Pass the ipfs (api) instance and gateway address to the renderer process
@@ -111,15 +119,6 @@ app.on('ready', () => {
           logger.debug("Send 'ipfs-daemon-instance' signal ")
           mainWindow.webContents.send('ipfs-daemon-instance')
           // If the window is closed, assume we quit
-          mainWindow.on('closed', () => {
-            mainWindow = null
-            stopIpfs(ipfsDaemon)
-          })
-          ipcMain.once('ipfs-daemon-stop', () => {
-            stopIpfs(ipfsDaemon)
-          })
-
-
         })
         .catch((err) => {
           logger.error(err)
@@ -139,8 +138,12 @@ app.on('ready', () => {
 })
 
 function stopIpfs(ipfsDaemon) {
-  ipfsDaemon.stopDaemon()
-  logger.info("IPFS instance stopped")
+  if (ipfsDaemon) {
+    ipfsDaemon.stopDaemon()
+    logger.info("IPFS instance stopped")
+    return null
+  }
+  return ipfsDaemon
 }
 
 function createIfAbsent(path) {
