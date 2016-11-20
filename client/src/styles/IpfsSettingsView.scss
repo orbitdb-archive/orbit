@@ -1,5 +1,15 @@
+$primary-font: "Lato";
+$primary-color: #222222;
+
 h1.title {
   font-size: 2em;
+}
+
+label {
+  color: white;
+  width: 40%;
+  font-size: 1.2em;
+  float: left;
 }
 
 .textInput {
@@ -8,39 +18,71 @@ h1.title {
   align-items: flex-end;
 }
 
+.IpfsSettingsView {
+  font-family: $primary-font;
+  font-weight: 200;
+}
+
 .listForm {
   opacity: 0.7;
   position: relative;
   top: 15px;
   left: 20px;
   margin: 0px 50px 0px 50px;
+
+  h1 {
+   width: 100%;
+   font-size: 1.5em;
+   float: left;
+ }
+
+ .list {
+   display: inline-flex;
+   float: left;
+ }
+ li {
+   list-style-type: none;
+   cursor: no-drop;
+   color: white;
+   background-color: #231A25;
+   padding:0;
+   margin:0;
+   font-size: larger;
+   border-collapse: collapse;
+
+   :hover {
+     animation: fadeInButton;
+     animation-duration: .4s;
+     animation-fill-mode: both;
+     animation-timing-function: ease-out;
+   }
+
+ }
+
+ li + li:before {
+   content: ", ";
+   cursor: none;
+   background-color: $primary-color;
+   border-color: $primary-color;
+   background-origin: padding-box;
+   padding: 1em 0em 1em;
+ }
+
+ .listForm label {
+   display: inline-block;
+   width: 100px;
+   margin-right: 20px;
+   vertical-align: top;
+   text-align: right;
+ }
 }
 
-.listForm h1 {
+input {
   width: 100%;
-  font-size: 1.5em;
-  float: left;
 }
 
-.listForm .list {
-  display: inline-flex;
-  float: left;
-}
-
-.listForm .element {
-  list-style-type: none;
-}
-
-
-.listForm label {
-  display: inline-block;
-  width: 100px;
-  margin-right: 20px;
-  vertical-align: top;
-  text-align: right;
-}
-
-.listForm input {
+.textInput {
+  font-family: lato;
 }
 
 .save button {

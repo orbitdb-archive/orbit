@@ -28,6 +28,8 @@ class ListForm extends React.Component {
 
   add(e) {
     if (e.key !== 'Enter') return;
+    e.preventDefault()
+    e.stopPropagation()
     let list = [].concat(this.props.list);
     list.push(this.state.inputValue);
     this.setState(this.initialState());
@@ -44,10 +46,7 @@ class ListForm extends React.Component {
     const list = this.props.list.map((element, i) => {
       return (
         <li key={element+i} className="element">
-          <span>{element}</span>
-          <span onClick={() => {this.remove(element)} }>
-            <button type="button">X</button>
-          </span>
+          <span onClick={() => {this.remove(element)} }>{element}</span>
         </li>
       )
     })
@@ -60,7 +59,6 @@ class ListForm extends React.Component {
           {list}
         </ul>
         <div>
-          {/* <label htmlFor={name}>{label}</label> */}
           <input name={name}
                  type="text"
                  placeholder={this.props.placeholder}

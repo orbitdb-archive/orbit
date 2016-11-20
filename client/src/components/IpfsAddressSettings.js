@@ -26,11 +26,11 @@ class IpfsAddressSettings extends React.Component {
   }
 
   render() {
-    const Addresses = this.props.Addresses
+    const Addresses = this.props.Addresses ? this.props.Addresses : {};
     const swarm = Addresses.Swarm ? Addresses.Swarm : []
     return (
       <div>
-        <div>
+        <div className="textInput">
           <label htmlFor="API"> Ipfs API address </label>
           <input name="API"
                  placeholder="e.g. /ip4/127.0.0.1/tcp/0"
@@ -39,7 +39,7 @@ class IpfsAddressSettings extends React.Component {
                  onChange={this.onInputChange}
           />
         </div>
-        <div>
+        <div className="textInput">
           <label htmlFor="Gateway"> Ipfs Gateway address </label>
           <input name="Gateway"
                  placeholder="e.g. /ip4/127.0.0.1/tcp/0"
@@ -60,10 +60,5 @@ class IpfsAddressSettings extends React.Component {
     )
   }
 }
-
-ListForm.propTypes = {
-  Addresses: PropTypes.object.isRequired,
-  onChange: PropTypes.func.isRequired
-};
 
 export default IpfsAddressSettings;
