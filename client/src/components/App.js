@@ -101,8 +101,7 @@ var App = React.createClass({
       // orbit = res.orbit
 
       if (!this.state.user) {
-        logger.debug('no ipfs instance runnin on client')
-        this._showConnectView()
+        AppActions.setLocation('Connect')
       }
       // AppActions.setLocation('connect') // start the App
     // })
@@ -181,10 +180,6 @@ var App = React.createClass({
       }
       AppActions.initialize(orbit);
     })
-  },
-  onAppInitialized: function() {
-    logger.info("App has init, Orbit acquired")
-    NetworkActions.connect(null, UserStore.user.name)
   },
   onNetworkUpdated: function(network) {
     logger.debug("Network updated")

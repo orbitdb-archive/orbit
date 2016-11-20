@@ -19,7 +19,6 @@ var NetworkStore = Reflux.createStore({
       logger.info("orbit.event: network", network, user)
       this._updateNetwork(network)
     });
-    this._updateNetwork(null);
     AppActions.hasInitialized();
   },
   _updateNetwork: function(network, user) {
