@@ -23,9 +23,9 @@ var IpfsDaemonStore = Reflux.createStore({
 
     let ipfsDataDir = window.ipfsDataDir;
     const settings = [defaultIpfsDaemonSettings(ipfsDataDir)];
-    const hasIpfsSettings = this.hasIpfsSettings()
-    if (hasIpfsSettings) {
-      settings.unshift(localStorage.getItem(LOCAL_STORAGE_KEY));
+    const persistedSettings = this.getIpfsSettings()
+    if (persistedSettings) {
+      settings.unshift(persistedSettings);
     }
     // merging all settings (like defaultsDeep without merging arrays)
     settings.forEach(item => {
@@ -33,7 +33,7 @@ var IpfsDaemonStore = Reflux.createStore({
         return _.isArray(sourceValue) ? sourceValue : undefined;
       });
     });
-    if (!hasIpfsSettings){
+    if (!persistedSettings){
       this.onPersist()
     }
     if (this.isElectron) {
@@ -69,11 +69,6 @@ var IpfsDaemonStore = Reflux.createStore({
     localStorage.setItem(LOCAL_STORAGE_KEY, stringified)
     logger.debug("persisted config")
   },
-  onRetrieve: function() {
-    logger.debug("retrieved config")
-    const rawJson = localStorage.getItem(LOCAL_STORAGE_KEY)
-    return (rawJson) ? JSON.parse(rawJson) : undefined
-  },
   onSetConfig: function(ipfsDaemonSettings) {
     this.ipfsDaemonSettings = ipfsDaemonSettings
     logger.debug("set config", this.ipfsDaemonSettings)
@@ -83,9 +78,9 @@ var IpfsDaemonStore = Reflux.createStore({
     logger.debug("get config")
     this.trigger(this.ipfsDaemonSettings)
   },
-  hasIpfsSettings: function() {
+  getIpfsSettings: function() {
     const settings = localStorage.getItem(LOCAL_STORAGE_KEY)
-    return settings && typeof settings === 'object'
+    return JSON.parse(settings)
   }
 })
 
