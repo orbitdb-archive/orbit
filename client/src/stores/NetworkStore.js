@@ -42,7 +42,6 @@ var NetworkStore = Reflux.createStore({
     logger.debug("Disconnect from network");
     this.orbit.disconnect();
     this._updateNetwork(null);
-    IpfsDaemonActions.stop();
   }
 });
 
