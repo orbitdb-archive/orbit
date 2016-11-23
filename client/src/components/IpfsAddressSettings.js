@@ -30,6 +30,7 @@ class IpfsAddressSettings extends React.Component {
     const swarm = Addresses.Swarm ? Addresses.Swarm : []
     return (
       <div>
+        <title>IPFS Addresses</title>
         <div className="textInput">
           <label htmlFor="API"> Ipfs API address </label>
           <input name="API"

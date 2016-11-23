@@ -72,6 +72,7 @@ class IpfsSettingsView extends React.Component {
     return (
       <form className="IpfsSettingsView" onSubmit={this.save.bind(this)}>
         <h1 className="title">IPFS daemon configurations</h1>
+        <title>Directories</title>
         <div className="textInput">
           <label htmlFor="IpfsDataDir"> Ipfs data path </label>
           <input name="IpfsDataDir"
