@@ -8,18 +8,33 @@ $primary-color: #222222;
   width:100%;
   height: 100%;
   overflow: scroll;  //Change this to scroll or auto
-}
-
-h1.title {
-  font-size: 2em;
-  height: 10%
-}
-
-label {
-  color: white;
-  width: 40%;
-  font-size: 1.2em;
-  float: left;
+  title {
+    display: flex;
+    color: white;
+    margin-left: auto;
+    margin-right: auto;
+    margin-top: 2em;
+    margin-bottom: 2em;
+    width: 10em;
+    font-size: larger;
+  }
+  input {
+    width: 80%;
+    margin-left: 4em;
+    :placeholder {
+      width: 100%;
+    }
+  }
+  h1.title {
+    font-size: 2em;
+    height: 10%
+  }
+  label {
+    color: white;
+    width: 34%;
+    font-size: 1em;
+    float: left;
+  }
 }
 
 .textInput {
@@ -29,69 +44,67 @@ label {
 }
 
 .listForm {
-  opacity: 0.7;
   position: relative;
-  top: 15px;
-  left: 20px;
-  margin: 0px 50px 0px 50px;
+  width: 100%;
+  height: 6em;
+  margin-top: 1em;
+  min-height: 6em;
 
   h1 {
-   width: 100%;
-   font-size: 1.5em;
-   float: left;
- }
-
- .list {
-   display: inline-flex;
-   float: left;
- }
- li {
-   list-style-type: none;
-   cursor: no-drop;
-   color: white;
-   background-color: #231A25;
-   padding:0;
-   margin:0;
-   font-size: larger;
-   border-collapse: collapse;
-
-   :hover {
-     animation: fadeInButton;
-     animation-duration: .4s;
-     animation-fill-mode: both;
-     animation-timing-function: ease-out;
-   }
-
- }
-
- li + li:before {
-   content: ", ";
-   cursor: none;
-   background-color: $primary-color;
-   border-color: $primary-color;
-   background-origin: padding-box;
-   padding: 1em 0em 1em;
- }
-
- .listForm label {
-   display: inline-block;
-   width: 100px;
-   margin-right: 20px;
-   vertical-align: top;
-   text-align: right;
- }
-}
-
-input {
-  width: 100%;
-
-  :placeholder {
-    width: 100%;
+    width: auto;
+    font-size: 1em;
+    float: left;
+    width: 40%;
   }
-}
 
-.textInput {
-  font-family: lato;
+  .list {
+    float: left;
+    width: auto;
+    margin-top: 0;
+    margin-bottom: 0;
+    padding: 0;
+    margin-left: 1em;
+  }
+
+  .row {
+    float: left;
+    width: 100%;
+    min-height: 1em;
+    margin-top:0.5em;
+  }
+
+  input {
+    width: 60%;
+    float: right;
+    margin-left: 1em;
+    margin-right: 1em;
+    :placeholder {
+      width: 100%;
+    }
+  }
+
+  li {
+    list-style-type: none;
+    cursor: no-drop;
+    color: white;
+    background-color: #231A25;
+    padding: 0;
+    margin: 0;
+    border-collapse: collapse;
+    width: 100%;
+
+    :hover :active {
+      background-color: green;
+    }
+
+    label {
+      display: inline-block;
+      width: 100px;
+      margin-right: 20px;
+      vertical-align: top;
+      text-align: right;
+    }
+  }
 }
 
 .save button {

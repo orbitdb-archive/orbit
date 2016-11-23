@@ -28,7 +28,8 @@ class IpfsApiSettings extends React.Component {
       let credentials = HTTPHeaders['Access-Control-Allow-Credentials']
       credentials = credentials ? credentials : []
       return (
-        <div>
+        <div className="httpHeaders">
+          <title>HTTP Headers</title>
           <div>
             <ListForm name="Access-Control-Allow-Origin"
                       label="Access-Control-Allow-Origin"

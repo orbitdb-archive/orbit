@@ -45,8 +45,8 @@ class ListForm extends React.Component {
   render() {
     const list = this.props.list.map((element, i) => {
       return (
-        <li key={element+i} className="element">
-          <span onClick={() => {this.remove(element)} }>{element}</span>
+        <li key={element+i} onClick={() => {this.remove(element)} }>
+          {element}
         </li>
       )
     })
@@ -54,11 +54,13 @@ class ListForm extends React.Component {
     const label = this.props.label;
     return (
       <div className="listForm">
-        <h1>{label}</h1>
-        <ul className="list">
+        <div className="row">
+          <label>{label}</label>
+          <ul className="list">
           {list}
-        </ul>
-        <div>
+          </ul>
+        </div>
+        <div className="row">
           <input name={name}
                  type="text"
                  placeholder={this.props.placeholder}
