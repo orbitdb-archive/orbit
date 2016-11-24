@@ -19,8 +19,8 @@ $primary-color: #222222;
     font-size: larger;
   }
   input {
-    width: 80%;
-    margin-left: 4em;
+    width: 60%;
+    margin-left: 2%;
     :placeholder {
       width: 100%;
     }
@@ -63,7 +63,7 @@ $primary-color: #222222;
     margin-top: 0;
     margin-bottom: 0;
     padding: 0;
-    margin-left: 1em;
+    margin-left: 2%;
   }
 
   .row {
@@ -74,10 +74,9 @@ $primary-color: #222222;
   }
 
   input {
-    width: 60%;
-    float: right;
-    margin-left: 1em;
-    margin-right: 1em;
+    width: 50%;
+    float: left;
+    margin-left: 36%;
     :placeholder {
       width: 100%;
     }
@@ -92,19 +91,12 @@ $primary-color: #222222;
     margin: 0;
     border-collapse: collapse;
     width: 100%;
-
-    :hover :active {
-      background-color: green;
-    }
-
-    label {
-      display: inline-block;
-      width: 100px;
-      margin-right: 20px;
-      vertical-align: top;
-      text-align: right;
-    }
   }
+
+  li:hover {
+    background-color: #311E35;
+  }
+
 }
 
 .save button {
