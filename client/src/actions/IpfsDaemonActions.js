@@ -3,9 +3,8 @@
 import Reflux from 'reflux';
 
 var IpfsDaemonActions = Reflux.createActions([
-  "setConfig",
-  "initConfig",
-  "persist",
+  "initConfiguration",
+  "saveConfiguration",
   "start",
   "daemonStarted"
 ]);
