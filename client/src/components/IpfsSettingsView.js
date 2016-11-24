@@ -22,21 +22,21 @@ class IpfsSettingsView extends React.Component {
         Addresses: {}
       }
     };
-    this.onSettingsUpdated = this.onSettingsUpdated.bind(this);
+    this.updateState = this.updateState.bind(this);
     this.settingChange = this.settingChange.bind(this);
     this.onCompoundChange = this.onCompoundChange.bind(this);
   }
 
   componentDidMount() {
-    this.unsubscribe = IpfsDaemonStore.listen(this.onSettingsUpdated);
-    IpfsDaemonActions.initConfig()
+    this.unsubscribe = IpfsDaemonStore.listen(this.updateState)
+    IpfsDaemonActions.initConfiguration()
   }
 
   componentWillUnmount() {
     this.unsubscribe();
   }
 
-  onSettingsUpdated(settings) {
+  updateState(settings) {
     logger.info('on settings update', settings)
     this.setState({
       ipfsDaemonSettings: settings
@@ -47,28 +47,21 @@ class IpfsSettingsView extends React.Component {
     this.onCompoundChange(e.target.value, e.target.name)
   }
 
-  newSettings(ipfsDaemonSettings) {
-    logger.debug('newSettings', ipfsDaemonSettings);
-    logger.debug('newHTTP', ipfsDaemonSettings.API.HTTPHeaders)
-    IpfsDaemonActions.setConfig(ipfsDaemonSettings);
-  }
-
   onCompoundChange(value, name) {
     let ipfsDaemonSettings = Object.assign({}, this.state.ipfsDaemonSettings)
     ipfsDaemonSettings[name] = value;
     logger.info('compound change', name)
-    this.newSettings(ipfsDaemonSettings);
+    this.updateState(ipfsDaemonSettings);
   }
 
   save(e) {
     e ? e.preventDefault() : e;
-    IpfsDaemonActions.persist();
+    IpfsDaemonActions.saveConfiguration(this.state.ipfsDaemonSettings);
     AppActions.setLocation('Connect');
   }
 
   render() {
     const settings = this.state.ipfsDaemonSettings;
-
     return (
       <form className="IpfsSettingsView" onSubmit={this.save.bind(this)}>
         <h1 className="title">IPFS daemon configurations</h1>

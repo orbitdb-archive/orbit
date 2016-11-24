@@ -64,17 +64,13 @@ var IpfsDaemonStore = Reflux.createStore({
       throw "should stop js-ipfs daemon. not implemented yet"
     }
   },
-  onPersist: function() {
-    const stringified = JSON.stringify(this.ipfsDaemonSettings)
+  onSaveConfiguration: function(ipfsDaemonSettings) {
+    this.ipfsDaemonSettings = ipfsDaemonSettings
+    const stringified = JSON.stringify(ipfsDaemonSettings)
     localStorage.setItem(LOCAL_STORAGE_KEY, stringified)
     logger.debug("persisted config")
   },
-  onSetConfig: function(ipfsDaemonSettings) {
-    this.ipfsDaemonSettings = ipfsDaemonSettings
-    logger.debug("set config", this.ipfsDaemonSettings)
-    this.trigger(this.ipfsDaemonSettings);
-  },
-  onInitConfig: function(callback) {
+  onInitConfiguration: function(callback) {
     logger.debug("get config")
     this.trigger(this.ipfsDaemonSettings)
   },
