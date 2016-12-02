@@ -107,29 +107,29 @@ app.on('ready', () => {
       logger.debug("using config", ipfsDaemonSettings)
       createIfAbsent(ipfsDaemonSettings.IpfsDataDir)
       // Bind the Orbit IPFS daemon to a random port, set CORS
-      IpfsDaemon(ipfsDaemonSettings)
-        .then((res) => {
-          // We have a running IPFS daemon
-          ipfsDaemon = res.daemon
-          const gatewayAddr = res.Addresses.Gateway
-          logger.info("IPFS instance runnin")
-          // // Pass the ipfs (api) instance and gateway address to the renderer process
-          global.ipfsInstance = res.ipfs
-          // global.gatewayAddress = gatewayAddr ? gatewayAddr : 'localhost:8080/ipfs/'
-          logger.debug("Send 'ipfs-daemon-instance' signal ")
-          mainWindow.webContents.send('ipfs-daemon-instance')
-          // If the window is closed, assume we quit
-        })
-        .catch((err) => {
-          logger.error(err)
-          dialog.showMessageBox({
-            type: 'error',
-            buttons: ['Ok'],
-            title: 'Error',
-            message: err.message,
-            detail: err.stack
-          }, () => process.exit(1))
-        })
+      const ipfs = new IpfsDaemon(ipfsDaemonSettings)
+      ipfs.on('ready', () => {
+        // We have a running IPFS daemon
+        ipfsDaemon = ipfs
+        // const gatewayAddr = ipfs.GatewayAddress
+        logger.info("IPFS instance runnin")
+        // // Pass the ipfs (api) instance and gateway address to the renderer process
+        global.ipfsInstance = ipfs
+        // global.gatewayAddress = gatewayAddr ? gatewayAddr : 'localhost:8080/ipfs/'
+        logger.debug("Send 'ipfs-daemon-instance' signal ")
+        mainWindow.webContents.send('ipfs-daemon-instance')
+        // If the window is closed, assume we quit
+      })
+      ipfs.on('error', (err) => {
+        logger.error(err)
+        dialog.showMessageBox({
+          type: 'error',
+          buttons: ['Ok'],
+          title: 'Error',
+          message: err.message,
+          detail: err.stack
+        }, () => process.exit(1))
+      })
     })
 
   } catch(e) {
@@ -139,7 +139,7 @@ app.on('ready', () => {
 
 function stopIpfs(ipfsDaemon) {
   if (ipfsDaemon) {
-    ipfsDaemon.stopDaemon()
+    ipfsDaemon.stop()
     logger.info("IPFS instance stopped")
     return null
   }

@@ -128,8 +128,8 @@ const MessageStore = Reflux.createStore({
   },
   _addMessages: function(channel: string, newMessages: Array, older: boolean) {
     logger.debug("<-- Add " + newMessages.length + " messages to #" + channel)
-    console.log(newMessages)
-    console.log(this.channels[channel].messages)
+    // console.log(newMessages)
+    // console.log(this.channels[channel].messages)
     var unique = differenceWith(newMessages, this.channels[channel].messages, (a, b) => a.hash === b.hash)
     logger.debug("Unique new messages: " + unique.length)
 
