@@ -2,45 +2,60 @@
 
 if(process.env.ENV === 'dev') delete process.versions['electron']
 
-const electron          = require('electron')
-const app               = electron.app
-const BrowserWindow     = electron.BrowserWindow
-const Menu              = electron.Menu
-const ipcMain           = electron.ipcMain
-const dialog            = electron.dialog
-const fs                = require('fs')
-const path              = require('path')
-const Logger            = require('logplease')
-const IpfsDaemon        = require('ipfs-daemon');
-
-const WindowConfig      = require('./config/window.config')
-const OrbitConfig       = require('./config/orbit.config')(app)
-
+const electron      = require('electron')
+const app           = electron.app
+const BrowserWindow = electron.BrowserWindow
+const Menu          = electron.Menu
+const ipcMain       = electron.ipcMain
+const dialog        = electron.dialog
+const fs            = require('fs')
+const path          = require('path')
+const Logger        = require('logplease')
+const IpfsDaemon    = require('ipfs-daemon')
+const WindowConfig  = require('./config/window.config')
+const OrbitConfig   = require('./config/orbit.config')(app)
 
  // dev|debug
 const MODE = OrbitConfig.MODE
 
+// Setup logging, to turn on the logging, run orbit-electron with LOG=debug
 Logger.setLogfile(OrbitConfig.logFilePath)
-Logger.setLogLevel('DEBUG')
-const logger = Logger.create("Orbit.Index-Native")
+const logger = Logger.create("orbit-electron", { color: Logger.Colors.Yellow })
 
 // Menu bar
 const template = require('./menu-native')(app)
 const menu = Menu.buildFromTemplate(template)
 
+// IPFS instance
+let ipfs
+
+const stopIpfs = () => {
+  if (ipfs) {
+    // TODO: use promises when available from ipfs-daemon
+    // ipfs.stop().then(() => ipfs = nul)
+    ipfs.stop()
+    ipfs = null
+  }
+}
+
 // Handle shutdown gracefully
 const shutdown = () => {
-  logger.info("Shutting down...")
+  logger.debug("Closing...")
+  stopIpfs()
   setTimeout(() => {
-    logger.info("All done!")
-    app.quit()
+    logger.debug("All done!\n")
+    app.exit(0)
     process.exit(0)
   }, 1000)
 }
 
 app.on('window-all-closed', shutdown)
-process.on('SIGINT', () => shutdown)
-process.on('SIGTERM', () => shutdown)
+app.on('will-quit', (e) => {
+  e.preventDefault()
+  shutdown()
+})
+process.on('SIGINT', () => shutdown())
+process.on('SIGTERM', () => shutdown())
 
 // Log errors
 process.on('uncaughtException', (error) => {
@@ -81,6 +96,7 @@ app.on('ready', () => {
     // Pass the mode and electron flag to the html (renderer process)
     global.DEV = MODE === 'dev'
     global.isElectron = true
+    global.orbitDataDir = OrbitConfig.orbitDataDir
     global.ipfsDataDir = OrbitConfig.ipfsDataDir
 
     // Load the dist build or connect to webpack-dev-server
@@ -90,36 +106,38 @@ app.on('ready', () => {
 
     mainWindow.loadURL(indexUrl)
 
-    logger.info("started")
     // Resize the window as per app state
     ipcMain.on('connected', (event) => setWindowToNormal())
-    ipcMain.on('disconnected', (event) => setWindowToLogin())
+    ipcMain.on('disconnected', (event) => {
+      logger.debug("Received 'disconnected' event from renderer process")
+      stopIpfs()
+      setWindowToLogin()
+    })
 
-    let ipfsDaemon = null
-    mainWindow.once('closed', () => {
-      ipfsDaemon = stopIpfs(ipfsDaemon)
-      mainWindow = null
-    })
+    // Handle stop daemon event from the renderer process
     ipcMain.on('ipfs-daemon-stop', () => {
-      ipfsDaemon = stopIpfs(ipfsDaemon)
+      logger.debug("Received 'ipfs-daemon-stop' event from renderer process")
+      stopIpfs()
     })
+
+    // Handle start daemon event from the renderer process
     ipcMain.on('ipfs-daemon-start', (event, ipfsDaemonSettings) => {
-      logger.debug("using config", ipfsDaemonSettings)
-      createIfAbsent(ipfsDaemonSettings.IpfsDataDir)
-      // Bind the Orbit IPFS daemon to a random port, set CORS
-      const ipfs = new IpfsDaemon(ipfsDaemonSettings)
+      logger.debug("Received 'ipfs-daemon-start' event from renderer process")
+      // Make sure we stop a running daemon if any
+      stopIpfs()
+
+      // Create IPFS instance
+      ipfs = new IpfsDaemon(ipfsDaemonSettings)
+      
+      // We have a running IPFS daemon      
       ipfs.on('ready', () => {
-        // We have a running IPFS daemon
-        ipfsDaemon = ipfs
-        // const gatewayAddr = ipfs.GatewayAddress
-        logger.info("IPFS instance runnin")
-        // // Pass the ipfs (api) instance and gateway address to the renderer process
+        // Pass the ipfs (api) instance and gateway address to the renderer process
         global.ipfsInstance = ipfs
-        // global.gatewayAddress = gatewayAddr ? gatewayAddr : 'localhost:8080/ipfs/'
-        logger.debug("Send 'ipfs-daemon-instance' signal ")
+        global.gatewayAddress = ipfs.GatewayAddress
         mainWindow.webContents.send('ipfs-daemon-instance')
-        // If the window is closed, assume we quit
       })
+
+      // Handle errors
       ipfs.on('error', (err) => {
         logger.error(err)
         dialog.showMessageBox({
@@ -131,25 +149,7 @@ app.on('ready', () => {
         }, () => process.exit(1))
       })
     })
-
   } catch(e) {
-    logger.error("Error in index-native:", e)
+    logger.error("Error:", e)
   }
 })
-
-function stopIpfs(ipfsDaemon) {
-  if (ipfsDaemon) {
-    ipfsDaemon.stop()
-    logger.info("IPFS instance stopped")
-    return null
-  }
-  return ipfsDaemon
-}
-
-function createIfAbsent(path) {
-  logger.debug("Check [" + path + "] exists")
-  if (!fs.existsSync(path)) {
-    fs.mkdirSync(path)
-    logger.debug("Create [" + path + "]")
-  }
-}

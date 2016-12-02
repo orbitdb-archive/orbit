@@ -33,7 +33,7 @@ class LoginView extends React.Component{
   }
 
   componentDidMount() {
-    AppActions.setLocation('Connect')
+    // AppActions.setLocation('Connect')
 
     // window.addEventListener('resize', this.onResize.bind(this));
 
@@ -134,11 +134,9 @@ class LoginView extends React.Component{
             : null
           }
         </div>
-        <div className="lastRow">
-          <button type='button' className='submitButton' onClick={this.configureIpfs.bind(this)}>
-            Configuration
-          </button>
-        </div>
+        <button type='button' className='ConfigurationButton submitButton' onClick={this.configureIpfs.bind(this)}>
+          Configuration
+        </button>
       </TransitionGroup>
 
     return (

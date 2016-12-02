@@ -76,9 +76,10 @@ module.exports = function (grunt) {
             src: [
               "./*.js",
               "src/**",
+              "config/**/*.js",
               "./client/dist/**",
               "package.json",
-              "!./Gruntfile.js"
+              "!./Gruntfile.js",
             ],
             dest: moduleCacheDirectory
           }
@@ -93,7 +94,7 @@ module.exports = function (grunt) {
         },
         src: [
           path.join(moduleCacheDirectory, 'node_modules/subcomandante/subcom'),
-          path.join(moduleCacheDirectory, 'node_modules/go-ipfs-dep/go-ipfs/ipfs'),
+          path.join(moduleCacheDirectory, 'node_modules/@haad/go-ipfs-dep/go-ipfs/ipfs'),
         ]
       }
     },
@@ -102,9 +103,7 @@ module.exports = function (grunt) {
   grunt.registerTask('npm_install', '', function (os) {
       var done = this.async()
       var params = ['install', '--production', '--cache-min 9999999']
-      let env = Object.assign({}, process.env)
-      env.TARGET_OS = grunt.option('TARGET_OS')
-      var npm = spawn('npm', params, { cwd: moduleCacheDirectory, env: env })
+      var npm = spawn('npm', params, { cwd: moduleCacheDirectory, env: process.env })
       npm.stdout.pipe(process.stdout)
       npm.stderr.pipe(process.stderr)
       npm.on('error', (err) => done(false))

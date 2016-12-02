@@ -91,7 +91,6 @@ class SettingsView extends React.Component {
     return (
       <div className="SettingsView">
         {list}
-        <BackgroundAnimation size={256} theme={this.state.theme} style={{opacity: 0.5}}/>
       </div>
     );
   }

@@ -9,7 +9,6 @@
   "mainInput": "App",
   "mainOutput": "main",
   "dependencies": {
-    "@haad/ipfs-api": "^13.0.0-beta.7",
     "clipboard": "^1.5.12",
     "emoji-annotation-to-unicode": "^0.2.4",
     "halogen": "^0.2.0",
