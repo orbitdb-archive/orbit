@@ -4,36 +4,28 @@
   "description": "Distributed peer-to-peer chat built on IPFS",
   "main": "index.js",
   "dependencies": {
-    "ipfs-daemon": "^0.1.1",
-    "ipfs-post": "^0.0.15",
-    "logplease": "^1.2.9",
-    "lru": "^3.1.0",
-    "orbit-crypto": "^0.0.9",
-    "orbit-db": "^0.13.7"
+    "ipfs-daemon": "^0.3.0-beta.4",
+    "logplease": "^1.2.9"
   },
   "devDependencies": {
-    "bluebird": "^3.4.6",
-    "electron": "^1.4.5",
-    "fs-pull-blob-store": "^0.4.1",
+    "electron": "^1.4.10",
     "grunt": "^1.0.1",
     "grunt-chmod": "^1.1.1",
     "grunt-contrib-clean": "^1.0.0",
     "grunt-contrib-copy": "^1.0.0",
     "grunt-electron": "^5.0.0",
-    "ipfs-test-apis": "^0.0.6",
     "load-grunt-tasks": "^3.5.0",
     "mocha": "^3.1.0"
   },
   "scripts": {
-    "postinstall": "./node_modules/.bin/grunt clean:npm",
-    "test": "./node_modules/.bin/mocha",
+    "test": "$(npm bin)/mocha",
     "build": "npm run build:osx && npm run build:linux",
-    "build:osx": "./node_modules/.bin/grunt build_osx --TARGET_OS=darwin",
-    "build:linux": "./node_modules/.bin/grunt build_linux --TARGET_OS=linux",
+    "build:osx": "$(npm bin)/grunt build_osx --TARGET_OS=darwin",
+    "build:linux": "$(npm bin)/grunt build_linux --TARGET_OS=linux",
     "dist": "./scripts/build_dist_package.sh",
     "publish": "npm run dist && cd bin/ && ipfs add -r dist/ && cd ..",
-    "dev:electron": "ENV=dev API_ORIGIN=* ./node_modules/.bin/electron .",
-    "electron": "./node_modules/.bin/electron .",
+    "dev:electron": "IPFS_FD_MAX=4096 ENV=dev API_ORIGIN=* $(npm bin)/electron .",
+    "electron": "IPFS_FD_MAX=4096 $(npm bin)/electron .",
     "start": "npm run electron"
   },
   "repository": {

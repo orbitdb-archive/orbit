@@ -1,5 +1,7 @@
 'use strict'
 
+import sortBy from 'lodash.sortby'
+import take from 'lodash.take'
 import differenceWith from 'lodash.differencewith'
 import Reflux from 'reflux'
 import AppActions from 'actions/AppActions'
@@ -51,7 +53,7 @@ const MessageStore = Reflux.createStore({
       feed.events.on('history', (name, messages) => {
         if(messages[0] && messages[0].next.length > 0)
           this.channels[channel].canLoadMore = true
-        this._addMessages(channel, _.take(messages.reverse(), messagesBatchSize - 1), true)
+        this._addMessages(channel, take(messages.reverse(), messagesBatchSize - 1), true)
       })
 
       feed.events.on('load', (name, hash) => {
@@ -126,8 +128,8 @@ const MessageStore = Reflux.createStore({
   },
   _addMessages: function(channel: string, newMessages: Array, older: boolean) {
     logger.debug("<-- Add " + newMessages.length + " messages to #" + channel)
-    console.log(newMessages)
-    console.log(this.channels[channel].messages)
+    // console.log(newMessages)
+    // console.log(this.channels[channel].messages)
     var unique = differenceWith(newMessages, this.channels[channel].messages, (a, b) => a.hash === b.hash)
     logger.debug("Unique new messages: " + unique.length)
 
@@ -149,7 +151,7 @@ const MessageStore = Reflux.createStore({
       unique.reverse().forEach((f) => this._loadPost(channel, f.payload))
 
       // Sort by timestamp
-      this.channels[channel].messages = _.sortBy(this.channels[channel].messages, (e) => e.payload.meta.ts)
+      this.channels[channel].messages = sortBy(this.channels[channel].messages, (e) => e.payload.meta.ts)
 
       NotificationActions.newMessage(channel)
       this.trigger(channel, this.channels[channel].messages)

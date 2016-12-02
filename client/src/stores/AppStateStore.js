@@ -1,6 +1,5 @@
 'use strict'
 
-import _ from 'lodash'
 import Reflux from 'reflux'
 import AppActions from 'actions/AppActions'
 import NetworkActions from 'actions/NetworkActions'
