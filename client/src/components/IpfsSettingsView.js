@@ -13,13 +13,13 @@ import Logger from 'logplease'
 const logger = Logger.create('IpfsSettingsView', { color: Logger.Colors.Black });
 
 class IpfsSettingsView extends React.Component {
-
   constructor(props) {
     super(props);
     this.state = {
       ipfsDaemonSettings: {
         API: {},
-        Addresses: {}
+        Addresses: {},
+        OrbitDataDir: null,
       }
     };
     this.updateState = this.updateState.bind(this);
@@ -49,9 +49,13 @@ class IpfsSettingsView extends React.Component {
 
   onCompoundChange(value, name) {
     let ipfsDaemonSettings = Object.assign({}, this.state.ipfsDaemonSettings)
-    ipfsDaemonSettings[name] = value;
+    ipfsDaemonSettings[name] = value
+
+    if (name === 'OrbitDataDir')
+      ipfsDaemonSettings.IpfsDataDir = value + '/ipfs'
+
     logger.info('compound change', name)
-    this.updateState(ipfsDaemonSettings);
+    this.updateState(ipfsDaemonSettings)
   }
 
   save(e) {
@@ -63,33 +67,45 @@ class IpfsSettingsView extends React.Component {
   render() {
     const settings = this.state.ipfsDaemonSettings;
     return (
-      <form className="IpfsSettingsView" onSubmit={this.save.bind(this)}>
-        <h1 className="title">IPFS daemon configurations</h1>
-        <title>Directories</title>
-        <div className="textInput">
-          <label htmlFor="IpfsDataDir"> Ipfs data path </label>
-          <input name="IpfsDataDir"
-                 type="text"
-                 value={settings.IpfsDataDir}
-                 onChange={this.settingChange}
-          />
-        </div>
-        <div>
-          <IpfsAddressSettings Addresses={settings.Addresses}
-                               onChange={this.onCompoundChange}
-          />
-        </div>
-        <div>
-          <IpfsApiSettings API={settings.API}
-                           onChange={this.onCompoundChange}
-          />
-        </div>
+      <div className="IpfsSettingsViewContainer">
+        <form className="IpfsSettingsView" onSubmit={this.save.bind(this)}>
+          <h1 className="title">Orbit Configuration</h1>
+          <title>Directories</title>
+          <div className="textInput">
+            <label htmlFor="OrbitDataDir">Orbit Data Directory</label>
+            <input name="OrbitDataDir"
+                   ref="orbitDataDirField"
+                   type="text"
+                   value={settings.OrbitDataDir}
+                   onInput={this.settingChange.bind(this)}
+            />
+          </div>
+          <div className="textInput">
+            <label htmlFor="IpfsDataDir">IPFS Repository Path</label>
+            <input name="IpfsDataDir"
+                   type="text"
+                   value={settings.IpfsDataDir}
+                   onInput={this.settingChange.bind(this)}
+            />
+          </div>
+          <div>
+            <IpfsAddressSettings Addresses={settings.Addresses}
+                                 onChange={this.onCompoundChange}
+            />
+          </div>
+          <div>
+            <IpfsApiSettings API={settings.API}
+                             onChange={this.onCompoundChange}
+            />
+          </div>
+        </form>
         <div className="save">
-          <button className="submitButton">
-            save
+          <button className="submitButton"
+                  onClick={this.save.bind(this)}>
+            Save
           </button>
         </div>
-      </form>
+      </div>
     );
   }
 }

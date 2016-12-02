@@ -32,9 +32,9 @@ module.exports = {
   },
   plugins: [
     new webpack.optimize.AggressiveMergingPlugin(),
-    // new webpack.optimize.UglifyJsPlugin({
-    //   mangle: false,
-    // }),
+    new webpack.optimize.UglifyJsPlugin({
+      mangle: false,
+    }),
     new webpack.NoErrorsPlugin(),
     new webpack.DefinePlugin({
       'process.env': {
@@ -45,8 +45,6 @@ module.exports = {
   resolve: {
     alias: {
       'node_modules': path.join(__dirname + '/node_modules'),
-      'http': path.join(__dirname + '/node_modules', 'stream-http'),
-      // 'https': path.join(__dirname + '/node_modules', 'https-browserify'),
       'fs': path.join(__dirname + '/node_modules', 'html5-fs'),
       'app': __dirname + '/src/app/',
       'styles': __dirname + '/src/styles',

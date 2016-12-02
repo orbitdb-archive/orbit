@@ -16,6 +16,12 @@ $text-color: rgba(228, 228, 228, 0.9);
   box-sizing: border-box;
 
 
+  .ConfigurationButton {
+    position: absolute;
+    bottom: 1em;
+    right: 1em;
+  }
+
   // TODO: rename to header
   .header {
     display: flex;

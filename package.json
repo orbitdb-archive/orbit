@@ -24,8 +24,8 @@
     "build:linux": "$(npm bin)/grunt build_linux --TARGET_OS=linux",
     "dist": "./scripts/build_dist_package.sh",
     "publish": "npm run dist && cd bin/ && ipfs add -r dist/ && cd ..",
-    "dev:electron": "IPFS_FD_MAX=4096 ENV=dev API_ORIGIN=* $(npm bin)/electron .",
-    "electron": "IPFS_FD_MAX=4096 $(npm bin)/electron .",
+    "dev:electron": "LOG=debug IPFS_FD_MAX=4096 ENV=dev API_ORIGIN=* $(npm bin)/electron .",
+    "electron": "LOG=debug IPFS_FD_MAX=4096 $(npm bin)/electron .",
     "start": "npm run electron"
   },
   "repository": {

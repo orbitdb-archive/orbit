@@ -3,11 +3,13 @@
 import Reflux from 'reflux';
 import _ from 'lodash';
 import Logger from 'logplease';
+import path from 'path'
 
 import AppActions from 'actions/AppActions';
 import NetworkActions from 'actions/NetworkActions';
 import IpfsDaemonActions from 'actions/IpfsDaemonActions';
 import {defaultIpfsDaemonSettings} from '../config/ipfs-daemon.config';
+import {defaultOrbitSettings} from '../config/orbit.config'
 
 const logger = Logger.create('IpfsDaemonStore', { color: Logger.Colors.Green });
 const LOCAL_STORAGE_KEY = 'ipfs-daemon-settings';
@@ -20,22 +22,22 @@ var IpfsDaemonStore = Reflux.createStore({
     this.isElectron = window.isElectron;
     this.ipfs = null;
     this.ipfsDaemonSettings = {};
+    this.settings = {};
 
     let ipfsDataDir = window.ipfsDataDir;
-    const settings = [defaultIpfsDaemonSettings(ipfsDataDir)];
-    const persistedSettings = this.getIpfsSettings()
-    if (persistedSettings) {
-      settings.unshift(persistedSettings);
-    }
+    let orbitDataDir = window.orbitDataDir;
+    let settings = [defaultIpfsDaemonSettings(ipfsDataDir), defaultOrbitSettings(orbitDataDir)];
+    // const persistedSettings = this.getIpfsSettings()
+    // if (persistedSettings) {
+    //   settings.unshift(persistedSettings);
+    // }
     // merging all settings (like defaultsDeep without merging arrays)
     settings.forEach(item => {
       _.mergeWith(this.ipfsDaemonSettings, item, (objectValue, sourceValue) => {
         return _.isArray(sourceValue) ? sourceValue : undefined;
       });
     });
-    if (!persistedSettings){
-      this.onPersist()
-    }
+
     if (this.isElectron) {
       ipcRenderer.on('ipfs-daemon-instance', (() => {
         logger.info('daemon callback')
@@ -43,21 +45,34 @@ var IpfsDaemonStore = Reflux.createStore({
         IpfsDaemonActions.daemonStarted(this.ipfs)
       }).bind(this))
     }
+
     this.trigger(this.ipfsDaemonSettings);
   },
-  onStart: function() {
+  onStart: function(user) {
     if (this.isElectron) {
-      logger.debug("start electron ipfs-daemon signal")
-      ipcRenderer.send('ipfs-daemon-start', this.ipfsDaemonSettings)
+      logger.debug("start electron ipfs-daemon")
+      let settings = Object.assign({}, this.ipfsDaemonSettings)
+
+      // this.onSaveConfiguration(settings)
+
+      if (settings.IpfsDataDir.includes(settings.OrbitDataDir + '/ipfs')) {
+        settings.IpfsDataDir = settings.IpfsDataDir.replace(settings.OrbitDataDir + '/ipfs', settings.OrbitDataDir)
+        settings.IpfsDataDir = path.join(settings.IpfsDataDir, '/' + user, '/ipfs')
+      }
+      settings.OrbitDataDir = path.join(settings.OrbitDataDir, '/' + user)
+
+      console.log(">", settings)
+      console.log(">>", this.ipfsDaemonSettings)
+      this.settings = Object.assign({}, settings)
+      ipcRenderer.send('ipfs-daemon-start', settings)
     } else {
       logger.debug("start js-ipfs")
       throw "should start js-ipfs. not implemented yet"
     }
   },
-  onDisconnect: function() {
-    logger.debug("disconnect ipfs daemon")
+  onStop: function() {
     if (this.isElectron) {
-      logger.debug("start electron ipfs-daemon signal")
+      logger.debug("stop electron ipfs-daemon")
       ipcRenderer.send('ipfs-daemon-stop')
     } else {
       logger.debug("stop js-ipfs daemon")
@@ -65,18 +80,20 @@ var IpfsDaemonStore = Reflux.createStore({
     }
   },
   onSaveConfiguration: function(ipfsDaemonSettings) {
-    this.ipfsDaemonSettings = ipfsDaemonSettings
-    const stringified = JSON.stringify(ipfsDaemonSettings)
-    localStorage.setItem(LOCAL_STORAGE_KEY, stringified)
-    logger.debug("persisted config")
+    this.ipfsDaemonSettings = Object.assign({}, ipfsDaemonSettings)
+    // const stringified = JSON.stringify(ipfsDaemonSettings)
+    // console.log(ipfsDaemonSettings)
+    // localStorage.setItem(LOCAL_STORAGE_KEY, stringified)
+    // logger.debug("persisted config")
   },
   onInitConfiguration: function(callback) {
     logger.debug("get config")
     this.trigger(this.ipfsDaemonSettings)
   },
   getIpfsSettings: function() {
-    const settings = localStorage.getItem(LOCAL_STORAGE_KEY)
-    return JSON.parse(settings)
+    return this.settings
+    // const settings = localStorage.getItem(LOCAL_STORAGE_KEY)
+    // return JSON.parse(settings)
   }
 })
 

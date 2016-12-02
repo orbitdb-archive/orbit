@@ -4,8 +4,8 @@ import Reflux from 'reflux';
 
 var AppActions = Reflux.createActions([
   "initialize",
-  "hasInitialized",
   "login",
+  "disconnect",
   "setLocation",
   "setCurrentChannel",
   "windowLostFocus",

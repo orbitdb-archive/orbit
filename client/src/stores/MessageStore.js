@@ -8,7 +8,6 @@ import AppActions from 'actions/AppActions'
 import UIActions from 'actions/UIActions'
 import NetworkActions from 'actions/NetworkActions'
 import ChannelActions from 'actions/ChannelActions'
-import SocketActions from 'actions/SocketActions'
 import NotificationActions from 'actions/NotificationActions'
 import UserActions from 'actions/UserActions'
 import UserStore from 'stores/UserStore'
@@ -19,7 +18,7 @@ const logger = Logger.create('MessageStore', { color: Logger.Colors.Magenta })
 const messagesBatchSize = 8
 
 const MessageStore = Reflux.createStore({
-  listenables: [AppActions, UIActions, NetworkActions, SocketActions, ChannelActions],
+  listenables: [AppActions, UIActions, NetworkActions, ChannelActions],
   init: function() {
     this.currentChannel = null
     this.channels = {}

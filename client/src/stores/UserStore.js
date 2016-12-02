@@ -1,36 +1,32 @@
 'use strict'
 
 import Reflux from 'reflux'
-import AppActions from 'actions/AppActions'
-import UserActions from 'actions/UserActions'
+import OrbitStore from 'stores/OrbitStore'
 import NetworkActions from 'actions/NetworkActions'
-import IpfsDaemonActions from 'actions/IpfsDaemonActions'
 import Logger from 'logplease'
 
 const logger = Logger.create('UserStore', { color: Logger.Colors.Green })
 
 var UserStore = Reflux.createStore({
-  listenables: [AppActions, UserActions, NetworkActions],
+  listenables: [NetworkActions],
   init: function() {
     this.user = null
-  },
-  onInitialize: function(orbit) {
-    this.orbit = orbit
-    this.orbit.events.on('connected', (network, user) => {
-      logger.info(`Connected as ${user}`)
-      this._updateUser(user)
+    OrbitStore.listen((orbit) => {
+      orbit.events.on('connected', (network, user) => {
+        logger.info(`Connected as ${user}`)
+        this._update(user)
+      })
     })
   },
   onDisconnect: function() {
-    this.user = null
-    this.trigger(this.user)
+    this._update(null)
   },
-  _updateUser: function(user) {
+  _update: function(user) {
     logger.debug(`User updated: ${user}`)
     this.user = user
 
     if(!this.user)
-      logger.debug("Not logged in")
+      logger.debug("Not logged in!")
 
     this.trigger(this.user)
   }
