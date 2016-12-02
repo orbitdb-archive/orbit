@@ -20,12 +20,11 @@
   "scripts": {
     "test": "$(npm bin)/mocha",
     "build": "npm run build:osx && npm run build:linux",
-    "build:osx": "$(npm bin)/grunt build_osx --TARGET_OS=darwin",
-    "build:linux": "$(npm bin)/grunt build_linux --TARGET_OS=linux",
-    "dist": "./scripts/build_dist_package.sh",
+    "build:osx": "TARGET_OS=darwin $(npm bin)/grunt build_osx",
+    "build:linux": "TARGET_OS=linux $(npm bin)/grunt build_linux",
     "publish": "npm run dist && cd bin/ && ipfs add -r dist/ && cd ..",
-    "dev:electron": "IPFS_FD_MAX=4096 ENV=dev API_ORIGIN=* $(npm bin)/electron .",
-    "electron": "IPFS_FD_MAX=4096 $(npm bin)/electron .",
+    "dev:electron": "LOG=debug IPFS_FD_MAX=4096 ENV=dev API_ORIGIN=* $(npm bin)/electron .",
+    "electron": "LOG=debug IPFS_FD_MAX=4096 $(npm bin)/electron .",
     "start": "npm run electron"
   },
   "repository": {

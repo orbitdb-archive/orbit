@@ -6,19 +6,15 @@ import { render } from 'react-dom'
 import { Router, Route, hashHistory } from 'react-router'
 import Logger from 'logplease'
 
-import Orbit from 'orbit_'
-
-import fs from 'fs'
-
 import AppActions from 'actions/AppActions'
 import UIActions from "actions/UIActions"
-import SocketActions from 'actions/SocketActions'
 import NetworkActions from 'actions/NetworkActions'
 import NotificationActions from 'actions/NotificationActions'
 import IpfsDaemonActions from 'actions/IpfsDaemonActions'
 import ChannelActions from 'actions/ChannelActions'
 import SkynetActions from 'actions/SkynetActions'
 
+import OrbitStore from 'stores/OrbitStore'
 import IpfsDaemonStore from 'stores/IpfsDaemonStore'
 import AppStateStore from 'stores/AppStateStore'
 import UserStore from 'stores/UserStore'
@@ -61,14 +57,7 @@ const views = {
 
 const hasIPFS = !!window.ipfsInstance
 console.log("hasIPFS:", hasIPFS)
-
-// fs.init(1 * 1024 * 1024, (err) => {
-//   if(err) {
-//     logger.error("Couldn't initialize file system:", err)
-//   } else {
-//     logger.debug("FileSystem initialized")
-//   }
-// })
+const ipcRenderer = window.ipcRenderer
 
 var App = React.createClass({
   getInitialState: function() {
@@ -84,32 +73,11 @@ var App = React.createClass({
     }
   },
   componentDidMount: function() {
-    const signalServerAddress = this.props.location.query.local ? '0.0.0.0' : '178.62.241.75'
-    const ipcRenderer = hasIPFS ? window.ipcRenderer : null
-    // const dataPath = '/tmp/orbit-demo-2-'
-    // const orbit = window.orbit
-
-    // return ipfsApiInstance.id()
-    //   .then((id) => {
-    //     logger.log(id);
-    //     return { orbit: orbit, peerId: id };
-    //   });
-
-    // Main.start(ipfsApi, dataPath, signalServerAddress).then((res) => {
-      // logger.debug("PeerId:", res.peerId.ID)
-
-      // orbit = res.orbit
-
-      if (!this.state.user) {
-        AppActions.setLocation('Connect')
-      }
-      // AppActions.setLocation('connect') // start the App
-    // })
-    // .catch((e) => {  onSetCurrentChannel: function(channel) {
-
-    //   logger.error(e.message)
-    //   logger.error("Stack trace:\n", e.stack)
-    // })
+    // const signalServerAddress = this.props.location.query.local ? '0.0.0.0' : '178.62.241.75'
+    if (!this.state.user) {
+      this._reset()
+      AppActions.setLocation("Connect")
+    }
 
     document.title = 'Orbit'
 
@@ -118,7 +86,6 @@ var App = React.createClass({
     NetworkActions.joinChannelError.listen(this.onJoinChannelError)
     NetworkActions.leaveChannel.listen(this.onLeaveChannel)
     AppActions.login.listen(this.onLogin)
-    SocketActions.socketDisconnected.listen(this.onDaemonDisconnected)
 
     this.unsubscribeFromNetworkStore = NetworkStore.listen(this.onNetworkUpdated)
     this.unsubscribeFromUserStore = UserStore.listen(this.onUserUpdated)
@@ -126,16 +93,6 @@ var App = React.createClass({
     this.unsubscribeFromSettingsStore = SettingsStore.listen((settings) => {
       this.setState({ theme: Themes[settings.theme] || null, leftSidePanel: settings.leftSidePanel })
     })
-
-    window.onblur = () => {
-      // AppActions.windowLostFocus()
-      // logger.debug("Lost focus!")
-    }
-
-    window.onfocus = () => {
-      // AppActions.windowOnFocus()
-      // logger.debug("Got focus!")
-    }
   },
   _handleAppStateChange: function(state) {
     let prefix = '', suffix = ''
@@ -158,27 +115,14 @@ var App = React.createClass({
     }
   },
   _reset: function() {
-    if(hasIPFS) ipcRenderer.send('disconnected')
+    if(ipcRenderer) ipcRenderer.send('disconnected')
     this.setState(this.getInitialState())
   },
   onLogin: function(username) {
-    IpfsDaemonActions.start();
-    const stop = AppActions.hasInitialized.listen(() => {
-      stop()
-      NetworkActions.connect(null, username)
-    })
-    const stopListening = IpfsDaemonActions.daemonStarted.listen((ipfs) => {
-      stopListening()
-      const orbit = new Orbit(ipfs)
-      if(ipcRenderer) {
-        orbit.events.on('connected', (network, user) => {
-          ipcRenderer.send('connected', network, user)
-        });
-        orbit.events.on('disconnected', () => {
-          ipcRenderer.send('disconnected')
-        })
-      }
-      AppActions.initialize(orbit);
+    IpfsDaemonActions.start(username)
+    OrbitStore.listen((orbit) => {
+      logger.debug("Connect as " + username)
+      orbit.connect(username)
     })
   },
   onNetworkUpdated: function(network) {
@@ -208,8 +152,7 @@ var App = React.createClass({
     AppActions.setLocation("Connect")
   },
   onUserUpdated: function(user) {
-    logger.debug("User updated")
-    console.log(user)
+    logger.debug("User updated", user)
 
     if (!user) {
       AppActions.setLocation("Connect")
@@ -276,7 +219,9 @@ var App = React.createClass({
   disconnect: function() {
     logger.debug('app disconnect')
     this.closePanel()
+    AppActions.disconnect()
     NetworkActions.disconnect()
+    // IpfsDaemonActions.stop()
     this.setState({ user: null })
     AppActions.setLocation("Connect")
   },
