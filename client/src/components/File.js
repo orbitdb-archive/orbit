@@ -13,8 +13,6 @@ import 'styles/File.scss';
 import Logger from 'logplease';
 const logger = Logger.create('Clipboard', { color: Logger.Colors.Magenta });
 
-const isElectron = !!window.ipfsInstance;
-
 class File extends React.Component {
   constructor(props) {
     super(props);
@@ -45,7 +43,7 @@ class File extends React.Component {
   }
 
   get isHighlightable() {
-    return highlight.getLanguage(this.ext);
+    return highlight.getLanguage(this.ext) || this.ext === 'txt';
   }
 
   handleClick(evt) {
@@ -68,7 +66,7 @@ class File extends React.Component {
       previewContent: 'Loading...',
     }, () => {
       if (this.state.showPreview) {
-
+        const isElectron = !!window.ipfsInstance
         const isMedia = this.isAudio | this.isVideo | this.isImage
         const asURL = isElectron & isMedia
         const asStream = this.isVideo
@@ -83,7 +81,7 @@ class File extends React.Component {
           let previewContent = 'Unable to display file.'
           if (buffer || url || stream) {
 
-            if(buffer && isElectron) {
+            if(buffer instanceof Blob) {
               blob = buffer
             } else if (buffer && this.state.meta.mimeType) {
               const arrayBufferView = toArrayBuffer(buffer)
@@ -101,12 +99,12 @@ class File extends React.Component {
             // }
 
             if (this.isAudio) {
-              previewContent = <audio height={200} src={url} controls autoPlay={true} />
+              previewContent = <audio src={url} controls autoPlay={true} />
             } else if (this.isImage) {
-              previewContent = <img height={200} src={url} />
+              previewContent = <img src={url} />
             } else if (this.isVideo) {
               if (isElectron) {
-                previewContent = <video height={200} src={url} controls autoPlay={true} />
+                previewContent = <video src={url} controls autoPlay={true} />
                 this.setState({ previewContent }, () => this.props.onPreviewOpened(this.refs.preview))
                 return
               } else {
@@ -139,7 +137,7 @@ class File extends React.Component {
                   stream.on('error', (e) => console.error(e))
                 })
 
-                previewContent = <video height={200} src={url} controls autoPlay={false} />
+                previewContent = <video src={url} controls autoPlay={true} />
               }
             } else {
               var fileReader = new FileReader()
@@ -158,8 +156,8 @@ class File extends React.Component {
   }
 
   render() {
-    const gateway = isElectron ? 'http://' + window.gatewayAddress : 'https://ipfs.io./ipfs/'
-    const openLink = gateway + this.props.hash;
+    const gateway = window.gatewayAddress ? 'http://' + window.gatewayAddress : 'https://ipfs.io./ipfs/'
+    const openLink = gateway + this.props.hash + '/';
     const size = getHumanReadableBytes(this.props.size);
     const className = `clipboard-${this.props.hash} download`;
     const preview = (

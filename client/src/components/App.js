@@ -42,7 +42,7 @@ import 'styles/Scrollbars.scss'
 import 'highlight.js/styles/atom-one-dark.css'
 // Agate, Atom One Dark, Github, Monokai, Monokai Sublime, Vs, Xcode
 
-Logger.setLogLevel(window.DEV ? 'DEBUG' : 'NONE')
+Logger.setLogLevel(window.DEV ? 'DEBUG' : 'ERROR')
 
 const logger = Logger.create('App', { color: Logger.Colors.Red })
 
@@ -52,7 +52,8 @@ const views = {
   "IpfsSettings": "/ipfs-settings",
   "Swarm": "/swarm",
   "Connect": "/connect",
-  "Channel": "/channel/"
+  "Channel": "/channel/",
+  // "Loading": "/loading",
 }
 
 const hasIPFS = !!window.ipfsInstance
@@ -73,7 +74,6 @@ var App = React.createClass({
     }
   },
   componentDidMount: function() {
-    // const signalServerAddress = this.props.location.query.local ? '0.0.0.0' : '178.62.241.75'
     if (!this.state.user) {
       this._reset()
       AppActions.setLocation("Connect")

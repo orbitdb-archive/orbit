@@ -7,13 +7,17 @@ module.exports = {
     height: 512,
     center: true,
     resize: false,
-    "web-preferences": {
-      "web-security": false,
-      zoomFactor: 3.0
+    webPreferences: {
+      webSecurity: false,
     }
   },
   mainWindowSize: {
     width: 1200,
     height: 800,
+    center: true,
+    resize: true,
+    webPreferences: {
+      webSecurity: false,
+    }
   }
 }

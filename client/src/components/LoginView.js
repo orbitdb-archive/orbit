@@ -134,19 +134,19 @@ class LoginView extends React.Component{
             : null
           }
         </div>
-        <button type='button' className='ConfigurationButton submitButton' onClick={this.configureIpfs.bind(this)}>
-          Configuration
-        </button>
       </TransitionGroup>
 
     return (
       <div className="LoginView">
+        <TransitionGroup className="header" transitionName="loginHeaderAnimation" transitionAppear={true} component="div" transitionAppearTimeout={5000} transitionEnterTimeout={5000} transitionLeaveTimeout={5000}>
+          <h1>Orbit</h1>
+        </TransitionGroup>
         <form onSubmit={this.register.bind(this)}>
-          <TransitionGroup className="header" transitionName="loginHeaderAnimation" transitionAppear={true} component="div" transitionAppearTimeout={5000} transitionEnterTimeout={5000} transitionLeaveTimeout={5000}>
-            <h1>Orbit</h1>
-          </TransitionGroup>
           {form}
         </form>
+        <button type='button' className='ConfigurationButton submitButton' onClick={this.configureIpfs.bind(this)}>
+          Configuration
+        </button>
         <BackgroundAnimation size={this.state.logoSize} circleSize={2} theme={this.state.theme}/>
       </div>
     );

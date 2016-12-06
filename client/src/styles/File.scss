@@ -9,12 +9,12 @@ $directory-link-hover-color2: rgba(240, 240, 240, 0.9);
 .File {
   padding-left: 0.3em;
   padding-right: 0.3em;
-  display: inline-block;
+  // display: inline-block;
   white-space: nowrap;
   font-weight: 300;
-  width: 100%;
-    overflow: hidden;
- box-sizing: content-box;
+  // width: 100%;
+  overflow: hidden;
+  box-sizing: content-box;
 
   .content {
     // width: 100%;
@@ -25,7 +25,7 @@ $directory-link-hover-color2: rgba(240, 240, 240, 0.9);
   .preview {
     max-width: 90vw;
     margin-top: 0.5em;
-    // margin-bottom: 0.25em;
+    margin-bottom: 0.5em;
     margin-left: 0.25em;
     margin-right: 0.25em;
 
@@ -40,6 +40,10 @@ $directory-link-hover-color2: rgba(240, 240, 240, 0.9);
     display: flex;
     max-height: 30em;
     box-sizing: content-box;
+
+    img, audio, video {
+      max-height: 30em;
+    }
   }
 
   .preview:hover {
