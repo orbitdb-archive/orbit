@@ -1,73 +1,75 @@
-'use strict';
+'use strict'
 
-import Reflux from 'reflux';
-import _ from 'lodash';
-import Logger from 'logplease';
+import IPFS from 'ipfs-daemon/src/ipfs-browser-daemon'
+import _ from 'lodash'
+import Reflux from 'reflux'
+import Logger from 'logplease'
 import path from 'path'
-
-import AppActions from 'actions/AppActions';
-import NetworkActions from 'actions/NetworkActions';
-import IpfsDaemonActions from 'actions/IpfsDaemonActions';
-import {defaultIpfsDaemonSettings} from '../config/ipfs-daemon.config';
+import AppActions from 'actions/AppActions'
+import NetworkActions from 'actions/NetworkActions'
+import IpfsDaemonActions from 'actions/IpfsDaemonActions'
+import {defaultIpfsDaemonSettings} from '../config/ipfs-daemon.config'
 import {defaultOrbitSettings} from '../config/orbit.config'
 
-const logger = Logger.create('IpfsDaemonStore', { color: Logger.Colors.Green });
-const LOCAL_STORAGE_KEY = 'ipfs-daemon-settings';
+const logger = Logger.create('IpfsDaemonStore', { color: Logger.Colors.Green })
+// const LOCAL_STORAGE_KEY = 'ipfs-daemon-settings'
 
 var IpfsDaemonStore = Reflux.createStore({
   listenables: [AppActions, IpfsDaemonActions, NetworkActions],
   init: function() {
     logger.info('IpfsDaemonStore Init sequence')
 
-    this.isElectron = window.isElectron;
-    this.ipfs = null;
-    this.ipfsDaemonSettings = {};
-    this.settings = {};
+    this.isElectron = window.isElectron
+    this.ipfs = null
+    this.ipfsDaemonSettings = {}
+    this.settings = {}
 
-    let ipfsDataDir = window.ipfsDataDir;
-    let orbitDataDir = window.orbitDataDir;
-    let settings = [defaultIpfsDaemonSettings(ipfsDataDir), defaultOrbitSettings(orbitDataDir)];
+    let orbitDataDir = window.orbitDataDir || '/orbit'
+    let ipfsDataDir = window.ipfsDataDir   || '/orbit/ipfs'
+    let settings = [defaultIpfsDaemonSettings(ipfsDataDir), defaultOrbitSettings(orbitDataDir)]
     // const persistedSettings = this.getIpfsSettings()
     // if (persistedSettings) {
-    //   settings.unshift(persistedSettings);
+    //   settings.unshift(persistedSettings)
     // }
     // merging all settings (like defaultsDeep without merging arrays)
     settings.forEach(item => {
       _.mergeWith(this.ipfsDaemonSettings, item, (objectValue, sourceValue) => {
-        return _.isArray(sourceValue) ? sourceValue : undefined;
-      });
-    });
+        return _.isArray(sourceValue) ? sourceValue : undefined
+      })
+    })
 
     if (this.isElectron) {
       ipcRenderer.on('ipfs-daemon-instance', (() => {
         logger.info('daemon callback')
-        this.ipfs = window.remote.getGlobal('ipfsInstance')
+        window.ipfsInstance = window.remote.getGlobal('ipfsInstance')
+        this.ipfs = window.ipfsInstance
+        window.gatewayAddress = this.ipfs.GatewayAddress
         IpfsDaemonActions.daemonStarted(this.ipfs)
       }).bind(this))
     }
 
-    this.trigger(this.ipfsDaemonSettings);
+    this.trigger(this.ipfsDaemonSettings)
   },
   onStart: function(user) {
+    let settings = Object.assign({}, this.ipfsDaemonSettings)
+
+    if (settings.IpfsDataDir.includes(settings.OrbitDataDir + '/ipfs')) {
+      settings.IpfsDataDir = settings.IpfsDataDir.replace(settings.OrbitDataDir + '/ipfs', settings.OrbitDataDir)
+      settings.IpfsDataDir = path.join(settings.IpfsDataDir, '/' + user, '/ipfs')
+    }
+
+    settings.OrbitDataDir = path.join(settings.OrbitDataDir, '/' + user)
+
+    this.settings = Object.assign({}, settings)
+
     if (this.isElectron) {
       logger.debug("start electron ipfs-daemon")
-      let settings = Object.assign({}, this.ipfsDaemonSettings)
-
-      // this.onSaveConfiguration(settings)
-
-      if (settings.IpfsDataDir.includes(settings.OrbitDataDir + '/ipfs')) {
-        settings.IpfsDataDir = settings.IpfsDataDir.replace(settings.OrbitDataDir + '/ipfs', settings.OrbitDataDir)
-        settings.IpfsDataDir = path.join(settings.IpfsDataDir, '/' + user, '/ipfs')
-      }
-      settings.OrbitDataDir = path.join(settings.OrbitDataDir, '/' + user)
-
-      console.log(">", settings)
-      console.log(">>", this.ipfsDaemonSettings)
-      this.settings = Object.assign({}, settings)
       ipcRenderer.send('ipfs-daemon-start', settings)
     } else {
       logger.debug("start js-ipfs")
-      throw "should start js-ipfs. not implemented yet"
+      this.ipfs = new IPFS(this.settings)
+      this.ipfs.on('ready', () => IpfsDaemonActions.daemonStarted(this.ipfs))
+      this.ipfs.on('error', (e) => logger.error(e))
     }
   },
   onStop: function() {
@@ -97,4 +99,4 @@ var IpfsDaemonStore = Reflux.createStore({
   }
 })
 
-export default IpfsDaemonStore;
+export default IpfsDaemonStore

@@ -6,14 +6,28 @@ $directory-link-color2:       rgba(196, 196, 196, 0.6);
 $directory-link-hover-color: rgba(128, 196, 255, 1);
 $directory-link-hover-color2: rgba(240, 240, 240, 0.9);
 
+.webview {
+  // background: white;
+  margin: 0.25em;
+  margin-bottom: 0.25em;
+  height: 20em;
+  flex: 1 1 50%;
+  overflow: auto;
+  border: 1px dashed rgba(255, 255, 255, 0.3);
+  box-sizing: border-box;
+}
+
 .DirectoryView {
   width: 100%;
 }
 
 .children {
+  flex: 1 0 50%;
+  overflow: auto;
   padding-left: 0.4em;
-  margin-left: 0.45em;
+  margin-left: 0.6em;
   margin-top: 0.25em;
+  margin-bottom: 0.25em;
   background-color: rgba(0, 0, 0, 0.075);
   border-left: 1px dotted rgba(255, 255, 255, 0.1);
 }
@@ -27,13 +41,15 @@ $directory-link-hover-color2: rgba(240, 240, 240, 0.9);
   padding-left: 0.3em;
   padding-right: 0.3em;
   white-space: nowrap;
-  width: 100%;
+  // width: 100%;
 
   .download {
+    user-select: none;
     visibility: hidden;
     font-weight: 100;
-    margin-left: 0.5em;
-    margin-right: 0.5em;
+    font-size: 0.9em;
+    cursor: pointer;
+    margin-left: 0.75em;
   }
 
   .size {

@@ -7,6 +7,7 @@ export function defaultIpfsDaemonSettings(ipfsDataDir) {
       Swarm: ['/ip4/0.0.0.0/tcp/0'],
       Gateway: '/ip4/0.0.0.0/tcp/0'
     },
+    SignalServer: '178.62.241.75',
     API: {
       HTTPHeaders: {
         "Access-Control-Allow-Origin": ['*'],

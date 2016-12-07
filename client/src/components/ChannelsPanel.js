@@ -117,7 +117,9 @@ class ChannelsPanel extends React.Component {
         <TransitionGroup {...transitionProps} transitionName={this.state.leftSide ? "openPanelAnimationRight" : "openPanelAnimationLeft"}>
           <div className="ChannelsPanel" style={align}>
 
-            <BackgroundAnimation size="320" startY="58" theme={this.state.theme} />
+            <div style={{ opacity: 0.8, zIndex: -1 }}>
+              <BackgroundAnimation size="320" startY="58" theme={this.state.theme} />
+            </div>
 
             <TransitionGroup {...transitionProps} transitionName={this.state.leftSide ? "panelHeaderAnimationRight" : "panelHeaderAnimationLeft"}>
               <div className={headerClass} onClick={this.onClose.bind(this)}>
