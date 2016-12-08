@@ -7,7 +7,7 @@ deployment:
     owner: haadcode
     commands:
       - npm run build
-      - npm run dist
+      - make dist
       - ls $CIRCLE_ARTIFACTS
 general:
   artifacts:
