@@ -5,7 +5,8 @@
   "main": "index.js",
   "dependencies": {
     "ipfs-daemon": "^0.3.0-beta.4",
-    "logplease": "^1.2.9"
+    "logplease": "^1.2.9",
+    "mkdirp": "^0.5.1"
   },
   "devDependencies": {
     "electron": "^1.4.10",

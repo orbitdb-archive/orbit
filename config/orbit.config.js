@@ -2,13 +2,14 @@
 
 const path = require('path')
 const fs = require('fs')
+const mkdirp = require('mkdirp')
 
 // TODO: need to mkdirp the app and logfile directories
 
 function getLogFilePath(orbitDataDir) {
   // Make sure we have the Orbit data directory
   if (!fs.existsSync(orbitDataDir))
-    fs.mkdirSync(orbitDataDir)
+    mkdirp.sync(orbitDataDir)
 
   return path.join(orbitDataDir, '/debug.log')
 }
@@ -16,8 +17,7 @@ function getLogFilePath(orbitDataDir) {
 function getIpfsDefaultPath(appDataDir) {
   return process.env.IPFS_PATH
     ? path.resolve(process.env.IPFS_PATH)
-    // : path.join(appDataDir, '/ipfs')
-    : path.resolve(appDataDir)
+    : path.join(appDataDir, '/ipfs')
 }
 
 module.exports = function(app) {
@@ -25,11 +25,11 @@ module.exports = function(app) {
   const MODE = process.env.ENV ? process.env.ENV : 'debug'
 
   if (!fs.existsSync(appDataDir))
-    fs.mkdirSync(appDataDir)
+    mkdirp.sync(appDataDir)
 
   const orbitDataDir = (MODE === 'dev')
     ? path.join(process.cwd() , '/data') // put orbit's data to './data' in dev mode
-    : path.join(appDataDir, '/orbit')
+    : appDataDir
 
   const userDownloadPath = path.resolve(app.getPath('downloads'))
 
