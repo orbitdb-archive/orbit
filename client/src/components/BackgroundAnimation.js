@@ -100,9 +100,9 @@ class BackgroundAnimation extends React.Component {
           <g className="transparent">
             {circles}
           </g>
-          <svg width={this.state.width} height={this.state.width} key="dots" style={this.state.theme} className="opaque">
-            {dots}
-          </svg>
+        </svg>
+        <svg className="Planets opaque" width={this.state.width} height={this.state.width} key="dots" style={this.state.theme}>
+          {dots}
         </svg>
       </div>
     )
