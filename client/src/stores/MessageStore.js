@@ -249,7 +249,7 @@ const MessageStore = Reflux.createStore({
       })
   },
   onLoadFile: function(hash: string, asURL: boolean, asStream: boolean, callback) {
-    const isElectron = !!window.ipfsInstance
+    const isElectron = window.isElectron
     if(isElectron && asURL) {
       console.log(window.gatewayAddress, this.orbit._ipfs.GatewayAddress)
       callback(null, null, 'http://' + window.gatewayAddress + hash)
