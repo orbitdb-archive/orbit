@@ -54,6 +54,7 @@
     "babel-preset-stage-0": "^6.5.0",
     "babel-preset-stage-3": "^6.5.0",
     "babel-runtime": "^6.9.0",
+    "browserify-zlib": "git://github.com/ipfs/browserify-zlib.git#9993effe9f670367bf96b9d23c3e5ca0e1ed4036",
     "chunk-manifest-webpack-plugin": "^0.1.0",
     "copy-webpack-plugin": "^3.0.1",
     "core-js": "^2.4.0",
