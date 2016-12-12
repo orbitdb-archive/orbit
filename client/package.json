@@ -13,7 +13,7 @@
     "emoji-annotation-to-unicode": "^0.2.4",
     "halogen": "^0.2.0",
     "highlight.js": "^9.5.0",
-    "ipfs-daemon": "^0.3.0-beta.5",
+    "ipfs-daemon": "^0.3.0-beta.8",
     "lodash.differencewith": "^4.5.0",
     "lodash.flatten": "^4.4.0",
     "lodash.last": "^3.0.0",

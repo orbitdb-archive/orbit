@@ -68,7 +68,17 @@ var IpfsDaemonStore = Reflux.createStore({
     } else {
       logger.debug("start js-ipfs")
       this.ipfs = new IPFS(this.settings)
-      this.ipfs.on('ready', () => IpfsDaemonActions.daemonStarted(this.ipfs))
+      this.ipfs.on('ready', () => {
+        // interop tests
+        this.ipfs.swarm.connect('/ip4/127.0.0.1/tcp/32333/ws/ipfs/QmZbaYW1gYMRPag1K4ssaCuyJhuBu5tGKvETz7DnGFnykp')
+          .then((res) => {
+            console.log("swarm.connect to /ip4/127.0.0.1/tcp/32333/ws/ipfs/QmZbaYW1gYMRPag1K4ssaCuyJhuBu5tGKvETz7DnGFnykp", res)
+          })
+          .catch((err) => {
+            console.error("swarm.connect", err)
+          })
+        IpfsDaemonActions.daemonStarted(this.ipfs)
+      })
       this.ipfs.on('error', (e) => logger.error(e))
     }
   },
