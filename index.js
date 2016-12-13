@@ -15,7 +15,10 @@ const IpfsDaemon    = require('ipfs-daemon')
 const WindowConfig  = require('./config/window.config')
 const OrbitConfig   = require('./config/orbit.config')(app)
 
- // dev|debug
+// Hack to fix "error: too open files" in go-ipfs 0.4.5-pre1
+process.env.IPFS_FD_MAX = 4096
+
+// dev|debug
 const MODE = OrbitConfig.MODE
 
 // Setup logging, to turn on the logging, run orbit-electron with LOG=debug
