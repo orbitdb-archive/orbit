@@ -48,6 +48,7 @@ class Channel extends React.Component {
       || this.state.unreadMessages != nextState.unreadMessages
       || this.state.channelName != nextState.channelName
       || this.state.dragEnter != nextState.dragEnter
+      || this.state.loading != nextState.loading
   }
 
   componentWillReceiveProps(nextProps) {
@@ -77,6 +78,14 @@ class Channel extends React.Component {
     this.unsubscribeFromErrors = UIActions.raiseError.listen(this._onError.bind(this))
     this.stopListeningChannelState = ChannelActions.reachedChannelStart.listen(this._onReachedChannelStart.bind(this))
     this.node = this.refs.MessagesView
+    this.unsubscribeFromLoadingStart = UIActions.startLoading.listen((channel) => {
+      if (channel === this.state.channelName)
+        this.setState({ loading: true })
+    })
+    this.unsubscribeFromLoadingStop = UIActions.stopLoading.listen((channel) => {
+      if (channel === this.state.channelName)
+        this.setState({ loading: false })
+    })
   }
 
   _onError(errorMessage) {
@@ -92,6 +101,8 @@ class Channel extends React.Component {
     this.unsubscribeFromMessageStore()
     this.unsubscribeFromErrors()
     this.stopListeningChannelState()
+    this.unsubscribeFromLoadingStart()
+    this.unsubscribeFromLoadingStop()
     this.setState({ messages: [] })
   }
 
@@ -102,7 +113,7 @@ class Channel extends React.Component {
     this.node = this.refs.MessagesView
     if(this.node.scrollHeight - this.node.scrollTop + this.bottomMargin > this.node.clientHeight
       && this.node.scrollHeight > this.node.clientHeight + 1
-      && this.state.messages.length > 0 && last(messages).payload.meta.ts > last(this.state.messages).payload.meta.ts
+      && this.state.messages.length > 0 && last(messages).meta.ts > last(this.state.messages).meta.ts
       && this.node.scrollHeight > 0) {
       this.setState({
         unreadMessages: this.state.unreadMessages + 1
@@ -283,7 +294,7 @@ class Channel extends React.Component {
     const elements = messages.map((message) => {
       if (appSettings.useLargeMessage) {
         return <Message2
-          message={message.payload}
+          message={message}
           key={message.hash}
           onReplyTo={this.onReplyTo.bind(this)}
           onShowProfile={this.onShowProfile.bind(this)}
@@ -301,7 +312,7 @@ class Channel extends React.Component {
         />   
       } else {
         return <Message
-          message={message.payload}
+          message={message}
           key={message.hash}
           onReplyTo={this.onReplyTo.bind(this)}
           onShowProfile={this.onShowProfile.bind(this)}
