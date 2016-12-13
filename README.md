@@ -4,7 +4,7 @@ Interop dev version
 
 Run:
 ```
-git clone -b feat/interop https://github.com/haadcode/orbit.git
+git clone -b feat/pubsub https://github.com/haadcode/orbit.git
 cd orbit/
 cd client/
 make
