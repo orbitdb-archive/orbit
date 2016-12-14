@@ -56,8 +56,6 @@ const views = {
   // "Loading": "/loading",
 }
 
-const hasIPFS = !!window.ipfsInstance
-console.log("hasIPFS:", hasIPFS)
 const ipcRenderer = window.ipcRenderer
 
 var App = React.createClass({

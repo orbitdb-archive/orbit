@@ -50,7 +50,7 @@ const MessageStore = Reflux.createStore({
 
     this.orbit.events.on('message', (channel, message) => {
       // logger.info("-->", channel, message)
-      this._add(channel, [message])
+      setImmediate(() => this._add(channel, [message]))
     })
 
     this.loadingCount = 0

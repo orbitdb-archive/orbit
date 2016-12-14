@@ -20,17 +20,17 @@ class Message extends React.Component {
       post: props.message,
       user: props.message.meta.from,
       hasHighlights: false,
-      isCommand: false,
+      isCommand: props.message.content && props.message.content.startsWith('/me'),
       formattedTime: getFormattedTime(props.message.meta.ts),
       showSignature: false,
       showProfile: null
     }
   }
 
-  // shouldComponentUpdate(nextProps, nextState) {
-  //   return this.state.post !== nextState.post
-  //     || this.state.user !== nextState.user
-  // }
+  shouldComponentUpdate(nextProps, nextState) {
+    return this.state.post !== nextState.post
+      || this.state.user !== nextState.user
+  }
 
   componentDidMount() {
     // ChannelActions.loadPost(this.props.message.value, (err, post) => {

@@ -24,6 +24,10 @@ class User extends React.Component {
     })
   }
 
+  shouldComponentUpdate(nextProps, nextState) {
+    return this.state.user && this.state.user.id !== nextState.user && nextState.user.id
+  }
+
   render() {
     const { user, highlight, colorify } = this.state
 

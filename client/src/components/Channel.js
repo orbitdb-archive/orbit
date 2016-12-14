@@ -42,6 +42,10 @@ class Channel extends React.Component {
     this.scrollTimer = null
     this.topMargin = 120
     this.bottomMargin = 20
+
+    this.onShowProfile = this.onShowProfile.bind(this)
+    this.onDragEnter = this.onDragEnter.bind(this)
+    this.onScrollToPreview = this.onScrollToPreview.bind(this)
   }
 
   shouldComponentUpdate(nextProps, nextState) {
@@ -51,6 +55,7 @@ class Channel extends React.Component {
       || this.state.dragEnter != nextState.dragEnter
       || this.state.loading != nextState.loading
       || this.state.peers != nextState.peers
+      || this.state.showUserProfile != nextState.showUserProfile
   }
 
   componentWillReceiveProps(nextProps) {
@@ -159,16 +164,19 @@ class Channel extends React.Component {
   }
 
   componentDidUpdate() {
+    const scrollHeight = this.node.scrollHeight
+    const clientHeight = this.node.clientHeight
+
     this.node = this.refs.MessagesView
-    this.scrollAmount = this.node.scrollHeight - this.scrollHeight
+    this.scrollAmount = scrollHeight - this.scrollHeight
     this.keepScrollPosition = (this.scrollAmount > 0 && this.scrollTop > (0 + this.topMargin)) || this.state.reachedChannelStart
-    this.shouldScrollToBottom = (this.node.scrollTop + this.node.clientHeight + this.bottomMargin) >= this.scrollHeight
+    this.shouldScrollToBottom = (this.node.scrollTop + clientHeight + this.bottomMargin) >= this.scrollHeight
 
     if(!this.keepScrollPosition)
       this.node.scrollTop += this.scrollAmount
 
     if(this.shouldScrollToBottom)
-      this.node.scrollTop = this.node.scrollHeight + this.node.clientHeight
+      this.node.scrollTop = scrollHeight + clientHeight
 
     // If the channel was changed, scroll to bottom to avoid weird positioning
     // TODO: replace with remembering each channel's scroll position on channel change
@@ -253,7 +261,7 @@ class Channel extends React.Component {
     const previewRect = node.getBoundingClientRect()
     const channelRect = this.node.getBoundingClientRect()
     const amount = previewRect.bottom - channelRect.bottom
-    console.log(amount, previewHeight)
+    // console.log(amount, previewHeight)
     // Scroll down so that we see the full preview element
     if (amount > 0) this.node.scrollTop += amount + 5
   }
@@ -302,6 +310,12 @@ class Channel extends React.Component {
   renderMessages() {
     const { messages, username, channelName, loading, loadingText, reachedChannelStart, appSettings } = this.state
     const { colorifyUsernames, useEmojis, useMonospaceFont, font, monospaceFont, spacing } = appSettings
+    const style = {
+      fontFamily: useMonospaceFont ? monospaceFont : font,
+      fontSize: useMonospaceFont ? '0.9em' : '1.0em',
+      fontWeight: useMonospaceFont ? '100' : '300',
+      padding: spacing,
+    }
     const elements = messages.map((message) => {
       if (appSettings.useLargeMessage) {
         return <Message2
@@ -314,31 +328,20 @@ class Channel extends React.Component {
           highlightWords={username}
           colorifyUsername={colorifyUsernames}
           useEmojis={useEmojis}
-          style={{
-            fontFamily: useMonospaceFont ? monospaceFont : font,
-            fontSize: useMonospaceFont ? '0.9em' : '1.0em',
-            fontWeight: useMonospaceFont ? '100' : '300',
-            padding: spacing,
-          }}
+          style={style}
         />   
       } else {
         return <Message
           message={message}
           key={message.hash}
-          onReplyTo={this.onReplyTo.bind(this)}
-          onShowProfile={this.onShowProfile.bind(this)}
-          onDragEnter={this.onDragEnter.bind(this)}
-          onScrollToPreview={this.onScrollToPreview.bind(this)}
+          onShowProfile={this.onShowProfile}
+          onDragEnter={this.onDragEnter}
+          onScrollToPreview={this.onScrollToPreview}
           highlightWords={username}
           colorifyUsername={colorifyUsernames}
           useEmojis={useEmojis}
-          style={{
-            fontFamily: useMonospaceFont ? monospaceFont : font,
-            fontSize: useMonospaceFont ? '0.9em' : '1.0em',
-            fontWeight: useMonospaceFont ? '100' : '300',
-            padding: spacing,
-          }}
-        />           
+          style={style}
+        />
       }
     })
         // {reachedChannelStart && !loading ? `Joined #${channelName}` : loadingText }
@@ -394,7 +397,7 @@ class Channel extends React.Component {
           onSendMessage={this.sendMessage.bind(this)}
           onSendFiles={this.onDrop.bind(this)}
           isLoading={loading}
-          channelMode={channelMode + ": " + this.state.peers + " peers"}
+          channelMode={this.state.peers + " peers"}
           appSettings={appSettings}
           theme={theme}
           replyto={replyto}

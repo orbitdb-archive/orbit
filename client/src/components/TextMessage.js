@@ -1,46 +1,50 @@
-'use strict';
+'use strict'
 
-import flatten from 'lodash.flatten';
-import React from "react";
-import TransitionGroup from "react-addons-css-transition-group";
-import ReactEmoji from "react-emoji";
-import ReactAutolink from "react-autolink";
-import ReactIpfsLink from "components/plugins/react-ipfs-link";
-import MentionHighlighter from 'components/plugins/mention-highlighter';
-import "styles/TextMessage.scss";
+import flatten from 'lodash.flatten'
+import React from "react"
+import TransitionGroup from "react-addons-css-transition-group"
+import ReactEmoji from "react-emoji"
+import ReactAutolink from "react-autolink"
+import ReactIpfsLink from "components/plugins/react-ipfs-link"
+import MentionHighlighter from 'components/plugins/mention-highlighter'
+import "styles/TextMessage.scss"
 
 class TextMessage extends React.Component {
   constructor(props) {
-    super(props);
+    super(props)
     this.state = {
       text: props.text,
-      replyto: props.replyto,
+      // replyto: props.replyto,
       useEmojis: props.useEmojis,
       highlightWords: props.highlightWords,
-    };
+    }
   }
 
   componentWillReceiveProps(nextProps) {
     this.setState({
-      replyto: nextProps.replyto,
+      // replyto: nextProps.replyto,
       useEmojis: nextProps.useEmojis,
       highlightWords: nextProps.highlightWords
-    });
+    })
+  }
+
+  shouldComponentUpdate(nextProps, nextState) {
+    return this.state.text !== nextState.text
   }
 
   componentDidMount() {
     // Remove the command from rendering
     if(this.state.text.startsWith("/me")) {
-      const text = this.state.text.substring(3, this.state.text.length);
-      this.setState({ text: text });
+      const text = this.state.text.substring(3, this.state.text.length)
+      this.setState({ text: text })
     }
   }
 
   // Higlight specified words (ie. username)
   _highlight(items) {
     return flatten(items.map((item) => {
-      return MentionHighlighter.highlight(item, this.state.highlightWords, { highlightClassName: 'highlight', key: Math.random() });
-    }));
+      return MentionHighlighter.highlight(item, this.state.highlightWords, { highlightClassName: 'highlight', key: Math.random() })
+    }))
   }
 
   // Create emojis
@@ -48,37 +52,36 @@ class TextMessage extends React.Component {
     const emojiOpts = {
       emojiType: 'emojione',
       attributes: { width: size || '16px', height: size || '16px' }
-    };
+    }
 
     return flatten(items.map((item) => {
-      if(typeof item !== 'string') return item;
-      if(item[0] !== ':' && item.indexOf('d:') > 0) return item; // Handle 'd:' specially
-      emojiOpts.attributes.alt = item.trim();
-      return ReactEmoji.emojify(item, emojiOpts);
-    }));
+      if(typeof item !== 'string') return item
+      if(item[0] !== ':' && item.indexOf('d:') > 0) return item // Handle 'd:' specially
+      emojiOpts.attributes.alt = item.trim()
+      return ReactEmoji.emojify(item, emojiOpts)
+    }))
   }
 
   // Create linkss from IPFS hashes
   _ipfsfy(items) {
     return flatten(items.map((item) => {
-      return (typeof item === 'string') ? ReactIpfsLink.linkify(item, { target: "_blank", rel: "nofollow", key: Math.random() }) : item;
-    }));
+      return (typeof item === 'string') ? ReactIpfsLink.linkify(item, { target: "_blank", rel: "nofollow", key: Math.random() }) : item
+    }))
   }
 
   render() {
     // Create links from urls
-    let finalText = ReactAutolink.autolink(this.state.text, { target: "_blank", rel: "nofollow", key: Math.random() });
-    finalText = this._highlight(finalText);
-    // finalText = this._ipfsfy(finalText);
-    finalText = this.state.useEmojis ? this._emojify(finalText) : finalText;
+    let finalText = ReactAutolink.autolink(this.state.text, { target: "_blank", rel: "nofollow", key: Math.random() })
+    finalText = this._highlight(finalText)
+    // finalText = this._ipfsfy(finalText)
+    finalText = this.state.useEmojis ? this._emojify(finalText) : finalText
 
-    if(this.state.replyto) {
-      const emojified = this.state.useEmojis ? this._emojify([`${this.state.replyto}`], '12px') : this.state.replyto
-      const element = (<span className="reply" key={Math.random()}>{emojified}</span>)
-      finalText.push(" ⇾ ")
-      finalText.push(element)
-    }
-
+    // if(this.state.replyto) {
+    //   const emojified = this.state.useEmojis ? this._emojify([`${this.state.replyto}`], '12px') : this.state.replyto
+    //   const element = (<span className="reply" key={Math.random()}>{emojified}</span>)
+    //   finalText.push(" ⇾ ")
+    //   finalText.push(element)
+    // }
 
     const content = (
       <TransitionGroup
@@ -90,10 +93,10 @@ class TextMessage extends React.Component {
         className="content2">
         <span className="content2" key={"1"}>{finalText}</span>
       </TransitionGroup>
-    );
+    )
 
-    return (<div className="TextMessage">{content}</div>);
+    return (<div className="TextMessage">{content}</div>)
   }
 }
 
-export default TextMessage;
+export default TextMessage
