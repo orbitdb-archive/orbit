@@ -37,35 +37,59 @@ const MessageStore = Reflux.createStore({
       }, interval)
     }
   },
+  _add(channel, messages) {
+    messages = messages || []
+    let uniqueNew = differenceWith(messages, this.channels[channel].messages, (a, b) => a.hash === b.hash)
+    this.channels[channel].messages = this.channels[channel].messages.concat(uniqueNew)
+    this.channels[channel].messages = sortBy(this.channels[channel].messages, (e) => e.meta.ts)
+    this.trigger(channel, this.channels[channel].messages)
+  },
   onInitialize: function(orbit) {
     this.orbit = orbit
 
     this.orbit.events.on('message', (channel, message) => {
       // logger.info("-->", channel, message)
-      this._addMessages(channel, [message], false)
+      this._add(channel, [message])
     })
+
+    this.loadingCount = 0
 
     this.orbit.events.on('joined', (channel) => {
       logger.info(`Joined #${channel}`)
       const feed = this.orbit.channels[channel].feed
 
       feed.events.on('history', (name, messages) => {
-        if(messages[0] && messages[0].next.length > 0)
-          this.channels[channel].canLoadMore = true
-        this._addMessages(channel, take(messages.reverse(), messagesBatchSize - 1), true)
+        UIActions.startLoading(name, "load")
+        this.orbit.get(name, null, null, messages.length)
+          .then((posts) => {
+            this._add(channel, posts)
+            UIActions.stopLoading(name, "loadHistory")
+          })
+      })
+
+      feed.events.on('load.start', (name, amount) => {
+        this.loadingCount = amount
+        UIActions.startLoading(name, "load")
+      })
+      feed.events.on('load.progress', (name, amount) => {
+        // console.log("Loading: ", this.loadingCount--)
+      })
+      feed.events.on('load.end', (name, amount) => {
+        this.loadingCount = 0
+        UIActions.stopLoading(name, "load")
       })
 
       feed.events.on('load', (name, hash) => {
-        // TODO: started loading feed's history
-        UIActions.startLoading(name, "loadHistory", "Loading history...")
-        if(this.connectTimeout[name]) clearTimeout(this.connectTimeout[name])
+        if (hash) {
+          // UIActions.startLoading(name, "loadHistory", "Loading history...")
+          if(this.connectTimeout[name]) clearTimeout(this.connectTimeout[name])          
+        }
       })
 
       feed.events.on('ready', (name) => {
-        // TODO: feed's history loaded
         clearTimeout(this.connectTimeout[name])
         delete this.connectTimeout[name]
-        UIActions.stopLoading(name, "loadHistory")
+        // UIActions.stopLoading(name, "loadHistory")
         this.channels[name].canLoadMore = true
       })
     })
@@ -118,11 +142,12 @@ const MessageStore = Reflux.createStore({
   },
   loadMessages: function(channel: string, olderThanHash: string, newerThanHash: string, amount: number) {
     // logger.debug("--> GET MESSAGES #" + channel + ", " + olderThanHash + " " + newerThanHash  + " " + amount)
-    this.loading = true
+    // this.loading = true
     this.orbit.get(channel, olderThanHash, newerThanHash, amount)
       .then((messages) => {
-        this._addMessages(channel, messages, olderThanHash !== null)
-        this.loading = false
+        // this._add(messages)
+        // this._addMessages(channel, messages, olderThanHash !== null)
+        // this.loading = false
       })
   },
   _addMessages: function(channel: string, newMessages: Array, older: boolean) {

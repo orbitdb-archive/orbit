@@ -17,8 +17,8 @@ class Message extends React.Component {
   constructor(props) {
     super(props)
     this.state = {
-      post: null,
-      user: null,
+      post: props.message,
+      user: props.message.meta.from,
       hasHighlights: false,
       isCommand: false,
       formattedTime: getFormattedTime(props.message.meta.ts),
@@ -27,44 +27,44 @@ class Message extends React.Component {
     }
   }
 
-  shouldComponentUpdate(nextProps, nextState) {
-    return this.state.post !== nextState.post
-      || this.state.user !== nextState.user
-  }
+  // shouldComponentUpdate(nextProps, nextState) {
+  //   return this.state.post !== nextState.post
+  //     || this.state.user !== nextState.user
+  // }
 
   componentDidMount() {
-    ChannelActions.loadPost(this.props.message.value, (err, post) => {
-      if (post) {
-        UserActions.getUser(post.meta.from, (err, user) => {
-          this.setState({ post: post, user: user })
-
-          if (post.content) {
-            if (post.content.startsWith('/me')) {
-              this.state.isCommand = true
-            }
-            post.content.split(' ').forEach((word) => {
-              const highlight = MentionHighlighter.highlight(word, this.props.highlightWords)
-              if(typeof highlight[0] !== 'string' && this.props.highlightWords !== post.meta.from) {
-                this.state.hasHighlights = true
-                NotificationActions.mention(this.state.channelName, post.content) // TODO: where does channelName come from?
-              }
-            })
-          }
-        })
-      }
-    })
+    // ChannelActions.loadPost(this.props.message.value, (err, post) => {
+    //   if (post) {
+    //     UserActions.getUser(post.meta.from, (err, user) => {
+    //       this.setState({ post: post, user: user }, () => {
+    //         if (post.content) {
+    //           if (post.content.startsWith('/me')) {
+    //             this.state.isCommand = true
+    //           }
+    //           post.content.split(' ').forEach((word) => {
+    //             const highlight = MentionHighlighter.highlight(word, this.props.highlightWords)
+    //             if(typeof highlight[0] !== 'string' && this.props.highlightWords !== post.meta.from) {
+    //               this.state.hasHighlights = true
+    //               NotificationActions.mention(this.state.channelName, post.content) // TODO: where does channelName come from?
+    //             }
+    //           })
+    //         }
+    //       })
+    //     })
+    //   }
+    // })
   }
 
-  onReplyTo(event) {
-    const { post, user } = this.state
-    const hash = this.props.message.value
-    this.setState({ replyto: hash })
-    this.props.onReplyTo({
-      hash: hash,
-      content: post.meta.type === 'text' ? post.content : post.name,
-      user: user,
-    })
-  }
+  // onReplyTo(event) {
+  //   const { post, user } = this.state
+  //   const hash = this.props.message.value
+  //   this.setState({ replyto: hash })
+  //   this.props.onReplyTo({
+  //     hash: hash,
+  //     content: post.meta.type === 'text' ? post.content : post.name,
+  //     user: user,
+  //   })
+  // }
 
   renderContent() {
     const { highlightWords, useEmojis } = this.props
@@ -77,7 +77,7 @@ class Message extends React.Component {
           content = (
             <TextMessage
               text={post.content}
-              replyto={post.replyToContent}
+              replyto={null}
               useEmojis={useEmojis}
               highlightWords={post.meta.from !== highlightWords ? highlightWords : ''}
               key={post.hash} />
@@ -91,7 +91,8 @@ class Message extends React.Component {
           break
       }
     }
-    return <div className={contentClass} onClick={this.onReplyTo.bind(this)}>{content}</div>
+    // return <div className={contentClass} onClick={this.onReplyTo.bind(this)}>{content}</div>
+    return <div className={contentClass}>{content}</div>
   }
 
   render() {
