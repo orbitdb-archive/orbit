@@ -320,7 +320,7 @@ class Channel extends React.Component {
       if (appSettings.useLargeMessage) {
         return <Message2
           message={message}
-          key={message.hash}
+          key={message.hash + message.meta.ts}
           onReplyTo={this.onReplyTo.bind(this)}
           onShowProfile={this.onShowProfile.bind(this)}
           onDragEnter={this.onDragEnter.bind(this)}
@@ -333,7 +333,7 @@ class Channel extends React.Component {
       } else {
         return <Message
           message={message}
-          key={message.hash}
+          key={message.hash + message.meta.ts}
           onShowProfile={this.onShowProfile}
           onDragEnter={this.onDragEnter}
           onScrollToPreview={this.onScrollToPreview}

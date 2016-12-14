@@ -72,6 +72,7 @@ class Message extends React.Component {
     const contentClass = isCommand ? "Content command" : "Content"
     let content = (<div></div>)
     if (post) {
+      const key = post.hash + post.meta.ts
       switch (post.meta.type) {
         case 'text':
           content = (
@@ -80,14 +81,14 @@ class Message extends React.Component {
               replyto={null}
               useEmojis={useEmojis}
               highlightWords={post.meta.from !== highlightWords ? highlightWords : ''}
-              key={post.hash} />
+              key={key} />
           )
           break
         case 'file':
-          content = <File hash={post.hash} name={post.name} size={post.size} meta={post.meta} onPreviewOpened={this.props.onScrollToPreview}/>
+          content = <File hash={post.hash} name={post.name} size={post.size} meta={post.meta} onPreviewOpened={this.props.onScrollToPreview} key={key}/>
           break
         case 'directory':
-          content = <Directory hash={post.hash} name={post.name} size={post.size} root={true} onPreviewOpened={this.props.onScrollToPreview}/>
+          content = <Directory hash={post.hash} name={post.name} size={post.size} root={true} onPreviewOpened={this.props.onScrollToPreview} key={key}/>
           break
       }
     }

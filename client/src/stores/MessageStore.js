@@ -40,7 +40,7 @@ const MessageStore = Reflux.createStore({
   },
   _add(channel, messages) {
     messages = messages || []
-    let uniqueNew = differenceWith(messages, this.channels[channel].messages, (a, b) => a.hash === b.hash)
+    let uniqueNew = differenceWith(messages, this.channels[channel].messages, (a, b) => a.hash === b.hash && a.meta.ts === b.meta.ts)
     this.channels[channel].messages = this.channels[channel].messages.concat(uniqueNew)
     this.channels[channel].messages = sortBy(this.channels[channel].messages, (e) => e.meta.ts)
     this.trigger(channel, this.channels[channel].messages)
