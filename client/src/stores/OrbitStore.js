@@ -9,6 +9,7 @@ import path from 'path'
 import Logger from 'logplease'
 
 const logger = Logger.create('OrbitStore', { color: Logger.Colors.Blue })
+const isElectron = window.remote
 const ipcRenderer = window.ipcRenderer
 
 const OrbitStore = Reflux.createStore({
@@ -27,7 +28,7 @@ const OrbitStore = Reflux.createStore({
       // path to orbit-db cache file
       cachePath: path.join(IpfsDaemonStore.getIpfsSettings().OrbitDataDir, "/data/orbit-db"),
       // how many messages to retrieve from history on joining a channel
-      maxHistory: 64,
+      maxHistory: isElectron ? 64 : 16,
     }
 
     this.orbit = new Orbit(ipfs, options)

@@ -53,6 +53,12 @@ const MessageStore = Reflux.createStore({
       setImmediate(() => this._add(channel, [message]))
     })
 
+    this.orbit.events.on('history', (channel, messages) => {
+      // logger.info("-->", channel, message)
+      // setImmediate(() => this._add(channel, [message]))
+      UIActions.stopLoading(channel, "load")
+    })
+
     this.loadingCount = 0
 
     this.orbit.events.on('joined', (channel) => {
@@ -61,11 +67,11 @@ const MessageStore = Reflux.createStore({
 
       feed.events.on('history', (name, messages) => {
         UIActions.startLoading(name, "load")
-        this.orbit.get(name, null, null, messages.length)
-          .then((posts) => {
-            this._add(channel, posts)
-            UIActions.stopLoading(name, "loadHistory")
-          })
+        // this.orbit.get(name, null, null, messages.length)
+        //   .then((posts) => {
+        //     this._add(channel, posts)
+        //     UIActions.stopLoading(name, "loadHistory")
+        //   })
       })
 
       feed.events.on('load.start', (name, amount) => {
