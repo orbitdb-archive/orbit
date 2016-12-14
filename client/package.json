@@ -30,7 +30,7 @@
     "react-autolink": "^0.2.1",
     "react-dom": "0.14.8",
     "react-dropzone": "^3.4.0",
-    "react-emoji": "haadcode/react-emoji#9f41349009890dce97425b00843ad3e1cad8d76a",
+    "react-emoji": "haadcode/react-emoji#3c1c5f7edc85a4c993a3601ba9a21e5c6e631c82",
     "react-router": "^2.4.0",
     "reflux": "^0.4.1",
     "stream-http": "^2.5.0"
