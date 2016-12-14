@@ -20,6 +20,7 @@ class Channel extends React.Component {
     super(props)
 
     this.state = {
+      peers: 0,
       channelChanged: true,
       channelName: null,
       messages: [],
@@ -49,6 +50,7 @@ class Channel extends React.Component {
       || this.state.channelName != nextState.channelName
       || this.state.dragEnter != nextState.dragEnter
       || this.state.loading != nextState.loading
+      || this.state.peers != nextState.peers
   }
 
   componentWillReceiveProps(nextProps) {
@@ -74,6 +76,15 @@ class Channel extends React.Component {
   }
 
   componentDidMount() {
+    setInterval(() => {
+      if (MessageStore.orbit) {
+        MessageStore.orbit._ipfs.pubsub.peers(this.state.channelName)
+          .then((peers) => this.setState({ peers: peers.length }))
+          .catch((e) => {})
+      }
+    }, 1000)
+
+    this.unsubscribeFromMessageStore = MessageStore.listen(this.onNewMessages.bind(this))
     this.unsubscribeFromMessageStore = MessageStore.listen(this.onNewMessages.bind(this))
     this.unsubscribeFromErrors = UIActions.raiseError.listen(this._onError.bind(this))
     this.stopListeningChannelState = ChannelActions.reachedChannelStart.listen(this._onReachedChannelStart.bind(this))
@@ -111,7 +122,7 @@ class Channel extends React.Component {
       return
 
     this.node = this.refs.MessagesView
-    if(this.node.scrollHeight - this.node.scrollTop + this.bottomMargin > this.node.clientHeight
+    if(this.node && this.node.scrollHeight - this.node.scrollTop + this.bottomMargin > this.node.clientHeight
       && this.node.scrollHeight > this.node.clientHeight + 1
       && this.state.messages.length > 0 && last(messages).meta.ts > last(this.state.messages).meta.ts
       && this.node.scrollHeight > 0) {
@@ -383,7 +394,7 @@ class Channel extends React.Component {
           onSendMessage={this.sendMessage.bind(this)}
           onSendFiles={this.onDrop.bind(this)}
           isLoading={loading}
-          channelMode={channelMode}
+          channelMode={channelMode + ": " + this.state.peers + " peers"}
           appSettings={appSettings}
           theme={theme}
           replyto={replyto}

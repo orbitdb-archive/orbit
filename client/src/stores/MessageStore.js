@@ -23,6 +23,7 @@ const MessageStore = Reflux.createStore({
     this.currentChannel = null
     this.channels = {}
     this.posts = {} // simple cache for message contents
+    this.orbit = null
     this._reset()
 
     this.loading = false
