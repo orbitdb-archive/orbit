@@ -3,8 +3,10 @@
 import Reflux from 'reflux'
 import UserStore from 'stores/UserStore'
 import AppActions from 'actions/AppActions'
+import UIActions from 'actions/UIActions'
 import NetworkActions from 'actions/NetworkActions'
 import NotificationActions from 'actions/NotificationActions'
+import { getFormattedTime } from '../utils/utils.js'
 import hasMentions from '../utils/has-mentions'
 
 const AppStateStore = Reflux.createStore({
@@ -58,6 +60,24 @@ const AppStateStore = Reflux.createStore({
         this.state.mentions[channel] = 0
 
       this.state.mentions[channel] += 1
+
+      if (Notification) {
+        if (Notification.permission !== "granted")
+          Notification.requestPermission()
+
+        // Display the notification
+        const notification = new Notification(post.meta.from.name + " mentioned you in #" + channel, {
+          icon: 'images/OrbitLogo_32x32.png',
+          body: getFormattedTime(post.meta.ts) + "\n<" + post.meta.from.name + "> " + post.content,
+        })
+
+        // Handle click
+        notification.onclick = (e) => {
+          e.preventDefault()
+          notification.close()
+          UIActions.joinChannel(channel)
+        }
+      }
 
       this.trigger(this.state)
     }
