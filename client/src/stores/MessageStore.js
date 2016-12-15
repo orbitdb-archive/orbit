@@ -42,7 +42,13 @@ const MessageStore = Reflux.createStore({
     messages = messages || []
     let uniqueNew = differenceWith(messages, this.channels[channel].messages, (a, b) => a.hash === b.hash && a.meta.ts === b.meta.ts)
 
-    uniqueNew.forEach((post) => UserActions.addUser(post.meta.from))
+    // Process all new messages
+    uniqueNew.forEach((post) => {
+      // Add users to the known users list
+      UserActions.addUser(post.meta.from)
+      // Fire notifications
+      NotificationActions.newMessage(channel, post)
+    })
 
     this.channels[channel].messages = this.channels[channel].messages.concat(uniqueNew)
     this.channels[channel].messages = sortBy(this.channels[channel].messages, (e) => e.meta.ts)
@@ -198,23 +204,23 @@ const MessageStore = Reflux.createStore({
     }
   },
   _loadPost: function(channel: string, message) {
-    const hasMentions = (text: string, mention: string) => {
-      return text.split(' ').map((word) => {
-          const match = word.startsWith(mention)
-                  || word.startsWith(mention + ":")
-                  || word.startsWith("@" + mention)
-                  || word.startsWith(mention + ",")
-          return match
-      }).filter((f) => f === true).length > 0
-    }
+    // const hasMentions = (text: string, mention: string) => {
+    //   return text.split(' ').map((word) => {
+    //       const match = word.startsWith(mention)
+    //               || word.startsWith(mention + ":")
+    //               || word.startsWith("@" + mention)
+    //               || word.startsWith(mention + ",")
+    //       return match
+    //   }).filter((f) => f === true).length > 0
+    // }
 
-    this.onLoadPost(message.value, (err, post) => {
-      UserActions.addUser(post.meta.from)
-      if(post && post.content) {
-        if(hasMentions(post.content.toLowerCase(), UserStore.user.name.toLowerCase()))
-          NotificationActions.mention(channel, post.content)
-      }
-    })
+    // this.onLoadPost(message.value, (err, post) => {
+    //   UserActions.addUser(post.meta.from)
+    //   if(post && post.content) {
+    //     if(hasMentions(post.content.toLowerCase(), UserStore.user.name.toLowerCase()))
+    //       NotificationActions.mention(channel, post.content)
+    //   }
+    // })
   },
   onLoadPost: function(hash: string, callback) {
     // TODO: change to Promise instead of callback

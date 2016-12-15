@@ -1,9 +1,11 @@
 'use strict'
 
 import Reflux from 'reflux'
+import UserStore from 'stores/UserStore'
 import AppActions from 'actions/AppActions'
 import NetworkActions from 'actions/NetworkActions'
 import NotificationActions from 'actions/NotificationActions'
+import hasMentions from '../utils/has-mentions'
 
 const AppStateStore = Reflux.createStore({
   listenables: [AppActions, NetworkActions, NotificationActions],
@@ -37,19 +39,26 @@ const AppStateStore = Reflux.createStore({
     if(channel === this.state.currentChannel)
       this.onSetCurrentChannel(null)
   },
-  onNewMessage: function(channel) {
+  onNewMessage: function(channel, post) {
     if(channel !== this.state.currentChannel || !this.state.hasFocus) {
       if(!this.state.unreadMessages[channel])
         this.state.unreadMessages[channel] = 0
+
       this.state.unreadMessages[channel] += 1
+
+      if(post.content && hasMentions(post.content.toLowerCase(), UserStore.user.name.toLowerCase()))
+        this.onMention(channel, post)
+
       this.trigger(this.state)
     }
   },
-  onMention: function(channel, message) {
+  onMention: function(channel, post) {
     if(channel !== this.state.currentChannel || !this.state.hasFocus) {
       if(!this.state.mentions[channel])
         this.state.mentions[channel] = 0
+
       this.state.mentions[channel] += 1
+
       this.trigger(this.state)
     }
   },
