@@ -80,7 +80,7 @@ class Message extends React.Component {
               text={post.content}
               replyto={null}
               useEmojis={useEmojis}
-              highlightWords={post.meta.from !== highlightWords ? highlightWords : ''}
+              highlightWords={highlightWords}
               key={key} />
           )
           break

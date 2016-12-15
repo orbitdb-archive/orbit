@@ -31,7 +31,7 @@ class Channel extends React.Component {
       error: null,
       replyto: null,
       dragEnter: false,
-      username: props.user ? props.user.username : '',
+      username: props.user ? props.user.name : '',
       unreadMessages: 0,
       appSettings: props.appSettings,
       theme: props.theme,
@@ -74,7 +74,7 @@ class Channel extends React.Component {
 
     this.setState({
       channelName: nextProps.channel,
-      username: nextProps.user ? nextProps.user.username : '',
+      username: nextProps.user ? nextProps.user.name : '',
       appSettings: nextProps.appSettings,
       theme: nextProps.theme
     })

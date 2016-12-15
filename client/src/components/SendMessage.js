@@ -71,7 +71,8 @@ class SendMessage extends React.Component {
   }
 
   onKeyDown(event) {
-    this.autoComplete.onKeyDown(event, this.refs.message.value, UsersStore.users);
+    const userNames = Object.keys(UsersStore.users).map((e) => UsersStore.users[e].name)
+    this.autoComplete.onKeyDown(event, this.refs.message.value, userNames);
     if (this.state.emojiPickerActive) {
       this.refs.emojipicker.onKeyDown(event);
     }
