@@ -28,7 +28,7 @@ const OrbitStore = Reflux.createStore({
       // path to orbit-db cache file
       cachePath: path.join(IpfsDaemonStore.getIpfsSettings().OrbitDataDir, "/data/orbit-db"),
       // how many messages to retrieve from history on joining a channel
-      maxHistory: isElectron ? 64 : 16,
+      maxHistory: isElectron ? 64 : 64,
     }
 
     this.orbit = new Orbit(ipfs, options)
