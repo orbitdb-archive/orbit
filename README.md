@@ -33,9 +33,8 @@ Orbit can be run either in a browser or as a native desktop application. The bro
 
 ### Live Demo
 
-[http://orbit.libp2p.io/](http://orbit.libp2p.io)
-
-*The live demo is an old version of Orbit. It is recommended to follow the instructions below to run the latest version.*
+~~[http://orbit.libp2p.io/](http://orbit.libp2p.io)~~
+https://ipfs.io/ipfs/QmXE1jF7wxHmNgdvWJw3qgBywkSKwHKTuaXJfcTeMDVjHk/
 
 ### Desktop
 
