@@ -1,0 +1,93 @@
+$text-color: rgba(228, 228, 228, 0.9);
+
+.LoadingView {
+  font-family: "Source Sans Pro";
+  font-weight: 100;
+  font-size: 0.9em;
+  padding: 0.1em;
+  color: rgb(128, 128, 128);
+  // display: flex;
+  // justify-content: center;
+  // align-items: center;
+  width: 100%;
+  height: 100%;
+  margin-top: 4px;
+  // border-top: 1px solid rgba(30, 30, 30, 1);
+  box-sizing: border-box;
+  z-index: 100;
+
+  .header {
+    position: absolute;
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: flex-end;
+    width: 100%;
+    // height: 100%;
+    top: 42%;
+    z-index: 100;
+  }
+
+  .logs {
+    font-family: "Source Sans Pro";
+    position: absolute;
+    bottom: 0;
+    width: 100%;
+    z-index: 100;
+  }
+
+  .text {
+    font-family: "Source Sans Pro";
+    color: rgba(240, 240, 240, 0.9);
+    background-color: rgba(16, 16, 16, 0.5);
+    padding-left: 0.5em;
+    padding-right: 0.5em;
+  }
+
+  h1 {
+    font-family: "Lato";
+    font-size: 4.5em;
+    font-weight: 100;
+    // padding: 1.0em;
+    text-transform: uppercase;
+    color: rgba(240, 240, 240, 0.8);
+    z-index: 1;
+    // margin-top: 2.3em;
+    // padding-bottom: 0.5em;
+    margin: 0;
+    padding: 0;
+  }
+
+  .error {
+    color: rgba(250, 96, 96, 0.9);
+    font-style: bold;
+  }
+}
+
+.loadingHeaderAnimation-appear {
+  $duration: .5s;
+  $animation-name: fadeIn;
+
+  -webkit-animation: $animation-name;
+  animation: $animation-name;
+  -webkit-animation-duration: $duration;
+  animation-duration: $duration;
+  -webkit-animation-fill-mode: both;
+  animation-fill-mode: both;
+  -webkit-animation-timing-function: ease-out;
+  animation-timing-function: ease-out;
+}
+
+.loadingTextAnimation-appear {
+  $duration: .5s;
+  $animation-name: fadeIn;
+
+  -webkit-animation: $animation-name;
+  animation: $animation-name;
+  -webkit-animation-duration: $duration;
+  animation-duration: $duration;
+  -webkit-animation-fill-mode: both;
+  animation-fill-mode: both;
+  -webkit-animation-timing-function: ease-out;
+  animation-timing-function: ease-out;
+}

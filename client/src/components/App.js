@@ -32,6 +32,7 @@ import SettingsView from 'components/SettingsView'
 import IpfsSettingsView from 'components/IpfsSettingsView'
 import SwarmView from 'components/SwarmView'
 import LoginView from 'components/LoginView'
+import LoadingView from 'components/LoadingView'
 import Header from 'components/Header'
 import Themes from 'app/Themes'
 
@@ -53,7 +54,7 @@ const views = {
   "Swarm": "/swarm",
   "Connect": "/connect",
   "Channel": "/channel/",
-  // "Loading": "/loading",
+  "Loading": "/loading",
 }
 
 const ipcRenderer = window.ipcRenderer
@@ -231,7 +232,8 @@ var App = React.createClass({
   },
   render: function() {
     const location = AppStateStore.state.location
-    const header = location && ["Connect", "IpfsSettings"].indexOf(location) < 0 ? (
+    const noHeader = ["Connect", "IpfsSettings", "Loading"]
+    const header = location && noHeader.indexOf(location) < 0 ? (
       <Header
         onClick={this.openPanel}
         title={location}
@@ -276,6 +278,7 @@ render(
       <Route path="ipfs-settings" component={IpfsSettingsView}/>
       <Route path="swarm" component={SwarmView}/>
       <Route path="connect" component={LoginView}/>
+      <Route path="loading" component={LoadingView}/>
     </Route>
   </Router>
   , document.getElementById('content')

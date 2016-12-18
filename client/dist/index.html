@@ -69,6 +69,14 @@
       window.orbit = remote.getGlobal('orbit');
       window.orbitDataDir = remote.getGlobal('orbitDataDir');
       window.ipcRenderer = req('electron').ipcRenderer;
+
+      // Log messages from main process
+      window.ipcRenderer.on('log', (e, source, level, text) => {
+        if (level.toLowerCase() === 'error')
+          console.error(level, source, text)
+        else
+          console.log(level, source, text)
+      })
     } else {
       // We're running purely in the browser
     }

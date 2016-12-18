@@ -23,7 +23,7 @@ const MODE = OrbitConfig.MODE
 
 // Setup logging, to turn on the logging, run orbit-electron with LOG=debug
 Logger.setLogfile(OrbitConfig.logFilePath)
-const logger = Logger.create("orbit-electron", { color: Logger.Colors.Yellow })
+let logger = Logger.create("orbit-electron", { color: Logger.Colors.Yellow })
 
 // Menu bar
 const template = require('./menu-native')(app)
@@ -31,6 +31,9 @@ const menu = Menu.buildFromTemplate(template)
 
 // IPFS instance
 let ipfs
+
+// The application window
+let mainWindow
 
 const stopIpfs = () => {
   if (ipfs) {
@@ -44,6 +47,7 @@ const stopIpfs = () => {
 // Handle shutdown gracefully
 const shutdown = () => {
   logger.debug("Closing...")
+  mainWindow = null
   stopIpfs()
   setTimeout(() => {
     logger.debug("All done!\n")
@@ -74,7 +78,6 @@ process.on('uncaughtException', (error) => {
 const connectWindowSize = WindowConfig.connectWindowSize
 const mainWindowSize = WindowConfig.mainWindowSize
 
-let mainWindow
 const setWindowToNormal = () => {
   mainWindow.setSize(mainWindowSize.width, mainWindowSize.height)
   mainWindow.setResizable(true)
@@ -87,6 +90,11 @@ const setWindowToLogin = () => {
   mainWindow.center()
 }
 
+const logToRenderer = (source, level, text) => {
+  if (mainWindow)
+    mainWindow.webContents.send('log', source, level, text)
+}
+
 // Start
 logger.debug("Run index.js in '" + MODE + "' mode")
 
@@ -95,6 +103,12 @@ app.on('ready', () => {
     mainWindow = new BrowserWindow(connectWindowSize)
     mainWindow.webContents.session.setDownloadPath(OrbitConfig.userDownloadPath)
     Menu.setApplicationMenu(menu)
+
+    // Pass log messages to the renderer process
+    Logger.events.on('data', logToRenderer)
+    //   if (mainWindow && mainWindow.webContents)
+    //     mainWindow.webContents.send('log', text)
+    // })
 
     // Pass the mode and electron flag to the html (renderer process)
     global.DEV = MODE === 'dev'
@@ -143,12 +157,12 @@ app.on('ready', () => {
       // Handle errors
       ipfs.on('error', (err) => {
         logger.error(err)
+        mainWindow.webContents.send('error', err)
         dialog.showMessageBox({
           type: 'error',
           buttons: ['Ok'],
           title: 'Error',
           message: err.message,
-          detail: err.stack
         }, () => process.exit(1))
       })
     })
