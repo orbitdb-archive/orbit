@@ -106,9 +106,6 @@ app.on('ready', () => {
 
     // Pass log messages to the renderer process
     Logger.events.on('data', logToRenderer)
-    //   if (mainWindow && mainWindow.webContents)
-    //     mainWindow.webContents.send('log', text)
-    // })
 
     // Pass the mode and electron flag to the html (renderer process)
     global.DEV = MODE === 'dev'
