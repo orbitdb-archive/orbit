@@ -37,7 +37,7 @@ module.exports = function (grunt) {
       },
 
       start: {
-        keepAlive: true
+        keepalive: true
       }
     },
 

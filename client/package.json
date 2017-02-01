@@ -55,7 +55,7 @@
     "babel-preset-stage-3": "^6.5.0",
     "babel-runtime": "^6.9.0",
     "browserify-zlib": "git://github.com/ipfs/browserify-zlib.git#9993effe9f670367bf96b9d23c3e5ca0e1ed4036",
-    "chunk-manifest-webpack-plugin": "^0.1.0",
+    "chunk-manifest-webpack-plugin": "^1.0.0",
     "copy-webpack-plugin": "^3.0.1",
     "core-js": "^2.4.0",
     "css-loader": "^0.26.1",
@@ -69,7 +69,7 @@
     "grunt-contrib-connect": "~1.0.2",
     "grunt-contrib-copy": "~1.0.0",
     "grunt-open": "~0.2.3",
-    "grunt-webpack": "~1.0.16",
+    "grunt-webpack": "^2.0.1",
     "http-server": "^0.9.0",
     "idb-plus-blob-store": "^1.1.2",
     "json-loader": "^0.5.4",
@@ -80,10 +80,10 @@
     "sass-loader": "^3.2.3",
     "style-loader": "~0.13.1",
     "transform-loader": "^0.2.3",
-    "url-loader": "~0.5.7",
     "uglify-js": "github:mishoo/UglifyJS2#harmony",
-    "webpack": "^2.1.0-beta.27",
-    "webpack-dev-server": "^2.1.0-beta.12"
+    "url-loader": "~0.5.7",
+    "webpack": "^2.2.0",
+    "webpack-dev-server": "^2.2.1"
   },
   "scripts": {
     "test": "$(npm bin)/karma start --single-run=true",
