@@ -9,7 +9,7 @@
     "mkdirp": "^0.5.1"
   },
   "devDependencies": {
-    "electron": "^1.4.10",
+    "electron": "^1.4.11",
     "grunt": "^1.0.1",
     "grunt-chmod": "^1.1.1",
     "grunt-contrib-clean": "^1.0.0",
