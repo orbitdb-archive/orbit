@@ -56,11 +56,11 @@ module.exports = {
     loaders: [{
       test: /\.(js|jsx)$/,
       exclude: /node_modules/,
-      loader: 'babel',
+      loader: 'babel-loader',
     }, {
       test: /\.js$/,
       include: /node_modules\/(hoek|qs|wreck|boom)/,
-      loader: 'babel',
+      loader: 'babel-loader',
     }, {
       test: /\.scss/,
       loader: 'style-loader!css-loader!sass-loader?outputStyle=expanded'
@@ -75,7 +75,7 @@ module.exports = {
       loader: 'file?name=[path][name].[ext]',
     }, {
       test: /\.json$/,
-      loader: 'json'
+      loader: 'json-loader'
     }]
   },
   externals: {
