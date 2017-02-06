@@ -4,7 +4,15 @@
 
 > A distributed, peer-to-peer chat application built on [IPFS](http://ipfs.io)
 
-**NOTE!** *Currently only the Electron (Desktop) version works. We're working to fix the Browser version (js-ipfs)*
+**Orbit and its modules are being transfered to https://github.com/orbitdb.**
+
+**The code from this repo now lives in:**
+- https://github.com/orbitdb/orbit-web - UI and the browser version
+- https://github.com/orbitdb/orbit-electron - Desktop app
+- https://github.com/orbitdb/orbit-core - Orbit's core library
+
+**THE CODE IN THIS REPOSITORY WILL BE REMOVED WITHIN THE NEXT FEW WEEKS, PLEASE UPDATE YOUR BOOKMARKS!**
+
 
 <img src="https://raw.githubusercontent.com/haadcode/orbit/master/screenshots/screenshot4%202016-04-16.png" width="80%">
 <img src="https://raw.githubusercontent.com/haadcode/orbit/master/screenshots/screenshot7%202016-09-02.png" width="50%">
