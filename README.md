@@ -4,7 +4,9 @@
 [![](https://img.shields.io/badge/freenode-%23ipfs-blue.svg?style=flat-square)](http://webchat.freenode.net/?channels=%23ipfs)
 [![Project Status](https://badge.waffle.io/haadcode/orbit.svg?label=In%20Progress&title=Roadmap)](https://waffle.io/haadcode/orbit)
 
-A distributed, peer-to-peer chat application built on [IPFS](http://ipfs.io)
+A distributed, peer-to-peer chat application built on [IPFS](http://ipfs.io).
+
+#### Try the web app at https://orbit.chat
 
 **NOTE!** *Orbit is still more or less experimental. It means Orbit is currently* ***not secure****, APIs will change and clients can break over time. If you come across problems, it would help greatly to open issues so that we can fix them as quickly as possible.*
 
