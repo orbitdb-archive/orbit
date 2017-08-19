@@ -8,7 +8,7 @@ A distributed, peer-to-peer chat application built on [IPFS](http://ipfs.io).
 
 #### Try the web app at https://orbit.chat
 
-**NOTE!** *Orbit is still more or less experimental. It means Orbit is currently* ***not secure****, APIs will change and clients can break over time. If you come across problems, it would help greatly to open issues so that we can fix them as quickly as possible.*
+**NOTE!** _Orbit is still more or less experimental. It means Orbit is currently **not secure**, APIs will change and clients can break over time. If you come across problems, it would help greatly to open issues so that we can fix them as quickly as possible._
 
 ## Clients
 
