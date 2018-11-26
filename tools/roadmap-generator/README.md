@@ -6,7 +6,7 @@ Uses [roadmap-generator]().
 
 ## Requirements
 - Node.js v6.x
-- Npm v3.x
+- npm v3.x
 - GITHUB_TOKEN environment variable set
   - See [Creating an access token](https://help.github.com/articles/creating-an-access-token-for-command-line-use/) for help.
 
