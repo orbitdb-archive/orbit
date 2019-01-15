@@ -67,4 +67,4 @@ A good place to start are the issues labelled ["help wanted"](https://github.com
 
 ## License
 
-[MIT](LICENSE) © 2016-2018 Protocol Labs Inc., Haja Networks Oy
+[MIT](LICENSE) © 2015-2018 Protocol Labs Inc., 2018-2019 Haja Networks Oy
