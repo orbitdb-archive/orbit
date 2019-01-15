@@ -1,10 +1,10 @@
 # Orbit
 
-[![](https://img.shields.io/badge/made%20by-Protocol%20Labs-blue.svg?style=flat-square)](http://ipn.io)
-[![](https://img.shields.io/badge/freenode-%23ipfs-blue.svg?style=flat-square)](http://webchat.freenode.net/?channels=%23ipfs)
-[![Project Status](https://badge.waffle.io/haadcode/orbit.svg?label=In%20Progress&title=Roadmap)](https://waffle.io/haadcode/orbit)
+[![Gitter](https://img.shields.io/gitter/room/nwjs/nw.js.svg)](https://gitter.im/orbitdb/Lobby)
 
-A distributed, peer-to-peer chat application built on [IPFS](http://ipfs.io).
+> A distributed, serverless, peer-to-peer chat application on [IPFS](http://ipfs.io).
+
+Status: **Hold**. Work on Orbit Chat is largely in other repositories, at the moment. This may change in the future.
 
 #### Try the web app at https://orbit.chat
 
@@ -61,9 +61,11 @@ A new peer-to-peer hypermedia protocol. Orbit uses IPFS as its data storage and 
 
 ## Contributing
 
-We would be happy to accept PRs! If you want to work on something, it'd be good to talk beforehand to make sure nobody else is working on it. You can reach us on IRC #ipfs on Freenode, or in the comments of the [issues section](https://github.com/orbitdb/orbit/issues).
+We would be happy to accept PRs! If you want to work on something, it'd be good to talk beforehand to make sure nobody else is working on it. You can reach us on [on Gitter](https://gitter.im/orbitdb/Lobby), or in the comments of the [issues section](https://github.com/orbitdb/orbit/issues). At the moment, progress in this particular repo is on hold. PRs are unlikely to be merged, and the issues are a bit stale.
 
-A good place to start are the issues labelled ["help wanted"](https://github.com/orbitdb/orbit/issues?q=is%3Aopen+is%3Aissue+label%3A%22help+wanted%22+sort%3Areactions-%2B1-desc) or the project's [status board](https://waffle.io/haadcode/orbit).
+We also have **regular community calls**, which we announce in the issues in [the @orbitdb welcome repository](https://github.com/orbitdb/welcome/issues). Join us!
+
+For specific guidelines for contributing to this repository, check out the [Contributing guide](CONTRIBUTING.md). For more on contributing to OrbitDB in general, take a look at the [@OrbitDB welcome repository](https://github.com/orbitdb/welcome). Please note that all interactions in [@OrbitDB](https://github.com/orbitdb) fall under our [Code of Conduct](CODE_OF_CONDUCT.md).
 
 ## License
 
