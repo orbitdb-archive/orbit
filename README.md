@@ -4,7 +4,7 @@
 
 > A distributed, serverless, peer-to-peer chat application on [IPFS](http://ipfs.io).
 
-If you're here, you're probably eitherlooking for:
+If you're here, you're probably looking for:
 - [**orbitdb**](https://github.com/orbitdb/orbit-db) - The decentralized databases project
 - [**orbit-web**](https://github.com/orbitdb/orbit-web) - The current repository behind Orbit Chat, a p2p chat running on orbitdb. 
 
